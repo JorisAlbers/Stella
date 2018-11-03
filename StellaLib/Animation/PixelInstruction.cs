@@ -1,4 +1,4 @@
-namespace StellaLib
+namespace StellaLib.Animation
 {
     /// <summary>
     /// Struct that contains the index of the pixel to change and its new rgb value.

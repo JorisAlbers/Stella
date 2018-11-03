@@ -1,4 +1,4 @@
-namespace StellaLib
+namespace StellaLib.Animation
 {
     /// <summary>
     /// A frame contains all pixel instructions of a single moment in time.

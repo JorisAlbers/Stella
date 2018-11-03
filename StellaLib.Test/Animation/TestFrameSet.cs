@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using StellaLib;
+using StellaLib.Animation;
 
-namespace StellaLib.Test
+namespace StellaLib.Test.Animation
 {
     [TestFixture]
     public class TestFrameSet

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace StellaLib
+namespace StellaLib.Animation
 {
     /// <summary>
     /// Collection of Frames.
