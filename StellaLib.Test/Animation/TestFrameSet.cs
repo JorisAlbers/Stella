@@ -11,9 +11,9 @@ namespace StellaLib.Test.Animation
         [OneTimeSetUp]
         public void SetUp()
         {
-            _frame1 = new Frame(){ pixelInstructions = new PixelInstruction[1]{ new PixelInstruction(){ Index = 1,   Color = new Color(){ Red = 10, Green = 10, Blue = 10 }}}};
-            _frame2 = new Frame(){ pixelInstructions = new PixelInstruction[1]{ new PixelInstruction(){ Index = 10,  Color = new Color(){ Red = 20, Green = 20, Blue = 20 }}}};
-            _frame3 = new Frame(){ pixelInstructions = new PixelInstruction[1]{ new PixelInstruction(){ Index = 100, Color = new Color(){ Red = 30, Green = 30, Blue = 30 }}}};
+            _frame1 = new Frame(){ new PixelInstruction(){ Index = 1,   Color = new Color(){ Red = 10, Green = 10, Blue = 10 }}};
+            _frame2 = new Frame(){ new PixelInstruction(){ Index = 10,  Color = new Color(){ Red = 20, Green = 20, Blue = 20 }}};
+            _frame3 = new Frame(){ new PixelInstruction(){ Index = 100, Color = new Color(){ Red = 30, Green = 30, Blue = 30 }}};
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace StellaLib.Test.Animation
             int counter = 0;
             foreach (Frame frame in frameSet) 
             {
-                Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[counter++], frame.pixelInstructions[0].Index);
+                Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[counter++], frame[0].Index);
             }
         }
 
@@ -59,9 +59,9 @@ namespace StellaLib.Test.Animation
             };
 
             // Assert
-            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[0],frameSet[0].pixelInstructions[0].Index);
-            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[1],frameSet[1].pixelInstructions[0].Index);
-            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[2],frameSet[2].pixelInstructions[0].Index);
+            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[0],frameSet[0][0].Index);
+            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[1],frameSet[1][0].Index);
+            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[2],frameSet[2][0].Index);
         }
     }
 }
