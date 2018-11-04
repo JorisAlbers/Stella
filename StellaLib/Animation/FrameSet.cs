@@ -23,6 +23,8 @@ namespace StellaLib.Animation
         
         public Frame this[int index] =>  _frames[index];
 
+        public int Count => _frames.Count;
+
         public IEnumerator<Frame> GetEnumerator()
         {
              for (int i = 0; i < _frames.Count; i++) 
