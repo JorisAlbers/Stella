@@ -9,16 +9,23 @@ namespace StellaLib.Animation
     /// <typeparam name="Frame"></typeparam>
     public class FrameSet : IEnumerable<Frame>
     {
-        private Frame[] _frames;
+        private List<Frame> _frames;
 
-        public FrameSet(Frame[] frames)
+        public FrameSet()
         {
-            _frames = frames;
+            _frames = new List<Frame>();
         }
+
+        public void Add(Frame frame)
+        {
+            _frames.Add(frame);
+        }
+        
+        public Frame this[int index] =>  _frames[index];
 
         public IEnumerator<Frame> GetEnumerator()
         {
-             for (int i = 0; i < _frames.Length; i++) 
+             for (int i = 0; i < _frames.Count; i++) 
              {
                  yield return _frames[i];
              }
