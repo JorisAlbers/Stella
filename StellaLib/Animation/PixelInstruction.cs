@@ -10,10 +10,9 @@ namespace StellaLib.Animation
         /// </summary>
         public uint Index;
 
-        public byte Red;
-
-        public byte Green;
-
-        public byte Blue;
+        /// <summary>
+        /// The color to set the pixel to
+        /// </summary>
+        public Color Color;
     }
 }
