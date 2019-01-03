@@ -17,8 +17,6 @@ namespace StellaLib.Network
 
         private Socket _listenerSocket;
 
-        public ManualResetEvent allDone = new ManualResetEvent(false);  
-
         public Server(int port)
         {
             _port = port;
@@ -44,10 +42,7 @@ namespace StellaLib.Network
         }
 
         private void AcceptCallback(IAsyncResult ar) 
-        {  
-            // Signal the main thread to continue.  
-            allDone.Set();  
-    
+        {     
             // Get the socket that handles the client request.  
             Socket listener = (Socket) ar.AsyncState;  
 
