@@ -1,0 +1,66 @@
+using System;
+using System.Net.Sockets;
+using System.Text;
+
+namespace StellaLib.Network
+{
+    public class Client
+    {
+        private const int BUFFER_SIZE = 1024;
+        // Buffer for a single package
+        private byte[] _packageBuffer;
+        // Buffer for a single message
+        private StringBuilder _messageBuffer;
+
+        private Socket _socket;
+
+        public Client(Socket socket)
+        {
+            _socket = socket;
+            _packageBuffer = new byte[BUFFER_SIZE];
+            _messageBuffer = new StringBuilder();
+
+            _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
+        }
+
+        private void ReceiveCallback(IAsyncResult ar)
+        {
+            // Read incoming data from the client.
+            int bytesRead = 0;
+            try
+            {
+                bytesRead = _socket.EndReceive(ar);
+            }
+            catch(SocketException e)
+            {
+                Console.WriteLine("Receive data failed.\n"+e.ToString());
+                return;
+            }
+
+            if (bytesRead > 0) 
+            {  
+                // There  might be more data, so store the data received so far.  
+                _messageBuffer.Append(Encoding.ASCII.GetString(_packageBuffer, 0, bytesRead));  
+                                
+                // Check for end-of-file tag. If it is not there, read more data.  
+                string content = _messageBuffer.ToString();  
+                if (content.IndexOf("<EOF>") > -1) 
+                {  
+                    // Reset all buffers
+                    _packageBuffer = new byte[BUFFER_SIZE];
+                    _messageBuffer = new StringBuilder();
+
+                    _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
+
+                    //TODO  Pass the content of the message
+                    //ParseMessage(handler,content);
+                } 
+                else 
+                {  
+                    // Not all data received. Get more.  
+                    _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
+                }  
+            }  
+        }
+    }
+}
