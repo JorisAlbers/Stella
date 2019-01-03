@@ -4,14 +4,14 @@ using System.Text;
 
 namespace StellaLib.Network
 {
-    public class Client
+    public class Client : IDisposable
     {
         private const int BUFFER_SIZE = 1024;
         // Buffer for a single package
         private byte[] _packageBuffer;
         // Buffer for a single message
         private StringBuilder _messageBuffer;
-
+        private bool _isDisposed = false;
         private Socket _socket;
 
         public Client(Socket socket)
@@ -26,6 +26,12 @@ namespace StellaLib.Network
         private void ReceiveCallback(IAsyncResult ar)
         {
             // Read incoming data from the client.
+            if(_isDisposed)
+            {
+                Console.WriteLine($"Ignored message from client as this object is disposed. Buffer reads {_messageBuffer.ToString()}");
+                return;
+            }
+
             int bytesRead = 0;
             try
             {
@@ -61,6 +67,14 @@ namespace StellaLib.Network
                     _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
                 }  
             }  
+        }
+
+        public void Dispose()
+        {
+            _isDisposed = true;
+            _socket.Disconnect(false);
+            _socket.Dispose();
+            _socket.Close();
         }
     }
 }

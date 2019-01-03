@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StellaLib.Network
 {
-    public class Server
+    public class Server : IDisposable
     {
         private List<Client> _newConnections;
 
@@ -69,6 +69,31 @@ namespace StellaLib.Network
                 // As we do not now wich client this is, add him to the list of new connection.
                 _newConnections.Add(client);
             }
-        }  
+        }
+
+        public void Dispose()
+        {
+            lock(_isShuttingDownLock)
+            {
+                _isShuttingDown = true;
+            }
+
+            foreach(Client client in _newConnections)
+            {
+                client.Dispose();
+            }
+
+            try
+            {
+                _listenerSocket.Shutdown(SocketShutdown.Receive);
+
+            }
+            catch(SocketException e)
+            {
+                Console.WriteLine("Listening socket was already disconnected.");
+            }
+            _listenerSocket.Dispose();
+            _listenerSocket.Close();
+        }
     }
 }
