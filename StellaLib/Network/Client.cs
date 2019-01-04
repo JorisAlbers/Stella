@@ -17,7 +17,7 @@ namespace StellaLib.Network
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         public event EventHandler Disconnect;
 
-        public bool IsConnected;
+        public bool IsConnected {get; private set;}
 
         public Client(Socket socket)
         {
