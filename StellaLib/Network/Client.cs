@@ -26,6 +26,49 @@ namespace StellaLib.Network
             _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
         }
 
+        // -------------------- SEND -------------------- \\
+
+        public void Send(MessageType messageType, string data)
+        {
+            string message = $"{messageType};{data}<EOF>";
+            Console.WriteLine($"[OUT] {message}");
+
+            // Convert the string data to byte data using ASCII encoding.  
+            byte[] byteData = Encoding.ASCII.GetBytes(message);  
+    
+            // Begin sending the data to the remote device.  
+            try
+            {
+                _socket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), _socket);  
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine("Failed to send data to client.");
+                Console.WriteLine(e.ToString());  
+                //OnDisconnect(new EventArgs());
+            }
+        }
+
+        private void SendCallback(IAsyncResult ar) 
+        {  
+            try 
+            {  
+                // Complete sending the data to the remote device.  
+                int bytesSent = _socket.EndSend(ar);
+            }
+            catch(ObjectDisposedException e)
+            {
+                Console.WriteLine("Failed to send data to the client, "+e.ToString());
+            }
+            catch (SocketException e) 
+            {  
+                Console.WriteLine("Failed to send data to the client, connection lost "+e.ToString());
+                //OnDisconnect(new EventArgs());
+            }  
+        }
+
+        // -------------------- Receive -------------------- \\
+
         private void ReceiveCallback(IAsyncResult ar)
         {
             // Read incoming data from the client.

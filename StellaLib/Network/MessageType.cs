@@ -3,6 +3,7 @@ namespace StellaLib.Network
     public enum MessageType
     {
         Unknown,
-        Init
+        Init,
+        Standard,
     }
 }

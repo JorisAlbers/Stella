@@ -66,6 +66,19 @@ namespace StellaLib.Network
             }
         }
 
+        public void SendMessageToClient(string clientID, string message)
+        {
+            SendMessageToClient(clientID, MessageType.Standard, message);
+        }
+
+        private void SendMessageToClient(string clientID, MessageType messageType, string message)
+        {
+            lock(_clients)
+            {
+                _clients[clientID].Send(messageType,message);
+            }
+        }
+
         private void AcceptCallback(IAsyncResult ar) 
         {     
             // Get the socket that handles the client request.  

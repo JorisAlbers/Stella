@@ -12,6 +12,44 @@ namespace StellaLib.Test.Animation.Network
     public class TestServer
     {
         [Test]
+        public void SendDataToClient_DefaultMessage_MessageSent()
+        {
+            Server server = new Server(20055);
+            server.Start();
+
+            // Establish the local endpoint for the socket.  
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
+            IPAddress ipAddress = ipHostInfo.AddressList[0];  
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);  
+
+            IPEndPoint remoteEP = new IPEndPoint(ipAddress, 20055);  
+  
+            // Create a TCP/IP socket.  
+            Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);  
+  
+            // Connect to the remote endpoint.  
+            client.Connect( remoteEP);  
+            Thread.Sleep(1000); // async hack
+
+            string ID = "ThisIsAnIdentifier";
+            byte[] message = Encoding.ASCII.GetBytes($"{MessageType.Init.ToString()};{ID}<EOF>");
+            // Then send the init values
+            client.Send(message);
+            Thread.Sleep(1000); // async hack
+
+            string expectedData = "ThisIsAMessage";
+            string expectedMessage = $"{MessageType.Standard};{expectedData}<EOF>";
+            server.SendMessageToClient(ID,expectedData);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead = client.Receive(buffer);
+
+            Assert.AreEqual(expectedMessage,Encoding.ASCII.GetString(buffer, 0, bytesRead));
+            server.Dispose();
+        }
+
+
+        [Test]
         public void InitMessageSent_ExistingClient_ClientReplaced()
         {
             Server server = new Server(20055);
