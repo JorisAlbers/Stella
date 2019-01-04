@@ -12,6 +12,84 @@ namespace StellaLib.Test.Animation.Network
     public class TestServer
     {
         [Test]
+        public void InitMessageSent_ExistingClient_ClientReplaced()
+        {
+            Server server = new Server(20055);
+            server.Start();
+
+            // Establish the local endpoint for the socket.  
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
+            IPAddress ipAddress = ipHostInfo.AddressList[0];  
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);  
+
+            IPEndPoint remoteEP = new IPEndPoint(ipAddress, 20055);  
+  
+            // Create a TCP/IP socket.  
+            Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);  
+  
+            // Connect to the remote endpoint.  
+            client.Connect( remoteEP);  
+            Thread.Sleep(1000); // async hack
+
+            string expectedID = "ThisIsAnIdentifier";
+            byte[] message = Encoding.ASCII.GetBytes($"{MessageType.Init.ToString()};{expectedID}<EOF>");
+            // Then send the init values
+            client.Send(message);
+            Thread.Sleep(1000); // async hack
+
+            Socket client2 = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            client2.Connect(remoteEP);
+            Thread.Sleep(1000);
+
+            Assert.AreEqual(1,server.NewConnectionsCount);
+            Assert.AreEqual(1,server.ConnectedClients.Length);
+            Assert.AreEqual(expectedID,server.ConnectedClients[0]);
+
+            client2.Send(message);
+            Thread.Sleep(1000); // async hack
+
+            Assert.AreEqual(0,server.NewConnectionsCount);
+            Assert.AreEqual(1,server.ConnectedClients.Length);
+            Assert.AreEqual(expectedID,server.ConnectedClients[0]);
+
+            server.Dispose();
+        }
+
+
+        [Test]
+        public void InitMessageSent_NewClient_ClientGetsMovedToListOfClients()
+        {
+            Server server = new Server(20055);
+            server.Start();
+
+            // Establish the local endpoint for the socket.  
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
+            IPAddress ipAddress = ipHostInfo.AddressList[0];  
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);  
+
+            IPEndPoint remoteEP = new IPEndPoint(ipAddress, 20055);  
+  
+            // Create a TCP/IP socket.  
+            Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);  
+  
+            // Connect to the remote endpoint.  
+            client.Connect( remoteEP);  
+            Thread.Sleep(1000); // async hack
+            Assert.AreEqual(1,server.NewConnectionsCount);
+            Assert.AreEqual(0,server.ConnectedClients.Length);
+
+            string expectedID = "ThisIsAnIdentifier";
+            // Then send the init values
+            client.Send(Encoding.ASCII.GetBytes($"{MessageType.Init.ToString()};{expectedID}<EOF>"));
+            Thread.Sleep(1000); // async hack
+
+            Assert.AreEqual(0,server.NewConnectionsCount);
+            Assert.AreEqual(1,server.ConnectedClients.Length);
+            Assert.AreEqual(expectedID,server.ConnectedClients[0]);
+            server.Dispose();
+        }
+
+        [Test]
         public void Dispose_ServerHasClient_ClientCantSendMessage()
         {
             Server server = new Server(20055);

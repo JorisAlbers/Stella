@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -13,6 +14,8 @@ namespace StellaLib.Network
         private StringBuilder _messageBuffer;
         private bool _isDisposed = false;
         private Socket _socket;
+
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         public Client(Socket socket)
         {
@@ -58,8 +61,8 @@ namespace StellaLib.Network
 
                     _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
 
-                    //TODO  Pass the content of the message
-                    //ParseMessage(handler,content);
+                    //Pass the content of the message
+                    ParseMessage(content);
                 } 
                 else 
                 {  
@@ -67,6 +70,42 @@ namespace StellaLib.Network
                     _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
                 }  
             }  
+        }
+
+        private void ParseMessage(string message)
+        {
+            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] {message}");
+            // message = <MessageType>;<Message>
+            string[] data = message.Split(';');
+            if(data.Length != 2)
+            {
+                Console.WriteLine("Invalid format, the message must be separated by ';' and have a message type and a message.");
+                return;
+            }
+
+            MessageType messageType;
+            if(!Enum.TryParse(data[0], out messageType))
+            {
+                Console.WriteLine($"Invalid format, Unknown message type : {data[0]}");
+                return;
+            }
+
+            // remove the <EOF>.
+            // TODO replace with length-prefix message
+            OnMessageReceived(messageType,data[1].Substring(0,data[1].Length - 5));
+        }
+
+        protected virtual void OnMessageReceived(MessageType messageType, string message)
+        {
+            EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
+            if (handler != null)
+            {
+                handler(this, new MessageReceivedEventArgs()
+                {
+                    MessageType = messageType,
+                    Message = message
+                });
+            }
         }
 
         public void Dispose()
