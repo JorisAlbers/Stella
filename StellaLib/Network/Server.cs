@@ -128,7 +128,15 @@ namespace StellaLib.Network
         private void Client_Disconnected(object sender, EventArgs e)
         {
             Client client = (Client)sender;
-            Console.WriteLine("Client disconnected");
+            if(client.ID == null)
+            {
+                Console.WriteLine($"New client disconnected");
+            }
+            else
+            {
+                Console.WriteLine($"Client {client.ID} disconnected");
+            }
+
             DisposeClient(client);
         }
 
@@ -137,15 +145,17 @@ namespace StellaLib.Network
             // The message should be an identifier.
             lock(_clients)
             {
+                if(client.ID != null && client.ID != message)
+                {
+                    Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {message}, but he already has an ID.");
+                    return;
+                }
+
+                client.ID = message;
                 if(_clients.ContainsKey(message))
                 {
-                    if(_clients[message] == client)
-                    {
-                        Console.WriteLine($"Client with id {message} is already registered.");
-                        return;
-                    }
                     Console.WriteLine($"A client with ID {message} already exists. Replacing the existing one.");
-                    _clients[message].Dispose();
+                    DisposeClient(_clients[message]);
                     _clients[message] = client;
                 }
                 else

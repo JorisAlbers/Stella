@@ -19,6 +19,8 @@ namespace StellaLib.Network
 
         public bool IsConnected {get; private set;}
 
+        public string ID = null;
+
         public Client(Socket socket)
         {
             _socket = socket;
