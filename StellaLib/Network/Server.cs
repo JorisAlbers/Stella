@@ -172,6 +172,11 @@ namespace StellaLib.Network
                 DisposeClient(client);
             }
 
+            foreach(Client client in _clients.Values)
+            {
+                DisposeClient(client);
+            }
+
             try
             {
                 _listenerSocket.Shutdown(SocketShutdown.Receive);
