@@ -14,15 +14,17 @@ namespace StellaLib.Network
         private StringBuilder _messageBuffer;
         private bool _isDisposed = false;
         private Socket _socket;
-
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        public event EventHandler Disconnect;
+
+        public bool IsConnected;
 
         public Client(Socket socket)
         {
             _socket = socket;
             _packageBuffer = new byte[BUFFER_SIZE];
             _messageBuffer = new StringBuilder();
-
+            IsConnected = true;
             _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
         }
 
@@ -30,6 +32,15 @@ namespace StellaLib.Network
 
         public void Send(MessageType messageType, string data)
         {
+            if(!IsConnected)
+            {
+                throw new ClientDisconnectedException("ID"); // todo add ID
+            }
+            if(_isDisposed)
+            {
+                throw new ObjectDisposedException("ID"); // TODO add ID
+            }
+
             string message = $"{messageType};{data}<EOF>";
             Console.WriteLine($"[OUT] {message}");
 
@@ -45,7 +56,7 @@ namespace StellaLib.Network
             {
                 Console.WriteLine("Failed to send data to client.");
                 Console.WriteLine(e.ToString());  
-                //OnDisconnect(new EventArgs());
+                OnDisconnect(new EventArgs());
             }
         }
 
@@ -63,7 +74,7 @@ namespace StellaLib.Network
             catch (SocketException e) 
             {  
                 Console.WriteLine("Failed to send data to the client, connection lost "+e.ToString());
-                //OnDisconnect(new EventArgs());
+                OnDisconnect(new EventArgs());
             }  
         }
 
@@ -86,6 +97,7 @@ namespace StellaLib.Network
             catch(SocketException e)
             {
                 Console.WriteLine("Receive data failed.\n"+e.ToString());
+                OnDisconnect(new EventArgs());
                 return;
             }
 
@@ -151,6 +163,20 @@ namespace StellaLib.Network
             }
         }
 
+        protected virtual void OnDisconnect(EventArgs e)
+        {
+            // The disconnect event can be called only once. A new client will be initialized on reconnect.
+            if(IsConnected)
+            {
+                IsConnected = false;
+                EventHandler handler = Disconnect;
+                if (handler != null)
+                {
+                    handler(this, e);
+                }
+            }
+        }
+
         public void Dispose()
         {
             _isDisposed = true;
@@ -159,4 +185,6 @@ namespace StellaLib.Network
             _socket.Close();
         }
     }
+
+    
 }

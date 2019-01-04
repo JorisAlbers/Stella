@@ -101,6 +101,7 @@ namespace StellaLib.Network
             // Create a new client.
             Client client = new Client(handler);
             client.MessageReceived += Client_MessageReceived;
+            client.Disconnect += Client_Disconnected;
             // As we do not now wich client this is, add him to the list of new connection.
             lock(_newConnections)
             {
@@ -122,6 +123,13 @@ namespace StellaLib.Network
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
                     break;
             }
+        }
+
+        private void Client_Disconnected(object sender, EventArgs e)
+        {
+            Client client = (Client)sender;
+            Console.WriteLine("Client disconnected");
+            DisposeClient(client);
         }
 
         private void ParseInitMessage(Client client, string message)
@@ -161,8 +169,7 @@ namespace StellaLib.Network
 
             foreach(Client client in _newConnections)
             {
-                client.MessageReceived -= Client_MessageReceived;
-                client.Dispose();
+                DisposeClient(client);
             }
 
             try
@@ -176,6 +183,13 @@ namespace StellaLib.Network
             }
             _listenerSocket.Dispose();
             _listenerSocket.Close();
+        }
+
+        private void DisposeClient(Client client)
+        {
+            client.MessageReceived -= Client_MessageReceived;
+            client.Disconnect -= Client_Disconnected;
+            client.Dispose();
         }
     }
 }
