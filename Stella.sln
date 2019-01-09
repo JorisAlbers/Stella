@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServer.Test", "Stella
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaClient", "StellaClient\StellaClient.csproj", "{E4C9DE13-8324-4F11-9C69-AF0966851609}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rpi_ws281x", "rpi_ws281x\rpi_ws281x.csproj", "{F2FA304A-ECBA-474A-81A5-C93936778E78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,5 +88,17 @@ Global
 		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x64.Build.0 = Release|Any CPU
 		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x86.ActiveCfg = Release|Any CPU
 		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x86.Build.0 = Release|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Debug|x64.Build.0 = Debug|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Debug|x86.Build.0 = Debug|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Release|x64.ActiveCfg = Release|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Release|x64.Build.0 = Release|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Release|x86.ActiveCfg = Release|Any CPU
+		{F2FA304A-ECBA-474A-81A5-C93936778E78}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
