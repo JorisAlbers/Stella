@@ -1,6 +1,7 @@
 using System;
+using StellaLib.Network;
 
-namespace StellaLib.Network
+namespace StellaServer.Network
 {
     public class MessageReceivedEventArgs : EventArgs
     {

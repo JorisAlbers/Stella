@@ -1,4 +1,4 @@
-namespace StellaLib.Network
+namespace StellaServer.Network
 {
     public class ClientDisconnectedException : System.Exception
     {

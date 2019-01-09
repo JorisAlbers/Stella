@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using StellaLib.Network;
+using StellaServer.Network;
 
-namespace StellaLib.Test.Animation.Network
+namespace StellaServer.Test.Animation.Network
 {
     [TestFixture]
     public class TestServer

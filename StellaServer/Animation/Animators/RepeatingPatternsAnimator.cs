@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using StellaLib.Animation;
 
-namespace StellaLib.Animation.Animators
+namespace StellaServer.Animation.Animators
 {
     /// <summary>
     /// Repeats one or multiple pattern(s) over the length of the ledstip.

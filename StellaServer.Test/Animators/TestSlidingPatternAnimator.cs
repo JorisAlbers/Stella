@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaLib.Animation.Animators;
+using StellaServer.Animation.Animators;
+using StellaLib.Network;
 
-namespace StellaLib.Test.Animation.Animators
+namespace StellaServer.Test.Animation.Animators
 {
     [TestFixture]
     public class TestSlidingPatternAnimator

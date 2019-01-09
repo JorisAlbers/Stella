@@ -2,8 +2,9 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using StellaLib.Network;
 
-namespace StellaLib.Network
+namespace StellaServer.Network
 {
     public class Client : IDisposable
     {

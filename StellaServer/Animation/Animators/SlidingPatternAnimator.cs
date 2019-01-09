@@ -1,4 +1,6 @@
-namespace StellaLib.Animation.Animators
+using StellaLib.Animation;
+
+namespace StellaServer.Animation.Animators
 {
     /// <summary>
     /// Repeats a pattern over the ledstrip and moves the start point of the pattern each

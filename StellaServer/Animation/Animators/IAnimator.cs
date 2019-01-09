@@ -1,4 +1,6 @@
-namespace StellaLib.Animation.Animators
+using StellaLib.Animation;
+
+namespace StellaServer.Animation.Animators
 {
     /// <summary>
     /// An Animator creates a new frameset.
