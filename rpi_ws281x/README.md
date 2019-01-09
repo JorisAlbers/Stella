@@ -11,5 +11,5 @@ Switch to the directory and execute following commands:
 ```
 scons
 gcc -shared -o ws2811.so *.o
-
+```
 The P/Invoke functinality has a special search pattern to find the required assembly. __For my tests I copied the ws2811.so assembly to /usr/lib__ (as mentioned in the link above).
