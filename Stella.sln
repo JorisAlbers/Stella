@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServer", "StellaServe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServer.Test", "StellaServer.Test\StellaServer.Test.csproj", "{ABD5A469-EC56-42A9-A34E-E45577D9E169}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaClient", "StellaClient\StellaClient.csproj", "{E4C9DE13-8324-4F11-9C69-AF0966851609}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{ABD5A469-EC56-42A9-A34E-E45577D9E169}.Release|x64.Build.0 = Release|Any CPU
 		{ABD5A469-EC56-42A9-A34E-E45577D9E169}.Release|x86.ActiveCfg = Release|Any CPU
 		{ABD5A469-EC56-42A9-A34E-E45577D9E169}.Release|x86.Build.0 = Release|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Debug|x64.Build.0 = Debug|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Debug|x86.Build.0 = Debug|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x64.ActiveCfg = Release|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x64.Build.0 = Release|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x86.ActiveCfg = Release|Any CPU
+		{E4C9DE13-8324-4F11-9C69-AF0966851609}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
