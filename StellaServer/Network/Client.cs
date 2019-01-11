@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,10 +10,8 @@ namespace StellaServer.Network
     public class Client : IDisposable
     {
         private const int BUFFER_SIZE = 1024;
-        // Buffer for a single package
-        private byte[] _packageBuffer;
-        // Buffer for a single message
-        private StringBuilder _messageBuffer;
+
+        private PacketProtocol _packetProtocol;
         private bool _isDisposed = false;
         private Socket _socket;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -25,10 +24,12 @@ namespace StellaServer.Network
         public Client(Socket socket)
         {
             _socket = socket;
-            _packageBuffer = new byte[BUFFER_SIZE];
-            _messageBuffer = new StringBuilder();
+            _packetProtocol = new PacketProtocol(BUFFER_SIZE);
+            _packetProtocol.MessageArrived = (x) => ParseMessage(x);
+            //_packageBuffer = new byte[BUFFER_SIZE];
+            byte[] buffer = new byte[BUFFER_SIZE];
             IsConnected = true;
-            _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
+            _socket.BeginReceive(buffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
         }
 
         // -------------------- SEND -------------------- \\
@@ -44,11 +45,11 @@ namespace StellaServer.Network
                 throw new ObjectDisposedException("ID"); // TODO add ID
             }
 
-            string message = $"{messageType};{data}<EOF>";
+            string message = $"{messageType};{data}";
             Console.WriteLine($"[OUT] {message}");
 
             // Convert the string data to byte data using ASCII encoding.  
-            byte[] byteData = Encoding.ASCII.GetBytes(message);  
+            byte[] byteData = PacketProtocol.WrapMessage(message);  
     
             // Begin sending the data to the remote device.  
             try
@@ -88,7 +89,7 @@ namespace StellaServer.Network
             // Read incoming data from the client.
             if(_isDisposed)
             {
-                Console.WriteLine($"Ignored message from client as this object is disposed. Buffer reads {_messageBuffer.ToString()}");
+                Console.WriteLine($"Ignored message from client as this object is disposed.");
                 return;
             }
 
@@ -106,32 +107,29 @@ namespace StellaServer.Network
 
             if (bytesRead > 0) 
             {  
-                // There  might be more data, so store the data received so far.  
-                _messageBuffer.Append(Encoding.ASCII.GetString(_packageBuffer, 0, bytesRead));  
-                                
-                // Check for end-of-file tag. If it is not there, read more data.  
-                string content = _messageBuffer.ToString();  
-                if (content.IndexOf("<EOF>") > -1) 
-                {  
-                    // Reset all buffers
-                    _packageBuffer = new byte[BUFFER_SIZE];
-                    _messageBuffer = new StringBuilder();
-
-                    _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
-
-                    //Pass the content of the message
-                    ParseMessage(content);
-                } 
-                else 
-                {  
-                    // Not all data received. Get more.  
-                    _socket.BeginReceive(_packageBuffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), null);  
-                }  
+                // First pass the buffer to the packetProtocol to parse the message
+                try
+                {
+                    byte[] b = (byte[]) ar.AsyncState;
+                    _packetProtocol.DataReceived(b.Take(bytesRead).ToArray());
+                }
+                catch(ProtocolViolationException e)
+                {
+                    Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
+                    _packetProtocol.MessageArrived = null;
+                    _packetProtocol = new PacketProtocol(BUFFER_SIZE);
+                    _packetProtocol.MessageArrived = (x)=> ParseMessage(x);
+                }
+                
+                // Then listen for more data
+                byte[] buffer = new byte[BUFFER_SIZE];
+                _socket.BeginReceive(buffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
             }  
         }
 
-        private void ParseMessage(string message)
+        private void ParseMessage(byte[] bytes)
         {
+            string message = Encoding.ASCII.GetString(bytes);
             Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] {message}");
             // message = <MessageType>;<Message>
             string[] data = message.Split(';');
@@ -148,9 +146,7 @@ namespace StellaServer.Network
                 return;
             }
 
-            // remove the <EOF>.
-            // TODO replace with length-prefix message
-            OnMessageReceived(messageType,data[1].Substring(0,data[1].Length - 5));
+            OnMessageReceived(messageType,data[1]);
         }
 
         protected virtual void OnMessageReceived(MessageType messageType, string message)
@@ -183,6 +179,7 @@ namespace StellaServer.Network
         public void Dispose()
         {
             _isDisposed = true;
+            _packetProtocol.MessageArrived = null;
             _socket.Disconnect(false);
             _socket.Dispose();
             _socket.Close();

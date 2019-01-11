@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -33,19 +34,18 @@ namespace StellaServer.Test.Animation.Network
             Thread.Sleep(1000); // async hack
 
             string ID = "ThisIsAnIdentifier";
-            byte[] message = Encoding.ASCII.GetBytes($"{MessageType.Init.ToString()};{ID}<EOF>");
             // Then send the init values
-            client.Send(message);
+            client.Send(PacketProtocol.WrapMessage($"{MessageType.Init.ToString()};{ID}"));
             Thread.Sleep(1000); // async hack
 
-            string expectedData = "ThisIsAMessage";
-            string expectedMessage = $"{MessageType.Standard};{expectedData}<EOF>";
-            server.SendMessageToClient(ID,expectedData);
+            string message = "ThisIsAMessage";
+            server.SendMessageToClient(ID,message);
 
             byte[] buffer = new byte[1024];
             int bytesRead = client.Receive(buffer);
 
-            Assert.AreEqual(expectedMessage,Encoding.ASCII.GetString(buffer, 0, bytesRead));
+            byte[] expectedBytes = PacketProtocol.WrapMessage($"{MessageType.Standard};{message}");
+            Assert.AreEqual(expectedBytes, buffer.Take(bytesRead).ToArray());
             server.Dispose();
         }
 
@@ -71,7 +71,7 @@ namespace StellaServer.Test.Animation.Network
             Thread.Sleep(1000); // async hack
 
             string expectedID = "ThisIsAnIdentifier";
-            byte[] message = Encoding.ASCII.GetBytes($"{MessageType.Init.ToString()};{expectedID}<EOF>");
+            byte[] message = PacketProtocol.WrapMessage($"{MessageType.Init.ToString()};{expectedID}");
             // Then send the init values
             client.Send(message);
             Thread.Sleep(1000); // async hack
@@ -119,7 +119,7 @@ namespace StellaServer.Test.Animation.Network
 
             string expectedID = "ThisIsAnIdentifier";
             // Then send the init values
-            client.Send(Encoding.ASCII.GetBytes($"{MessageType.Init.ToString()};{expectedID}<EOF>"));
+            client.Send(PacketProtocol.WrapMessage($"{MessageType.Init.ToString()};{expectedID}"));
             Thread.Sleep(1000); // async hack
 
             Assert.AreEqual(0,server.NewConnectionsCount);
@@ -146,18 +146,15 @@ namespace StellaServer.Test.Animation.Network
   
             // Connect to the remote endpoint.  
             client.Connect( remoteEP);  
-
-            // Encode the data string into a byte array.  
-            byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");  
   
             // Send the data through the socket.  
-            int bytesSent = client.Send(msg);   
+            int bytesSent = client.Send(PacketProtocol.WrapMessage("This is a test"));   
 
             Thread.Sleep(1000); // async hack
             server.Dispose();
             Thread.Sleep(1000); // async hack
-            client.Send(msg); // why do we need to send a message first? maybe add keepalive messages.
-            SocketException exception  = Assert.Throws<SocketException>(() => client.Send(Encoding.ASCII.GetBytes("This is a test<EOF>")));
+            client.Send(PacketProtocol.WrapKeepaliveMessage()); // send keepalive messages.
+            SocketException exception  = Assert.Throws<SocketException>(() => client.Send(PacketProtocol.WrapKeepaliveMessage()));
             Assert.AreEqual(SocketError.Shutdown,exception.SocketErrorCode);
         }
 
