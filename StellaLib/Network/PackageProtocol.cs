@@ -22,9 +22,9 @@ public class PacketProtocol
     /// <para>Generates a length prefix for the message and returns the combined length prefix and message.</para>
     /// </remarks>
     /// <param name="message">The message to send.</param>
-    public static byte[] WrapMessage(string message)
+    public static byte[] WrapMessage(MessageType type, string message)
     {
-        return WrapMessage(Encoding.ASCII.GetBytes(message));
+        return WrapMessage(type,Encoding.ASCII.GetBytes(message));
     }
 
     /// <summary>
@@ -34,15 +34,19 @@ public class PacketProtocol
     /// <para>Generates a length prefix for the message and returns the combined length prefix and message.</para>
     /// </remarks>
     /// <param name="message">The message to send.</param>
-    public static byte[] WrapMessage(byte[] message)
+    public static byte[] WrapMessage(MessageType type, byte[] message)
     {
+        // Get the message type prefix
+        byte[] messageTypePrefix  = BitConverter.GetBytes((int)type);
+
         // Get the length prefix for the message
-        byte[] lengthPrefix = BitConverter.GetBytes(message.Length);
+        byte[] lengthPrefix = BitConverter.GetBytes(messageTypePrefix.Length + message.Length);
   
-        // Concatenate the length prefix and the message
-        byte[] ret = new byte[lengthPrefix.Length + message.Length];
+        // Concatenate the length prefix, the message prefix and the message
+        byte[] ret = new byte[lengthPrefix.Length + messageTypePrefix.Length + message.Length];
         lengthPrefix.CopyTo(ret, 0);
-        message.CopyTo(ret, lengthPrefix.Length);
+        messageTypePrefix.CopyTo(ret,lengthPrefix.Length);
+        message.CopyTo(ret, lengthPrefix.Length + messageTypePrefix.Length);
   
         return ret;
     }
@@ -70,6 +74,11 @@ public class PacketProtocol
     /// The buffer for the length prefix; this is always 4 bytes long.
     /// </summary>
     private byte[] lengthBuffer;
+
+    /// <summary>
+    /// The buffer for the message type; this is always 4 bytes long.
+    /// </summary>
+    private byte[] messageTypeBuffer;
   
     /// <summary>
     /// The buffer for the data; this is null if we are receiving the length prefix buffer.
@@ -90,10 +99,16 @@ public class PacketProtocol
     /// Indicates the completion of a message read from the stream.
     /// </summary>
     /// <remarks>
-    /// <para>This may be called with an empty message, indicating that the other end had sent a keepalive message. This will never be called with a null message.</para>
     /// <para>This event is invoked from within a call to <see cref="DataReceived"/>. Handlers for this event should not call <see cref="DataReceived"/>.</para>
     /// </remarks>
-    public Action<byte[]> MessageArrived { get; set; }
+    public Action<MessageType, byte[]> MessageArrived { get; set; }
+
+    /// <summary>
+    /// Indicates the retrieval of a KeepAlive message
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    public Action KeepAliveArrived { get; set; }
   
     /// <summary>
     /// Notifies the <see cref="PacketProtocol"/> instance that incoming data has been received from the stream. This method will invoke <see cref="MessageArrived"/> as necessary.
@@ -129,6 +144,19 @@ public class PacketProtocol
                 // Notify "read completion"
                 this.ReadCompleted(bytesTransferred);
             }
+            else if(this.messageTypeBuffer != null)
+            {
+                // We're reading into the messageType buffer
+                int bytesRequested = this.messageTypeBuffer.Length - this.bytesReceived;
+
+                 // Copy the incoming bytes into the buffer
+                int bytesTransferred = Math.Min(bytesRequested, bytesAvailable);
+                Array.Copy(data, i, this.messageTypeBuffer, this.bytesReceived, bytesTransferred);
+                i += bytesTransferred;
+  
+                // Notify "read completion"
+                this.ReadCompleted(bytesTransferred);
+            }
             else
             {
                 // We're reading into the length prefix buffer
@@ -155,10 +183,9 @@ public class PacketProtocol
         // Get the number of bytes read into the buffer
         this.bytesReceived += count;
   
-        if (this.dataBuffer == null)
+        if(this.messageTypeBuffer == null)
         {
             // We're currently receiving the length buffer
-  
             if (this.bytesReceived != sizeof(int))
             {
                 // We haven't gotten all the length buffer yet: just wait for more data to arrive
@@ -180,19 +207,45 @@ public class PacketProtocol
                 if (length == 0)
                 {
                     this.bytesReceived = 0;
-                    if (this.MessageArrived != null)
-                        this.MessageArrived(new byte[0]);
+                    if (this.KeepAliveArrived != null)
+                        this.KeepAliveArrived();
                 }
                 else
                 {
-                    // Create the data buffer and start reading into it
-                    this.dataBuffer = new byte[length];
+                    // Create the message type buffer and start reading into it
+                    this.messageTypeBuffer = new byte[sizeof(int)];
                     this.bytesReceived = 0;
                 }
             }
         }
+        else if (this.dataBuffer == null)
+        {
+           // We're currently receiving the messageType buffer
+  
+            if (this.bytesReceived != sizeof(int))
+            {
+                // We haven't gotten all the messageType buffer yet: just wait for more data to arrive
+            }
+            else
+            {
+                // We've gotten the messageType buffer
+                int messageType = BitConverter.ToInt32(this.messageTypeBuffer, 0);
+  
+                // Check if the message type exists
+                if(!Enum.IsDefined(typeof(MessageType), messageType))
+                {
+                    throw new System.Net.ProtocolViolationException($"Message type {messageType} is invalid ");
+                }
+
+                // Create the data buffer and start reading into it
+                int dataBufferLength = BitConverter.ToInt32(this.lengthBuffer) - this.messageTypeBuffer.Length;
+                this.dataBuffer = new byte[dataBufferLength];
+                this.bytesReceived = 0;
+            }
+        }
         else
         {
+            // We're receiving the data buffer
             if (this.bytesReceived != this.dataBuffer.Length)
             {
                 // We haven't gotten all the data buffer yet: just wait for more data to arrive
@@ -201,10 +254,11 @@ public class PacketProtocol
             {
                 // We've gotten an entire packet
                 if (this.MessageArrived != null)
-                    this.MessageArrived(this.dataBuffer);
+                    this.MessageArrived((MessageType) BitConverter.ToInt32(this.messageTypeBuffer, 0), dataBuffer);
   
                 // Start reading the length buffer again
                 this.dataBuffer = null;
+                this.messageTypeBuffer = null;
                 this.bytesReceived = 0;
             }
         }

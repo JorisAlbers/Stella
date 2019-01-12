@@ -25,7 +25,7 @@ namespace StellaServer.Network
         {
             _socket = socket;
             _packetProtocol = new PacketProtocol(BUFFER_SIZE);
-            _packetProtocol.MessageArrived = (x) => ParseMessage(x);
+            _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
             //_packageBuffer = new byte[BUFFER_SIZE];
             byte[] buffer = new byte[BUFFER_SIZE];
             IsConnected = true;
@@ -34,7 +34,7 @@ namespace StellaServer.Network
 
         // -------------------- SEND -------------------- \\
 
-        public void Send(MessageType messageType, string data)
+        public void Send(MessageType messageType, string message)
         {
             if(!IsConnected)
             {
@@ -45,11 +45,10 @@ namespace StellaServer.Network
                 throw new ObjectDisposedException("ID"); // TODO add ID
             }
 
-            string message = $"{messageType};{data}";
             Console.WriteLine($"[OUT] {message}");
 
-            // Convert the string data to byte data using ASCII encoding.  
-            byte[] byteData = PacketProtocol.WrapMessage(message);  
+            // Convert the messageType and message to the PackageProtocol
+            byte[] byteData = PacketProtocol.WrapMessage(messageType, message);  
     
             // Begin sending the data to the remote device.  
             try
@@ -117,8 +116,9 @@ namespace StellaServer.Network
                 {
                     Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
                     _packetProtocol.MessageArrived = null;
+                    _packetProtocol.KeepAliveArrived = null;
                     _packetProtocol = new PacketProtocol(BUFFER_SIZE);
-                    _packetProtocol.MessageArrived = (x)=> ParseMessage(x);
+                    _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
                 }
                 
                 // Then listen for more data
@@ -127,36 +127,17 @@ namespace StellaServer.Network
             }  
         }
 
-        private void ParseMessage(byte[] bytes)
+        protected virtual void OnMessageReceived(MessageType type, byte[] bytes)
         {
             string message = Encoding.ASCII.GetString(bytes);
-            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] {message}");
-            // message = <MessageType>;<Message>
-            string[] data = message.Split(';');
-            if(data.Length != 2)
-            {
-                Console.WriteLine("Invalid format, the message must be separated by ';' and have a message type and a message.");
-                return;
-            }
+            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] {message}");
 
-            MessageType messageType;
-            if(!Enum.TryParse(data[0], out messageType))
-            {
-                Console.WriteLine($"Invalid format, Unknown message type : {data[0]}");
-                return;
-            }
-
-            OnMessageReceived(messageType,data[1]);
-        }
-
-        protected virtual void OnMessageReceived(MessageType messageType, string message)
-        {
             EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
             if (handler != null)
             {
                 handler(this, new MessageReceivedEventArgs()
                 {
-                    MessageType = messageType,
+                    MessageType = type,
                     Message = message
                 });
             }
@@ -180,6 +161,7 @@ namespace StellaServer.Network
         {
             _isDisposed = true;
             _packetProtocol.MessageArrived = null;
+            _packetProtocol.KeepAliveArrived = null;
             _socket.Disconnect(false);
             _socket.Dispose();
             _socket.Close();

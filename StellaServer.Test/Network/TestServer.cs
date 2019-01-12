@@ -35,7 +35,7 @@ namespace StellaServer.Test.Animation.Network
 
             string ID = "ThisIsAnIdentifier";
             // Then send the init values
-            client.Send(PacketProtocol.WrapMessage($"{MessageType.Init.ToString()};{ID}"));
+            client.Send(PacketProtocol.WrapMessage(MessageType.Init,ID));
             Thread.Sleep(1000); // async hack
 
             string message = "ThisIsAMessage";
@@ -44,7 +44,7 @@ namespace StellaServer.Test.Animation.Network
             byte[] buffer = new byte[1024];
             int bytesRead = client.Receive(buffer);
 
-            byte[] expectedBytes = PacketProtocol.WrapMessage($"{MessageType.Standard};{message}");
+            byte[] expectedBytes = PacketProtocol.WrapMessage(MessageType.Standard,message);
             Assert.AreEqual(expectedBytes, buffer.Take(bytesRead).ToArray());
             server.Dispose();
         }
@@ -71,7 +71,7 @@ namespace StellaServer.Test.Animation.Network
             Thread.Sleep(1000); // async hack
 
             string expectedID = "ThisIsAnIdentifier";
-            byte[] message = PacketProtocol.WrapMessage($"{MessageType.Init.ToString()};{expectedID}");
+            byte[] message = PacketProtocol.WrapMessage(MessageType.Init,expectedID);
             // Then send the init values
             client.Send(message);
             Thread.Sleep(1000); // async hack
@@ -119,7 +119,7 @@ namespace StellaServer.Test.Animation.Network
 
             string expectedID = "ThisIsAnIdentifier";
             // Then send the init values
-            client.Send(PacketProtocol.WrapMessage($"{MessageType.Init.ToString()};{expectedID}"));
+            client.Send(PacketProtocol.WrapMessage(MessageType.Init,expectedID));
             Thread.Sleep(1000); // async hack
 
             Assert.AreEqual(0,server.NewConnectionsCount);
@@ -148,7 +148,7 @@ namespace StellaServer.Test.Animation.Network
             client.Connect( remoteEP);  
   
             // Send the data through the socket.  
-            int bytesSent = client.Send(PacketProtocol.WrapMessage("This is a test"));   
+            int bytesSent = client.Send(PacketProtocol.WrapMessage(MessageType.Standard,"This is a test"));   
 
             Thread.Sleep(1000); // async hack
             server.Dispose();
