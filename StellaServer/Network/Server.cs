@@ -99,10 +99,13 @@ namespace StellaServer.Network
 
             // Handle the new connection
             Socket handler = listener.EndAccept(ar); 
+
             // Create a new client.
-            Client client = new Client(handler);
+            Client client = new Client(new SocketConnection(handler));
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
+            client.Start();
+            
             // As we do not now wich client this is, add him to the list of new connection.
             lock(_newConnections)
             {

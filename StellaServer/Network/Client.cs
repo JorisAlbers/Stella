@@ -9,164 +9,54 @@ namespace StellaServer.Network
 {
     public class Client : IDisposable
     {
-        private const int BUFFER_SIZE = 1024;
-
-        private PacketProtocol _packetProtocol;
-        private bool _isDisposed = false;
-        private Socket _socket;
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        private SocketConnection _socketConnection {get;set;}
+        public string ID {get;set;}
         public event EventHandler Disconnect;
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        public bool IsConnected {get; private set;}
 
-        public string ID = null;
-
-        public Client(Socket socket)
+        public Client(SocketConnection socketConnection)
         {
-            _socket = socket;
-            _packetProtocol = new PacketProtocol(BUFFER_SIZE);
-            _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
-            //_packageBuffer = new byte[BUFFER_SIZE];
-            byte[] buffer = new byte[BUFFER_SIZE];
-            IsConnected = true;
-            _socket.BeginReceive(buffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
+            _socketConnection = socketConnection;
+            _socketConnection.Disconnect += OnDisconnect;
+            _socketConnection.MessageReceived += OnMessageReceived;
         }
 
-        // -------------------- SEND -------------------- \\
-
-        public void Send(MessageType messageType, string message)
+        public void Start()
         {
-            if(!IsConnected)
-            {
-                throw new ClientDisconnectedException("ID"); // todo add ID
-            }
-            if(_isDisposed)
-            {
-                throw new ObjectDisposedException("ID"); // TODO add ID
-            }
-
-            Console.WriteLine($"[OUT] {message}");
-
-            // Convert the messageType and message to the PackageProtocol
-            byte[] byteData = PacketProtocol.WrapMessage(messageType, message);  
-    
-            // Begin sending the data to the remote device.  
-            try
-            {
-                _socket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), _socket);  
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine("Failed to send data to client.");
-                Console.WriteLine(e.ToString());  
-                OnDisconnect(new EventArgs());
-            }
+            _socketConnection.Start();
         }
 
-        private void SendCallback(IAsyncResult ar) 
-        {  
-            try 
-            {  
-                // Complete sending the data to the remote device.  
-                int bytesSent = _socket.EndSend(ar);
-            }
-            catch(ObjectDisposedException e)
-            {
-                Console.WriteLine("Failed to send data to the client, "+e.ToString());
-            }
-            catch (SocketException e) 
-            {  
-                Console.WriteLine("Failed to send data to the client, connection lost "+e.ToString());
-                OnDisconnect(new EventArgs());
-            }  
+        public void Send(MessageType type, string message)
+        {
+            _socketConnection.Send(type,message);
         }
 
-        // -------------------- Receive -------------------- \\
-
-        private void ReceiveCallback(IAsyncResult ar)
+        protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs eventArgs)
         {
-            // Read incoming data from the client.
-            if(_isDisposed)
-            {
-                Console.WriteLine($"Ignored message from client as this object is disposed.");
-                return;
-            }
-
-            int bytesRead = 0;
-            try
-            {
-                bytesRead = _socket.EndReceive(ar);
-            }
-            catch(SocketException e)
-            {
-                Console.WriteLine("Receive data failed.\n"+e.ToString());
-                OnDisconnect(new EventArgs());
-                return;
-            }
-
-            if (bytesRead > 0) 
-            {  
-                // First pass the buffer to the packetProtocol to parse the message
-                try
-                {
-                    byte[] b = (byte[]) ar.AsyncState;
-                    _packetProtocol.DataReceived(b.Take(bytesRead).ToArray());
-                }
-                catch(ProtocolViolationException e)
-                {
-                    Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
-                    _packetProtocol.MessageArrived = null;
-                    _packetProtocol.KeepAliveArrived = null;
-                    _packetProtocol = new PacketProtocol(BUFFER_SIZE);
-                    _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
-                }
-                
-                // Then listen for more data
-                byte[] buffer = new byte[BUFFER_SIZE];
-                _socket.BeginReceive(buffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
-            }  
-        }
-
-        protected virtual void OnMessageReceived(MessageType type, byte[] bytes)
-        {
-            string message = Encoding.ASCII.GetString(bytes);
-            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] {message}");
-
+            // Bubble the event. Add reference to this object.
             EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
             if (handler != null)
             {
-                handler(this, new MessageReceivedEventArgs()
-                {
-                    MessageType = type,
-                    Message = message
-                });
+                handler(this, eventArgs);
             }
         }
 
-        protected virtual void OnDisconnect(EventArgs e)
+        protected virtual void OnDisconnect(object sender, EventArgs eventAgs)
         {
-            // The disconnect event can be called only once. A new client will be initialized on reconnect.
-            if(IsConnected)
+            // Bubble the event. Add reference to this object.
+            EventHandler handler = Disconnect;
+            if (handler != null)
             {
-                IsConnected = false;
-                EventHandler handler = Disconnect;
-                if (handler != null)
-                {
-                    handler(this, e);
-                }
+                handler(this, eventAgs);
             }
         }
 
         public void Dispose()
         {
-            _isDisposed = true;
-            _packetProtocol.MessageArrived = null;
-            _packetProtocol.KeepAliveArrived = null;
-            _socket.Disconnect(false);
-            _socket.Dispose();
-            _socket.Close();
+            _socketConnection.MessageReceived -= OnMessageReceived;
+            _socketConnection.Disconnect -= OnDisconnect;
+            _socketConnection.Dispose();
         }
     }
-
-    
 }
