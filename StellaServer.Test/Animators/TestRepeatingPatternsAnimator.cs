@@ -3,6 +3,7 @@ using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation.Animators;
 using StellaLib.Network;
+using System.Drawing;
 
 namespace StellaServer.Test.Animation.Animators
 {
@@ -14,17 +15,17 @@ namespace StellaServer.Test.Animation.Animators
         {
             // Setup
             Color[] pattern = new Color[]{
-                 new Color{ Red = 1, Green = 2, Blue = 3 },
-                 new Color{ Red = 4, Green = 5, Blue = 6 },
-                 new Color{ Red = 7, Green = 8, Blue = 9 },
+                 Color.FromArgb(1,2,3),
+                 Color.FromArgb(4,5,6),
+                 Color.FromArgb(7,8,9)
                  };
             int lengthStrip = 7;
             RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip,new List<Color[]>{pattern});
 
             // Expected
-            Color expectedColor1 = new Color{ Red = 1, Green = 2, Blue = 3 };
-            Color expectedColor2 = new Color{ Red = 4, Green = 5, Blue = 6 };
-            Color expectedColor3 = new Color{ Red = 7, Green = 8, Blue = 9 };
+            Color expectedColor1 = Color.FromArgb(1,2,3);
+            Color expectedColor2 = Color.FromArgb(4,5,6);
+            Color expectedColor3 = Color.FromArgb(7,8,9);
 
             FrameSet frameSet = animator.Create();
 
@@ -46,19 +47,15 @@ namespace StellaServer.Test.Animation.Animators
         {
             // Setup
             List<Color[]> patterns = new List<Color[]>();
-            patterns.Add(new Color[]{
-                 new Color{ Red = 1, Green = 2, Blue = 3 },
-                 });
-            patterns.Add(new Color[]{
-                 new Color{ Red = 4, Green = 5, Blue = 6 },
-                 });
+            patterns.Add(new Color[] { Color.FromArgb(1,2,3) });
+            patterns.Add(new Color[] { Color.FromArgb(4,5,6) });
 
             int lengthStrip = 7;
             RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip, patterns);
 
             // Expected
-            Color expectedColor1 = new Color{ Red = 1, Green = 2, Blue = 3 };
-            Color expectedColor2 = new Color{ Red = 4, Green = 5, Blue = 6 };
+            Color expectedColor1 =  Color.FromArgb(1,2,3);
+            Color expectedColor2 =  Color.FromArgb(4,5,6);
 
             FrameSet frameSet = animator.Create();
 

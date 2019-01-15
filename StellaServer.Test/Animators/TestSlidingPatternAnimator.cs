@@ -3,6 +3,7 @@ using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation.Animators;
 using StellaLib.Network;
+using System.Drawing;
 
 namespace StellaServer.Test.Animation.Animators
 {
@@ -13,18 +14,19 @@ namespace StellaServer.Test.Animation.Animators
         public void Create_ThreeColors_CreatesCorrectFrameSet()
         {
             // Setup
-            Color[] pattern = new Color[]{
-                 new Color{ Red = 1, Green = 2, Blue = 3 },
-                 new Color{ Red = 4, Green = 5, Blue = 6 },
-                 new Color{ Red = 7, Green = 8, Blue = 9 },
-                 };
+            Color[] pattern = new Color[]
+            {
+                Color.FromArgb(1,2,3),
+                Color.FromArgb(4,5,6),
+                Color.FromArgb(7,8,9)
+            };
             int lengthStrip = 7;
             SlidingPatternAnimator animator = new SlidingPatternAnimator(lengthStrip,pattern);
 
             // Expected
-            Color expectedColor1 = new Color{ Red = 1, Green = 2, Blue = 3 };
-            Color expectedColor2 = new Color{ Red = 4, Green = 5, Blue = 6 };
-            Color expectedColor3 = new Color{ Red = 7, Green = 8, Blue = 9 };
+            Color expectedColor1 = Color.FromArgb(1,2,3);
+            Color expectedColor2 = Color.FromArgb(4,5,6);
+            Color expectedColor3 = Color.FromArgb(7,8,9);
 
             FrameSet frameSet = animator.Create();
 

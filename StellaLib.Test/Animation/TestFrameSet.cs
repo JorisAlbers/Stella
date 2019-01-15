@@ -1,3 +1,4 @@
+using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
 
@@ -11,9 +12,9 @@ namespace StellaLib.Test.Animation
         [OneTimeSetUp]
         public void SetUp()
         {
-            _frame1 = new Frame(){ new PixelInstruction(){ Index = 1,   Color = new Color(){ Red = 10, Green = 10, Blue = 10 }}};
-            _frame2 = new Frame(){ new PixelInstruction(){ Index = 10,  Color = new Color(){ Red = 20, Green = 20, Blue = 20 }}};
-            _frame3 = new Frame(){ new PixelInstruction(){ Index = 100, Color = new Color(){ Red = 30, Green = 30, Blue = 30 }}};
+            _frame1 = new Frame(){ new PixelInstruction(){ Index = 1,   Color = Color.FromArgb(10,10,10)}};
+            _frame2 = new Frame(){ new PixelInstruction(){ Index = 10,  Color = Color.FromArgb(20,20,20)}};
+            _frame3 = new Frame(){ new PixelInstruction(){ Index = 100, Color = Color.FromArgb(30,30,30)}};
         }
 
         [Test]
