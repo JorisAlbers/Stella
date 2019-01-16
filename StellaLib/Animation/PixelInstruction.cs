@@ -16,5 +16,17 @@ namespace StellaLib.Animation
         /// The color to set the pixel to
         /// </summary>
         public Color Color;
+
+        public PixelInstruction(uint index, Color color)
+        {
+            Index = index;
+            Color = color;
+        }
+
+        public PixelInstruction(uint index, byte red, byte green, byte blue)
+        {
+            Index = index;
+            Color = Color.FromArgb(red,green,blue);
+        }
     }
 }
