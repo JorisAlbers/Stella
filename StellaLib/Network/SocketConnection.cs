@@ -31,7 +31,7 @@ namespace StellaLib.Network
                 throw new Exception("The socket must be connected before starting the SocketConnection");
             }
 
-            _packetProtocol = new PacketProtocol(BUFFER_SIZE);
+            _packetProtocol = new PacketProtocol();
             _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
 
             byte[] buffer = new byte[BUFFER_SIZE];
@@ -125,7 +125,7 @@ namespace StellaLib.Network
                     Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
                     _packetProtocol.MessageArrived = null;
                     _packetProtocol.KeepAliveArrived = null;
-                    _packetProtocol = new PacketProtocol(BUFFER_SIZE);
+                    _packetProtocol = new PacketProtocol();
                     _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
                 }
                 

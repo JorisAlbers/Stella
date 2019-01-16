@@ -15,6 +15,8 @@ namespace StellaLib.Network
 /// </remarks>
 public class PacketProtocol
 {
+    public const int BUFFER_SIZE = 1024;
+
     /// <summary>
     /// Wraps a message. The wrapped message is ready to send to a stream.
     /// </summary>
@@ -60,14 +62,12 @@ public class PacketProtocol
     }
   
     /// <summary>
-    /// Initializes a new <see cref="PacketProtocol"/>, limiting message sizes to the given maximum size.
+    /// Initializes a new <see cref="PacketProtocol"/>, limiting message sizes to the BUFFER_SIZE.
     /// </summary>
-    /// <param name="maxMessageSize">The maximum message size supported by this protocol. This may be less than or equal to zero to indicate no maximum message size.</param>
-    public PacketProtocol(int maxMessageSize)
+    public PacketProtocol()
     {
         // We allocate the buffer for receiving message lengths immediately
         this.lengthBuffer = new byte[sizeof(int)];
-        this.maxMessageSize = maxMessageSize;
     }
   
     /// <summary>
@@ -200,8 +200,8 @@ public class PacketProtocol
                     throw new System.Net.ProtocolViolationException("Message length is less than zero");
   
                 // Another sanity check is needed here for very large packets, to prevent denial-of-service attacks
-                if (this.maxMessageSize > 0 && length > this.maxMessageSize)
-                    throw new System.Net.ProtocolViolationException("Message length " + length.ToString(System.Globalization.CultureInfo.InvariantCulture) + " is larger than maximum message size " + this.maxMessageSize.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                if (BUFFER_SIZE > 0 && length > BUFFER_SIZE)
+                    throw new System.Net.ProtocolViolationException("Message length " + length.ToString(System.Globalization.CultureInfo.InvariantCulture) + " is larger than maximum message size " + BUFFER_SIZE.ToString(System.Globalization.CultureInfo.InvariantCulture));
   
                 // Zero-length packets are allowed as keepalives
                 if (length == 0)
