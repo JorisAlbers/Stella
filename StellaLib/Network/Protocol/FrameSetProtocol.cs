@@ -8,14 +8,14 @@ namespace StellaLib.Network.Protocol
 {
     /// <summary>
     /// Worst case bytes needed:
-    ///     300 pixels * 7 + 2 = 2102 (1 strip)
-    ///     600 pixels * 7 + 2 = 4204 (2 strips)
-    ///     900 pixels * 7 + 2 = 6306 (3 strips)
+    ///     300 pixels * 7 + 4 = 2104 (1 strip)
+    ///     600 pixels * 7 + 4 = 4208 (2 strips)
+    ///     900 pixels * 7 + 4 = 6312 (3 strips)
     /// 
     ///     If we used non-delta:
-    ///     300 pixels * 3 + 2 = 902  (1 strip)
-    ///     600 pixels * 3 + 2 = 1804 (2 strips)
-    ///     900 pixels * 3 + 2 = 2706 (3 strips)
+    ///     300 pixels * 3 + 4 = 904  (1 strip)
+    ///     600 pixels * 3 + 4 = 1808 (2 strips)
+    ///     900 pixels * 3 + 4 = 2712 (3 strips)
     ///  
     /// </summary>
     public class FrameSetProtocol
