@@ -11,6 +11,12 @@ namespace StellaLib.Network.Protocol
     ///     300 pixels * 7 + 2 = 2102 (1 strip)
     ///     600 pixels * 7 + 2 = 4204 (2 strips)
     ///     900 pixels * 7 + 2 = 6306 (3 strips)
+    /// 
+    ///     If we used non-delta:
+    ///     300 pixels * 3 + 2 = 902  (1 strip)
+    ///     600 pixels * 3 + 2 = 1804 (2 strips)
+    ///     900 pixels * 3 + 2 = 2706 (3 strips)
+    ///  
     /// </summary>
     public class FrameSetProtocol
     {
