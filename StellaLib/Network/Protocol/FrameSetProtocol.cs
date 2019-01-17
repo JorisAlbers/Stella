@@ -6,6 +6,12 @@ using StellaLib.Animation;
 
 namespace StellaLib.Network.Protocol
 {
+    /// <summary>
+    /// Worst case bytes needed:
+    ///     300 pixels * 7 + 2 = 2102 (1 strip)
+    ///     600 pixels * 7 + 2 = 4204 (2 strips)
+    ///     900 pixels * 7 + 2 = 6306 (3 strips)
+    /// </summary>
     public class FrameSetProtocol
     {
         public static byte[] SerializeFrame(Frame frame)
