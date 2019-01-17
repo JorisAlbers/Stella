@@ -2,9 +2,9 @@ using System;
 using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaLib.Network;
+using StellaLib.Network.Protocol;
 
-namespace StellaLib.Test.Network
+namespace StellaLib.Test.Network.Protocol
 {
     [TestFixture]
     public class TestFrameSetProtocol

@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Threading;
 using NUnit.Framework;
 using StellaLib.Network;
+using StellaLib.Network.Protocol;
 
 namespace StellaClient.Test.Network
 {

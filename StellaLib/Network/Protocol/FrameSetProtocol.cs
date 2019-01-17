@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using StellaLib.Animation;
 
-namespace StellaLib.Network
+namespace StellaLib.Network.Protocol
 {
     public class FrameSetProtocol
     {

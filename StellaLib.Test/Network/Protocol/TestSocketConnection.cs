@@ -3,8 +3,9 @@ using System.Net.Sockets;
 using System.Threading;
 using NUnit.Framework;
 using StellaLib.Network;
+using StellaLib.Network.Protocol;
 
-namespace StellaLib.Test.Network
+namespace StellaLib.Test.Network.Protocol
 {
     [TestFixture]
     public class TestSocketConnection

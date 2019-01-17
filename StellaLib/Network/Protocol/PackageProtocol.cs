@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace StellaLib.Network
+namespace StellaLib.Network.Protocol
 {
     // Original source: https://blog.stephencleary.com/2009/04/sample-code-length-prefix-message.html
 /// <summary>
