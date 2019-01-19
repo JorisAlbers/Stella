@@ -8,10 +8,10 @@ using StellaLib.Network.Protocol;
 namespace StellaLib.Test.Network.Protocol
 {
     [TestFixture]
-    public class TestFrameSetProtocol
+    public class TestFrameProtocol
     {
         [Test]
-        public void SerializeFrame_FrameSet_CreatesCorrectByteArray()
+        public void SerializeFrame_Frame_CreatesCorrectByteArray()
         {
             Frame frame = new Frame
             { 
@@ -37,7 +37,7 @@ namespace StellaLib.Test.Network.Protocol
             expectedBytes[23] = (byte)8;
             expectedBytes[24] = (byte)9;
 
-            Assert.AreEqual(expectedBytes, FrameSetProtocol.SerializeFrame(frame));
+            Assert.AreEqual(expectedBytes, FrameProtocol.SerializeFrame(frame));
         }
 
         [Test]
@@ -49,11 +49,11 @@ namespace StellaLib.Test.Network.Protocol
                 new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
                 new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
             };
-            byte[] bytes = FrameSetProtocol.SerializeFrame(frame);
+            byte[] bytes = FrameProtocol.SerializeFrame(frame);
 
             bool receivedFrameTrigger = false;
 
-            FrameSetProtocol protocol = new FrameSetProtocol();
+            FrameProtocol protocol = new FrameProtocol();
             protocol.ReceivedFrame = (f)=> 
             {
                 CollectionAssert.AreEqual(frame,f);
@@ -72,7 +72,7 @@ namespace StellaLib.Test.Network.Protocol
                 new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
                 new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
             };
-            byte[] bytes = FrameSetProtocol.SerializeFrame(frame);
+            byte[] bytes = FrameProtocol.SerializeFrame(frame);
 
             // Split the bytes up to fake a large frame that has to be send over multiple packages
             byte[] array1 = new byte[6];
@@ -95,7 +95,7 @@ namespace StellaLib.Test.Network.Protocol
             
             bool receivedFrameTrigger = false;
 
-            FrameSetProtocol protocol = new FrameSetProtocol();
+            FrameProtocol protocol = new FrameProtocol();
             protocol.ReceivedFrame = (f)=> 
             {
                 CollectionAssert.AreEqual(frame,f);

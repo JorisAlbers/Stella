@@ -19,7 +19,7 @@ namespace StellaLib.Network.Protocol
     ///     900 pixels * 3 + 4 = 2712 (3 strips)
     ///  
     /// </summary>
-    public class FrameSetProtocol
+    public class FrameProtocol
     {
         private const int HEADER_BYTES_NEEDED  = sizeof(int);      // count of pixel changes in the frame
         private const int PIXELINSTRUCTION_BYTES_NEEDED = sizeof(int) + 3;  // index + byte for each color
@@ -52,7 +52,7 @@ namespace StellaLib.Network.Protocol
         private int _bytesReceived;
 
         // Creates bytes
-        public FrameSetProtocol()
+        public FrameProtocol()
         {
             _headerBuffer = new byte[HEADER_BYTES_NEEDED];
         }
