@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaLib.Network.Protocol;
@@ -37,6 +38,73 @@ namespace StellaLib.Test.Network.Protocol
             expectedBytes[24] = (byte)9;
 
             Assert.AreEqual(expectedBytes, FrameSetProtocol.SerializeFrame(frame));
+        }
+
+        [Test]
+        public void DataReceived_FrameAsAsBytes_FiresFrameReceivedAction()
+        {
+            Frame frame = new Frame
+            { 
+                new PixelInstruction{ Index = 1,   Color = Color.FromArgb(1,2,3)},
+                new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
+                new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
+            };
+            byte[] bytes = FrameSetProtocol.SerializeFrame(frame);
+
+            bool receivedFrameTrigger = false;
+
+            FrameSetProtocol protocol = new FrameSetProtocol();
+            protocol.ReceivedFrame = (f)=> 
+            {
+                CollectionAssert.AreEqual(frame,f);
+                receivedFrameTrigger = true;
+            };
+            protocol.DataReceived(bytes);
+            Assert.IsTrue(receivedFrameTrigger);
+        }
+
+        [Test]
+        public void DataReceived_FrameAsMultipleByteArrays_FiresFrameReceivedAction()
+        {
+            Frame frame = new Frame
+            { 
+                new PixelInstruction{ Index = 1,   Color = Color.FromArgb(1,2,3)},
+                new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
+                new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
+            };
+            byte[] bytes = FrameSetProtocol.SerializeFrame(frame);
+
+            // Split the bytes up to fake a large frame that has to be send over multiple packages
+            byte[] array1 = new byte[6];
+            array1[0] = bytes[0];
+            array1[1] = bytes[1];
+            array1[2] = bytes[2];
+            array1[3] = bytes[3];
+            array1[4] = bytes[4];
+            array1[5] = bytes[5];
+
+            byte[] array2 = new byte[6];
+            array2[0] = bytes[6];
+            array2[1] = bytes[7];
+            array2[2] = bytes[8];
+            array2[3] = bytes[9];
+            array2[4] = bytes[10];
+            array2[5] = bytes[11];
+
+            byte[] array3 = bytes.Skip(12).ToArray();
+            
+            bool receivedFrameTrigger = false;
+
+            FrameSetProtocol protocol = new FrameSetProtocol();
+            protocol.ReceivedFrame = (f)=> 
+            {
+                CollectionAssert.AreEqual(frame,f);
+                receivedFrameTrigger = true;
+            };
+            protocol.DataReceived(array1);
+            protocol.DataReceived(array2);
+            protocol.DataReceived(array3);
+            Assert.IsTrue(receivedFrameTrigger);
         }
     }
 }
