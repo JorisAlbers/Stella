@@ -86,6 +86,14 @@ namespace StellaClient.Light
             }
         }
 
+        public void ClearFrameBuffer()
+        {
+            lock(_framesBuffer)
+            {
+                _framesBuffer.Clear();
+            }
+        }
+
         public void Dispose()
         {
             _isDisposed = true;

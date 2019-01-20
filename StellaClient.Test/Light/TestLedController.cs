@@ -46,6 +46,20 @@ namespace StellaClient.Test.Light
             controller.AddFrame(frame);
             Assert.AreEqual(1, controller.FramesInBuffer);
         }
+
+        [Test]
+        public void ClearFrameBuffer_BufferWithFrames_ClearsTheFrameBuffer()
+        {
+            Frame frame = new Frame{ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
+            var mock = new Mock<ILEDStrip>();
+            LedController controller = new LedController(mock.Object);
+            controller.AddFrame(frame);
+            controller.AddFrame(frame);
+            controller.AddFrame(frame);
+            Assert.AreEqual(3, controller.FramesInBuffer);
+            controller.ClearFrameBuffer();
+            Assert.AreEqual(0, controller.FramesInBuffer);
+        }
         
     }
 }
