@@ -48,7 +48,7 @@ namespace StellaClient.Light
                         // Display the frame
                         DrawFrame(nextFrame);
                         // Wait till frame rate passed
-                        int elapsedMs = (int) ((start - DateTime.Now.Ticks) / TimeSpan.TicksPerMillisecond);
+                        int elapsedMs = (int) ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond);
                         sleepForMilliseconds = elapsedMs - _frameVisibleForMiliseconds;
                     }
 
@@ -58,6 +58,7 @@ namespace StellaClient.Light
                     Thread.Sleep(sleepForMilliseconds);
                 }
             });
+            task.Start();
             // TODO check if explicit start is necessary task.Start();
             await task;
             Console.WriteLine("LedController has stopped working.");
