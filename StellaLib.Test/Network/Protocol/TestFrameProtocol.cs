@@ -26,12 +26,12 @@ namespace StellaLib.Test.Network.Protocol
             expectedBytes[8] = (byte)1;
             expectedBytes[9] = (byte)2;
             expectedBytes[10] = (byte)3;
-            // instruction 1
+            // instruction 2
             BitConverter.GetBytes(2).CopyTo(expectedBytes,11);
-            expectedBytes[15]  = (byte)4;
+            expectedBytes[15] = (byte)4;
             expectedBytes[16] = (byte)5;
             expectedBytes[17] = (byte)6;
-            // instruction 1
+            // instruction 3
             BitConverter.GetBytes(10).CopyTo(expectedBytes,18);
             expectedBytes[22] = (byte)7;
             expectedBytes[23] = (byte)8;
