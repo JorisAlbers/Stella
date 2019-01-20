@@ -127,7 +127,7 @@ namespace StellaLib.Network
                     }
                     catch(ProtocolViolationException e)
                     {
-                        Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
+                        Console.WriteLine("Failed to receive data. Package protocol violation. \n"+e.ToString());
                         _packetProtocol.MessageArrived = null;
                         _packetProtocol.KeepAliveArrived = null;
                         _packetProtocol = new PacketProtocol();
