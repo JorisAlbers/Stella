@@ -9,7 +9,7 @@ namespace rpi_ws281x
 	/// <summary>
 	/// Wrapper class to controll WS281x LEDs
 	/// </summary>
-	public class WS281x : IDisposable
+	public class WS281x : ILEDStrip, IDisposable
 	{
 		private ws2811_t _ws2811;
 		private GCHandle _ws2811Handle;
