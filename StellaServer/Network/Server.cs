@@ -105,13 +105,14 @@ namespace StellaServer.Network
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
             client.Start();
-            
             // As we do not now wich client this is, add him to the list of new connection.
             lock(_newConnections)
             {
                 _newConnections.Add(client);
             }
-            
+
+            // Request init from client
+            client.Send(MessageType.Init,string.Empty);
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)

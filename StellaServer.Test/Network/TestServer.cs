@@ -37,14 +37,16 @@ namespace StellaServer.Test.Animation.Network
             string ID = "ThisIsAnIdentifier";
             // Then send the init values
             client.Send(PacketProtocol.WrapMessage(MessageType.Init,ID));
-            Thread.Sleep(1000); // async hack
+            Thread.Sleep(10000); // async hack
 
+            client.Receive(new byte[1024]); // retrieve and skip the INIT message
+            
             string message = "ThisIsAMessage";
             server.SendMessageToClient(ID,message);
 
             byte[] buffer = new byte[1024];
             int bytesRead = client.Receive(buffer);
-
+            
             byte[] expectedBytes = PacketProtocol.WrapMessage(MessageType.Standard,message);
             Assert.AreEqual(expectedBytes, buffer.Take(bytesRead).ToArray());
             server.Dispose();
@@ -70,6 +72,11 @@ namespace StellaServer.Test.Animation.Network
             // Connect to the remote endpoint.  
             client.Connect( remoteEP);  
             Thread.Sleep(1000); // async hack
+
+            byte[] buffer = new byte[1024];
+            int bytesReceived = client.Receive(buffer); // retrieve the INIT message
+            byte[] expectedInitRequest = PacketProtocol.WrapMessage(MessageType.Init,String.Empty);
+            Assert.AreEqual(expectedInitRequest,buffer.Take(bytesReceived).ToArray());
 
             string expectedID = "ThisIsAnIdentifier";
             byte[] message = PacketProtocol.WrapMessage(MessageType.Init,expectedID);
@@ -115,6 +122,7 @@ namespace StellaServer.Test.Animation.Network
             // Connect to the remote endpoint.  
             client.Connect( remoteEP);  
             Thread.Sleep(1000); // async hack
+            client.Receive(new byte[1024]); // retrieve and skip the INIT message
             Assert.AreEqual(1,server.NewConnectionsCount);
             Assert.AreEqual(0,server.ConnectedClients.Length);
 
@@ -147,7 +155,7 @@ namespace StellaServer.Test.Animation.Network
   
             // Connect to the remote endpoint.  
             client.Connect( remoteEP);  
-  
+              
             // Send the data through the socket.  
             int bytesSent = client.Send(PacketProtocol.WrapMessage(MessageType.Standard,"This is a test"));   
 
