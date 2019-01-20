@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StellaLib\StellaLib.csproj" />
+    <ProjectReference Include="..\rpi_ws281x\rpi_ws281x.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
