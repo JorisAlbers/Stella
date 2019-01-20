@@ -24,8 +24,8 @@ namespace StellaClient.Test.Network
             server.Bind(localEndPoint);  
             server.Listen(2);
 
-            // Create a StellaServer
-            StellaServer stellaServer = new StellaServer(localEndPoint);
+            // Create a SocketConnection
+            StellaServer stellaServer = new StellaServer(localEndPoint, "ThisIsAnID");
             stellaServer.Start();
             
             Socket server_receiver = server.Accept();

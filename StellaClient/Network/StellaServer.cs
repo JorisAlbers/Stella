@@ -14,11 +14,13 @@ namespace StellaClient.Network
     {
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
+        private string _id;
         private SocketConnection _socketConnection;
         
-        public StellaServer(IPEndPoint serverAdress)
+        public StellaServer(IPEndPoint serverAdress, string ID)
         {
             _serverAdress = serverAdress;
+            _id = ID;
         }
 
         public void Start()
@@ -31,6 +33,11 @@ namespace StellaClient.Network
             _socketConnection.Send(type,message);
         }
 
+        private void SendInit()
+        {
+            Send(MessageType.Init,_id);
+        }
+        
         private void Connect()
         {
             // Create a TCP/IP socket.  
@@ -65,8 +72,8 @@ namespace StellaClient.Network
             Console.WriteLine($"[IN] [{e.MessageType}] {e.Message}");
             switch(e.MessageType)
             {
-                case MessageType.Init:
-                    // Server wants us to send init value
+                case MessageType.Init: // Server wants us to send our init values
+                    SendInit();
                     break;
                 default:
                     Console.WriteLine($"MessageType {e.MessageType} is not used by StellaClient.");
