@@ -12,9 +12,10 @@ namespace StellaLib.Network
         private PacketProtocol _packetProtocol;
         private bool _isDisposed = false;
         private Socket _socket;
+        private readonly object _parsingMessageLock = new object(); // Lock used by each message parsing thread
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         public event EventHandler Disconnect;
-
+        
         public bool IsConnected {get; private set;}
 
         public SocketConnection(Socket socket)
@@ -112,24 +113,27 @@ namespace StellaLib.Network
 
             if (bytesRead > 0) 
             {  
-                // First pass the buffer to the packetProtocol to parse the message
-                try
-                {
-                    byte[] b = (byte[]) ar.AsyncState;
-                    _packetProtocol.DataReceived(b.Take(bytesRead).ToArray());
-                }
-                catch(ProtocolViolationException e)
-                {
-                    Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
-                    _packetProtocol.MessageArrived = null;
-                    _packetProtocol.KeepAliveArrived = null;
-                    _packetProtocol = new PacketProtocol();
-                    _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
-                }
-                
-                // Then listen for more data
+                // First start receiving more data
                 byte[] buffer = new byte[PacketProtocol.BUFFER_SIZE];
                 _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
+
+                // Then parse the message
+                lock(_parsingMessageLock) // TODO FIFO is not guaranteed, maybe add QueuedLock
+                {
+                    try
+                    {
+                        byte[] b = (byte[]) ar.AsyncState;
+                        _packetProtocol.DataReceived(b.Take(bytesRead).ToArray());
+                    }
+                    catch(ProtocolViolationException e)
+                    {
+                        Console.WriteLine("Failed to receive data from client. Package protocol violation. \n"+e.ToString());
+                        _packetProtocol.MessageArrived = null;
+                        _packetProtocol.KeepAliveArrived = null;
+                        _packetProtocol = new PacketProtocol();
+                        _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
+                    }
+                }
             }  
         }
 
