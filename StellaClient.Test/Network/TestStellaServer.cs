@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NUnit.Framework;
+using StellaClient.Network;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
 
@@ -23,19 +24,16 @@ namespace StellaClient.Test.Network
             server.Bind(localEndPoint);  
             server.Listen(2);
 
-            // Create a SocketConnection
-            Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
-            socket.Connect(localEndPoint);
-
-            SocketConnection socketConnection = new SocketConnection(socket);
-            socketConnection.Start();
+            // Create a StellaServer
+            StellaServer stellaServer = new StellaServer(localEndPoint);
+            stellaServer.Start();
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
 
             byte[] expected = PacketProtocol.WrapMessage(MessageType.Standard, "ThisIsAMessage");
 
-            socketConnection.Send(MessageType.Standard, "ThisIsAMessage");
+            stellaServer.Send(MessageType.Standard, "ThisIsAMessage");
             byte[] receiveBuffer = new byte[expected.Length];
             server_receiver.Receive(receiveBuffer);
             Assert.AreEqual(expected,receiveBuffer);

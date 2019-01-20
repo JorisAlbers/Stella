@@ -45,13 +45,13 @@ namespace StellaClient.Network
             try 
             {  
                 // Complete the connection.  
-                Socket socket = (Socket) ar;
+                Socket socket = (Socket) ar.AsyncState;
                 socket.EndConnect(ar);
 
                 Console.WriteLine("Connected with StellaServer");
                 _socketConnection = new SocketConnection(socket);
                 _socketConnection.MessageReceived += OnMessageReceived;
-                
+                _socketConnection.Start();
             } 
             catch (SocketException e) 
             {  
