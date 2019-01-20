@@ -9,7 +9,6 @@ namespace StellaLib.Network
 {
     public class SocketConnection
     {
-        private const int BUFFER_SIZE = 1024;
         private PacketProtocol _packetProtocol;
         private bool _isDisposed = false;
         private Socket _socket;
@@ -33,9 +32,9 @@ namespace StellaLib.Network
             _packetProtocol = new PacketProtocol();
             _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
 
-            byte[] buffer = new byte[BUFFER_SIZE];
+            byte[] buffer = new byte[PacketProtocol.BUFFER_SIZE];
             IsConnected = true;
-            _socket.BeginReceive(buffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
+            _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
         }
 
 
@@ -129,8 +128,8 @@ namespace StellaLib.Network
                 }
                 
                 // Then listen for more data
-                byte[] buffer = new byte[BUFFER_SIZE];
-                _socket.BeginReceive(buffer, 0, BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
+                byte[] buffer = new byte[PacketProtocol.BUFFER_SIZE];
+                _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
             }  
         }
 
