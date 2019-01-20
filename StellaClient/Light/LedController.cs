@@ -7,11 +7,11 @@ using StellaLib.Animation;
 
 namespace StellaClient.Light
 {
-    // TODO add IDispose implementation
-    public class LedController
+    public class LedController : IDisposable
     {
         private ILEDStrip _ledStrip;
         private Queue<Frame> _framesBuffer;
+        private bool _isDisposed;
 
         /// <summary>
         /// Frame rate in miliseconds
@@ -31,7 +31,7 @@ namespace StellaClient.Light
             Task task = new Task(()=>
             {
                 long start = DateTime.Now.Ticks;
-                while(true)
+                while(!_isDisposed)
                 {
                     Frame nextFrame = null;
                     lock(_framesBuffer)
@@ -83,6 +83,11 @@ namespace StellaClient.Light
             {
                 _framesBuffer.Enqueue(frame);
             }
+        }
+
+        public void Dispose()
+        {
+            _isDisposed = true;
         }
     }
 }
