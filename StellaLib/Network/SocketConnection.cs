@@ -18,8 +18,6 @@ namespace StellaLib.Network
 
         public bool IsConnected {get; private set;}
 
-        public string ID = null; // TODO move to stellaServer lib
-
         public SocketConnection(Socket socket)
         {
             _socket = socket;
