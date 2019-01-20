@@ -54,7 +54,7 @@ namespace StellaLib.Network
                 throw new ObjectDisposedException("SocketConnection has been disposed");
             }
 
-            Console.WriteLine($"[OUT] {message}");
+            Console.WriteLine($"[OUT] [{messageType}] {message}");
 
             // Convert the messageType and message to the PackageProtocol
             byte[] byteData = PacketProtocol.WrapMessage(messageType, message);  
