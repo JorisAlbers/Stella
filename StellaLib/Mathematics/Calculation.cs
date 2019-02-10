@@ -5,7 +5,7 @@ namespace StellaLib.Mathematics
 {
     public static class Calculation
     {
-        public static long Median(long[] array)
+        public static double Median(long[] array)
         {
             int numberCount = array.Length; 
             int halfIndex = numberCount/2;
