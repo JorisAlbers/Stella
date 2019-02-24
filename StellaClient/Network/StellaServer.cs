@@ -3,7 +3,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using StellaClient.Time;
 using StellaLib.Network;
+using StellaLib.Network.Protocol;
 
 namespace StellaClient.Network
 {
@@ -15,12 +17,15 @@ namespace StellaClient.Network
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
         private string _id;
+        private ISystemTimeSetter _systemTimeSetter;
+        private TimeSetter _timeSetter;
         private SocketConnection _socketConnection;
         
-        public StellaServer(IPEndPoint serverAdress, string ID)
+        public StellaServer(IPEndPoint serverAdress, string ID, ISystemTimeSetter timeSetter)
         {
             _serverAdress = serverAdress;
             _id = ID;
+            _systemTimeSetter = timeSetter;
         }
 
         public void Start()
@@ -59,6 +64,13 @@ namespace StellaClient.Network
                 _socketConnection = new SocketConnection(socket);
                 _socketConnection.MessageReceived += OnMessageReceived;
                 _socketConnection.Start();
+
+                // Make sure the time of the server is synced with our time
+                if(!_systemTimeSetter.TimeIsNTPSynced()) // TODO remember if time is synced in case the StellaServer object crashes
+                {
+                    _timeSetter = new TimeSetter(_systemTimeSetter);
+                    Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage());
+                }
             } 
             catch (SocketException e) 
             {  
@@ -75,10 +87,45 @@ namespace StellaClient.Network
                 case MessageType.Init: // Server wants us to send our init values
                     SendInit();
                     break;
+                case MessageType.TimeSync: // Server sends back a timesync message
+                    ParseTimeSyncMessage(e.Message);
+                    break;
                 default:
                     Console.WriteLine($"MessageType {e.MessageType} is not used by StellaClient.");
                     break;
             }
+        }
+
+        private void ParseTimeSyncMessage(string message)
+        {
+           if(_timeSetter == null)
+           {
+               Console.WriteLine("TimeSync message from server ignored as the time setter is null");
+               return;
+           }
+
+           long[] measurements;
+           try
+           {
+               measurements = TimeSyncProtocol.ParseMessage(message);
+           }
+           catch(Exception e)
+           {
+               Console.WriteLine($"Failed to parse TimeSync message from server. Message = {message}");
+               return;
+           }
+           
+           _timeSetter.AddMeasurements(measurements[0],measurements[1],DateTime.Now.Ticks);
+           if(_timeSetter.NeedsMoreData)
+           {
+               // Start the next timeSync measurement
+               Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage());
+           }
+           else
+           {
+               Console.WriteLine("TimeSync completed.");
+               _timeSetter = null;
+           }
         }
 
         public void Dispose()

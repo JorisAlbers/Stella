@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using StellaLib.Network;
+using StellaLib.Network.Protocol;
 
 namespace StellaServer.Network
 {
@@ -124,6 +125,10 @@ namespace StellaServer.Network
                     // The client sends its ID
                     ParseInitMessage(client, e.Message);
                     break;
+                case MessageType.TimeSync:
+                    // The client wants to sync the time
+                    ParseTimeSyncMessage(client, e.Message);
+                    break;
                 default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
                     break;
@@ -175,6 +180,13 @@ namespace StellaServer.Network
                 _newConnections.Remove(client);
             }
         }
+
+        private void ParseTimeSyncMessage(Client client, string message)
+        {
+            Console.WriteLine($"Synchronizing time with client {client.ID} ");
+            client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(message));
+        }
+
         public void Dispose()
         {
             lock(_isShuttingDownLock)
