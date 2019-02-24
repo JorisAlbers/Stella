@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rpi_ws281x", "rpi_ws281x\rp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaClient.Test", "StellaClient.Test\StellaClient.Test.csproj", "{87981F8E-BE15-4F69-8E8F-49D1E3D4BA31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEndTests", "EndToEndTests\EndToEndTests.csproj", "{7889EFE6-7744-4E0B-917F-755539A78029}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{87981F8E-BE15-4F69-8E8F-49D1E3D4BA31}.Release|x64.Build.0 = Release|Any CPU
 		{87981F8E-BE15-4F69-8E8F-49D1E3D4BA31}.Release|x86.ActiveCfg = Release|Any CPU
 		{87981F8E-BE15-4F69-8E8F-49D1E3D4BA31}.Release|x86.Build.0 = Release|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Debug|x64.Build.0 = Debug|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Debug|x86.Build.0 = Debug|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x64.ActiveCfg = Release|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x64.Build.0 = Release|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x86.ActiveCfg = Release|Any CPU
+		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
