@@ -32,7 +32,6 @@ namespace StellaClient.Time
                 for(int i=0; i< split.Length;i++)
                 {
                     string[] lineSplit = split[i].Split(':');
-                    Console.WriteLine($"{lineSplit[0]} - {lineSplit[1]}");
                     if(lineSplit[0].Contains("NTP synchronized"))
                     {
                         return lineSplit[1].Contains("yes");
