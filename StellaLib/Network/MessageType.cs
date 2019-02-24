@@ -5,5 +5,6 @@ namespace StellaLib.Network
         Unknown,
         Init,
         Standard,
+        TimeSync,        
     }
 }
