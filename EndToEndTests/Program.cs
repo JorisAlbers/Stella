@@ -10,14 +10,22 @@ namespace EndToEndTests
             while(run)
             {
                 Console.WriteLine("End To End Test");
-                Console.WriteLine("e - stop the program");
-                Console.WriteLine("t - Time related tests");
+                Console.WriteLine("c - Client related tests");
+                Console.WriteLine("s - Server related tests");
+                Console.WriteLine("q - exit");
+
 
                 string input = Console.ReadLine();
                 switch(input)
                 {
-                    case "e":
+                    case "q":
                         run = false;
+                        break;
+                    case "c":
+                        ClientTests.Start();
+                        break;
+                    case "s":
+                        ServerTests.Start();
                         break;
                     case "t":
                         TimeTests timeTests = new TimeTests();
@@ -31,8 +39,5 @@ namespace EndToEndTests
 
             Console.WriteLine("END");
         }
-
-
-        
     }
 }
