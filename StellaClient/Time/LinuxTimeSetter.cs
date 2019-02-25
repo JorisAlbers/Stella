@@ -6,6 +6,9 @@ namespace StellaClient.Time
     public class LinuxTimeSetter : ISystemTimeSetter
     {
         private long epochTicks = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
+        private const int TicksPerMicrosecond = 10;
+        private const int NanosecondsPerTick = 100;
+
 
         public void AdjustTimeWithTicks(long ticks)
         {
@@ -13,10 +16,10 @@ namespace StellaClient.Time
             long unixTimeNew = unixTimeOld + ticks;
 
             long unixTimeSeconds = unixTimeNew / TimeSpan.TicksPerSecond;
-            // TODO add miliseconds int miliseconds = TimeSpan.TicksPerMillisecond
-
-            // date --set="2011-12-07 01:20:15.962"  && date --rfc-3339=ns
-            if(!RunBashCommand($"date -s @{unixTimeSeconds}", out string returnMessage))
+            int nanoSeconds = (int)(unixTimeNew % TimeSpan.TicksPerMillisecond % TicksPerMicrosecond) * NanosecondsPerTick;
+        
+            // TODO still 0.5 seconds behind.//
+            if(!RunBashCommand($"date --set @{unixTimeSeconds}.{nanoSeconds} && date --rfc-3339=ns", out string returnMessage))
             {
                 throw new Exception($"Failed to set the time. Return message of process: {returnMessage}");
             }
