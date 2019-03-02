@@ -81,7 +81,7 @@ namespace StellaClient.Network
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            Console.WriteLine($"[IN] [{e.MessageType}] {e.Message}");
+            Console.WriteLine($"[IN]  [{e.MessageType}] {e.Message}");
             switch(e.MessageType)
             {
                 case MessageType.Init: // Server wants us to send our init values
