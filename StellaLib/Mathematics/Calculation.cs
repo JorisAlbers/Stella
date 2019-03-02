@@ -13,7 +13,7 @@ namespace StellaLib.Mathematics
 
             if ((numberCount % 2) == 0) 
             { 
-                return (sortedNumbers[halfIndex]+ sortedNumbers[halfIndex-1]) / 2; 
+                return (sortedNumbers[halfIndex]+ sortedNumbers[halfIndex-1]) / 2; //TODO Indexoutofrangeexcpetion
             } 
             else { 
                 return sortedNumbers[halfIndex]; 
