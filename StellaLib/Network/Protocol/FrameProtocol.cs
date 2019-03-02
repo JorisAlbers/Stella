@@ -8,6 +8,20 @@ using StellaLib.Animation;
 namespace StellaLib.Network.Protocol
 {
     /// <summary>
+    ///     The frame looks like this:
+    ///     HEADER
+    ///     int : number of pixel changes
+    ///     PIXELINSTRUCTION 1
+    ///         int index of pixel to change
+    ///         byte red
+    ///         byte green
+    ///         byte blue
+    ///      PIXELINSTRUCTION 2
+    ///         ...
+    ///      PIXELINSTRUCTION 3
+    ///         ...
+    /// 
+    ///  
     /// Worst case bytes needed:
     ///     300 pixels * 7 + 4 = 2104 (1 strip)
     ///     600 pixels * 7 + 4 = 4208 (2 strips)
