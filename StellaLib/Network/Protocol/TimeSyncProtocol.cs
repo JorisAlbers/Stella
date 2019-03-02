@@ -14,8 +14,7 @@ namespace StellaLib.Network.Protocol
     public class TimeSyncProtocol
     {
         const char SEPARATOR = ';';
-        const int MAX_MEASUREMENTS = 4;
-
+        
         public static string CreateMessage()
         {
             return $"{DateTime.Now.Ticks}";
