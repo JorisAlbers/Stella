@@ -7,7 +7,7 @@ namespace StellaClient.Time
 {
     public class TimeSetter
     {
-        const int MAX_MEASUREMENTS = 3;
+        const int MAX_MEASUREMENTS = 6;
         private ISystemTimeSetter _systemTimeSetter;
         private List<long[]> _measurements; // A measurement = clientSendTime, serverSendTime, clientReceivedTime
 
