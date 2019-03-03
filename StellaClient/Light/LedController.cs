@@ -96,7 +96,7 @@ namespace StellaClient.Light
                 }
 
                 // should render in this loop, wait for remaing time
-                while(DateTime.Now.Ticks > _frameStart)
+                while(DateTime.Now.Ticks < _frameStart)
                 {
                     Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
                 }
@@ -135,6 +135,21 @@ namespace StellaClient.Light
             lock(_framesBuffer)
             {
                 _framesBuffer.Enqueue(frame);
+            }
+        }
+
+        /// <summary>
+        /// Adds multiple frames to the queue to display.
+        /// </summary>
+        /// <param name="frame"></param>
+        public void AddFrames(IEnumerable<Frame> frames)
+        {
+            lock(_framesBuffer)
+            {
+                foreach(Frame frame in frames)
+                {
+                    _framesBuffer.Enqueue(frame);
+                }
             }
         }
 
