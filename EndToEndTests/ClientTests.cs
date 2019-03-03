@@ -73,7 +73,7 @@ namespace EndToEndTests
                         Color clearColor = Color.FromArgb(0,0,0);
 
                         List<Frame> frames = new List<Frame>();
-                        frames.Add(new Frame(waitMS){new PixelInstruction{ Index = 1, Color = color}});
+                        frames.Add(new Frame(waitMS){new PixelInstruction{ Index = 0, Color = color}});
                         for(int i=1; i < ledCount;i++)
                         {
                             frames.Add(new Frame(waitMS)
@@ -82,9 +82,10 @@ namespace EndToEndTests
                                 new PixelInstruction{ Index = (uint)i, Color = color}
                             });
                         }
-                        frames.Add(new Frame(waitMS){new PixelInstruction{ Index = (uint)ledCount, Color = clearColor}});
+                        frames.Add(new Frame(waitMS){new PixelInstruction{ Index = (uint)ledCount-1, Color = clearColor}});
 
                         LedController controller = new LedController(ledstrip);
+                        //LedController controller = new LedController(new FakeLedStrip());
                         controller.Run();
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
