@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using rpi_ws281x;
 using StellaLib.Animation;
 
@@ -9,14 +11,14 @@ namespace StellaClient.Light
 {
     public class LedController : IDisposable
     {
+        private const int TIMER_LOOP_DURATION = 100; // in miliseconds
         private ILEDStrip _ledStrip;
         private Queue<Frame> _framesBuffer;
+        private System.Timers.Timer _timer;
+        private long _frameStart = -1;
+        private Frame _nextFrame;
         private bool _isDisposed;
-
-        /// <summary>
-        /// Frame rate in miliseconds
-        /// </summary>
-        private int _frameVisibleForMiliseconds = 1000;
+       
 
         public int FramesInBuffer {get{return _framesBuffer.Count;}}
 
@@ -24,47 +26,97 @@ namespace StellaClient.Light
         {
             _ledStrip = ledStrip;
             _framesBuffer = new Queue<Frame>();
+            _timer = new System.Timers.Timer();
+            _timer.Interval = TIMER_LOOP_DURATION;
+            _timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
         }
 
-        public async void Run()
+        public void Run()
         {
-            Task task = new Task(()=>
-            {
-                long start = DateTime.Now.Ticks;
-                while(!_isDisposed)
-                {
-                    Frame nextFrame = null;
-                    lock(_framesBuffer)
-                    {
-                        if(_framesBuffer.Count > 0)
-                        {
-                            nextFrame = _framesBuffer.Dequeue();
-                        }
-                    }
-
-                    int sleepForMilliseconds = 1000;
-                    if(nextFrame != null)
-                    {
-                        // Display the frame
-                        DrawFrame(nextFrame);
-                        // Wait till frame rate passed
-                        int elapsedMs = (int) ((DateTime.Now.Ticks - start) / TimeSpan.TicksPerMillisecond);
-                        sleepForMilliseconds = elapsedMs - _frameVisibleForMiliseconds;
-                    }
-
-                    // TODO | just waiting here is not efficient. We need to:
-                    // TODO | 1. Check if the queue has changed
-                    // TODO | 2. use a UNIX timestamp instead of framerate to keep in sync
-                    Thread.Sleep(sleepForMilliseconds);
-                }
-            });
-            task.Start();
-            // TODO check if explicit start is necessary task.Start();
-            await task;
-            Console.WriteLine("LedController has stopped working.");
+            _nextFrame = null;
+            _timer.Enabled = true;
+            _timer.Start();
         }
 
-        private void DrawFrame(Frame frame)
+       
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if(_isDisposed)
+            {
+                _timer.Stop();
+                return;
+            }
+
+            lock(_framesBuffer)
+            {
+                Draw();
+            }            
+        }
+
+        /// The flow is as follows:
+        /// 
+        /// Prepare frame 1             ||
+        /// Start immediately           || Case 1
+        /// Prepare frame 2             ||
+        /// 
+        /// Wait frame1 display time    ||
+        /// Start frame 2               || Case 2  
+        /// Prepare frame 3             ||
+        /// 
+        /// Wait frame 2 display time   ||
+        /// Start frame 3               || Case 2
+        /// Prepare frame 4             ||
+        /// 
+        /// ...
+        private void Draw()
+        {
+            if(_nextFrame == null)
+            {
+                // CASE 1 , Prepare, Render, Prepare
+                if(_framesBuffer.Count > 0)
+                {
+                    Frame firstFrame = _framesBuffer.Dequeue();
+                    PrepareFrame(firstFrame);
+                    _ledStrip.Render();
+                    _frameStart = DateTime.Now.Ticks + (firstFrame.WaitMS * TimeSpan.TicksPerMillisecond);
+                    if(_framesBuffer.Count > 0)
+                    {
+                        _nextFrame = _framesBuffer.Dequeue();
+                        PrepareFrame(_nextFrame);
+                    }
+                }
+            }
+            else
+            {
+                // CASE 2, Render, Prepare
+                if(DateTime.Now.Ticks < _frameStart + TIMER_LOOP_DURATION)
+                {
+                    // render will happen in other loop
+                    return;
+                }
+
+                // should render in this loop, wait for remaing time
+                while(DateTime.Now.Ticks > _frameStart)
+                {
+                    Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
+                }
+                // Render the already loaded frame
+                _ledStrip.Render();
+                _frameStart += _nextFrame.WaitMS * TimeSpan.TicksPerMillisecond;
+                if(_framesBuffer.Count > 0)
+                {
+                    // Prepare next frame
+                    _nextFrame = _framesBuffer.Dequeue();
+                    PrepareFrame(_nextFrame);
+                }
+                else
+                {
+                    _nextFrame = null;
+                }
+            }
+        }
+
+        private void PrepareFrame(Frame frame)
         {
             for(int i=0; i< frame.Count;i++)
             {

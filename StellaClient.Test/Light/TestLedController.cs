@@ -14,7 +14,7 @@ namespace StellaClient.Test.Light
         [Test]
         public void AddFrame_Frame_FrameGetsDrawnToStrip()
         {
-            Frame frame = new Frame{ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
+            Frame frame = new Frame(100){ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
             var mock = new Mock<ILEDStrip>();
 
             int index = -1;
@@ -39,7 +39,7 @@ namespace StellaClient.Test.Light
         [Test]
         public void AddFrame_Frame_AddsFrameToTheQueue()
         {
-            Frame frame = new Frame{ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
+            Frame frame = new Frame(100){ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
             var mock = new Mock<ILEDStrip>();
             LedController controller = new LedController(mock.Object);
             Assert.AreEqual(0, controller.FramesInBuffer);
@@ -50,7 +50,7 @@ namespace StellaClient.Test.Light
         [Test]
         public void ClearFrameBuffer_BufferWithFrames_ClearsTheFrameBuffer()
         {
-            Frame frame = new Frame{ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
+            Frame frame = new Frame(100){ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
             var mock = new Mock<ILEDStrip>();
             LedController controller = new LedController(mock.Object);
             controller.AddFrame(frame);
