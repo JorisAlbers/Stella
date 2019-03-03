@@ -12,9 +12,9 @@ namespace StellaLib.Test.Animation
         [OneTimeSetUp]
         public void SetUp()
         {
-            _frame1 = new Frame(){ new PixelInstruction(){ Index = 1,   Color = Color.FromArgb(10,10,10)}};
-            _frame2 = new Frame(){ new PixelInstruction(){ Index = 10,  Color = Color.FromArgb(20,20,20)}};
-            _frame3 = new Frame(){ new PixelInstruction(){ Index = 100, Color = Color.FromArgb(30,30,30)}};
+            _frame1 = new Frame(1){ new PixelInstruction(){ Index = 1,   Color = Color.FromArgb(10,10,10)}};
+            _frame2 = new Frame(2){ new PixelInstruction(){ Index = 10,  Color = Color.FromArgb(20,20,20)}};
+            _frame3 = new Frame(3){ new PixelInstruction(){ Index = 100, Color = Color.FromArgb(30,30,30)}};
         }
 
         [Test]
@@ -34,11 +34,21 @@ namespace StellaLib.Test.Animation
                 100
             };
 
+            // Expected wait ms
+            int[] expectedWaitMSOfEachFrame = new int[]
+            {
+                1,
+                2,
+                3
+            };
+
             // Assert
             int counter = 0;
             foreach (Frame frame in frameSet) 
             {
-                Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[counter++], frame[0].Index);
+                Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[counter], frame[0].Index);
+                Assert.AreEqual(expectedWaitMSOfEachFrame[counter], frame.WaitMS);
+                counter++;
             }
         }
 
@@ -58,11 +68,23 @@ namespace StellaLib.Test.Animation
                 10,
                 100
             };
+            // Expected wait ms
+            int[] expectedWaitMSOfEachFrame = new int[]
+            {
+                1,
+                2,
+                3
+            };
 
             // Assert
             Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[0],frameSet[0][0].Index);
+            Assert.AreEqual(expectedWaitMSOfEachFrame[0],frameSet[0].WaitMS);
+
             Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[1],frameSet[1][0].Index);
+            Assert.AreEqual(expectedWaitMSOfEachFrame[1],frameSet[1].WaitMS);
+
             Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[2],frameSet[2][0].Index);
+            Assert.AreEqual(expectedWaitMSOfEachFrame[2],frameSet[2].WaitMS);
         }
     }
 }

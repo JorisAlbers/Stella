@@ -11,10 +11,12 @@ namespace StellaServer.Animation.Animators
     {
         private Color[] _pattern;
         private int _stripLength;
+        private int _frameWaitMS;
 
-        public SlidingPatternAnimator(int stripLength, Color[] pattern)
+        public SlidingPatternAnimator(int stripLength, int frameWaitMS, Color[] pattern)
         {
             _stripLength = stripLength;
+            _frameWaitMS = frameWaitMS;
             _pattern = pattern;
         }
 
@@ -23,7 +25,7 @@ namespace StellaServer.Animation.Animators
             FrameSet frameSet = new FrameSet();
             for (int i = 0; i < _pattern.Length; i++)
             {
-                Frame frame = new Frame();
+                Frame frame = new Frame(_frameWaitMS);
                 int startIndex = i;
                 for (int j = 0; j < _stripLength; j++) 
                 {

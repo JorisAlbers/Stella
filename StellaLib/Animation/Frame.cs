@@ -4,13 +4,27 @@ using System.Collections.Generic;
 namespace StellaLib.Animation
 {
     /// <summary>
-    /// A frame contains all pixel instructions of a single moment in time.
+    /// A frame contains:
+    ///     1. All pixel instructions of a single moment in time.
+    ///     2. The display time 
+    /// 
     /// </summary>
     public class Frame : IList<PixelInstruction>
     {   
         private List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
 
         public PixelInstruction this[int index] { get => pixelInstructions[index]; set => pixelInstructions[index] = value;}
+
+        /// <summary>
+        /// The time in miliseconds this frame will be displayed
+        /// </summary>
+        /// <value></value>
+        public int WaitMS {get;private set;}
+
+        public Frame(int waitMS)
+        {
+            WaitMS = waitMS;
+        }
 
         #region List interface 
         public int Count => pixelInstructions.Count;

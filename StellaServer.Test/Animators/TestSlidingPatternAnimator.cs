@@ -21,7 +21,8 @@ namespace StellaServer.Test.Animation.Animators
                 Color.FromArgb(7,8,9)
             };
             int lengthStrip = 7;
-            SlidingPatternAnimator animator = new SlidingPatternAnimator(lengthStrip,pattern);
+            int frameWaitMS = 100;
+            SlidingPatternAnimator animator = new SlidingPatternAnimator(lengthStrip,frameWaitMS,pattern);
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -35,6 +36,7 @@ namespace StellaServer.Test.Animation.Animators
             //Frame 1
             Frame frame1 = frameSet[0];
             Assert.AreEqual(lengthStrip, frame1.Count);
+            Assert.AreEqual(frameWaitMS, frame1.WaitMS);
             Assert.AreEqual(frame1[0].Color, expectedColor1);
             Assert.AreEqual(frame1[1].Color, expectedColor2);
             Assert.AreEqual(frame1[2].Color, expectedColor3);
@@ -45,6 +47,7 @@ namespace StellaServer.Test.Animation.Animators
             //Frame 2
             Frame frame2 = frameSet[1];
             Assert.AreEqual(lengthStrip, frame2.Count);
+            Assert.AreEqual(frameWaitMS, frame2.WaitMS);
             Assert.AreEqual(frame2[0].Color, expectedColor2);
             Assert.AreEqual(frame2[1].Color, expectedColor3);
             Assert.AreEqual(frame2[2].Color, expectedColor1);
@@ -55,6 +58,7 @@ namespace StellaServer.Test.Animation.Animators
             //Frame 3
             Frame frame3 = frameSet[2];
             Assert.AreEqual(lengthStrip, frame3.Count);
+            Assert.AreEqual(frameWaitMS, frame3.WaitMS);
             Assert.AreEqual(frame3[0].Color, expectedColor3);
             Assert.AreEqual(frame3[1].Color, expectedColor1);
             Assert.AreEqual(frame3[2].Color, expectedColor2);

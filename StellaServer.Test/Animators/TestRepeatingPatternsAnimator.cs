@@ -20,7 +20,8 @@ namespace StellaServer.Test.Animation.Animators
                  Color.FromArgb(7,8,9)
                  };
             int lengthStrip = 7;
-            RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip,new List<Color[]>{pattern});
+            int frameWaitMS = 100;
+            RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip,frameWaitMS,new List<Color[]>{pattern});
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -33,6 +34,7 @@ namespace StellaServer.Test.Animation.Animators
             Assert.AreEqual(1,frameSet.Count);
             Frame frame = frameSet[0];
             Assert.AreEqual(lengthStrip, frame.Count);
+            Assert.AreEqual(frameWaitMS, frame.WaitMS);
             Assert.AreEqual(frame[0].Color, expectedColor1);
             Assert.AreEqual(frame[1].Color, expectedColor2);
             Assert.AreEqual(frame[2].Color, expectedColor3);
@@ -51,7 +53,8 @@ namespace StellaServer.Test.Animation.Animators
             patterns.Add(new Color[] { Color.FromArgb(4,5,6) });
 
             int lengthStrip = 7;
-            RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip, patterns);
+            int frameWaitMS = 100;
+            RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip,frameWaitMS, patterns);
 
             // Expected
             Color expectedColor1 =  Color.FromArgb(1,2,3);
@@ -62,11 +65,11 @@ namespace StellaServer.Test.Animation.Animators
             //Assert
             Assert.AreEqual(2,frameSet.Count);
             Frame frame1 = frameSet[0];
+            Assert.AreEqual(frameWaitMS, frame1.WaitMS);
             Assert.AreEqual(frame1[0].Color, expectedColor1);
             Frame frame2 = frameSet[1];
+            Assert.AreEqual(frameWaitMS, frame2.WaitMS);
             Assert.AreEqual(frame2[0].Color, expectedColor2);
-
-
         }
     }
 }

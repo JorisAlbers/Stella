@@ -11,6 +11,7 @@ namespace StellaLib.Network.Protocol
     ///     The frame looks like this:
     ///     HEADER
     ///     int : number of pixel changes
+    ///     int : wait time in miliseconds
     ///     PIXELINSTRUCTION 1
     ///         int index of pixel to change
     ///         byte red
@@ -23,19 +24,19 @@ namespace StellaLib.Network.Protocol
     /// 
     ///  
     /// Worst case bytes needed:
-    ///     300 pixels * 7 + 4 = 2104 (1 strip)
-    ///     600 pixels * 7 + 4 = 4208 (2 strips)
-    ///     900 pixels * 7 + 4 = 6312 (3 strips)
+    ///     300 pixels * 7 + 8 = 2108 (1 strip)
+    ///     600 pixels * 7 + 8 = 4212 (2 strips)
+    ///     900 pixels * 7 + 8 = 6316 (3 strips)
     /// 
     ///     If we used non-delta:
-    ///     300 pixels * 3 + 4 = 904  (1 strip)
-    ///     600 pixels * 3 + 4 = 1808 (2 strips)
-    ///     900 pixels * 3 + 4 = 2712 (3 strips)
+    ///     300 pixels * 3 + 8 = 908  (1 strip)
+    ///     600 pixels * 3 + 8 = 1812 (2 strips)
+    ///     900 pixels * 3 + 8 = 2716 (3 strips)
     ///  
     /// </summary>
     public class FrameProtocol
     {
-        private const int HEADER_BYTES_NEEDED  = sizeof(int);      // count of pixel changes in the frame
+        private const int HEADER_BYTES_NEEDED  = sizeof(int) + sizeof(int); // number of pixel changes + waitms
         private const int PIXELINSTRUCTION_BYTES_NEEDED = sizeof(int) + 3;  // index + byte for each color
 
         public static byte[] SerializeFrame(Frame frame)
@@ -44,6 +45,7 @@ namespace StellaLib.Network.Protocol
 
             byte[] buffer = new byte[bytesNeeded];
             BitConverter.GetBytes(frame.Count).CopyTo(buffer,0);
+            BitConverter.GetBytes(frame.WaitMS).CopyTo(buffer,sizeof(int));
             for(int i = 0; i< frame.Count;i++)
             {
                 int bufferStartIndex = HEADER_BYTES_NEEDED +  i * PIXELINSTRUCTION_BYTES_NEEDED;
@@ -113,7 +115,7 @@ namespace StellaLib.Network.Protocol
         if(this._frameBuffer == null)
         {
             // We're currently receiving the length buffer
-            if (this._bytesReceived != sizeof(int))
+            if (this._bytesReceived != HEADER_BYTES_NEEDED)
             {
                 // We haven't gotten all the frame count buffer yet: just wait for more data to arrive
             }
@@ -140,8 +142,11 @@ namespace StellaLib.Network.Protocol
             }
             else
             {
-                // We've gotten an entire pixel instruction
-                Frame frame = new Frame();
+                // We've gotten an entire frame
+                int numberOfPixelInstructions = BitConverter.ToInt32(_headerBuffer,0);
+                int waitMS = BitConverter.ToInt32(_headerBuffer,sizeof(int));
+
+                Frame frame = new Frame(waitMS);
 
                 for(int i = 0; i< _frameBuffer.Length; i += PIXELINSTRUCTION_BYTES_NEEDED)
                 {

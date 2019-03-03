@@ -11,6 +11,7 @@ namespace StellaServer.Animation.Animators
     public class RepeatingPatternsAnimator : IAnimator
     {
         private int _lengthStrip;
+        private int _frameWaitMS;
         private List<Color[]> _patterns;
 
         /// <summary>
@@ -18,10 +19,11 @@ namespace StellaServer.Animation.Animators
         /// Each frame is the next pattern, repeated.
         /// </summary>
         /// <param name="patterns"></param>
-        public RepeatingPatternsAnimator(int lengthStrip, List<Color[]> patterns)
+        public RepeatingPatternsAnimator(int lengthStrip,int frameWaitMS, List<Color[]> patterns)
         {
             _lengthStrip = lengthStrip;
             _patterns = patterns;
+            _frameWaitMS = frameWaitMS;
         }
 
         public FrameSet Create()
@@ -30,7 +32,7 @@ namespace StellaServer.Animation.Animators
             foreach (Color[] pattern in _patterns)
             {
                 int patternsInStrip = _lengthStrip / pattern.Length;
-                Frame frame = new Frame ();
+                Frame frame = new Frame(_frameWaitMS);
                 int leftPixelIndex = 0;
                 for (int j = 0; j < patternsInStrip; j++)
                 {
