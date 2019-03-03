@@ -13,6 +13,8 @@ namespace Native
 		public int dmanum;
 
 		public ws2811_channel_t channel_0;
-		//public ws2811_channel_t channel_1;
+		// TODO channel_1 is used somewere.
+		// TODO If we remove the line below, the program segmentation faults.
+		public ws2811_channel_t channel_1;
 	}
 }
