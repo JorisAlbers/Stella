@@ -88,6 +88,7 @@ namespace EndToEndTests
                         controller.Run();
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
+                        Console.ReadLine();
                         controller.Dispose();
                     }
                         break;
