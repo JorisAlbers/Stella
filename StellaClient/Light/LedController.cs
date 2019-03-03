@@ -35,7 +35,6 @@ namespace StellaClient.Light
         {
             _nextFrame = null;
             _timer.Enabled = true;
-            _timer.Start();
         }
 
        
