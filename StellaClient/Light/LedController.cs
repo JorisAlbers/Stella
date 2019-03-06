@@ -11,7 +11,14 @@ namespace StellaClient.Light
 {
     public class LedController : IDisposable
     {
-        private const int TIMER_LOOP_DURATION = 100; // in miliseconds
+        /// Time tests:
+        /// 
+        /// Technique                 |   Pixels   |  Time
+        /// All pixels to a different |    300     |  9 at most
+        /// color                     | 
+        /// Moving dot                |    300     |  13 at most
+        /// 
+        private const int TIMER_LOOP_DURATION = 15; // in miliseconds
         private ILEDStrip _ledStrip;
         private Queue<Frame> _framesBuffer;
         private System.Timers.Timer _timer;
