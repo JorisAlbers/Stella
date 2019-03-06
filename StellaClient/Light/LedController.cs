@@ -21,6 +21,7 @@ namespace StellaClient.Light
         private const int TIMER_LOOP_DURATION = 15; // in miliseconds
         private ILEDStrip _ledStrip;
         private Queue<Frame> _framesBuffer;
+        private object _frameBufferLock = new object();
         private System.Timers.Timer _timer;
         private long _frameStart = -1;
         private Frame _nextFrame;
@@ -53,7 +54,7 @@ namespace StellaClient.Light
                 return;
             }
 
-            lock(_framesBuffer)
+            lock(_frameBufferLock)
             {
                 Draw();
             }            
@@ -137,7 +138,7 @@ namespace StellaClient.Light
         /// <param name="frame"></param>
         public void AddFrame(Frame frame)
         {
-            lock(_framesBuffer)
+            lock(_frameBufferLock)
             {
                 _framesBuffer.Enqueue(frame);
             }
@@ -149,7 +150,7 @@ namespace StellaClient.Light
         /// <param name="frame"></param>
         public void AddFrames(IEnumerable<Frame> frames)
         {
-            lock(_framesBuffer)
+            lock(_frameBufferLock)
             {
                 foreach(Frame frame in frames)
                 {
@@ -160,7 +161,7 @@ namespace StellaClient.Light
 
         public void ClearFrameBuffer()
         {
-            lock(_framesBuffer)
+            lock(_frameBufferLock)
             {
                 _framesBuffer.Clear();
             }
