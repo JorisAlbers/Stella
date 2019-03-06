@@ -58,6 +58,7 @@ namespace EndToEndTests
             {
                 Console.WriteLine("LedController tests");
                 Console.WriteLine("m - Moving dot");
+                Console.WriteLine("s - Color switch");
                 Console.WriteLine("q - back");
 
                 string input = Console.ReadLine();
@@ -68,7 +69,7 @@ namespace EndToEndTests
                         break;
                     case "m":
                     {
-                        int waitMS = 100;
+                        int waitMS = 20;
                         Color color = Color.BlanchedAlmond;
                         Color clearColor = Color.FromArgb(0,0,0);
 
@@ -93,6 +94,38 @@ namespace EndToEndTests
                         controller.Dispose();
                     }
                         break;
+                    case "s":
+                    {
+                        int waitMS = 100;
+
+                        Color[] colors = new Color[]
+                        {
+                            Color.Red,
+                            Color.Green,
+                        };
+                        List<Frame> frames = new List<Frame>();
+                        for(int i = 0; i< 100; i++)
+                        {
+                            for(int j=0;j < colors.Length;j++)
+                            {
+                                Frame frame = new Frame(waitMS);
+                                for(uint k = 0; k<ledCount;k++)
+                                {
+                                    frame.Add(new PixelInstruction{Index = k, Color = colors[j]});
+                                }
+                                frames.Add(frame);
+                            }
+                        }
+                        LedController controller = new LedController(ledstrip);
+                        //LedController controller = new LedController(new FakeLedStrip());
+                        controller.Run();
+                        controller.AddFrames(frames);
+                        Console.WriteLine("Press enter to quit");
+                        Console.ReadLine();
+                        controller.Dispose();
+                    }
+                    break;
+
                     default:
                         Console.WriteLine($"Unknown command {input}");
                         break;
