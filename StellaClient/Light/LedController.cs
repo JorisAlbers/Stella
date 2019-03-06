@@ -137,7 +137,6 @@ namespace StellaClient.Light
         /// <param name="frame"></param>
         public void AddFrame(Frame frame)
         {
-            //TODO maybe add IEnumerable overload for the frame param to not keep requesting the lock for each item
             lock(_framesBuffer)
             {
                 _framesBuffer.Enqueue(frame);
