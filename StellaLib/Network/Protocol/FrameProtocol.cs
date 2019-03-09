@@ -37,27 +37,22 @@ namespace StellaLib.Network.Protocol
     public class FrameProtocol
     {
         private const int HEADER_BYTES_NEEDED  = sizeof(int) + sizeof(int); // number of pixel changes + waitms
-        private const int PIXELINSTRUCTION_BYTES_NEEDED = sizeof(int) + 3;  // index + byte for each color
 
         public static byte[] SerializeFrame(Frame frame)
         {
-            int bytesNeeded = HEADER_BYTES_NEEDED + frame.Count * PIXELINSTRUCTION_BYTES_NEEDED;
+            int bytesNeeded = HEADER_BYTES_NEEDED + frame.Count * PixelInstructionProtocol.BYTES_NEEDED;
 
             byte[] buffer = new byte[bytesNeeded];
             BitConverter.GetBytes(frame.Count).CopyTo(buffer,0);
             BitConverter.GetBytes(frame.WaitMS).CopyTo(buffer,sizeof(int));
             for(int i = 0; i< frame.Count;i++)
             {
-                int bufferStartIndex = HEADER_BYTES_NEEDED +  i * PIXELINSTRUCTION_BYTES_NEEDED;
-
-                //Index
-                BitConverter.GetBytes(frame[i].Index).CopyTo(buffer,  bufferStartIndex);
-                bufferStartIndex += sizeof(int);
-                buffer[bufferStartIndex] = frame[i].Color.R;
-                bufferStartIndex += 1;
-                buffer[bufferStartIndex] = frame[i].Color.G;
-                bufferStartIndex += 1;
-                buffer[bufferStartIndex] = frame[i].Color.B;
+                int bufferStartIndex = HEADER_BYTES_NEEDED +  i * PixelInstructionProtocol.BYTES_NEEDED;
+                byte[] pixelInstruction = PixelInstructionProtocol.Serialize(frame[i]);
+                for(int j = 0; j< pixelInstruction.Length; j++ )
+                {
+                    buffer[bufferStartIndex + j] = pixelInstruction[j];
+                }
             }
             return buffer;
         }
@@ -129,7 +124,7 @@ namespace StellaLib.Network.Protocol
                     throw new System.Net.ProtocolViolationException("Frame size is less than one");
   
                 // Create the message type buffer and start reading into it
-                this._frameBuffer = new byte[length * PIXELINSTRUCTION_BYTES_NEEDED];
+                this._frameBuffer = new byte[length * PixelInstructionProtocol.BYTES_NEEDED];
                 this._bytesReceived = 0;
             }
         }
@@ -148,7 +143,7 @@ namespace StellaLib.Network.Protocol
 
                 Frame frame = new Frame(waitMS);
 
-                for(int i = 0; i< _frameBuffer.Length; i += PIXELINSTRUCTION_BYTES_NEEDED)
+                for(int i = 0; i< _frameBuffer.Length; i += PixelInstructionProtocol.BYTES_NEEDED)
                 {
                     int index = BitConverter.ToInt32(_frameBuffer,i); //Should only take the first 4 bytes
                     byte red   = _frameBuffer[i + 4];

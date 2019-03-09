@@ -39,7 +39,8 @@ namespace StellaLib.Test.Network.Protocol
             expectedBytes[27] = (byte)8;
             expectedBytes[28] = (byte)9;
 
-            Assert.AreEqual(expectedBytes, FrameProtocol.SerializeFrame(frame));
+            byte[] frameBytes = FrameProtocol.SerializeFrame(frame);
+            Assert.AreEqual(expectedBytes, frameBytes);
         }
 
         [Test]
