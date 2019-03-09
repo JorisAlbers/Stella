@@ -17,12 +17,29 @@ namespace StellaLib.Test.Network.Protocol
             pi.Color = Color.FromArgb(1,2,3);           
             
             byte[] expectedBytes = new byte[sizeof(int)+ 1 + 1 + 1]; // Index, red, green , blue 
-            BitConverter.GetBytes(10).CopyTo(expectedBytes,0);
-            expectedBytes[4] = (byte)1;
-            expectedBytes[5] = (byte)2;
-            expectedBytes[6] = (byte)3;
+            BitConverter.GetBytes(pi.Index).CopyTo(expectedBytes,0);
+            expectedBytes[4] = (byte)pi.Color.R;
+            expectedBytes[5] = (byte)pi.Color.G;
+            expectedBytes[6] = (byte)pi.Color.B;
            
             Assert.AreEqual(expectedBytes, PixelInstructionProtocol.Serialize(pi));
+        }
+        
+        [Test]
+        public void Deserialize_BytesArray_CorrectlyDeserializesByteArray()
+        {
+            PixelInstruction expectedPixelInstruction = new PixelInstruction();
+            expectedPixelInstruction.Index = 10;
+            expectedPixelInstruction.Color = Color.FromArgb(1,2,3); 
+
+            byte[] bytes = new byte[sizeof(int)+ 1 + 1 + 1]; // Index, red, green , blue 
+            BitConverter.GetBytes(expectedPixelInstruction.Index).CopyTo(bytes,0);
+            bytes[4] = (byte)expectedPixelInstruction.Color.R;
+            bytes[5] = (byte)expectedPixelInstruction.Color.G;
+            bytes[6] = (byte)expectedPixelInstruction.Color.B;
+
+            PixelInstruction pi = PixelInstructionProtocol.Deserialize(bytes,0);
+            Assert.AreEqual(expectedPixelInstruction,pi);
         }
         
     }

@@ -145,11 +145,7 @@ namespace StellaLib.Network.Protocol
 
                 for(int i = 0; i< _frameBuffer.Length; i += PixelInstructionProtocol.BYTES_NEEDED)
                 {
-                    int index = BitConverter.ToInt32(_frameBuffer,i); //Should only take the first 4 bytes
-                    byte red   = _frameBuffer[i + 4];
-                    byte green = _frameBuffer[i + 5];
-                    byte blue  = _frameBuffer[i + 6];
-                    frame.Add(new PixelInstruction((uint)index,red,green,blue));
+                    frame.Add(PixelInstructionProtocol.Deserialize(_frameBuffer,i));
                 }
                 
                 if(this.ReceivedFrame != null)
