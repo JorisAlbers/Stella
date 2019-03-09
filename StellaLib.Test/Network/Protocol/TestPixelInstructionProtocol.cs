@@ -22,7 +22,9 @@ namespace StellaLib.Test.Network.Protocol
             expectedBytes[5] = (byte)pi.Color.G;
             expectedBytes[6] = (byte)pi.Color.B;
            
-            Assert.AreEqual(expectedBytes, PixelInstructionProtocol.Serialize(pi));
+            byte[] buffer = new byte[PixelInstructionProtocol.BYTES_NEEDED];
+            PixelInstructionProtocol.Serialize(pi,buffer,0);
+            Assert.AreEqual(expectedBytes, buffer );
         }
         
         [Test]

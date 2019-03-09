@@ -48,11 +48,7 @@ namespace StellaLib.Network.Protocol
             for(int i = 0; i< frame.Count;i++)
             {
                 int bufferStartIndex = HEADER_BYTES_NEEDED +  i * PixelInstructionProtocol.BYTES_NEEDED;
-                byte[] pixelInstruction = PixelInstructionProtocol.Serialize(frame[i]);
-                for(int j = 0; j< pixelInstruction.Length; j++ )
-                {
-                    buffer[bufferStartIndex + j] = pixelInstruction[j];
-                }
+                PixelInstructionProtocol.Serialize(frame[i], buffer, bufferStartIndex);
             }
             return buffer;
         }

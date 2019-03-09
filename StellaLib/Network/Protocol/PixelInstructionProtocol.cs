@@ -8,13 +8,12 @@ namespace StellaLib.Network.Protocol
     {
         public const int BYTES_NEEDED = sizeof(int) + 1 + 1 + 1; // Index, Red, Green, Blue
         
-        public static byte[] Serialize(PixelInstruction instruction)
+        public static byte[] Serialize(PixelInstruction instruction, byte[] buffer, int startIndex)
         {
-            byte[] buffer = new byte[BYTES_NEEDED];
-            BitConverter.GetBytes(instruction.Index).CopyTo(buffer,  0);
-            buffer[4] = instruction.Color.R;
-            buffer[5] = instruction.Color.G;
-            buffer[6] = instruction.Color.B;
+            BitConverter.GetBytes(instruction.Index).CopyTo(buffer, startIndex);
+            buffer[startIndex + 4] = instruction.Color.R;
+            buffer[startIndex + 5] = instruction.Color.G;
+            buffer[startIndex + 6] = instruction.Color.B;
             return buffer;
         }
 
