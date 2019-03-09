@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using StellaLib.Animation;
 using StellaLib.Network.Packages;
 
-namespace StellaLib.Network.Protocol
+namespace StellaLib.Network.Protocol.Animation
 {
     public class FrameSectionProtocol
     {

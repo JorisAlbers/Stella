@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaLib.Network.Protocol
+namespace StellaLib.Network.Protocol.Animation
 {
     public class PixelInstructionProtocol
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaLib.Network.Packages;
-using StellaLib.Network.Protocol;
+using StellaLib.Network.Protocol.Animation;
 
-namespace StellaLib.Test.Network.Protocol
+namespace StellaLib.Test.Network.Protocol.Animation
 {
     [TestFixture]
     public class TestFrameSectionProtocol

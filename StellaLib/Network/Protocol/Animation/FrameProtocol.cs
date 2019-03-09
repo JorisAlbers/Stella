@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using StellaLib.Animation;
 
-namespace StellaLib.Network.Protocol
+namespace StellaLib.Network.Protocol.Animation
 {
     /// <summary>
     ///     The frame looks like this:
