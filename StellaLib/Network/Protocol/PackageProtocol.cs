@@ -16,6 +16,7 @@ namespace StellaLib.Network.Protocol
 public class PacketProtocol
 {
     public const int BUFFER_SIZE = 1024;
+    public const int MAX_MESSAGE_SIZE = BUFFER_SIZE - sizeof(int) - sizeof(int); //  - length , - messageType
 
     /// <summary>
     /// Wraps a message. The wrapped message is ready to send to a stream.

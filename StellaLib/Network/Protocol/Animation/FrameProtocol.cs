@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using StellaLib.Animation;
+using StellaLib.Network.Packages;
 
 namespace StellaLib.Network.Protocol.Animation
 {
@@ -36,128 +37,80 @@ namespace StellaLib.Network.Protocol.Animation
     /// </summary>
     public class FrameProtocol
     {
-        private const int HEADER_BYTES_NEEDED  = sizeof(int) + sizeof(int); // number of pixel changes + waitms
+        // Timestamp (absolute), number of frames OR number of Pixelinstructions, Has FrameSections
+        private const int HEADER_BYTES_NEEDED  = sizeof(long) + sizeof(int) + sizeof(bool); 
 
-        public static byte[] SerializeFrame(Frame frame)
+        public static byte[][] SerializeFrame(Frame frame, int indexOfFrame)
         {
             int bytesNeeded = HEADER_BYTES_NEEDED + frame.Count * PixelInstructionProtocol.BYTES_NEEDED;
+            byte[][] packages;
 
-            byte[] buffer = new byte[bytesNeeded];
-            BitConverter.GetBytes(frame.Count).CopyTo(buffer,0);
-            BitConverter.GetBytes(frame.WaitMS).CopyTo(buffer,sizeof(int));
-            for(int i = 0; i< frame.Count;i++)
+            if(bytesNeeded <= PacketProtocol.MAX_MESSAGE_SIZE)
             {
-                int bufferStartIndex = HEADER_BYTES_NEEDED +  i * PixelInstructionProtocol.BYTES_NEEDED;
-                PixelInstructionProtocol.Serialize(frame[i], buffer, bufferStartIndex);
-            }
-            return buffer;
-        }
-
-        public Action<Frame> ReceivedFrame {get;set;}
-        private byte[] _headerBuffer;
-        private byte[] _frameBuffer;
-        private int _bytesReceived;
-
-        // Creates bytes
-        public FrameProtocol()
-        {
-            _headerBuffer = new byte[HEADER_BYTES_NEEDED];
-        }
-
-        public void DataReceived(byte[] data)
-        {
-            int i = 0;
-            while(i < data.Length)
-            {
-                int bytesAvailable = data.Length - i;
-
-                if(_frameBuffer == null)
-                {
-                    // We're reading into the header buffer
-                    int bytesRequested = _headerBuffer.Length - _bytesReceived;
-
-                    // Copy the incoming bytes into the buffer
-                    int bytesTransferred = Math.Min(bytesRequested, bytesAvailable);
-                    Array.Copy(data, i, _headerBuffer, _bytesReceived, bytesTransferred);
-                    i += bytesTransferred;
-
-                    ReadCompleted(bytesTransferred);
-                }
-                else
-                {
-                    // We're reading into the pixel instruction buffer
-                    int bytesRequested = _frameBuffer.Length - _bytesReceived;
-
-                    // Copy the incoming bytes into the buffer
-                    int bytesTransferred = Math.Min(bytesRequested, bytesAvailable);
-                    Array.Copy(data, i, _frameBuffer, _bytesReceived, bytesTransferred);
-                    i += bytesTransferred;
-
-                    ReadCompleted(bytesTransferred);
-                }
-            }
-        }
-
-    private void ReadCompleted(int count)
-    {
-        // Get the number of bytes read into the buffer
-        _bytesReceived += count;
-  
-        if(this._frameBuffer == null)
-        {
-            // We're currently receiving the length buffer
-            if (this._bytesReceived != HEADER_BYTES_NEEDED)
-            {
-                // We haven't gotten all the frame count buffer yet: just wait for more data to arrive
-            }
-            else
-            {
-                // We've gotten the length buffer
-                int length = BitConverter.ToInt32(this._headerBuffer, 0);
-  
-                // Sanity check for length < 0
-                if (length < 1)
-                    throw new System.Net.ProtocolViolationException("Frame size is less than one");
-  
-                // Create the message type buffer and start reading into it
-                this._frameBuffer = new byte[length * PixelInstructionProtocol.BYTES_NEEDED];
-                this._bytesReceived = 0;
-            }
-        }
-        else
-        {
-            // We're currently receiving the frame buffer
-            if (this._bytesReceived != _frameBuffer.Length)
-            {
-                // We haven't gotten all the frame buffer yet: just wait for more data to arrive
-            }
-            else
-            {
-                // We've gotten an entire frame
-                int numberOfPixelInstructions = BitConverter.ToInt32(_headerBuffer,0);
-                int waitMS = BitConverter.ToInt32(_headerBuffer,sizeof(int));
-
-                Frame frame = new Frame(waitMS);
-
-                for(int i = 0; i< _frameBuffer.Length; i += PixelInstructionProtocol.BYTES_NEEDED)
-                {
-                    frame.Add(PixelInstructionProtocol.Deserialize(_frameBuffer,i));
-                }
+                // The frame is small enough to fit in a single packet.
+                // No FrameSectionPackage is needed.
+                packages = new byte[1][];
+                packages[0] = new byte[bytesNeeded];
+                BitConverter.GetBytes(indexOfFrame).CopyTo(packages[0],0);  // Sequence index
+                BitConverter.GetBytes(frame.WaitMS).CopyTo(packages[0],4);  // TimeStamp (relative)
+                BitConverter.GetBytes(frame.Count).CopyTo(packages[0],8);   // Number of PixelInstructions
+                BitConverter.GetBytes(false).CopyTo(packages[0],12);        // Has FrameSections
                 
-                if(this.ReceivedFrame != null)
+                for(int i = 0; i< frame.Count;i++)
                 {
-                    this.ReceivedFrame(frame);
+                    int bufferStartIndex = HEADER_BYTES_NEEDED +  i * PixelInstructionProtocol.BYTES_NEEDED;
+                    PixelInstructionProtocol.Serialize(frame[i], packages[0], bufferStartIndex);
                 }
-
-                // Start reading the length buffer again
-                _bytesReceived = 0;
-                _frameBuffer = null;
+                return packages;
             }
 
-        }
-        
+            // This frame is too big to send as one packet.
+            // Create multiple packages with the help of FrameSectionPackage
+            
+            // First, calculate the inital package
+            int headerBytesNeeded = HEADER_BYTES_NEEDED + FrameSectionProtocol.HEADER_BYTES_NEEDED;
+            int instructionsInFirstSection = (PacketProtocol.MAX_MESSAGE_SIZE - headerBytesNeeded) / PixelInstructionProtocol.BYTES_NEEDED; 
 
-        
+            // Second, calculate how many FrameSections are needed
+            int instructionsThatFitInOtherSections =  (PacketProtocol.MAX_MESSAGE_SIZE - FrameSectionProtocol.HEADER_BYTES_NEEDED) / PixelInstructionProtocol.BYTES_NEEDED; 
+            int frameSectionsNeeded = (int) Math.Ceiling((double)(frame.Count - instructionsInFirstSection) / instructionsThatFitInOtherSections) +1; // +1 for the first section
+            
+            packages = new byte[frameSectionsNeeded][];
+
+            // Third, create the Frame header and its first section
+            packages[0] = new byte[headerBytesNeeded + instructionsInFirstSection * PixelInstructionProtocol.BYTES_NEEDED];
+            
+            BitConverter.GetBytes(indexOfFrame).CopyTo(packages[0],0);           // Sequence index
+            BitConverter.GetBytes(frame.WaitMS).CopyTo(packages[0],4);           // TimeStamp (relative)
+            BitConverter.GetBytes(frameSectionsNeeded).CopyTo(packages[0],8);    // Number of FrameSets
+            BitConverter.GetBytes(true).CopyTo(packages[0],12);                  // Has FrameSections
+            CreateFrameSection(packages[0],13,frame,indexOfFrame,0,0,instructionsInFirstSection);
+            
+            // Lastely, create the other frame sections. A new byte array (package) for each FrameSection.
+            for (int i = 0; i < frameSectionsNeeded-1; i++)
+            {
+                int instructionStartIndex = instructionsInFirstSection + i * instructionsThatFitInOtherSections;
+                int instructionsInThisSection = Math.Min(instructionsThatFitInOtherSections, frame.Count - instructionStartIndex);
+                packages[i+1] = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED + PixelInstructionProtocol.BYTES_NEEDED * instructionsInThisSection];
+                CreateFrameSection(packages[i+1],0,frame,indexOfFrame,i+1,instructionStartIndex,instructionsInThisSection);
+            }
+            return packages;
+        }
+
+        private static void CreateFrameSection(byte[] buffer,int bufferStartIndex, Frame frame,
+         int frameIndex, int sectionIndex, int instructionStartIndex, int numberOfInstructions)
+        {
+            FrameSectionPackage package = new FrameSectionPackage();
+            package.FrameSequenceIndex = frameIndex;
+            package.Index = sectionIndex;
+            package.pixelInstructions = new List<PixelInstruction>();
+            for (int i = instructionStartIndex; i < instructionStartIndex + numberOfInstructions; i++)
+            {
+                package.pixelInstructions.Add(frame[i]);
+            }
+
+            FrameSectionProtocol.Serialize(package,buffer,bufferStartIndex);
+        }
+
     }
-}
 }

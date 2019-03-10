@@ -20,94 +20,79 @@ namespace StellaLib.Test.Network.Protocol.Animation
                 new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
                 new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
             };
-            byte[] expectedBytes = new byte[sizeof(int)+ sizeof(int) + sizeof(int)+3 + sizeof(int)+3 + sizeof(int)+3];
-            BitConverter.GetBytes(3).CopyTo(expectedBytes,0); 
-            BitConverter.GetBytes(frameWaitMS).CopyTo(expectedBytes,4); 
+            byte[] expectedBytes = new byte[sizeof(int)+ sizeof(int) +sizeof(int) + sizeof(bool) + sizeof(int)+3 + sizeof(int)+3 + sizeof(int)+3];
+            int startIndex = 0;
+            BitConverter.GetBytes(0).CopyTo(expectedBytes,startIndex); // Frame index
+            BitConverter.GetBytes(frameWaitMS).CopyTo(expectedBytes,startIndex+=4); 
+            BitConverter.GetBytes(frame.Count).CopyTo(expectedBytes,startIndex+=4); // Number of PixelInstructions
+            BitConverter.GetBytes(false).CopyTo(expectedBytes,startIndex+=4); // Has FrameSections
             // instruction 1
-            BitConverter.GetBytes(1).CopyTo(expectedBytes,8);
-            expectedBytes[12] = (byte)1;
-            expectedBytes[13] = (byte)2;
-            expectedBytes[14] = (byte)3;
+            BitConverter.GetBytes(1).CopyTo(expectedBytes,startIndex+=1);
+            expectedBytes[startIndex+=4] = (byte)1;
+            expectedBytes[startIndex+=1] = (byte)2;
+            expectedBytes[startIndex+=1] = (byte)3;
             // instruction 2
-            BitConverter.GetBytes(2).CopyTo(expectedBytes,15);
-            expectedBytes[19] = (byte)4;
-            expectedBytes[20] = (byte)5;
-            expectedBytes[21] = (byte)6;
+            BitConverter.GetBytes(2).CopyTo(expectedBytes,startIndex+=1);
+            expectedBytes[startIndex+=4] = (byte)4;
+            expectedBytes[startIndex+=1] = (byte)5;
+            expectedBytes[startIndex+=1] = (byte)6;
             // instruction 3
-            BitConverter.GetBytes(10).CopyTo(expectedBytes,22);
-            expectedBytes[26] = (byte)7;
-            expectedBytes[27] = (byte)8;
-            expectedBytes[28] = (byte)9;
+            BitConverter.GetBytes(10).CopyTo(expectedBytes,startIndex+=1);
+            expectedBytes[startIndex+=4] = (byte)7;
+            expectedBytes[startIndex+=1] = (byte)8;
+            expectedBytes[startIndex+=1] = (byte)9;
 
-            byte[] frameBytes = FrameProtocol.SerializeFrame(frame);
-            Assert.AreEqual(expectedBytes, frameBytes);
+            byte[][] packages = FrameProtocol.SerializeFrame(frame,0);
+
+            Assert.AreEqual(1, packages.Length);
+            Assert.AreEqual(expectedBytes, packages[0]);
         }
 
-        [Test]
-        public void DataReceived_FrameAsAsBytes_FiresFrameReceivedAction()
+         [Test]
+        public void SerializeFrame_FrameTooBigForASinglePackage_CreatesCorrectByteArray()
         {
-            Frame frame = new Frame(100)
-            { 
-                new PixelInstruction{ Index = 1,   Color = Color.FromArgb(1,2,3)},
-                new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
-                new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
-            };
-            byte[] bytes = FrameProtocol.SerializeFrame(frame);
-
-            bool receivedFrameTrigger = false;
-
-            FrameProtocol protocol = new FrameProtocol();
-            protocol.ReceivedFrame = (f)=> 
+            int frameWaitMS = 100;
+            int frameIndex = 9;
+            Frame frame = new Frame(frameWaitMS);
+            for (uint i = 0; i < 300; i++)
             {
-                CollectionAssert.AreEqual(frame,f);
-                receivedFrameTrigger = true;
-            };
-            protocol.DataReceived(bytes);
-            Assert.IsTrue(receivedFrameTrigger);
-        }
+                frame.Add(new PixelInstruction(i,1,2,3));
+            }
 
-        [Test]
-        public void DataReceived_FrameAsMultipleByteArrays_FiresFrameReceivedAction()
-        {
-            Frame frame = new Frame(100)
-            { 
-                new PixelInstruction{ Index = 1,   Color = Color.FromArgb(1,2,3)},
-                new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
-                new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
-            };
-            byte[] bytes = FrameProtocol.SerializeFrame(frame);
+            //Expected
+            // First package, check only header bytes
+            byte[] expectedHeaderBytes1 = new byte[sizeof(int)+ sizeof(int) +sizeof(int) + sizeof(bool) + FrameSectionProtocol.HEADER_BYTES_NEEDED];
+            BitConverter.GetBytes(frameIndex).CopyTo(expectedHeaderBytes1,0); // Frame index
+            BitConverter.GetBytes(frameWaitMS).CopyTo(expectedHeaderBytes1,4); // Timestamp, relative
+            BitConverter.GetBytes(3).CopyTo(expectedHeaderBytes1,8); // Number of FrameSections
+            BitConverter.GetBytes(true).CopyTo(expectedHeaderBytes1,12); // Has FrameSections
+            BitConverter.GetBytes(frameIndex).CopyTo(expectedHeaderBytes1,13); // frame sequence index
+            BitConverter.GetBytes(0).CopyTo(expectedHeaderBytes1,17); //package index
+            BitConverter.GetBytes(141).CopyTo(expectedHeaderBytes1,21); // number of pixelinstruction in the FrameSectionPackage, for the first package, this is 141
 
-            // Split the bytes up to fake a large frame that has to be send over multiple packages
-            byte[] array1 = new byte[6];
-            array1[0] = bytes[0];
-            array1[1] = bytes[1];
-            array1[2] = bytes[2];
-            array1[3] = bytes[3];
-            array1[4] = bytes[4];
-            array1[5] = bytes[5];
+            // Second package, check only header bytes
+            byte[] expectedHeaderBytes2 = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED];
+            BitConverter.GetBytes(frameIndex).CopyTo(expectedHeaderBytes2,0); // frame sequence index
+            BitConverter.GetBytes(1).CopyTo(expectedHeaderBytes2,4); //package index
+            BitConverter.GetBytes(143).CopyTo(expectedHeaderBytes2,8); // number of pixelinstruction in the FrameSectionPackage, for subsequent packages this is 143
 
-            byte[] array2 = new byte[6];
-            array2[0] = bytes[6];
-            array2[1] = bytes[7];
-            array2[2] = bytes[8];
-            array2[3] = bytes[9];
-            array2[4] = bytes[10];
-            array2[5] = bytes[11];
-
-            byte[] array3 = bytes.Skip(12).ToArray();
+            // Third package, check header + first pixel instruction
+            byte[] expectedHeaderBytes3 = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED + PixelInstructionProtocol.BYTES_NEEDED];
+            BitConverter.GetBytes(frameIndex).CopyTo(expectedHeaderBytes3,0); // frame sequence index
+            BitConverter.GetBytes(2).CopyTo(expectedHeaderBytes3,4); //package index
+            BitConverter.GetBytes(16).CopyTo(expectedHeaderBytes3,8); // number of pixelinstruction in the FrameSectionPackage, for subsequent packages this is 143, so there are 16 left
+            PixelInstruction instructionAtStartOfFrameSet3 = frame[284];
+            PixelInstructionProtocol.Serialize(instructionAtStartOfFrameSet3,expectedHeaderBytes3,12);
             
-            bool receivedFrameTrigger = false;
+            // RUN
+            byte[][] packages = FrameProtocol.SerializeFrame(frame,frameIndex);
 
-            FrameProtocol protocol = new FrameProtocol();
-            protocol.ReceivedFrame = (f)=> 
-            {
-                CollectionAssert.AreEqual(frame,f);
-                receivedFrameTrigger = true;
-            };
-            protocol.DataReceived(array1);
-            protocol.DataReceived(array2);
-            protocol.DataReceived(array3);
-            Assert.IsTrue(receivedFrameTrigger);
+            // Assert
+            Assert.AreEqual(3,packages.Length);
+            Assert.AreEqual(expectedHeaderBytes1,packages[0].Take(expectedHeaderBytes1.Length).ToArray(), "package 1 header incorrect");
+            Assert.AreEqual(expectedHeaderBytes2,packages[1].Take(expectedHeaderBytes2.Length).ToArray(), "package 2 header incorrect");
+            Assert.AreEqual(expectedHeaderBytes3,packages[2].Take(expectedHeaderBytes3.Length).ToArray(), "package 3 header or first instruction incorrect");
+           
         }
     }
 }
