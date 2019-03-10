@@ -32,7 +32,7 @@ namespace StellaServer.Animation.Animators
             foreach (Color[] pattern in _patterns)
             {
                 int patternsInStrip = _lengthStrip / pattern.Length;
-                Frame frame = new Frame(_frameWaitMS);
+                Frame frame = new Frame(frameSet.Count,_frameWaitMS);
                 int leftPixelIndex = 0;
                 for (int j = 0; j < patternsInStrip; j++)
                 {

@@ -25,7 +25,7 @@ namespace StellaServer.Animation.Animators
             FrameSet frameSet = new FrameSet();
             for (int i = 0; i < _pattern.Length; i++)
             {
-                Frame frame = new Frame(_frameWaitMS);
+                Frame frame = new Frame(frameSet.Count,_frameWaitMS);
                 int startIndex = i;
                 for (int j = 0; j < _stripLength; j++) 
                 {

@@ -12,9 +12,9 @@ namespace StellaLib.Test.Animation
         [OneTimeSetUp]
         public void SetUp()
         {
-            _frame1 = new Frame(1){ new PixelInstruction(){ Index = 1,   Color = Color.FromArgb(10,10,10)}};
-            _frame2 = new Frame(2){ new PixelInstruction(){ Index = 10,  Color = Color.FromArgb(20,20,20)}};
-            _frame3 = new Frame(3){ new PixelInstruction(){ Index = 100, Color = Color.FromArgb(30,30,30)}};
+            _frame1 = new Frame(0,1){ new PixelInstruction(){ Index = 1,   Color = Color.FromArgb(10,10,10)}};
+            _frame2 = new Frame(1,2){ new PixelInstruction(){ Index = 10,  Color = Color.FromArgb(20,20,20)}};
+            _frame3 = new Frame(2,3){ new PixelInstruction(){ Index = 100, Color = Color.FromArgb(30,30,30)}};
         }
 
         [Test]

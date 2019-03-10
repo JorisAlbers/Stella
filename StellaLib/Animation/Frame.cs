@@ -13,6 +13,7 @@ namespace StellaLib.Animation
     {   
         private List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
 
+        public int Index;
         public PixelInstruction this[int index] { get => pixelInstructions[index]; set => pixelInstructions[index] = value;}
 
         /// <summary>
@@ -21,8 +22,9 @@ namespace StellaLib.Animation
         /// <value></value>
         public int WaitMS {get;private set;}
 
-        public Frame(int waitMS)
+        public Frame(int index, int waitMS)
         {
+            Index = index;
             WaitMS = waitMS;
         }
 
