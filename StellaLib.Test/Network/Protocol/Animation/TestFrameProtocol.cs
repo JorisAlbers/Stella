@@ -137,5 +137,61 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEqual(expectedFrame,frame);
         }
+
+        [Test]
+        public void TryDeserialize_frameWithThreeFrameSets_DeserializesCorrectly()
+        {
+            int frameWaitMS = 100;
+            int frameIndex = 9;
+            Frame expectedFrame = new Frame(frameIndex,frameWaitMS);
+            for (uint i = 0; i < 300; i++)
+            {
+                expectedFrame.Add(new PixelInstruction(i,1,2,3));
+            }      
+            
+            // RUN
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame);
+
+            Assert.AreEqual(3,packages.Length);
+
+            FrameProtocol protocol = new FrameProtocol();
+            Frame frame;
+            Assert.AreEqual(false,protocol.TryDeserialize(packages[0],out frame));
+            Assert.AreEqual(false,protocol.TryDeserialize(packages[1],out frame));
+            Assert.AreEqual(true ,protocol.TryDeserialize(packages[2],out frame));
+            Assert.IsNotNull(frame);
+            Assert.AreEqual(expectedFrame.Index, frame.Index);
+            Assert.AreEqual(expectedFrame.WaitMS, frame.WaitMS);
+            Assert.AreEqual(expectedFrame.Count, frame.Count);
+            CollectionAssert.AreEqual(expectedFrame,frame);
+        }
+
+        [Test]
+        public void TryDeserialize_frameWithThreeFrameSetsOutOfOrder_DeserializesCorrectly()
+        {
+            int frameWaitMS = 100;
+            int frameIndex = 9;
+            Frame expectedFrame = new Frame(frameIndex,frameWaitMS);
+            for (uint i = 0; i < 300; i++)
+            {
+                expectedFrame.Add(new PixelInstruction(i,1,2,3));
+            }      
+            
+            // RUN
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame);
+
+            Assert.AreEqual(3,packages.Length);
+
+            FrameProtocol protocol = new FrameProtocol();
+            Frame frame;
+            Assert.AreEqual(false,protocol.TryDeserialize(packages[0],out frame));
+            Assert.AreEqual(false,protocol.TryDeserialize(packages[2],out frame));
+            Assert.AreEqual(true ,protocol.TryDeserialize(packages[1],out frame));
+            Assert.IsNotNull(frame);
+            Assert.AreEqual(expectedFrame.Index, frame.Index);
+            Assert.AreEqual(expectedFrame.WaitMS, frame.WaitMS);
+            Assert.AreEqual(expectedFrame.Count, frame.Count);
+            CollectionAssert.AreEquivalent(expectedFrame,frame);
+        }
     }
 }
