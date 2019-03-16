@@ -10,7 +10,7 @@ using StellaLib.Network.Protocol;
 
 namespace StellaServer.Network
 {
-    public class Server : IDisposable
+    public class Server : IServer, IDisposable
     {
         private List<Client> _newConnections;
         private Dictionary<string,Client> _clients;
