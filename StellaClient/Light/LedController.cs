@@ -23,7 +23,7 @@ namespace StellaClient.Light
         private Queue<Frame> _framesBuffer;
         private object _frameBufferLock = new object();
         private System.Timers.Timer _timer;
-        private long _frameStart = -1;
+        private long _frameStart = -1; //TODO use TimeStampRelative instead of waitMS. Can be implemented after FrameSet has been implemented.
         private Frame _nextFrame;
         private bool _isDisposed;
        
@@ -85,7 +85,7 @@ namespace StellaClient.Light
                     Frame firstFrame = _framesBuffer.Dequeue();
                     PrepareFrame(firstFrame);
                     _ledStrip.Render();
-                    _frameStart = DateTime.Now.Ticks + (firstFrame.WaitMS * TimeSpan.TicksPerMillisecond);
+                    _frameStart = DateTime.Now.Ticks + (firstFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond);
                     if(_framesBuffer.Count > 0)
                     {
                         _nextFrame = _framesBuffer.Dequeue();
@@ -109,7 +109,7 @@ namespace StellaClient.Light
                 }
                 // Render the already loaded frame
                 _ledStrip.Render();
-                _frameStart += _nextFrame.WaitMS * TimeSpan.TicksPerMillisecond;
+                _frameStart += _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
                 if(_framesBuffer.Count > 0)
                 {
                     // Prepare next frame

@@ -13,19 +13,22 @@ namespace StellaLib.Animation
     {   
         private List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
 
+        /// <summary>
+        /// The index of the Frame in the frameSet.
+        /// </summary>
         public int Index;
         public PixelInstruction this[int index] { get => pixelInstructions[index]; set => pixelInstructions[index] = value;}
 
         /// <summary>
-        /// The time in miliseconds this frame will be displayed
+        /// The number of miliseconds after the start of the FrameSet (animation).
         /// </summary>
         /// <value></value>
-        public int WaitMS {get;private set;}
+        public int TimeStampRelative {get;private set;}
 
-        public Frame(int index, int waitMS)
+        public Frame(int index, int timeStampRelative)
         {
             Index = index;
-            WaitMS = waitMS;
+            TimeStampRelative = timeStampRelative;
         }
 
         #region List interface 

@@ -35,7 +35,7 @@ namespace StellaLib.Test.Animation
             };
 
             // Expected wait ms
-            int[] expectedWaitMSOfEachFrame = new int[]
+            int[] expectedTimeStampRelatives = new int[]
             {
                 1,
                 2,
@@ -47,7 +47,7 @@ namespace StellaLib.Test.Animation
             foreach (Frame frame in frameSet) 
             {
                 Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[counter], frame[0].Index);
-                Assert.AreEqual(expectedWaitMSOfEachFrame[counter], frame.WaitMS);
+                Assert.AreEqual(expectedTimeStampRelatives[counter], frame.TimeStampRelative);
                 counter++;
             }
         }
@@ -69,7 +69,7 @@ namespace StellaLib.Test.Animation
                 100
             };
             // Expected wait ms
-            int[] expectedWaitMSOfEachFrame = new int[]
+            int[] expectedTimeStampRelatives = new int[]
             {
                 1,
                 2,
@@ -78,13 +78,13 @@ namespace StellaLib.Test.Animation
 
             // Assert
             Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[0],frameSet[0][0].Index);
-            Assert.AreEqual(expectedWaitMSOfEachFrame[0],frameSet[0].WaitMS);
+            Assert.AreEqual(expectedTimeStampRelatives[0],frameSet[0].TimeStampRelative);
 
             Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[1],frameSet[1][0].Index);
-            Assert.AreEqual(expectedWaitMSOfEachFrame[1],frameSet[1].WaitMS);
+            Assert.AreEqual(expectedTimeStampRelatives[1],frameSet[1].TimeStampRelative);
 
             Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[2],frameSet[2][0].Index);
-            Assert.AreEqual(expectedWaitMSOfEachFrame[2],frameSet[2].WaitMS);
+            Assert.AreEqual(expectedTimeStampRelatives[2],frameSet[2].TimeStampRelative);
         }
     }
 }

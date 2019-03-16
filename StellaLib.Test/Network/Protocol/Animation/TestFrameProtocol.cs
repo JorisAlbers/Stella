@@ -133,7 +133,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(true,protocol.TryDeserialize(bytes,out frame));
             Assert.IsNotNull(frame);
             Assert.AreEqual(expectedFrame.Index, frame.Index);
-            Assert.AreEqual(expectedFrame.WaitMS, frame.WaitMS);
+            Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEqual(expectedFrame,frame);
         }
@@ -161,7 +161,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(true ,protocol.TryDeserialize(packages[2],out frame));
             Assert.IsNotNull(frame);
             Assert.AreEqual(expectedFrame.Index, frame.Index);
-            Assert.AreEqual(expectedFrame.WaitMS, frame.WaitMS);
+            Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEqual(expectedFrame,frame);
         }
@@ -189,7 +189,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(true ,protocol.TryDeserialize(packages[1],out frame));
             Assert.IsNotNull(frame);
             Assert.AreEqual(expectedFrame.Index, frame.Index);
-            Assert.AreEqual(expectedFrame.WaitMS, frame.WaitMS);
+            Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEquivalent(expectedFrame,frame);
         }

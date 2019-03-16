@@ -52,7 +52,7 @@ namespace StellaLib.Network.Protocol.Animation
                 packages = new byte[1][];
                 packages[0] = new byte[bytesNeeded];
                 BitConverter.GetBytes(frame.Index).CopyTo(packages[0],0);  // Sequence index
-                BitConverter.GetBytes(frame.WaitMS).CopyTo(packages[0],4);  // TimeStamp (relative)
+                BitConverter.GetBytes(frame.TimeStampRelative).CopyTo(packages[0],4);  // TimeStamp (relative)
                 BitConverter.GetBytes(frame.Count).CopyTo(packages[0],8);   // Number of PixelInstructions
                 BitConverter.GetBytes(false).CopyTo(packages[0],12);        // Has FrameSections
                 
@@ -81,7 +81,7 @@ namespace StellaLib.Network.Protocol.Animation
             packages[0] = new byte[headerBytesNeeded + instructionsInFirstSection * PixelInstructionProtocol.BYTES_NEEDED];
 
             BitConverter.GetBytes(frame.Index).CopyTo(packages[0],0);           // Sequence index
-            BitConverter.GetBytes(frame.WaitMS).CopyTo(packages[0],4);           // TimeStamp (relative)
+            BitConverter.GetBytes(frame.TimeStampRelative).CopyTo(packages[0],4);           // TimeStamp (relative)
             BitConverter.GetBytes(frameSectionsNeeded).CopyTo(packages[0],8);    // Number of FrameSets
             BitConverter.GetBytes(true).CopyTo(packages[0],12);                  // Has FrameSections
             CreateFrameSection(packages[0],13,frame,frame.Index,0,0,instructionsInFirstSection);
