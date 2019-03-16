@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using StellaLib.Animation;
 
 namespace StellaServer.Animation.Animators
@@ -7,6 +8,6 @@ namespace StellaServer.Animation.Animators
     /// </summary>
     public interface IAnimator
     {
-         FrameSet Create();
+         List<Frame> Create();
     }
 }

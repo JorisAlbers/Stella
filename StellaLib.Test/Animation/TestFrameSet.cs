@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
@@ -21,7 +22,7 @@ namespace StellaLib.Test.Animation
         public void GetEnumerable_HasFrames_ReturnsTheCorrectFrames()
         {   
             //Setup
-            FrameSet frameSet = new FrameSet();
+            FrameSet frameSet = new FrameSet(DateTime.Now);
             frameSet.Add(_frame1);
             frameSet.Add(_frame2);
             frameSet.Add(_frame3);
@@ -56,7 +57,7 @@ namespace StellaLib.Test.Animation
         public void Index_HasFrames_ReturnsTheCorrectFrames()
         {   
             //Setup
-            FrameSet frameSet = new FrameSet();
+            FrameSet frameSet = new FrameSet(DateTime.Now);
             frameSet.Add(_frame1);
             frameSet.Add(_frame2);
             frameSet.Add(_frame3);

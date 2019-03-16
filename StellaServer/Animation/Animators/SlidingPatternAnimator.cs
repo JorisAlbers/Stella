@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
@@ -20,20 +21,20 @@ namespace StellaServer.Animation.Animators
             _pattern = pattern;
         }
 
-        public FrameSet Create()
+        public List<Frame> Create()
         {
-            FrameSet frameSet = new FrameSet();
+            List<Frame> frames = new List<Frame>();
             for (int i = 0; i < _pattern.Length; i++)
             {
-                Frame frame = new Frame(frameSet.Count,_frameWaitMS);
+                Frame frame = new Frame(frames.Count,_frameWaitMS);
                 int startIndex = i;
                 for (int j = 0; j < _stripLength; j++) 
                 {
                     frame.Add(new PixelInstruction(){ Index = (uint)j, Color = _pattern[(j + startIndex) % (_pattern.Length)] });
                 }
-                frameSet.Add(frame);
+                frames.Add(frame);
             }
-            return frameSet;
+            return frames;
         }
     }
 }

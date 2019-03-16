@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,10 +10,12 @@ namespace StellaLib.Animation
     /// <typeparam name="Frame"></typeparam>
     public class FrameSet : IList<Frame>
     {
+        public DateTime TimeStamp {get;private set;}
         private List<Frame> _frames;
 
-        public FrameSet()
+        public FrameSet(DateTime timeStamp)
         {
+            TimeStamp = timeStamp;
             _frames = new List<Frame>();
         }
 

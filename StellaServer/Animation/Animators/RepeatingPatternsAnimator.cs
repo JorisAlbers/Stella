@@ -26,13 +26,13 @@ namespace StellaServer.Animation.Animators
             _frameWaitMS = frameWaitMS;
         }
 
-        public FrameSet Create()
+        public List<Frame> Create()
         {
-            FrameSet frameSet = new FrameSet ();
+            List<Frame> frames = new List<Frame>();
             foreach (Color[] pattern in _patterns)
             {
                 int patternsInStrip = _lengthStrip / pattern.Length;
-                Frame frame = new Frame(frameSet.Count,_frameWaitMS);
+                Frame frame = new Frame(frames.Count,_frameWaitMS);
                 int leftPixelIndex = 0;
                 for (int j = 0; j < patternsInStrip; j++)
                 {
@@ -57,10 +57,10 @@ namespace StellaServer.Animation.Animators
                         Index = (uint) pixelIndex, Color = pattern[j]
                     });
                 }
-                frameSet.Add (frame);
+                frames.Add (frame);
 
             }
-            return frameSet;
+            return frames;
         }
     }
 }

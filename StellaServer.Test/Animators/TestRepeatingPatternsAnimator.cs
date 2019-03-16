@@ -11,7 +11,7 @@ namespace StellaServer.Test.Animation.Animators
     public class TestRepeatingPatternsAnimator
     {
         [Test]
-        public void Create_singlePattern_CreatesCorrectFrameSet()
+        public void Create_singlePattern_CreatesCorrectFrames()
         {
             // Setup
             Color[] pattern = new Color[]{
@@ -28,11 +28,11 @@ namespace StellaServer.Test.Animation.Animators
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            FrameSet frameSet = animator.Create();
+            List<Frame> frames = animator.Create();
 
             //Assert
-            Assert.AreEqual(1,frameSet.Count);
-            Frame frame = frameSet[0];
+            Assert.AreEqual(1,frames.Count);
+            Frame frame = frames[0];
             Assert.AreEqual(lengthStrip, frame.Count);
             Assert.AreEqual(frameWaitMS, frame.TimeStampRelative);
             Assert.AreEqual(frame[0].Color, expectedColor1);
@@ -45,7 +45,7 @@ namespace StellaServer.Test.Animation.Animators
         }
 
         [Test]
-        public void Create_TwoPatterns_CreatesFrameSetWithTwoFrames()
+        public void Create_TwoPatterns_CreatesFrameListWithTwoFrames()
         {
             // Setup
             List<Color[]> patterns = new List<Color[]>();
@@ -60,14 +60,14 @@ namespace StellaServer.Test.Animation.Animators
             Color expectedColor1 =  Color.FromArgb(1,2,3);
             Color expectedColor2 =  Color.FromArgb(4,5,6);
 
-            FrameSet frameSet = animator.Create();
+            List<Frame> frames = animator.Create();
 
             //Assert
-            Assert.AreEqual(2,frameSet.Count);
-            Frame frame1 = frameSet[0];
+            Assert.AreEqual(2,frames.Count);
+            Frame frame1 = frames[0];
             Assert.AreEqual(frameWaitMS, frame1.TimeStampRelative);
             Assert.AreEqual(frame1[0].Color, expectedColor1);
-            Frame frame2 = frameSet[1];
+            Frame frame2 = frames[1];
             Assert.AreEqual(frameWaitMS, frame2.TimeStampRelative);
             Assert.AreEqual(frame2[0].Color, expectedColor2);
         }
