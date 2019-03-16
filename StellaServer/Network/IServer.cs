@@ -9,5 +9,6 @@ namespace StellaServer.Network
         int NewConnectionsCount{get;}
         void SendMessageToClient(string clientID, string message);
         void SendMessageToClient(string clientID, MessageType messageType, string message);
+        void SendMessageToClient(string clientID, MessageType messageType, byte[] message);
     }
 }
