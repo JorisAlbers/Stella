@@ -32,6 +32,11 @@ namespace StellaServer.Network
             _socketConnection.Send(type,message);
         }
 
+        public void Send(MessageType type, byte[] message)
+        {
+            _socketConnection.Send(type,message);
+        }
+
         protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs eventArgs)
         {
             // Bubble the event. Add reference to this object.

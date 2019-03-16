@@ -43,6 +43,15 @@ namespace StellaLib.Network
 
         public void Send(MessageType messageType, string message)
         {
+            Console.WriteLine($"[OUT] [{messageType}] {message}");
+
+            // Convert the messageType and message to the PackageProtocol
+            byte[] byteData = PacketProtocol.WrapMessage(messageType, message);  
+    
+        }
+
+        public void Send(MessageType messageType, byte[] message)
+        {
             if(!IsConnected)
             {
                 throw new Exception("SocketConnection is not connected"); 
@@ -52,15 +61,12 @@ namespace StellaLib.Network
                 throw new ObjectDisposedException("SocketConnection has been disposed");
             }
 
-            Console.WriteLine($"[OUT] [{messageType}] {message}");
+            Console.WriteLine($"[OUT] [{messageType}] length:{message.Length}");
 
-            // Convert the messageType and message to the PackageProtocol
-            byte[] byteData = PacketProtocol.WrapMessage(messageType, message);  
-    
             // Begin sending the data to the remote device.  
             try
             {
-                _socket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), _socket);  
+                _socket.BeginSend(message, 0, message.Length, 0, new AsyncCallback(SendCallback), _socket);  
             }
             catch (SocketException e)
             {

@@ -73,7 +73,15 @@ namespace StellaServer.Network
             SendMessageToClient(clientID, MessageType.Standard, message);
         }
 
-        private void SendMessageToClient(string clientID, MessageType messageType, string message)
+        public void SendMessageToClient(string clientID, MessageType messageType, string message)
+        {
+            lock(_clients)
+            {
+                _clients[clientID].Send(messageType,message);
+            }
+        }
+
+        public void SendMessageToClient(string clientID, MessageType messageType, byte[] message)
         {
             lock(_clients)
             {
