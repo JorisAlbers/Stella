@@ -58,6 +58,7 @@ namespace StellaServer.Test
 
             frameSet.Add(new Frame(0,100){new PixelInstruction(10,1,2,3)});
             frameSet.Add(new Frame(1,200){new PixelInstruction(20,4,5,6)});
+            frameSet.Add(new Frame(2,200){new PixelInstruction(30,7,8,9)});
 
             byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frameSet[0],PacketProtocol.MAX_MESSAGE_SIZE)[0];
             byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frameSet[1],PacketProtocol.MAX_MESSAGE_SIZE)[0];
