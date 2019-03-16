@@ -13,6 +13,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void SerializeFrame_Frame_CreatesCorrectByteArray()
         {
+            int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame frame = new Frame(frameIndex,frameWaitMS)
@@ -43,7 +44,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             expectedBytes[startIndex+=1] = (byte)8;
             expectedBytes[startIndex+=1] = (byte)9;
 
-            byte[][] packages = FrameProtocol.SerializeFrame(frame);
+            byte[][] packages = FrameProtocol.SerializeFrame(frame, maxPackageSize);
 
             Assert.AreEqual(1, packages.Length);
             Assert.AreEqual(expectedBytes, packages[0]);
@@ -52,6 +53,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
          [Test]
         public void SerializeFrame_FrameTooBigForASinglePackage_CreatesCorrectByteArray()
         {
+            int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame frame = new Frame(frameIndex,frameWaitMS);
@@ -86,7 +88,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             PixelInstructionProtocol.Serialize(instructionAtStartOfFrameSet3,expectedHeaderBytes3,12);
             
             // RUN
-            byte[][] packages = FrameProtocol.SerializeFrame(frame);
+            byte[][] packages = FrameProtocol.SerializeFrame(frame,maxPackageSize);
 
             // Assert
             Assert.AreEqual(3,packages.Length);
@@ -141,6 +143,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void TryDeserialize_frameWithThreeFrameSets_DeserializesCorrectly()
         {
+            int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame expectedFrame = new Frame(frameIndex,frameWaitMS);
@@ -150,7 +153,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             }      
             
             // RUN
-            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame);
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame,maxPackageSize);
 
             Assert.AreEqual(3,packages.Length);
 
@@ -169,6 +172,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void TryDeserialize_frameWithThreeFrameSetsOutOfOrder_DeserializesCorrectly()
         {
+            int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame expectedFrame = new Frame(frameIndex,frameWaitMS);
@@ -178,7 +182,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             }      
             
             // RUN
-            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame);
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame,maxPackageSize);
 
             Assert.AreEqual(3,packages.Length);
 

@@ -40,12 +40,12 @@ namespace StellaLib.Network.Protocol.Animation
         // Timestamp (absolute), number of frames OR number of Pixelinstructions, Has FrameSections
         private const int HEADER_BYTES_NEEDED  = sizeof(long) + sizeof(int) + sizeof(bool); 
 
-        public static byte[][] SerializeFrame(Frame frame)
+        public static byte[][] SerializeFrame(Frame frame, int maxSizePerPackage)
         {
             int bytesNeeded = HEADER_BYTES_NEEDED + frame.Count * PixelInstructionProtocol.BYTES_NEEDED;
             byte[][] packages;
 
-            if(bytesNeeded <= PacketProtocol.MAX_MESSAGE_SIZE)
+            if(bytesNeeded <= maxSizePerPackage)
             {
                 // The frame is small enough to fit in a single packet.
                 // No FrameSectionPackage is needed.
@@ -69,10 +69,10 @@ namespace StellaLib.Network.Protocol.Animation
             
             // First, calculate the inital package
             int headerBytesNeeded = HEADER_BYTES_NEEDED + FrameSectionProtocol.HEADER_BYTES_NEEDED;
-            int instructionsInFirstSection = (PacketProtocol.MAX_MESSAGE_SIZE - headerBytesNeeded) / PixelInstructionProtocol.BYTES_NEEDED; 
+            int instructionsInFirstSection = (maxSizePerPackage - headerBytesNeeded) / PixelInstructionProtocol.BYTES_NEEDED; 
 
             // Second, calculate how many FrameSections are needed
-            int instructionsThatFitInOtherSections =  (PacketProtocol.MAX_MESSAGE_SIZE - FrameSectionProtocol.HEADER_BYTES_NEEDED) / PixelInstructionProtocol.BYTES_NEEDED; 
+            int instructionsThatFitInOtherSections =  (maxSizePerPackage - FrameSectionProtocol.HEADER_BYTES_NEEDED) / PixelInstructionProtocol.BYTES_NEEDED; 
             int frameSectionsNeeded = (int) Math.Ceiling((double)(frame.Count - instructionsInFirstSection) / instructionsThatFitInOtherSections) +1; // +1 for the first section
             
             packages = new byte[frameSectionsNeeded][];
