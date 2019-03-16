@@ -1,3 +1,4 @@
+using System;
 using StellaLib.Network;
 
 namespace StellaServer.Network
@@ -10,5 +11,6 @@ namespace StellaServer.Network
         void SendMessageToClient(string clientID, string message);
         void SendMessageToClient(string clientID, MessageType messageType, string message);
         void SendMessageToClient(string clientID, MessageType messageType, byte[] message);
+        event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
     }
 }

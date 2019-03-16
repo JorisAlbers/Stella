@@ -21,6 +21,8 @@ namespace StellaServer.Network
 
         private Socket _listenerSocket;
 
+        public event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
+
         public Server(int port)
         {
             _port = port;
@@ -137,6 +139,10 @@ namespace StellaServer.Network
                     // The client wants to sync the time
                     ParseTimeSyncMessage(client, e.Message);
                     break;
+                case MessageType.Animation_Request:
+                    // The client request the next n frames
+                    ParseAnimationRequestMessage(client,e.Message);
+                    break;
                 default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
                     break;
@@ -193,6 +199,44 @@ namespace StellaServer.Network
         {
             Console.WriteLine($"Synchronizing time with client {client.ID} ");
             client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(message));
+        }
+
+        private void ParseAnimationRequestMessage(Client client, string message)
+        {
+            // TODO replace string split with protocol serialization/deserialization
+            // Message will be:
+            // startIndex;Count
+            string[] split = message.Split(';');
+            int startIndex;
+            int count;
+
+            if(split.Length != 2)
+            {
+                Console.WriteLine($"[ERROR] Failed to parse animation request message, does not contain two items");
+                return;
+            }
+            if(!int.TryParse(split[0],out startIndex))
+            {
+                Console.WriteLine($"[ERROR] Failed to parse animation request message, startIndex is not an int.");
+                return;
+            }
+            if(!int.TryParse(split[1],out count))
+            {
+                Console.WriteLine($"[ERROR] Failed to parse animation request message, count is not an int.");
+                return;
+            }
+
+            Console.WriteLine($"Client {client.ID} has requested {count} frames starting from index {startIndex}");
+            OnAnimationRequestReceived(client.ID,startIndex,count);
+        }
+
+        private void OnAnimationRequestReceived(string clientID, int startIndex, int Count)
+        {
+            EventHandler<AnimationRequestEventArgs> eventHandler = AnimationRequestReceived;
+            if (eventHandler != null)
+            {
+                eventHandler(this,new AnimationRequestEventArgs(clientID,startIndex,Count));
+            }
         }
 
         public void Dispose()

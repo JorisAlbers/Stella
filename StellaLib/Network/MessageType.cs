@@ -7,5 +7,6 @@ namespace StellaLib.Network
         Standard,
         TimeSync,
         Animation_Start,
+        Animation_Request,
     }
 }
