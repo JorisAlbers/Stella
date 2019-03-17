@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using StellaLib.Animation;
+using StellaLib.Network.Protocol.Animation;
 
 namespace StellaLib.Network.Protocol
 {
@@ -22,6 +23,14 @@ namespace StellaLib.Network.Protocol
             count = BitConverter.ToInt32(bytes,sizeof(int));
         }
 
-        // TODO create and parse response
+        public static List<byte[]> CreateResponse(IEnumerable<Frame> frames)
+        {
+            List<byte[]> packages = new List<byte[]>();
+            foreach (Frame frame in frames)
+            {
+                packages.AddRange(FrameProtocol.SerializeFrame(frame, PacketProtocol.MAX_MESSAGE_SIZE));
+            }
+            return packages;
+        }
     }
 }

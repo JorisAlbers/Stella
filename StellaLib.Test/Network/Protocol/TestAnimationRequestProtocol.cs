@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
+using StellaLib.Animation;
 using StellaLib.Network.Protocol;
+using StellaLib.Network.Protocol.Animation;
 
 namespace StellaLib.Test.Network.Protocol
 {
@@ -35,6 +38,18 @@ namespace StellaLib.Test.Network.Protocol
 
             Assert.AreEqual(expectedStartIndex,startIndex);
             Assert.AreEqual(expectedCount,count);
+        }
+
+        [Test]
+        public void CreateRespons_singleFrame_SerializesCorrectly()
+        {
+            Frame frame = new Frame(9,100){new PixelInstruction(10,1,2,3)};
+            byte[][] expectedBytes = FrameProtocol.SerializeFrame(frame,1016);
+            
+            List<byte[]> bytes = AnimationRequestProtocol.CreateResponse(new Frame[]{frame});
+
+            Assert.AreEqual(expectedBytes.Length,bytes.Count);
+            Assert.AreEqual(expectedBytes[0],bytes[0]);
         }
     }
 

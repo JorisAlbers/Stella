@@ -45,31 +45,28 @@ namespace StellaServer
         {
             lock(_frameSetLock)
             {
+                // Get the frames requested
                 if(_frameSet == null)
                 {
                     Console.WriteLine($"Not sending frames to client {e.ClientID} as there is no frame set on display.");
                     return;
                 }
 
-                // Create packages
-                List<byte[]> packages = new List<byte[]>();
-                for (int i = e.StartIndex; i < e.StartIndex + e.Count; i++)
+                List<Frame> frames = new List<Frame>();
+                int maxIndex = Math.Min(_frameSet.Count,e.StartIndex + e.Count);
+                for (int i = e.StartIndex; i < maxIndex;i++)
                 {
-                    if(i > _frameSet.Count)
-                    {
-                        break;
-                    }
-
-                    byte[][] bytes = FrameProtocol.SerializeFrame(_frameSet[i], PacketProtocol.MAX_MESSAGE_SIZE);
-                    packages.AddRange(bytes);
+                    frames.Add(_frameSet[i]);
                 }
 
-                // Send packages
-                if(packages.Count < 1)
+                if(frames.Count < 1)
                 {
                     Console.WriteLine($"Not sending frames to client {e.ClientID} as there are not any frames in the frameSet from {e.StartIndex} till {e.StartIndex + e.Count}.");
                     return;
                 }
+
+                // Send the frames
+                List<byte[]> packages = AnimationRequestProtocol.CreateResponse(frames);
 
                 foreach(byte[] packet in packages)
                 {
