@@ -33,14 +33,14 @@ namespace StellaClient.Network
             Connect();
         }
 
-        public void Send(MessageType type, string message)
+        public void Send(MessageType type, byte[] message)
         {
             _socketConnection.Send(type,message);
         }
 
         private void SendInit()
         {
-            Send(MessageType.Init,_id);
+            Send(MessageType.Init,Encoding.ASCII.GetBytes(_id));
         }
         
         private void Connect()
@@ -88,7 +88,7 @@ namespace StellaClient.Network
                     SendInit();
                     break;
                 case MessageType.TimeSync: // Server sends back a timesync message
-                    ParseTimeSyncMessage(e.Message);
+                    ParseTimeSyncData(e.Message);
                     break;
                 default:
                     Console.WriteLine($"MessageType {e.MessageType} is not used by StellaClient.");
@@ -96,7 +96,7 @@ namespace StellaClient.Network
             }
         }
 
-        private void ParseTimeSyncMessage(string message)
+        private void ParseTimeSyncData(byte[] data)
         {
            if(_timeSetter == null)
            {
@@ -107,11 +107,11 @@ namespace StellaClient.Network
            long[] measurements;
            try
            {
-               measurements = TimeSyncProtocol.ParseMessage(message);
+               measurements = TimeSyncProtocol.ParseMessage(data);
            }
            catch(Exception e)
            {
-               Console.WriteLine($"Failed to parse TimeSync message from server. Message = {message}");
+               Console.WriteLine($"Failed to parse TimeSync message from server.");
                return;
            }
            

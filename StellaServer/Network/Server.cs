@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using StellaLib.Network;
@@ -70,19 +71,6 @@ namespace StellaServer.Network
             }
         }
 
-        public void SendMessageToClient(string clientID, string message)
-        {
-            SendMessageToClient(clientID, MessageType.Standard, message);
-        }
-
-        public void SendMessageToClient(string clientID, MessageType messageType, string message)
-        {
-            lock(_clients)
-            {
-                _clients[clientID].Send(messageType,message);
-            }
-        }
-
         public void SendMessageToClient(string clientID, MessageType messageType, byte[] message)
         {
             lock(_clients)
@@ -123,7 +111,7 @@ namespace StellaServer.Network
             }
 
             // Request init from client
-            client.Send(MessageType.Init,string.Empty);
+            client.Send(MessageType.Init,new byte[0]);
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
@@ -141,7 +129,7 @@ namespace StellaServer.Network
                     break;
                 case MessageType.Animation_Request:
                     // The client request the next n frames
-                    ParseAnimationRequestMessage(client,e.Message);
+                    OnAnimationRequestReceived(client.ID,e.Message);
                     break;
                 default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
@@ -164,28 +152,29 @@ namespace StellaServer.Network
             DisposeClient(client);
         }
 
-        private void ParseInitMessage(Client client, string message)
+        private void ParseInitMessage(Client client, byte[] message)
         {
-            // The message should be an identifier.
+            string id = Encoding.ASCII.GetString(message);
+            
             lock(_clients)
             {
-                if(client.ID != null && client.ID != message)
+                if(client.ID != null && client.ID != id)
                 {
-                    Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {message}, but he already has an ID.");
+                    Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {id}, but he already has an ID.");
                     return;
                 }
 
-                client.ID = message;
-                if(_clients.ContainsKey(message))
+                client.ID = id;
+                if(_clients.ContainsKey(id))
                 {
-                    Console.WriteLine($"A client with ID {message} already exists. Replacing the existing one.");
-                    DisposeClient(_clients[message]);
-                    _clients[message] = client;
+                    Console.WriteLine($"A client with ID {id} already exists. Replacing the existing one.");
+                    DisposeClient(_clients[id]);
+                    _clients[id] = client;
                 }
                 else
                 {
-                    Console.WriteLine($"Client has initialized itself with id {message}");
-                    _clients.Add(message,client);
+                    Console.WriteLine($"Client has initialized itself with id {id}");
+                    _clients.Add(id,client);
                 }
             }
            
@@ -195,47 +184,22 @@ namespace StellaServer.Network
             }
         }
 
-        private void ParseTimeSyncMessage(Client client, string message)
+        private void ParseTimeSyncMessage(Client client, byte[] message)
         {
             Console.WriteLine($"Synchronizing time with client {client.ID} ");
             client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(message));
         }
 
-        private void ParseAnimationRequestMessage(Client client, string message)
+        private void OnAnimationRequestReceived(string clientID, byte[] message)
         {
-            // TODO replace string split with protocol serialization/deserialization
-            // Message will be:
-            // startIndex;Count
-            string[] split = message.Split(';');
-            int startIndex;
-            int count;
+            int startIndex, count;
+            AnimationRequestProtocol.ParseRequest(message,out startIndex,out count);
 
-            if(split.Length != 2)
-            {
-                Console.WriteLine($"[ERROR] Failed to parse animation request message, does not contain two items");
-                return;
-            }
-            if(!int.TryParse(split[0],out startIndex))
-            {
-                Console.WriteLine($"[ERROR] Failed to parse animation request message, startIndex is not an int.");
-                return;
-            }
-            if(!int.TryParse(split[1],out count))
-            {
-                Console.WriteLine($"[ERROR] Failed to parse animation request message, count is not an int.");
-                return;
-            }
-
-            Console.WriteLine($"Client {client.ID} has requested {count} frames starting from index {startIndex}");
-            OnAnimationRequestReceived(client.ID,startIndex,count);
-        }
-
-        private void OnAnimationRequestReceived(string clientID, int startIndex, int Count)
-        {
+            Console.WriteLine($"Client {clientID} has requested {count} frames starting from index {startIndex}");
             EventHandler<AnimationRequestEventArgs> eventHandler = AnimationRequestReceived;
             if (eventHandler != null)
             {
-                eventHandler(this,new AnimationRequestEventArgs(clientID,startIndex,Count));
+                eventHandler(this,new AnimationRequestEventArgs(clientID,startIndex,count));
             }
         }
 

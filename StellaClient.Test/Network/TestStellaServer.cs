@@ -7,6 +7,7 @@ using StellaLib.Network;
 using StellaLib.Network.Protocol;
 using Moq;
 using StellaClient.Time;
+using System.Text;
 
 namespace StellaClient.Test.Network
 {
@@ -35,9 +36,10 @@ namespace StellaClient.Test.Network
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
 
-            byte[] expected = PacketProtocol.WrapMessage(MessageType.Standard, "ThisIsAMessage");
+            byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
+            byte[] expected = PacketProtocol.WrapMessage(MessageType.Standard, message);
 
-            stellaServer.Send(MessageType.Standard, "ThisIsAMessage");
+            stellaServer.Send(MessageType.Standard, message);
             byte[] receiveBuffer = new byte[expected.Length];
             server_receiver.Receive(receiveBuffer);
             Assert.AreEqual(expected,receiveBuffer);

@@ -8,8 +8,6 @@ namespace StellaServer.Network
         void Start();
         string[] ConnectedClients{get;}
         int NewConnectionsCount{get;}
-        void SendMessageToClient(string clientID, string message);
-        void SendMessageToClient(string clientID, MessageType messageType, string message);
         void SendMessageToClient(string clientID, MessageType messageType, byte[] message);
         event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
     }

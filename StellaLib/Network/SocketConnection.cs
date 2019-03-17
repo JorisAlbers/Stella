@@ -40,17 +40,7 @@ namespace StellaLib.Network
 
 
         // -------------------- SEND -------------------- \\
-
-        public void Send(MessageType messageType, string message)
-        {
-            Console.WriteLine($"[OUT] [{messageType}] {message}");
-
-            // Convert the messageType and message to the PackageProtocol
-            byte[] byteData = PacketProtocol.WrapMessage(messageType, message);  
-    
-        }
-
-        public void Send(MessageType messageType, byte[] message)
+        public void Send(MessageType messageType, byte[] data)
         {
             if(!IsConnected)
             {
@@ -61,12 +51,14 @@ namespace StellaLib.Network
                 throw new ObjectDisposedException("SocketConnection has been disposed");
             }
 
-            Console.WriteLine($"[OUT] [{messageType}] length:{message.Length}");
+            byte[] byteData = PacketProtocol.WrapMessage(messageType, data);  
+
+            Console.WriteLine($"[OUT] [{messageType}] length:{data.Length}");
 
             // Begin sending the data to the remote device.  
             try
             {
-                _socket.BeginSend(message, 0, message.Length, 0, new AsyncCallback(SendCallback), _socket);  
+                _socket.BeginSend(data, 0, data.Length, 0, new AsyncCallback(SendCallback), _socket);  
             }
             catch (SocketException e)
             {
@@ -145,8 +137,7 @@ namespace StellaLib.Network
 
         protected virtual void OnMessageReceived(MessageType type, byte[] bytes)
         {
-            string message = Encoding.ASCII.GetString(bytes);
-            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] {message}");
+            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] bytes received : {bytes.Length}");
 
             EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
             if (handler != null)
@@ -154,7 +145,7 @@ namespace StellaLib.Network
                 handler(this, new MessageReceivedEventArgs()
                 {
                     MessageType = type,
-                    Message = message
+                    Message = bytes
                 });
             }
         }

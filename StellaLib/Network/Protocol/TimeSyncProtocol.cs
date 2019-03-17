@@ -13,23 +13,30 @@ namespace StellaLib.Network.Protocol
     // 6. Client sets its time to the median of the 3, measurements 1-sd from the median are discared,attemps to remove network latency.
     public class TimeSyncProtocol
     {
-        const char SEPARATOR = ';';
+        private const int BYTES_PER_MEASUREMENT = sizeof(long);
         
-        public static string CreateMessage()
+        public static byte[] CreateMessage()
         {
-            return $"{DateTime.Now.Ticks}";
+            return BitConverter.GetBytes(DateTime.Now.Ticks);
         }
 
         // Adds the system time to the message
-        public static string CreateMessage(string previousMessage)
+        public static byte[] CreateMessage(byte[] previousMessage)
         {
-            return $"{previousMessage}{SEPARATOR}{DateTime.Now.Ticks}";
+            byte[] bytes = new byte[previousMessage.Length + BYTES_PER_MEASUREMENT];
+            previousMessage.CopyTo(bytes,0);
+            BitConverter.GetBytes(DateTime.Now.Ticks).CopyTo(bytes,previousMessage.Length);
+            return bytes;
         }
 
-        public static long[] ParseMessage(string message)
+        public static long[] ParseMessage(byte[] message)
         {
-            string[] split = message.Split(SEPARATOR);
-            return split.Select(x=> long.Parse(x)).ToArray();
+            long[] measurements = new long[message.Length / BYTES_PER_MEASUREMENT];
+            for (int i = 0; i < message.Length; i++)
+            {
+                measurements[i] = BitConverter.ToInt64(message, i * BYTES_PER_MEASUREMENT);
+            }
+            return measurements;
         }  
     }
 }

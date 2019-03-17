@@ -33,12 +33,12 @@ namespace StellaLib.Test.Network.Protocol
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
 
-            byte[] expected = PacketProtocol.WrapMessage(MessageType.Standard, "ThisIsAMessage");
+            byte[] expectedData = PacketProtocol.WrapMessage(MessageType.Standard, "ThisIsAMessage");
 
-            socketConnection.Send(MessageType.Standard, "ThisIsAMessage");
-            byte[] receiveBuffer = new byte[expected.Length];
+            socketConnection.Send(MessageType.Standard, expectedData);
+            byte[] receiveBuffer = new byte[expectedData.Length];
             server_receiver.Receive(receiveBuffer);
-            Assert.AreEqual(expected,receiveBuffer);
+            Assert.AreEqual(expectedData,receiveBuffer);
         }
     }
 }

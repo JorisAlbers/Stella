@@ -27,11 +27,6 @@ namespace StellaServer.Network
             _socketConnection.Start();
         }
 
-        public void Send(MessageType type, string message)
-        {
-            _socketConnection.Send(type,message);
-        }
-
         public void Send(MessageType type, byte[] message)
         {
             _socketConnection.Send(type,message);
