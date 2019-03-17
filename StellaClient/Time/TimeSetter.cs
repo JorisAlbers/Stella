@@ -7,13 +7,14 @@ namespace StellaClient.Time
 {
     public class TimeSetter
     {
-        const int MAX_MEASUREMENTS = 6;
         private ISystemTimeSetter _systemTimeSetter;
+        private int _numberOfMeasurements;
         private List<long[]> _measurements; // A measurement = clientSendTime, serverSendTime, clientReceivedTime
 
-        public TimeSetter(ISystemTimeSetter systemTimeSetter)
+        public TimeSetter(ISystemTimeSetter systemTimeSetter, int numberOfMeasurements)
         {
             _systemTimeSetter = systemTimeSetter;
+            _numberOfMeasurements = numberOfMeasurements;
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace StellaClient.Time
         /// True if this TimeSetter instances is waiting for more measurements to arrive in order to set the time.
         /// </summary>
         /// <value></value>
-        public bool NeedsMoreData { get { return _measurements.Count < MAX_MEASUREMENTS; } }
+        public bool NeedsMoreData { get { return _measurements.Count < _numberOfMeasurements; } }
 
         /// <summary>
         /// Calculates the timeoffset with the server
@@ -64,8 +65,8 @@ namespace StellaClient.Time
 
         private long ParseFinalTime(List<long[]> measurements)
         {
-            long[] deltas = new long[MAX_MEASUREMENTS];
-            for(int i=0; i<MAX_MEASUREMENTS; i++)
+            long[] deltas = new long[_numberOfMeasurements];
+            for(int i=0; i<_numberOfMeasurements; i++)
             {
                 long clientSendTime = measurements[i][0];
                 long serverTime = measurements[i][1];

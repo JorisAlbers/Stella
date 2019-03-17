@@ -68,7 +68,7 @@ namespace StellaClient.Network
                 // Make sure the time of the server is synced with our time
                 if(!_systemTimeSetter.TimeIsNTPSynced()) // TODO remember if time is synced in case the StellaServer object crashes
                 {
-                    _timeSetter = new TimeSetter(_systemTimeSetter);
+                    _timeSetter = new TimeSetter(_systemTimeSetter,9);
                     Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage());
                 }
             } 

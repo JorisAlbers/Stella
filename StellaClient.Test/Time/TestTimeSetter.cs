@@ -28,7 +28,7 @@ namespace StellaClient.Test.Time
                 time = t;
             });
 
-            TimeSetter timeSetter = new TimeSetter(mock.Object);
+            TimeSetter timeSetter = new TimeSetter(mock.Object,3);
             timeSetter.AddMeasurements(clientSendTime,serverSendTime,clientReceivedTime);
 
             Assert.AreEqual(expectedTimeDelta,time);
@@ -72,7 +72,7 @@ namespace StellaClient.Test.Time
 
             });
 
-            TimeSetter timeSetter = new TimeSetter(mock.Object);
+            TimeSetter timeSetter = new TimeSetter(mock.Object,3);
             timeSetter.AddMeasurements(0,0,0); // Set the first measurements which is not used for the final time adjustment
             timeSetter.AddMeasurements(clientSendTime1,serverSendTime1,clientReceivedTime1); // Second measurement
             timeSetter.AddMeasurements(clientSendTime2,serverSendTime2,clientReceivedTime2); // Third measurement
