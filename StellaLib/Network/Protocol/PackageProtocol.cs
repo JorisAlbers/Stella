@@ -25,18 +25,6 @@ public class PacketProtocol
     /// <para>Generates a length prefix for the message and returns the combined length prefix and message.</para>
     /// </remarks>
     /// <param name="message">The message to send.</param>
-    public static byte[] WrapMessage(MessageType type, string message)
-    {
-        return WrapMessage(type,Encoding.ASCII.GetBytes(message));
-    }
-
-    /// <summary>
-    /// Wraps a message. The wrapped message is ready to send to a stream.
-    /// </summary>
-    /// <remarks>
-    /// <para>Generates a length prefix for the message and returns the combined length prefix and message.</para>
-    /// </remarks>
-    /// <param name="message">The message to send.</param>
     public static byte[] WrapMessage(MessageType type, byte[] message)
     {
         // Get the message type prefix

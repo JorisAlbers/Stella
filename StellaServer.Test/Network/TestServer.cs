@@ -34,10 +34,10 @@ namespace StellaServer.Test.Animation.Network
             // Connect to the remote endpoint.  
             client.Connect( remoteEP);  
             Thread.Sleep(1000); // async hack
-
             string ID = "ThisIsAnIdentifier";
+            byte[] id_bytes = Encoding.ASCII.GetBytes("ThisIsAnIdentifier");
             // Then send the init values
-            client.Send(PacketProtocol.WrapMessage(MessageType.Init,ID));
+            client.Send(PacketProtocol.WrapMessage(MessageType.Init, id_bytes));
             Thread.Sleep(10000); // async hack
 
             client.Receive(new byte[1024]); // retrieve and skip the INIT message
@@ -76,11 +76,12 @@ namespace StellaServer.Test.Animation.Network
 
             byte[] buffer = new byte[1024];
             int bytesReceived = client.Receive(buffer); // retrieve the INIT message
-            byte[] expectedInitRequest = PacketProtocol.WrapMessage(MessageType.Init,String.Empty);
+            byte[] expectedInitRequest = PacketProtocol.WrapMessage(MessageType.Init,new byte[0]);
             Assert.AreEqual(expectedInitRequest,buffer.Take(bytesReceived).ToArray());
 
             string expectedID = "ThisIsAnIdentifier";
-            byte[] message = PacketProtocol.WrapMessage(MessageType.Init,expectedID);
+            byte[] expectedIDBytes = Encoding.ASCII.GetBytes(expectedID);
+            byte[] message = PacketProtocol.WrapMessage(MessageType.Init, expectedIDBytes);
             // Then send the init values
             client.Send(message);
             Thread.Sleep(1000); // async hack
@@ -128,8 +129,9 @@ namespace StellaServer.Test.Animation.Network
             Assert.AreEqual(0,server.ConnectedClients.Length);
 
             string expectedID = "ThisIsAnIdentifier";
+            byte[] expectedIdBytes = Encoding.ASCII.GetBytes(expectedID);
             // Then send the init values
-            client.Send(PacketProtocol.WrapMessage(MessageType.Init,expectedID));
+            client.Send(PacketProtocol.WrapMessage(MessageType.Init,expectedIdBytes));
             Thread.Sleep(1000); // async hack
 
             Assert.AreEqual(0,server.NewConnectionsCount);
@@ -158,7 +160,7 @@ namespace StellaServer.Test.Animation.Network
             client.Connect( remoteEP);  
               
             // Send the data through the socket.  
-            int bytesSent = client.Send(PacketProtocol.WrapMessage(MessageType.Standard,"This is a test"));   
+            int bytesSent = client.Send(PacketProtocol.WrapMessage(MessageType.Standard,new byte[0]));   
 
             Thread.Sleep(1000); // async hack
             server.Dispose();
