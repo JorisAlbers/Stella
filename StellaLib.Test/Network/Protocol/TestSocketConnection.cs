@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using StellaLib.Network;
@@ -32,10 +33,10 @@ namespace StellaLib.Test.Network.Protocol
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
+            byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
+            byte[] expectedData = PacketProtocol.WrapMessage(MessageType.Standard,message);
 
-            byte[] expectedData = PacketProtocol.WrapMessage(MessageType.Standard, "ThisIsAMessage");
-
-            socketConnection.Send(MessageType.Standard, expectedData);
+            socketConnection.Send(MessageType.Standard, message);
             byte[] receiveBuffer = new byte[expectedData.Length];
             server_receiver.Receive(receiveBuffer);
             Assert.AreEqual(expectedData,receiveBuffer);
