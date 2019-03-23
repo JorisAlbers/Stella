@@ -167,7 +167,7 @@ namespace StellaServer.Test.Animation.Network
             Thread.Sleep(1000); // async hack
             client.Send(PacketProtocol.WrapKeepaliveMessage()); // send keepalive messages.
             SocketException exception  = Assert.Throws<SocketException>(() => client.Send(PacketProtocol.WrapKeepaliveMessage()));
-            Assert.AreEqual(SocketError.Shutdown,exception.SocketErrorCode);
+            Assert.True(SocketError.Shutdown == exception.SocketErrorCode || SocketError.ConnectionAborted == exception.SocketErrorCode);
         }
 
         [Test]
@@ -199,7 +199,7 @@ namespace StellaServer.Test.Animation.Network
             }
             catch(Exception e)
             {
-                Assert.IsTrue(e.Message.Contains("Connection refused"));
+                Assert.IsTrue(e.Message.Contains("Connection refused") || e.Message.Contains("No connection could be made because the target machine actively refused it"));
             }           
         }
     }
