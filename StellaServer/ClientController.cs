@@ -32,7 +32,7 @@ namespace StellaServer
                 // Send the ANIMATION_START message to all clients.
                 // When the client has received the message and has prepared the animation buffer,
                 // The client will request the first frames to fill it's buffer.
-                byte[] message = FrameSetProtocol.Serialize(frameSet);
+                byte[] message = FrameSetMetadataProtocol.Serialize(frameSet.Metadata);
                 foreach(string clientID in _server.ConnectedClients)
                 {
                     _server.SendMessageToClient(clientID,MessageType.Animation_Start,message);

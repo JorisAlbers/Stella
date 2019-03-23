@@ -21,7 +21,7 @@ namespace StellaServer.Test
             MessageType expectedMessageType = MessageType.Animation_Start;
             var mock = new Mock<IServer>();
             FrameSet frameSet = new FrameSet(timeStamp);
-            byte[] expectedBytes = FrameSetProtocol.Serialize(frameSet);
+            byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSet.Metadata);
             mock.SetupGet(x=> x.ConnectedClients).Returns(new string[]{expectedID});
 
             string id = null;

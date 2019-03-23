@@ -10,11 +10,13 @@ namespace StellaLib.Animation
     /// <typeparam name="Frame"></typeparam>
     public class FrameSet : List<Frame>
     {
-        public DateTime TimeStamp {get;private set;}
+        public FrameSetMetadata Metadata { get; private set; }
 
-        public FrameSet(DateTime timeStamp)
+        public DateTime TimeStamp => Metadata.TimeStamp;
+
+        public FrameSet(DateTime timestamp)
         {
-            TimeStamp = timeStamp;
+            Metadata = new FrameSetMetadata(timestamp);
         }
     }
 }

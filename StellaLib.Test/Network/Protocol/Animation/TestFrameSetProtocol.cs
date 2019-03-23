@@ -14,11 +14,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             DateTime expectedTimeStamp = DateTime.Now;
             FrameSet frameSet = new FrameSet(expectedTimeStamp);
             
-            byte[] expectedBytes = new byte[sizeof(long) + sizeof(int)];
+            byte[] expectedBytes = new byte[sizeof(long)];
             BitConverter.GetBytes(frameSet.TimeStamp.Ticks).CopyTo(expectedBytes,0);
-            BitConverter.GetBytes(frameSet.Count).CopyTo(expectedBytes,sizeof(long));
 
-            byte[] bytes = FrameSetProtocol.Serialize(frameSet);
+            byte[] bytes = FrameSetMetadataProtocol.Serialize(frameSet.Metadata);
 
             Assert.AreEqual(expectedBytes,bytes);
         }
@@ -27,15 +26,12 @@ namespace StellaLib.Test.Network.Protocol.Animation
         public void Deserialze_bytes_CorrectlyDeserializes()
         {
             DateTime expectedTimeStamp = DateTime.Now;
-            int expectedCount = 1;
 
-            byte[] bytes = new byte[sizeof(long) + sizeof(int)];
+            byte[] bytes = new byte[sizeof(long)];
             BitConverter.GetBytes(expectedTimeStamp.Ticks).CopyTo(bytes,0);
-            BitConverter.GetBytes(expectedCount).CopyTo(bytes,sizeof(long));
 
-            FrameSet frameSet = FrameSetProtocol.Deserialize(bytes);
-            Assert.AreEqual(expectedTimeStamp,frameSet.TimeStamp);
-            // Assert.AreEqual(expectedCount,frameSet.Count); TODO implement count in deserialisation
+            FrameSetMetadata metadata = FrameSetMetadataProtocol.Deserialize(bytes);
+            Assert.AreEqual(expectedTimeStamp,metadata.TimeStamp);
 
         }
         
