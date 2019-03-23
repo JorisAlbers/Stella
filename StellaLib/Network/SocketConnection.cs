@@ -40,7 +40,7 @@ namespace StellaLib.Network
 
 
         // -------------------- SEND -------------------- \\
-        public void Send(MessageType messageType, byte[] data)
+        public void Send(MessageType messageType, byte[] message)
         {
             if(!IsConnected)
             {
@@ -51,9 +51,9 @@ namespace StellaLib.Network
                 throw new ObjectDisposedException("SocketConnection has been disposed");
             }
 
-            byte[] byteData = PacketProtocol.WrapMessage(messageType, data);  
+            byte[] data = PacketProtocol.WrapMessage(messageType, message);  
 
-            Console.WriteLine($"[OUT] [{messageType}] length:{data.Length}");
+            Console.WriteLine($"[OUT] [{messageType}] length:{message.Length}");
 
             // Begin sending the data to the remote device.  
             try
