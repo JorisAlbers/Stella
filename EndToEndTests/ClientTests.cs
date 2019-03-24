@@ -5,6 +5,7 @@ using StellaClient.Time;
 using StellaLib.Animation;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Net;
 
@@ -59,6 +60,7 @@ namespace EndToEndTests
                 Console.WriteLine("LedController tests");
                 Console.WriteLine("m - Moving dot");
                 Console.WriteLine("s - Color switch");
+                Console.WriteLine("p - Pending FramSet test");
                 Console.WriteLine("q - back");
 
                 string input = Console.ReadLine();
@@ -124,6 +126,72 @@ namespace EndToEndTests
                         Console.ReadLine();
                         controller.Dispose();
                     }
+                    break;
+                    case "p":
+                    {
+                        int waitMS = 500;
+                        //Animation 1
+                        Color[] colors1 = new Color[]
+                        {
+                            Color.Red,
+                            Color.Green,
+                        };
+                        List<Frame> frames1 = new List<Frame>();
+                        for (int i = 0; i < 100; i++)
+                        {
+                            for (int j = 0; j < colors1.Length; j++)
+                            {
+                                Frame frame = new Frame(j, waitMS);
+                                for (uint k = 0; k < ledCount; k++)
+                                {
+                                    frame.Add(new PixelInstruction { Index = k, Color = colors1[j] });
+                                }
+                                frames1.Add(frame);
+                            }
+                        }
+                            // Animation 2
+                        Color[] colors2 = new Color[]
+                        {
+                            Color.Blue,
+                            Color.White,
+                        };
+                        List<Frame> frames2 = new List<Frame>();
+                        for (int i = 0; i < 100; i++)
+                        {
+                            for (int j = 0; j < colors2.Length; j++)
+                            {
+                                Frame frame = new Frame(j, waitMS);
+                                for (uint k = 0; k < ledCount; k++)
+                                {
+                                    frame.Add(new PixelInstruction { Index = k, Color = colors2[j] });
+                                }
+                                frames2.Add(frame);
+                            }
+                        }
+
+                        LedController controller = new LedController(ledstrip);
+
+                        controller.Run();
+                        controller.AddFrames(frames1);
+
+                        string userInput;
+                        bool animationToggle = false;
+                        Console.WriteLine("Press enter to prepare with next animation. q to quit ");
+                        while ((userInput = Console.ReadLine()) != "q")
+                        {
+                            controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now + TimeSpan.FromSeconds(1)));
+                            
+                            if (animationToggle =! animationToggle)
+                            {
+                                controller.AddFrames(frames1);
+                            }
+                            else
+                            {
+                                controller.AddFrames(frames2);
+                            }
+                        }
+                        controller.Dispose();
+                        }
                     break;
 
                     default:
