@@ -90,6 +90,7 @@ namespace EndToEndTests
                         LedController controller = new LedController(ledstrip);
                         //LedController controller = new LedController(new FakeLedStrip());
                         controller.Run();
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
                         Console.ReadLine();
@@ -119,8 +120,9 @@ namespace EndToEndTests
                             }
                         }
                         LedController controller = new LedController(ledstrip);
-                        //LedController controller = new LedController(new FakeLedStrip());
+
                         controller.Run();
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
                         Console.ReadLine();
@@ -172,6 +174,7 @@ namespace EndToEndTests
                         LedController controller = new LedController(ledstrip);
 
                         controller.Run();
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
                         controller.AddFrames(frames1);
 
                         string userInput;

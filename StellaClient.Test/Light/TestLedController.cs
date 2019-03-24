@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Threading;
 using Moq;
@@ -27,6 +28,7 @@ namespace StellaClient.Test.Light
 
             LedController controller = new LedController(mock.Object);
             controller.Run();
+            controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
             controller.AddFrame(frame);
             Thread.Sleep(2000); // Async hack
             controller.Dispose();
@@ -76,6 +78,7 @@ namespace StellaClient.Test.Light
 
             LedController controller = new LedController(mock.Object);
             controller.Run();
+            controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
             controller.AddFrames(frames);
             Thread.Sleep(2000); // Async hack
             controller.Dispose();
@@ -90,29 +93,15 @@ namespace StellaClient.Test.Light
         }
 
         [Test]
-        public void AddFrame_Frame_AddsFrameToTheQueue()
+        public void AddFrame_Frame_AddsFrameToThePendingQueue()
         {
             Frame frame = new Frame(0,100){ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
             var mock = new Mock<ILEDStrip>();
             LedController controller = new LedController(mock.Object);
             Assert.AreEqual(0, controller.FramesInBuffer);
+            controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
             controller.AddFrame(frame);
-            Assert.AreEqual(1, controller.FramesInBuffer);
+            Assert.AreEqual(1, controller.FramesInPendingBuffer);
         }
-
-        [Test]
-        public void ClearFrameBuffer_BufferWithFrames_ClearsTheFrameBuffer()
-        {
-            Frame frame = new Frame(0,100){ new PixelInstruction{ Index = 20, Color = Color.FromArgb(10,20,30)}};
-            var mock = new Mock<ILEDStrip>();
-            LedController controller = new LedController(mock.Object);
-            controller.AddFrame(frame);
-            controller.AddFrame(frame);
-            controller.AddFrame(frame);
-            Assert.AreEqual(3, controller.FramesInBuffer);
-            controller.ClearFrameBuffer();
-            Assert.AreEqual(0, controller.FramesInBuffer);
-        }
-        
     }
 }

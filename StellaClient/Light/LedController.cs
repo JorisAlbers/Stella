@@ -35,7 +35,35 @@ namespace StellaClient.Light
         private FrameSetMetadata _pendingFrameSetMetadata;
         private Queue<Frame> _pendingFrameBuffer;
 
-        public int FramesInBuffer {get{return _frameBuffer.Count;}}
+        public int FramesInBuffer
+        {
+            get
+            {
+                lock (_frameBufferLock)
+                {
+                    if (_frameBuffer == null)
+                    {
+                        return 0;
+                    }
+                    return _frameBuffer.Count;
+                }
+            }
+        }
+
+        public int FramesInPendingBuffer
+        {
+            get
+            {
+                lock (_frameBufferLock)
+                {
+                    if (_pendingFrameBuffer == null)
+                    {
+                        return 0;
+                    }
+                    return _pendingFrameBuffer.Count;
+                }
+            }
+        }
 
         public LedController(ILEDStrip ledStrip)
         {
@@ -100,16 +128,24 @@ namespace StellaClient.Light
                 }
             }
             
+            // Then, check if we are in case 1
             if(_nextFrame == null)
             {
-                //TODO implement frameSetMetaData
-                // CASE 1 , Prepare, Render, Prepare
-                if(_frameBuffer.Count > 0)
+                if (_frameBuffer.Count > 0 && now >= _frameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
                 {
+                    // CASE 1 , Prepare, Render, Prepare
+                    // Frame 1
                     Frame firstFrame = _frameBuffer.Dequeue();
                     PrepareFrame(firstFrame);
+                    // should render in this loop, wait for remaining time
+                    while (DateTime.Now.Ticks < _frameSetMetadata.TimeStamp.Ticks)
+                    {
+                        Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
+                    }
                     _ledStrip.Render();
-                    _frameStart = DateTime.Now.Ticks + (firstFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond);
+                    _frameStart = _frameSetMetadata.TimeStamp.Ticks + (firstFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond);
+
+                    // Frame 2
                     if(_frameBuffer.Count > 0)
                     {
                         _nextFrame = _frameBuffer.Dequeue();
@@ -164,6 +200,11 @@ namespace StellaClient.Light
         {
             lock(_frameBufferLock)
             {
+                if (_frameSetMetadata == null && _pendingFrameSetMetadata == null)
+                {
+                    throw new Exception(
+                        $"Failed to add frames as the frameSet was not prepared. Call {nameof(PrepareNextFrameSet)} before adding frames.");
+                }
                 if (_pendingFrameBuffer == null)
                 {
                     _frameBuffer.Enqueue(frame);
@@ -183,6 +224,12 @@ namespace StellaClient.Light
         {
             lock(_frameBufferLock)
             {
+                if (_frameSetMetadata == null && _pendingFrameSetMetadata == null)
+                {
+                    throw new Exception(
+                        $"Failed to add frames as the frameSet was not prepared. Call { nameof(PrepareNextFrameSet) } before adding frames.");
+                }
+
                 if (_pendingFrameBuffer == null)
                 {
                     foreach (Frame frame in frames)
@@ -210,14 +257,6 @@ namespace StellaClient.Light
             {
                 _pendingFrameSetMetadata = metadata;
                 _pendingFrameBuffer = new Queue<Frame>();
-            }
-        }
-
-        public void ClearFrameBuffer()
-        {
-            lock(_frameBufferLock)
-            {
-                _frameBuffer.Clear();
             }
         }
 
