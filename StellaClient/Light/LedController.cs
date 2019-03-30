@@ -142,15 +142,16 @@ namespace StellaClient.Light
                     {
                         Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
                     }
-                    _ledStrip.Render();
-                    _frameStart = _frameSetMetadata.TimeStamp.Ticks + (firstFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond);
+                    Render();
 
                     // Frame 2
                     if(_frameBuffer.Count > 0)
                     {
                         _nextFrame = _frameBuffer.Dequeue();
+                        _frameStart = _frameSetMetadata.TimeStamp.Ticks + _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
                         PrepareFrame(_nextFrame);
                     }
+
                 }
             }
             else
@@ -168,12 +169,12 @@ namespace StellaClient.Light
                     Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
                 }
                 // Render the already loaded frame
-                _ledStrip.Render();
-                _frameStart += _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
+                Render();
                 if(_frameBuffer.Count > 0)
                 {
                     // Prepare next frame
                     _nextFrame = _frameBuffer.Dequeue();
+                    _frameStart = _frameSetMetadata.TimeStamp.Ticks + _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
                     PrepareFrame(_nextFrame);
                 }
                 else
@@ -185,11 +186,18 @@ namespace StellaClient.Light
 
         private void PrepareFrame(Frame frame)
         {
+            //Console.Out.WriteLine($"LedController: preparing frame {frame.Index}. RTS : {frame.TimeStampRelative}");
             for(int i=0; i< frame.Count;i++)
             {
                 PixelInstruction instruction = frame[i];
                 _ledStrip.SetLEDColor(0,(int)instruction.Index,instruction.Color);
             }
+        }
+
+        private void Render()
+        {
+            //Console.Out.WriteLine($"Rendering frame.");
+            _ledStrip.Render();
         }
 
         /// <summary>
