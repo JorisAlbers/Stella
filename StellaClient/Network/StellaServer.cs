@@ -12,7 +12,7 @@ namespace StellaClient.Network
     /// <summary>
     /// The connection with StellaServer
     /// </summary>
-    public class StellaServer : IDisposable
+    public class StellaServer :  IStellaServer, IDisposable
     {
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
