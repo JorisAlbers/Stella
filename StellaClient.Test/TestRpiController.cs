@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Moq;
 using NUnit.Framework;
 using StellaClient.Light;
@@ -52,6 +53,41 @@ namespace StellaClient.Test
             ledControllerMock.Raise(x => x.FramesNeeded += null, null, expectedFramesNeededEventArgs);
             Assert.AreEqual(expectedFramesNeededEventArgs.LastFrameIndex, receivedLastFrameIndex);
             Assert.AreEqual(expectedFramesNeededEventArgs.Count, receivedCount);
+        }
+
+        [Test]
+        public void _StellaServerFramesReceived_SendsToLedController()
+        {
+            var stellaServerMock = new Mock<IStellaServer>();
+            var ledControllerMock = new Mock<ILedController>();
+
+            List<Frame> expectedFrames = new List<Frame>();
+            for (int i = 0; i < 100; i++)
+            {
+                expectedFrames.Add(new Frame(i,10)
+                {
+                    new PixelInstruction(1,2,3,4)
+                });
+            }
+
+            IEnumerable<Frame> receivedFrames = null;
+            int invokeCount = 0;
+            ledControllerMock.Setup(x => x.AddFrames(It.IsAny<IEnumerable<Frame>>()))
+                .Callback<IEnumerable<Frame>>((frames) => 
+                {
+                    receivedFrames = frames;
+                    invokeCount++;
+                });
+
+            RpiController controller = new RpiController(stellaServerMock.Object, ledControllerMock.Object);
+            foreach (Frame frame in expectedFrames)
+            {
+                stellaServerMock.Raise(x => x.FrameReceived += null, null, frame);
+            }
+
+            Thread.Sleep(1000); // Async hack
+            Assert.AreEqual(1, invokeCount);
+            Assert.AreEqual(expectedFrames, receivedFrames);
         }
     }
 }
