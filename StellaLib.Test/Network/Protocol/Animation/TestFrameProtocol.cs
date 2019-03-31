@@ -197,5 +197,26 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEquivalent(expectedFrame,frame);
         }
+
+        [Test]
+        public void GetFrameIndex_FrameAndFrameSection_GetsCorrectIndex()
+        {
+            int maxPackageSize = 1016;
+            int frameWaitMS = 100;
+            int frameIndex = 9;
+            Frame expectedFrame = new Frame(frameIndex, frameWaitMS);
+            for (uint i = 0; i < 300; i++)
+            {
+                expectedFrame.Add(new PixelInstruction(i, 1, 2, 3));
+            }
+
+            // RUN
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame, maxPackageSize);
+
+            Assert.AreEqual(3, packages.Length);
+            Assert.AreEqual(frameIndex,FrameProtocol.GetFrameIndex(packages[0]));
+            Assert.AreEqual(frameIndex,FrameProtocol.GetFrameIndex(packages[1]));
+            Assert.AreEqual(frameIndex,FrameProtocol.GetFrameIndex(packages[2]));
+        }
     }
 }

@@ -112,6 +112,16 @@ namespace StellaLib.Network.Protocol.Animation
             FrameSectionProtocol.Serialize(package,buffer,bufferStartIndex);
         }
 
+        /// <summary>
+        /// Get the index of a FrameProtocol package. FrameHeader and FrameSection independent.
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static int GetFrameIndex(byte[] bytes)
+        {
+            return BitConverter.ToInt32(bytes, 0);
+        }
+
         private Frame _frame;
         private int _numberOfFrameSections;
         private bool[]  _frameSectionsReceived;
