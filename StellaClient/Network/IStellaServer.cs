@@ -11,6 +11,7 @@ namespace StellaClient.Network
         void SendFrameRequest(int? lastFrameIndex, int count);
         void Start();
         event EventHandler<FrameSetMetadata> AnimationStartReceived;
+        event EventHandler<Frame> FrameReceived;
 
     }
 }

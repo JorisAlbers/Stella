@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -6,6 +7,7 @@ using System.Text;
 using StellaClient.Time;
 using StellaLib.Animation;
 using StellaLib.Network;
+using StellaLib.Network.Packages;
 using StellaLib.Network.Protocol;
 using StellaLib.Network.Protocol.Animation;
 
@@ -22,8 +24,12 @@ namespace StellaClient.Network
         private ISystemTimeSetter _systemTimeSetter;
         private TimeSetter _timeSetter;
         private SocketConnection _socketConnection;
+        private object _resourceLock = new object();
+
+        private Dictionary<int, FrameProtocol> _frameSectionBuffer; // int = frame index, 
 
         public event EventHandler<FrameSetMetadata> AnimationStartReceived;
+        public event EventHandler<Frame> FrameReceived;
 
 
         public StellaServer(IPEndPoint serverAdress, string ID, ISystemTimeSetter timeSetter)
@@ -104,6 +110,9 @@ namespace StellaClient.Network
                 case MessageType.Animation_Start: // Server wants us to start a new animation
                     OnAnimationStartReceived(e.Message);
                     break;
+                case MessageType.Animation_Request: // Server sends us frames
+                    OnAnimationRequestReceived(e.Message);
+                    break;
                 default:
                     Console.WriteLine($"MessageType {e.MessageType} is not used by StellaClient.");
                     break;
@@ -146,10 +155,49 @@ namespace StellaClient.Network
         {
             FrameSetMetadata metadata = FrameSetMetadataProtocol.Deserialize(message);
             Console.Out.WriteLine($"Animation start request received.");
+            lock (_resourceLock)
+            {
+                _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
+            }
             EventHandler<FrameSetMetadata> handler = AnimationStartReceived;
             if (handler != null)
             {
                 handler(this, metadata);
+            }
+        }
+
+        private void OnAnimationRequestReceived(byte[] message)
+        {
+            // The frame might be split up into multiple packages. 
+            // We keep a buffer (FrameProtocol for each frame) to wait for all packages.
+            // When the frame is complete, we call FrameReceived.
+            int frameIndex = FrameProtocol.GetFrameIndex(message);
+            Frame frame = null;
+            lock (_resourceLock)
+            {
+                if (!_frameSectionBuffer.ContainsKey(frameIndex))
+                {
+                    _frameSectionBuffer.Add(frameIndex, new FrameProtocol());
+                }
+
+                if (_frameSectionBuffer[frameIndex].TryDeserialize(message, out frame))
+                {
+                   _frameSectionBuffer.Remove(frameIndex);
+                }
+            }
+
+            if (frame != null)
+            {
+                OnFrameReceived(frame);
+            }
+        }
+
+        private void OnFrameReceived(Frame frame)
+        {
+            EventHandler<Frame> handler = FrameReceived;
+            if (handler != null)
+            {
+                handler(this, frame);
             }
         }
 
