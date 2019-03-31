@@ -18,10 +18,17 @@ namespace StellaClient.Light
         /// color                     | 
         /// Moving dot                |    300     |  13 at most
         /// 
-        private const int TIMER_LOOP_DURATION = 15; // in miliseconds
+        private const int TIMER_LOOP_DURATION = 15; // in milliseconds
+        private const int FRAME_BUFFER_SIZE = 100;  // the maximum size of the frames buffer.
+        private const int LOOPS_PER_REQUEST = 1000 / TIMER_LOOP_DURATION;   // A frames needed request will be made every n loops. Once every second
+        private int _loopsSinceLastRequest = 0;
+
         private ILEDStrip _ledStrip;
         private System.Timers.Timer _timer;
         private bool _isDisposed;
+
+        /// <summary> Fires when the frame buffer is running low. </summary>
+        public EventHandler<FramesNeededEventArgs> FramesNeeded;
 
         /// CURRENT fields
         private FrameSetMetadata _frameSetMetadata;
@@ -29,6 +36,7 @@ namespace StellaClient.Light
         private readonly object _frameBufferLock = new object();
         private Frame _nextFrame;
         private long _frameStart = -1; //TODO use TimeStampRelative instead of waitMS. Can be implemented after FrameSet has been implemented.
+        private int? _lastKnownFrameIndex;
 
 
         /// PENDING fields
@@ -89,10 +97,27 @@ namespace StellaClient.Light
                 return;
             }
 
+            int framesNeeded = 0;
             lock(_frameBufferLock)
             {
                 Draw();
-            }            
+
+                // Check if we need more frames
+                int framesLeft = _pendingFrameBuffer?.Count ?? _frameBuffer.Count;
+
+                if (++_loopsSinceLastRequest > LOOPS_PER_REQUEST)
+                {
+                    // We are allowed to make a new frame request
+                    framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
+                    _loopsSinceLastRequest = 0;
+                }
+            }
+
+            if (framesNeeded > 0)
+            {
+                // We need more frames. Fire the event
+                OnFramesNeeded(_lastKnownFrameIndex, framesNeeded);
+            }
         }
 
         /// The flow is as follows:
@@ -216,10 +241,12 @@ namespace StellaClient.Light
                 if (_pendingFrameBuffer == null)
                 {
                     _frameBuffer.Enqueue(frame);
+                    _lastKnownFrameIndex = frame.Index;
                 }
                 else
                 {
                     _pendingFrameBuffer.Enqueue(frame);
+                    _lastKnownFrameIndex = frame.Index;
                 }
             }
         }
@@ -243,6 +270,7 @@ namespace StellaClient.Light
                     foreach (Frame frame in frames)
                     {
                         _frameBuffer.Enqueue(frame);
+                        _lastKnownFrameIndex = frame.Index;
                     }
                 }
                 else
@@ -250,6 +278,7 @@ namespace StellaClient.Light
                     foreach (Frame frame in frames)
                     {
                         _pendingFrameBuffer.Enqueue(frame);
+                        _lastKnownFrameIndex = frame.Index;
                     }
                 }
             }
@@ -265,6 +294,18 @@ namespace StellaClient.Light
             {
                 _pendingFrameSetMetadata = metadata;
                 _pendingFrameBuffer = new Queue<Frame>();
+            }
+            // Immediately fire FramesNeeded event. TODO send frames on PrepareFrameSet
+            OnFramesNeeded(null,FRAME_BUFFER_SIZE);
+        }
+
+        protected virtual void OnFramesNeeded(int? lastFrameIndex, int count)
+        {
+            // Bubble the event. Add reference to this object.
+            EventHandler<FramesNeededEventArgs> handler = FramesNeeded;
+            if (handler != null)
+            {
+               handler.Invoke(this, new FramesNeededEventArgs(lastFrameIndex,count));
             }
         }
 

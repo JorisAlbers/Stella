@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using Moq;
@@ -102,6 +104,75 @@ namespace StellaClient.Test.Light
             controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
             controller.AddFrame(frame);
             Assert.AreEqual(1, controller.FramesInPendingBuffer);
+        }
+
+        [Test]
+        public void PrepareNextFrameSet_FrameSetMetaData_FrameNeededGetsFired()
+        {
+           var mock = new Mock<ILEDStrip>();
+            LedController controller = new LedController(mock.Object);
+
+            int invokeCount = 0;
+            int? lastFrameIndex = null;
+            int count = 0;
+
+            controller.FramesNeeded += (sender, args) =>
+            {
+                invokeCount++;
+                lastFrameIndex = args.LastFrameIndex;
+                count = args.Count;
+            };
+
+            controller.Run();
+            controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
+            Thread.Sleep(100); // async hack. 
+            
+            Assert.AreEqual(1,invokeCount);
+            Assert.AreEqual(null,lastFrameIndex);
+            Assert.AreEqual(100,count); // FRAME_BUFFER_SIZE
+        }
+
+        [TestCase(1,100)]
+        [TestCase(10,92)]
+        [TestCase(50,52)]
+        [TestCase(100,2)]
+        public void AddFrame_BufferRunningLow__FrameNeededGetsFired(int numberOfFrames, int expectedCount)
+        {
+            List<Frame> frames = new List<Frame>();
+            // The first frame has an TimeStampRelative of 0.
+            frames.Add(new Frame(0, 0) { new PixelInstruction { Index = 20, Color = Color.FromArgb(10, 20, 30) }});
+
+            int waitMS = int.MaxValue; // Really high so only the first frame will be on display during the test.
+            for (int i = 1; i < numberOfFrames; i++)
+            {
+               frames.Add(new Frame(i, waitMS) { new PixelInstruction { Index = 20, Color = Color.FromArgb(10, 20, 30) }});
+            }
+
+            var mock = new Mock<ILEDStrip>();
+            LedController controller = new LedController(mock.Object);
+
+            int invokeCount = 0;
+            int? lastFrameIndex = null;
+            int count = 0;
+            controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
+
+            controller.FramesNeeded += (sender, args) =>
+            {
+                invokeCount++;
+                lastFrameIndex = args.LastFrameIndex;
+                count = args.Count;
+            };
+
+            controller.AddFrames(frames);
+            controller.Run();
+
+            Thread.Sleep(1500); // async hack. 
+
+
+            Assert.AreEqual(1, invokeCount, "The invoke count was incorrect");
+            Assert.AreEqual(numberOfFrames -1, lastFrameIndex, "The frame index was incorrect" );
+            Assert.AreEqual(expectedCount, count, "The count was incorrect"); // FRAME_BUFFER_SIZE - frames in buffer. The LedController dequeues the first 2 frames immediately.
+
         }
     }
 }
