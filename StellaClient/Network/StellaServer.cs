@@ -44,6 +44,11 @@ namespace StellaClient.Network
             _socketConnection.Send(type,message);
         }
 
+        public void SendFrameRequest(int? lastFrameIndex, int count)
+        {
+            Send(MessageType.Animation_Request, AnimationRequestProtocol.CreateRequest(lastFrameIndex?? 0, count));
+        }
+
         private void SendInit()
         {
             Send(MessageType.Init,Encoding.ASCII.GetBytes(_id));

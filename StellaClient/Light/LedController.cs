@@ -28,7 +28,7 @@ namespace StellaClient.Light
         private bool _isDisposed;
 
         /// <summary> Fires when the frame buffer is running low. </summary>
-        public EventHandler<FramesNeededEventArgs> FramesNeeded;
+        public event EventHandler<FramesNeededEventArgs> FramesNeeded;
 
         /// CURRENT fields
         private FrameSetMetadata _frameSetMetadata;
@@ -88,7 +88,6 @@ namespace StellaClient.Light
             _timer.Enabled = true;
         }
 
-       
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if(_isDisposed)

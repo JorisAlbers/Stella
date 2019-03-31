@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StellaLib.Animation;
 
 namespace StellaClient.Light
@@ -13,5 +14,6 @@ namespace StellaClient.Light
         void Dispose();
         void PrepareNextFrameSet(FrameSetMetadata metadata);
         void Run();
+        event EventHandler<FramesNeededEventArgs> FramesNeeded;
     }
 }
