@@ -4,8 +4,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using StellaClient.Time;
+using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
+using StellaLib.Network.Protocol.Animation;
 
 namespace StellaClient.Network
 {
@@ -20,7 +22,10 @@ namespace StellaClient.Network
         private ISystemTimeSetter _systemTimeSetter;
         private TimeSetter _timeSetter;
         private SocketConnection _socketConnection;
-        
+
+        public event EventHandler<FrameSetMetadata> AnimationStartReceived;
+
+
         public StellaServer(IPEndPoint serverAdress, string ID, ISystemTimeSetter timeSetter)
         {
             _serverAdress = serverAdress;
@@ -32,6 +37,7 @@ namespace StellaClient.Network
         {
             Connect();
         }
+
 
         public void Send(MessageType type, byte[] message)
         {
@@ -90,6 +96,9 @@ namespace StellaClient.Network
                 case MessageType.TimeSync: // Server sends back a timesync message
                     ParseTimeSyncData(e.Message);
                     break;
+                case MessageType.Animation_Start: // Server wants us to start a new animation
+                    OnAnimationStartReceived(e.Message);
+                    break;
                 default:
                     Console.WriteLine($"MessageType {e.MessageType} is not used by StellaClient.");
                     break;
@@ -127,6 +136,18 @@ namespace StellaClient.Network
                _timeSetter = null;
            }
         }
+
+        private void OnAnimationStartReceived(byte[] message)
+        {
+            FrameSetMetadata metadata = FrameSetMetadataProtocol.Deserialize(message);
+            Console.Out.WriteLine($"Animation start request received.");
+            EventHandler<FrameSetMetadata> handler = AnimationStartReceived;
+            if (handler != null)
+            {
+                handler(this, metadata);
+            }
+        }
+
 
         public void Dispose()
         {

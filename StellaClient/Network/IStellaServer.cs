@@ -1,4 +1,6 @@
-﻿using StellaLib.Network;
+﻿using System;
+using StellaLib.Animation;
+using StellaLib.Network;
 
 namespace StellaClient.Network
 {
@@ -7,5 +9,6 @@ namespace StellaClient.Network
         void Dispose();
         void Send(MessageType type, byte[] message);
         void Start();
+        event EventHandler<FrameSetMetadata> AnimationStartReceived;
     }
 }
