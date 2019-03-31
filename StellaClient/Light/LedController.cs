@@ -9,7 +9,7 @@ using StellaLib.Animation;
 
 namespace StellaClient.Light
 {
-    public class LedController : IDisposable
+    public class LedController : ILedController, IDisposable
     {
         /// Time tests:
         /// 
