@@ -7,18 +7,18 @@ using StellaLib.Network.Protocol;
 
 namespace StellaLib.Network
 {
-    public class SocketConnection
+    public class SocketConnectionController
     {
         private PacketProtocol _packetProtocol;
         private bool _isDisposed = false;
         private Socket _socket;
         private readonly object _parsingMessageLock = new object(); // Lock used by each message parsing thread
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        public event EventHandler Disconnect;
+        public event  EventHandler Disconnect;
         
         public bool IsConnected {get; private set;}
 
-        public SocketConnection(Socket socket)
+        public SocketConnectionController(Socket socket)
         {
             _socket = socket;
         }
@@ -27,7 +27,7 @@ namespace StellaLib.Network
         {
             if(!_socket.Connected)
             {
-                throw new Exception("The socket must be connected before starting the SocketConnection");
+                throw new Exception("The socket must be connected before starting the SocketConnectionController");
             }
 
             _packetProtocol = new PacketProtocol();
@@ -44,11 +44,11 @@ namespace StellaLib.Network
         {
             if(!IsConnected)
             {
-                throw new Exception("SocketConnection is not connected"); 
+                throw new Exception("SocketConnectionController is not connected"); 
             }
             if(_isDisposed)
             {
-                throw new ObjectDisposedException("SocketConnection has been disposed");
+                throw new ObjectDisposedException("SocketConnectionController has been disposed");
             }
 
             byte[] data = PacketProtocol.WrapMessage(messageType, message);  

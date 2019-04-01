@@ -24,19 +24,19 @@ namespace StellaLib.Test.Network.Protocol
             server.Bind(localEndPoint);  
             server.Listen(2);
 
-            // Create a SocketConnection
+            // Create a SocketConnectionController
             Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
             socket.Connect(localEndPoint);
 
-            SocketConnection socketConnection = new SocketConnection(socket);
-            socketConnection.Start();
+            SocketConnectionController socketConnectionController = new SocketConnectionController(socket);
+            socketConnectionController.Start();
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
             byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
             byte[] expectedData = PacketProtocol.WrapMessage(MessageType.Standard,message);
 
-            socketConnection.Send(MessageType.Standard, message);
+            socketConnectionController.Send(MessageType.Standard, message);
             byte[] receiveBuffer = new byte[expectedData.Length];
             server_receiver.Receive(receiveBuffer);
             Assert.AreEqual(expectedData,receiveBuffer);

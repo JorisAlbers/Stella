@@ -23,7 +23,7 @@ namespace StellaClient.Network
         private string _id;
         private ISystemTimeSetter _systemTimeSetter;
         private TimeSetter _timeSetter;
-        private SocketConnection _socketConnection;
+        private SocketConnectionController _socketConnectionController;
         private object _resourceLock = new object();
 
         private Dictionary<int, FrameProtocol> _frameSectionBuffer; // int = frame index, 
@@ -47,7 +47,7 @@ namespace StellaClient.Network
 
         public void Send(MessageType type, byte[] message)
         {
-            _socketConnection.Send(type,message);
+            _socketConnectionController.Send(type,message);
         }
 
         public void SendFrameRequest(int? lastFrameIndex, int count)
@@ -78,9 +78,9 @@ namespace StellaClient.Network
                 socket.EndConnect(ar);
 
                 Console.WriteLine("Connected with StellaServer");
-                _socketConnection = new SocketConnection(socket);
-                _socketConnection.MessageReceived += OnMessageReceived;
-                _socketConnection.Start();
+                _socketConnectionController = new SocketConnectionController(socket);
+                _socketConnectionController.MessageReceived += OnMessageReceived;
+                _socketConnectionController.Start();
 
                 // Make sure the time of the server is synced with our time
                 if(!_systemTimeSetter.TimeIsNTPSynced()) // TODO remember if time is synced in case the StellaServer object crashes
@@ -205,7 +205,7 @@ namespace StellaClient.Network
         public void Dispose()
         {
             _isDisposed = true;
-            _socketConnection.Dispose();
+            _socketConnectionController.Dispose();
         }
     }
 }

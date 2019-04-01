@@ -27,7 +27,7 @@ namespace StellaClient.Test.Network
             server.Bind(localEndPoint);  
             server.Listen(2);
 
-            // Create a SocketConnection
+            // Create a SocketConnectionController
             var mockSystemTimeSetter = new Mock<ISystemTimeSetter>();
             mockSystemTimeSetter.Setup(x=>x.TimeIsNTPSynced()).Returns(true);
             StellaServer stellaServer = new StellaServer(localEndPoint, "ThisIsAnID", mockSystemTimeSetter.Object);

@@ -9,27 +9,27 @@ namespace StellaServer.Network
 {
     public class Client : IDisposable
     {
-        private SocketConnection _socketConnection {get;set;}
+        private SocketConnectionController SocketConnectionController {get;set;}
         public string ID {get;set;}
         public event EventHandler Disconnect;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
 
-        public Client(SocketConnection socketConnection)
+        public Client(SocketConnectionController socketConnectionController)
         {
-            _socketConnection = socketConnection;
-            _socketConnection.Disconnect += OnDisconnect;
-            _socketConnection.MessageReceived += OnMessageReceived;
+            SocketConnectionController = socketConnectionController;
+            SocketConnectionController.Disconnect += OnDisconnect;
+            SocketConnectionController.MessageReceived += OnMessageReceived;
         }
 
         public void Start()
         {
-            _socketConnection.Start();
+            SocketConnectionController.Start();
         }
 
         public void Send(MessageType type, byte[] message)
         {
-            _socketConnection.Send(type,message);
+            SocketConnectionController.Send(type,message);
         }
 
         protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs eventArgs)
@@ -54,9 +54,9 @@ namespace StellaServer.Network
 
         public void Dispose()
         {
-            _socketConnection.MessageReceived -= OnMessageReceived;
-            _socketConnection.Disconnect -= OnDisconnect;
-            _socketConnection.Dispose();
+            SocketConnectionController.MessageReceived -= OnMessageReceived;
+            SocketConnectionController.Disconnect -= OnDisconnect;
+            SocketConnectionController.Dispose();
         }
     }
 }
