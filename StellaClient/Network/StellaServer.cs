@@ -63,7 +63,7 @@ namespace StellaClient.Network
         private void Connect()
         {
             // Create a TCP/IP socket.  
-            Socket socket = new Socket(_serverAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
+            ISocketConnection socket = new SocketConnection(_serverAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject
   
             // Connect to the remote endpoint.  
             socket.BeginConnect(_serverAdress, new AsyncCallback(ConnectCallback), socket);  
@@ -74,7 +74,7 @@ namespace StellaClient.Network
             try 
             {  
                 // Complete the connection.  
-                Socket socket = (Socket) ar.AsyncState;
+                ISocketConnection socket = (ISocketConnection) ar.AsyncState;
                 socket.EndConnect(ar);
 
                 Console.WriteLine("Connected with StellaServer");

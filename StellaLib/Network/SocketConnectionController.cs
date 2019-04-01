@@ -11,14 +11,14 @@ namespace StellaLib.Network
     {
         private PacketProtocol _packetProtocol;
         private bool _isDisposed = false;
-        private Socket _socket;
+        private ISocketConnection _socket;
         private readonly object _parsingMessageLock = new object(); // Lock used by each message parsing thread
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         public event  EventHandler Disconnect;
         
         public bool IsConnected {get; private set;}
 
-        public SocketConnectionController(Socket socket)
+        public SocketConnectionController(ISocketConnection socket)
         {
             _socket = socket;
         }

@@ -20,7 +20,7 @@ namespace StellaServer.Network
         private bool _isShuttingDown = false;
         private object _isShuttingDownLock = new object();
 
-        private Socket _listenerSocket;
+        private ISocketConnection _listenerSocket;
 
         public event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
 
@@ -39,7 +39,7 @@ namespace StellaServer.Network
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _port);  
     
             // Create a TCP/IP socket.  
-            _listenerSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _listenerSocket = new SocketConnection(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
             // Bind the socket to the local endpoint and listen for incoming connections.  
 
             _listenerSocket.Bind(localEndPoint);  
@@ -97,7 +97,7 @@ namespace StellaServer.Network
             _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
 
             // Handle the new connection
-            Socket handler = listener.EndAccept(ar); 
+            ISocketConnection handler = (ISocketConnection) listener.EndAccept(ar);
 
             // Create a new client.
             Client client = new Client(new SocketConnectionController(handler));

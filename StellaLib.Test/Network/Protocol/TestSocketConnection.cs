@@ -25,7 +25,7 @@ namespace StellaLib.Test.Network.Protocol
             server.Listen(2);
 
             // Create a SocketConnectionController
-            Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
+            SocketConnection socket = new SocketConnection(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
             socket.Connect(localEndPoint);
 
             SocketConnectionController socketConnectionController = new SocketConnectionController(socket);
