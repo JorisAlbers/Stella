@@ -17,7 +17,7 @@ namespace StellaLib.Animation
         public int Index;
 
         /// <summary>
-        /// The number of miliseconds after the start of the FrameSet (animation).
+        /// The number of milliseconds after the start of the FrameSet (animation) this frame will be shown.
         /// </summary>
         /// <value></value>
         public int TimeStampRelative {get;private set;}
