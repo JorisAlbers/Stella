@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Network;
@@ -76,7 +77,48 @@ namespace StellaLib.Test.Network
             Assert.IsTrue(disconnectInvoked);
         }
 
+        [Test]
+        public void ReceiveCallback_Message_InvokesMessageArrived()
+        {
+            // The receive callback is private. We have to chain the receive via the start function.
+            MessageType messageType = MessageType.Init;
+            byte[] message = Encoding.ASCII.GetBytes("test message");
+            var mock = new Mock<ISocketConnection>();
+            mock.Setup(x => x.Connected).Returns(true);
+
+            byte[] dataToSend = PacketProtocol.WrapMessage(messageType, message);
 
 
+            var asyncStateMock = new Mock<IAsyncResult>();
+            asyncStateMock.Setup(x => x.AsyncState).Returns(dataToSend);
+
+            bool beginReceiveHasBeenInvoked = false;
+            mock.Setup(x => x.BeginReceive(
+                    It.IsAny<byte[]>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<SocketFlags>(),
+                    It.IsAny<AsyncCallback>(),
+                    It.IsAny<object>()))
+                .Callback<byte[], int, int, SocketFlags,  AsyncCallback, object>((data, offset, size, socketFlags, asyncCallback, state) =>
+                {
+                    if (!beginReceiveHasBeenInvoked)
+                    {
+                        beginReceiveHasBeenInvoked = true; // Prevent endless loop
+                        asyncCallback.Invoke(asyncStateMock.Object); // calls ReceiveCallBack
+                    }
+                });
+
+            bool endSendCalled = false;
+            mock.Setup(x => x.EndReceive(It.IsAny<IAsyncResult>())).Returns(dataToSend.Length).Callback(()=>endSendCalled = true);
+            
+            SocketConnectionController controller = new SocketConnectionController(mock.Object);
+            MessageReceivedEventArgs messageReceivedEventArgs = null;
+            controller.MessageReceived += (sender, args) => { messageReceivedEventArgs = args; };
+            controller.Start();
+            Assert.IsTrue(endSendCalled);
+            Assert.AreEqual(messageType,messageReceivedEventArgs.MessageType);
+            Assert.AreEqual(message,messageReceivedEventArgs.Message);
+        }
     }
 }
