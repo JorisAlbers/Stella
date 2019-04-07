@@ -10,8 +10,8 @@ namespace StellaLib.Network.Protocol
     // 3. Client updates its time and sends its new time
     // 4. Server sends its time
     // 5. Repeat 3x
-    // 6. Client sets its time to the median of the 3, measurements 1-sd from the median are discared,attemps to remove network latency.
-    public class TimeSyncProtocol
+    // 6. Client sets its time to the median of the 3, measurements 1-sd from the median are discarded, attempts to remove network latency.
+    public static class TimeSyncProtocol
     {
         private const int BYTES_PER_MEASUREMENT = sizeof(long);
         
