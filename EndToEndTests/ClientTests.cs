@@ -9,6 +9,8 @@ using System.Data;
 using System.Drawing;
 using System.Net;
 using System.Threading;
+using StellaClient;
+using StellaServer;
 
 namespace EndToEndTests
 {
@@ -20,7 +22,8 @@ namespace EndToEndTests
             while(run)
             {
                 Console.WriteLine("Client tests");
-                Console.WriteLine("c - Run a StellaServer instance");
+                Console.WriteLine("i - Run a StellaClient instance");
+                Console.WriteLine("c - Run a StellaServer class instance");
                 Console.WriteLine("l - Ledcontroller tests");
                 Console.WriteLine("t - Time related test");
                 Console.WriteLine("q - back");
@@ -40,12 +43,52 @@ namespace EndToEndTests
                     case "t":
                         TimeTests timeTests = new TimeTests();
                         timeTests.Start();
-                        break;          
+                        break;
+                    case "i":
+                        CreateStellaClientInstance();
+                        break;
+
                     default:
                         Console.WriteLine($"Unknown command {input}");
                         break;
                 }
             }
+        }
+
+        private static void CreateStellaClientInstance()
+        {
+            // Light
+            int ledCount = 300;
+            Settings settings = Settings.CreateDefaultSettings();
+            settings.Channels[0] = new Channel(ledCount, 18, 255, false, StripType.WS2812_STRIP);
+            WS281x ledstrip = new WS281x(settings);
+            LedController ledController = new LedController(ledstrip);
+            ledController.Run();
+
+            string id = "ID_1";
+            // Server
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.110"), 20055);
+            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, id, new LinuxTimeSetter());
+            stellaServer.Start();
+
+            RpiController controller = new RpiController(stellaServer, ledController);
+
+            string input;
+            Console.Out.WriteLine($"Running StellaClient instance with id {id}");
+            while ((input = Console.ReadLine()) != "q")
+            {
+                Console.Out.WriteLine("q - quit");
+
+                switch (input)
+                {
+                    default:
+                        Console.Out.WriteLine("Unknown command.");
+                        break;
+                }
+            }
+            stellaServer.Dispose();
+            ledController.Dispose();
+
         }
 
         private static void LedControllerTests()
