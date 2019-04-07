@@ -99,7 +99,6 @@ namespace StellaClient.Network
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            Console.WriteLine($"[IN]  [{e.MessageType}] {e.Message}");
             switch(e.MessageType)
             {
                 case MessageType.Init: // Server wants us to send our init values
@@ -155,7 +154,6 @@ namespace StellaClient.Network
         private void OnAnimationStartReceived(byte[] message)
         {
             FrameSetMetadata metadata = FrameSetMetadataProtocol.Deserialize(message);
-            Console.Out.WriteLine($"Animation start request received.");
             lock (_resourceLock)
             {
                 _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
