@@ -70,6 +70,11 @@ namespace StellaClient
 
         private void LedControllerOnFramesNeeded(object sender, FramesNeededEventArgs e)
         {
+            if (_frameReceivedThrottleTimer.Enabled)
+            {
+                // We are currently receiving frames. Ignore request for more frames.
+                return;
+            }
             // Notify the server that we need more frames
             _server.SendFrameRequest(e.LastFrameIndex, e.Count);
         }
