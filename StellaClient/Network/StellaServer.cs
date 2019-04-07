@@ -87,7 +87,7 @@ namespace StellaClient.Network
                 if(!_systemTimeSetter.TimeIsNTPSynced()) // TODO remember if time is synced in case the StellaServer object crashes
                 {
                     _timeSetter = new TimeSetter(_systemTimeSetter,9);
-                    Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage());
+                    Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage(DateTime.Now));
                 }
             } 
             catch (SocketException e) 
@@ -143,7 +143,7 @@ namespace StellaClient.Network
            if(_timeSetter.NeedsMoreData)
            {
                // Start the next timeSync measurement
-               Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage());
+               Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage(DateTime.Now));
            }
            else
            {

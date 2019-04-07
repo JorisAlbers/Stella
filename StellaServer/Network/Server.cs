@@ -194,7 +194,7 @@ namespace StellaServer.Network
         private void ParseTimeSyncMessage(Client client, byte[] message)
         {
             Console.WriteLine($"Synchronizing time with client {client.ID} ");
-            client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(message));
+            client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(DateTime.Now,message));
         }
 
         private void OnAnimationRequestReceived(string clientID, byte[] message)
