@@ -111,11 +111,7 @@ namespace StellaLib.Network
 
             if (bytesRead > 0) 
             {  
-                // First start receiving more data
-                byte[] buffer = new byte[PacketProtocol.BUFFER_SIZE];
-                _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
-
-                // Then parse the message
+                // Parse the message
                 lock(_parsingMessageLock) // TODO FIFO is not guaranteed, maybe add QueuedLock
                 {
                     try
@@ -132,6 +128,9 @@ namespace StellaLib.Network
                         _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
                     }
                 }
+                // Start receiving more data
+                byte[] buffer = new byte[PacketProtocol.BUFFER_SIZE];
+                _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);
             }  
         }
 
