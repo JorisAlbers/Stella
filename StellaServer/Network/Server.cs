@@ -35,9 +35,15 @@ namespace StellaServer.Network
         {
             // Establish the local endpoint for the socket.  
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = ipHostInfo.AddressList[0];  
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _port);  
-    
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            if (ipAddress.IsIPv6LinkLocal)
+            {
+                // Use the ipv4 address
+                ipAddress = ipHostInfo.AddressList[1];
+            }
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _port);
+
+            Console.Out.WriteLine($"Starting server on {_port}");
             // Create a TCP/IP socket.  
             _listenerSocket = new SocketConnection(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
             // Bind the socket to the local endpoint and listen for incoming connections.  
@@ -80,9 +86,10 @@ namespace StellaServer.Network
         }
 
         private void AcceptCallback(IAsyncResult ar) 
-        {     
+        {
+            Console.Out.WriteLine("Received accept callback");
             // Get the socket that handles the client request.  
-            Socket listener = (Socket) ar.AsyncState;  
+            ISocketConnection listener = (ISocketConnection) ar.AsyncState;  
 
             lock(_isShuttingDownLock)
             {
