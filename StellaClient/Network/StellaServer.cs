@@ -62,6 +62,7 @@ namespace StellaClient.Network
         
         private void Connect()
         {
+            Console.Out.WriteLine($"Trying to connect with server on ip {_serverAdress.Address}:{_serverAdress.Port}");
             // Create a TCP/IP socket.  
             ISocketConnection socket = new SocketConnection(_serverAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject
   
