@@ -53,10 +53,10 @@ namespace StellaServer
                 }
 
                 List<Frame> frames = new List<Frame>();
-                int maxIndex = Math.Min(_frameSet.Count,e.StartIndex + e.Count);
+                int maxIndex = Math.Min(_frameSet.Frames.Count, e.StartIndex + e.Count);
                 for (int i = e.StartIndex; i < maxIndex;i++)
                 {
-                    frames.Add(_frameSet[i]);
+                    frames.Add(_frameSet.Frames[i]);
                 }
 
                 if(frames.Count < 1)

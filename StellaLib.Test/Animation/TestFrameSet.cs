@@ -23,9 +23,9 @@ namespace StellaLib.Test.Animation
         {   
             //Setup
             FrameSet frameSet = new FrameSet(DateTime.Now);
-            frameSet.Add(_frame1);
-            frameSet.Add(_frame2);
-            frameSet.Add(_frame3);
+            frameSet.Frames.Add(_frame1);
+            frameSet.Frames.Add(_frame2);
+            frameSet.Frames.Add(_frame3);
             
             // Expected on first pixel instruction of each frame.
             int[] expectedIndexesOfFirstPixelIndexOfEachFrame = new int[]
@@ -45,7 +45,7 @@ namespace StellaLib.Test.Animation
 
             // Assert
             int counter = 0;
-            foreach (Frame frame in frameSet) 
+            foreach (Frame frame in frameSet.Frames) 
             {
                 Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[counter], frame[0].Index);
                 Assert.AreEqual(expectedTimeStampRelatives[counter], frame.TimeStampRelative);
@@ -58,9 +58,9 @@ namespace StellaLib.Test.Animation
         {   
             //Setup
             FrameSet frameSet = new FrameSet(DateTime.Now);
-            frameSet.Add(_frame1);
-            frameSet.Add(_frame2);
-            frameSet.Add(_frame3);
+            frameSet.Frames.Add(_frame1);
+            frameSet.Frames.Add(_frame2);
+            frameSet.Frames.Add(_frame3);
             
             // Expected on first pixel instruction of each frame.
             int[] expectedIndexesOfFirstPixelIndexOfEachFrame = new int[]
@@ -78,14 +78,14 @@ namespace StellaLib.Test.Animation
             };
 
             // Assert
-            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[0],frameSet[0][0].Index);
-            Assert.AreEqual(expectedTimeStampRelatives[0],frameSet[0].TimeStampRelative);
+            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[0],frameSet.Frames[0][0].Index);
+            Assert.AreEqual(expectedTimeStampRelatives[0],frameSet.Frames[0].TimeStampRelative);
 
-            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[1],frameSet[1][0].Index);
-            Assert.AreEqual(expectedTimeStampRelatives[1],frameSet[1].TimeStampRelative);
+            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[1],frameSet.Frames[1][0].Index);
+            Assert.AreEqual(expectedTimeStampRelatives[1],frameSet.Frames[1].TimeStampRelative);
 
-            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[2],frameSet[2][0].Index);
-            Assert.AreEqual(expectedTimeStampRelatives[2],frameSet[2].TimeStampRelative);
+            Assert.AreEqual(expectedIndexesOfFirstPixelIndexOfEachFrame[2],frameSet.Frames[2][0].Index);
+            Assert.AreEqual(expectedTimeStampRelatives[2],frameSet.Frames[2].TimeStampRelative);
         }
     }
 }
