@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -35,7 +36,7 @@ namespace StellaClient.Light
 
         /// CURRENT fields
         private FrameSetMetadata _frameSetMetadata;
-        private Queue<Frame> _frameBuffer;
+        private ConcurrentQueue<Frame> _frameBuffer;
         private readonly object _frameBufferLock = new object();
         private Frame _nextFrame;
         private long _frameStart = -1; //TODO use TimeStampRelative instead of waitMS. Can be implemented after FrameSet has been implemented.
@@ -44,7 +45,7 @@ namespace StellaClient.Light
 
         /// PENDING fields
         private FrameSetMetadata _pendingFrameSetMetadata;
-        private Queue<Frame> _pendingFrameBuffer;
+        private ConcurrentQueue<Frame> _pendingFrameBuffer;
 
         public int FramesInBuffer
         {
@@ -79,7 +80,7 @@ namespace StellaClient.Light
         public LedController(ILEDStrip ledStrip)
         {
             _ledStrip = ledStrip;
-            _frameBuffer = new Queue<Frame>();
+            _frameBuffer = new ConcurrentQueue<Frame>();
             _timer = new System.Timers.Timer();
             _timer.Interval = TIMER_LOOP_DURATION;
             _timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
@@ -164,27 +165,28 @@ namespace StellaClient.Light
             // Then, check if we are in case 1
             if(_nextFrame == null)
             {
-                if (_frameBuffer.Count > 0 && now >= _frameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
+                if (now >= _frameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
                 {
                     // CASE 1 , Prepare, Render, Prepare
                     // Frame 1
-                    Frame firstFrame = _frameBuffer.Dequeue();
-                    PrepareFrame(firstFrame);
-                    // should render in this loop, wait for remaining time
-                    while (DateTime.Now.Ticks < _frameSetMetadata.TimeStamp.Ticks)
+                    if (_frameBuffer.TryDequeue(out Frame firstFrame))
                     {
-                        Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
-                    }
-                    Render();
+                        PrepareFrame(firstFrame);
+                        // should render in this loop, wait for remaining time
+                        while (DateTime.Now.Ticks < _frameSetMetadata.TimeStamp.Ticks)
+                        {
+                            Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
+                        }
+                        Render();
 
-                    // Frame 2
-                    if(_frameBuffer.Count > 0)
-                    {
-                        _nextFrame = _frameBuffer.Dequeue();
-                        _frameStart = _frameSetMetadata.TimeStamp.Ticks + _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
-                        PrepareFrame(_nextFrame);
+                        // Frame 2
+                        if (_frameBuffer.TryDequeue(out Frame nextFrame))
+                        {
+                            _nextFrame = nextFrame;
+                            _frameStart = _frameSetMetadata.TimeStamp.Ticks + _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
+                            PrepareFrame(_nextFrame);
+                        }
                     }
-
                 }
             }
             else
@@ -203,10 +205,11 @@ namespace StellaClient.Light
                 }
                 // Render the already loaded frame
                 Render();
-                if(_frameBuffer.Count > 0)
+
+                if (_frameBuffer.TryDequeue(out Frame nextFrame))
                 {
                     // Prepare next frame
-                    _nextFrame = _frameBuffer.Dequeue();
+                    _nextFrame = nextFrame;
                     _frameStart = _frameSetMetadata.TimeStamp.Ticks + _nextFrame.TimeStampRelative * TimeSpan.TicksPerMillisecond;
                     PrepareFrame(_nextFrame);
                 }
@@ -305,7 +308,7 @@ namespace StellaClient.Light
             lock (_frameBufferLock)
             {
                 _pendingFrameSetMetadata = metadata;
-                _pendingFrameBuffer = new Queue<Frame>();
+                _pendingFrameBuffer = new ConcurrentQueue<Frame>();
             }
             // Immediately fire FramesNeeded event. TODO send frames on PrepareFrameSet
             OnFramesNeeded(null,FRAME_BUFFER_SIZE);
