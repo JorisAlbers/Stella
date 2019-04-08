@@ -19,9 +19,12 @@ namespace StellaClient.Light
         /// Moving dot                |    300     |  13 at most
         /// 
         private const int TIMER_LOOP_DURATION = 15; // in milliseconds
-        private const int FRAME_BUFFER_SIZE = 100;  // the maximum size of the frames buffer.
-        private const int LOOPS_PER_REQUEST = 1000 / TIMER_LOOP_DURATION;   // A frames needed request will be made every n loops. Once every second
-        private int _loopsSinceLastRequest = 0;
+
+        private const int FRAME_BUFFER_SIZE        = 300;  // the maximum size of the frames buffer.
+        private const int FRAMES_AT_FIRST_REQUEST  = 100;
+        private const int FRAMES_AT_SECOND_REQUEST = 50;
+        private const int FRAMES_AT_THIRD_REQUEST  = 10;
+
 
         private ILEDStrip _ledStrip;
         private System.Timers.Timer _timer;
@@ -37,7 +40,7 @@ namespace StellaClient.Light
         private Frame _nextFrame;
         private long _frameStart = -1; //TODO use TimeStampRelative instead of waitMS. Can be implemented after FrameSet has been implemented.
         private int? _lastKnownFrameIndex;
-
+        private int _framesLeftAtPreviousRequest = int.MaxValue;
 
         /// PENDING fields
         private FrameSetMetadata _pendingFrameSetMetadata;
@@ -104,18 +107,24 @@ namespace StellaClient.Light
                 // Check if we need more frames
                 int framesLeft = _pendingFrameBuffer?.Count ?? _frameBuffer.Count;
 
-                if (++_loopsSinceLastRequest > LOOPS_PER_REQUEST)
+                if (framesLeft == _framesLeftAtPreviousRequest)
                 {
-                    // We are allowed to make a new frame request
+                    return;
+                }
+
+                if (framesLeft == FRAMES_AT_FIRST_REQUEST ||
+                    framesLeft == FRAMES_AT_SECOND_REQUEST ||
+                    framesLeft == FRAMES_AT_THIRD_REQUEST)
+                {
                     framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
-                    _loopsSinceLastRequest = 0;
+                    _framesLeftAtPreviousRequest = framesLeft;
                 }
             }
 
             if (framesNeeded > 0)
             {
                 // We need more frames. Fire the event
-                OnFramesNeeded(_lastKnownFrameIndex, framesNeeded);
+                OnFramesNeeded(_lastKnownFrameIndex,framesNeeded);
             }
         }
 
@@ -247,6 +256,8 @@ namespace StellaClient.Light
                     _pendingFrameBuffer.Enqueue(frame);
                     _lastKnownFrameIndex = frame.Index;
                 }
+
+                _framesLeftAtPreviousRequest = int.MaxValue;
             }
         }
 
@@ -280,6 +291,8 @@ namespace StellaClient.Light
                         _lastKnownFrameIndex = frame.Index;
                     }
                 }
+
+                _framesLeftAtPreviousRequest = int.MaxValue;
             }
         }
 

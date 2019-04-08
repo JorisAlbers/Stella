@@ -129,13 +129,13 @@ namespace StellaClient.Test.Light
             
             Assert.AreEqual(1,invokeCount);
             Assert.AreEqual(null,lastFrameIndex);
-            Assert.AreEqual(100,count); // FRAME_BUFFER_SIZE
+            Assert.AreEqual(300,count); // FRAME_BUFFER_SIZE
         }
 
-        [TestCase(1,100)]
-        [TestCase(10,92)]
-        [TestCase(50,52)]
-        [TestCase(100,2)]
+        
+        [TestCase(102,200)] // The number of frames is +2 as on the first cycle the first two frames get drawn.
+        [TestCase(52,250)]
+        [TestCase(12,290)]
         public void AddFrame_BufferRunningLow__FrameNeededGetsFired(int numberOfFrames, int expectedCount)
         {
             List<Frame> frames = new List<Frame>();
