@@ -59,7 +59,7 @@ namespace StellaClient
         /// <param name="e"></param>
         private void OnIntervalEnd(object sender, ElapsedEventArgs e)
         {
-            if (_framesReceivedSinceLastInterval == _receivedFramesBuffer.Count)
+            if (_framesReceivedSinceLastInterval == _receivedFramesBuffer.Count || _receivedFramesBuffer.Count == 50)
             {
                 // No frames have been added. Push to the LedController
                 _ledController.AddFrames(_receivedFramesBuffer.OrderBy(x => x.Index));
@@ -76,7 +76,8 @@ namespace StellaClient
                 return;
             }
             // Notify the server that we need more frames
-            _server.SendFrameRequest(e.LastFrameIndex, e.Count);
+            // Add 1 to the lastFrameIndex to get the start index of the range we need
+            _server.SendFrameRequest(e.LastFrameIndex+1, e.Count);
         }
 
         private void ServerOnAnimationStartReceived(object sender, FrameSetMetadata e)

@@ -39,9 +39,9 @@ namespace StellaClient.Test
 
             FramesNeededEventArgs expectedFramesNeededEventArgs = new FramesNeededEventArgs(10,30);
 
-            int? receivedLastFrameIndex = null;
+            int receivedLastFrameIndex = -1;
             int receivedCount = -1;
-            stellaServerMock.Setup(x => x.SendFrameRequest(It.IsAny<int?>(), It.IsAny<int>())).Callback<int?, int>(
+            stellaServerMock.Setup(x => x.SendFrameRequest(It.IsAny<int>(), It.IsAny<int>())).Callback<int, int>(
                 (lastFrameIndex, count) =>
                 {
                     receivedLastFrameIndex = lastFrameIndex;

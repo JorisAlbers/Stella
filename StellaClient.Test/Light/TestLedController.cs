@@ -113,7 +113,7 @@ namespace StellaClient.Test.Light
             LedController controller = new LedController(mock.Object);
 
             int invokeCount = 0;
-            int? lastFrameIndex = null;
+            int lastFrameIndex = -100;
             int count = 0;
 
             controller.FramesNeeded += (sender, args) =>
@@ -128,7 +128,7 @@ namespace StellaClient.Test.Light
             Thread.Sleep(100); // async hack. 
             
             Assert.AreEqual(1,invokeCount);
-            Assert.AreEqual(null,lastFrameIndex);
+            Assert.AreEqual(-1,lastFrameIndex);
             Assert.AreEqual(300,count); // FRAME_BUFFER_SIZE
         }
 

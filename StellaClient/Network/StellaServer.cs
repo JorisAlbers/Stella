@@ -37,6 +37,7 @@ namespace StellaClient.Network
             _serverAdress = serverAdress;
             _id = ID;
             _systemTimeSetter = timeSetter;
+            _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
         }
 
         public void Start()
@@ -50,9 +51,10 @@ namespace StellaClient.Network
             _socketConnectionController.Send(type,message);
         }
 
-        public void SendFrameRequest(int? lastFrameIndex, int count)
+        public void SendFrameRequest(int lastFrameIndex, int count)
         {
-            Send(MessageType.Animation_Request, AnimationRequestProtocol.CreateRequest(lastFrameIndex?? 0, count));
+            Console.Out.WriteLine($"StellaServer requesting {count} frames from index {lastFrameIndex}");
+            Send(MessageType.Animation_Request, AnimationRequestProtocol.CreateRequest(lastFrameIndex, count));
         }
 
         private void SendInit()

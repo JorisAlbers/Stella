@@ -40,7 +40,7 @@ namespace StellaClient.Light
         private readonly object _frameBufferLock = new object();
         private Frame _nextFrame;
         private long _frameStart = -1; //TODO use TimeStampRelative instead of waitMS. Can be implemented after FrameSet has been implemented.
-        private int? _lastKnownFrameIndex;
+        private int _lastKnownFrameIndex = -1;
         private int _framesLeftAtPreviousRequest = int.MaxValue;
 
         /// PENDING fields
@@ -118,7 +118,7 @@ namespace StellaClient.Light
                     framesLeft == FRAMES_AT_THIRD_REQUEST)
                 {
                     framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
-                    _framesLeftAtPreviousRequest = framesLeft;
+                    Interlocked.Exchange(ref _framesLeftAtPreviousRequest,framesLeft);
                 }
             }
 
@@ -249,18 +249,21 @@ namespace StellaClient.Light
                     throw new Exception(
                         $"Failed to add frames as the frameSet was not prepared. Call {nameof(PrepareNextFrameSet)} before adding frames.");
                 }
+
+                int lastKnownFrameIndex;
                 if (_pendingFrameBuffer == null)
                 {
                     _frameBuffer.Enqueue(frame);
-                    _lastKnownFrameIndex = frame.Index;
+                    lastKnownFrameIndex = frame.Index;
                 }
                 else
                 {
                     _pendingFrameBuffer.Enqueue(frame);
-                    _lastKnownFrameIndex = frame.Index;
+                    lastKnownFrameIndex = frame.Index;
                 }
 
-                _framesLeftAtPreviousRequest = int.MaxValue;
+                Interlocked.Exchange(ref _lastKnownFrameIndex, lastKnownFrameIndex);
+                Interlocked.Exchange(ref _framesLeftAtPreviousRequest, int.MaxValue);
             }
         }
 
@@ -278,12 +281,13 @@ namespace StellaClient.Light
                         $"Failed to add frames as the frameSet was not prepared. Call { nameof(PrepareNextFrameSet) } before adding frames.");
                 }
 
+                int lastKnownFrameIndex = -1;
                 if (_pendingFrameBuffer == null)
                 {
                     foreach (Frame frame in frames)
                     {
                         _frameBuffer.Enqueue(frame);
-                        _lastKnownFrameIndex = frame.Index;
+                        lastKnownFrameIndex = frame.Index;
                     }
                 }
                 else
@@ -291,11 +295,12 @@ namespace StellaClient.Light
                     foreach (Frame frame in frames)
                     {
                         _pendingFrameBuffer.Enqueue(frame);
-                        _lastKnownFrameIndex = frame.Index;
+                        lastKnownFrameIndex = frame.Index;
                     }
                 }
 
-                _framesLeftAtPreviousRequest = int.MaxValue;
+                Interlocked.Exchange(ref _lastKnownFrameIndex, lastKnownFrameIndex);
+                Interlocked.Exchange(ref _framesLeftAtPreviousRequest, int.MaxValue);
             }
         }
 
@@ -311,10 +316,10 @@ namespace StellaClient.Light
                 _pendingFrameBuffer = new ConcurrentQueue<Frame>();
             }
             // Immediately fire FramesNeeded event. TODO send frames on PrepareFrameSet
-            OnFramesNeeded(null,FRAME_BUFFER_SIZE);
+            OnFramesNeeded(-1,FRAME_BUFFER_SIZE);
         }
 
-        protected virtual void OnFramesNeeded(int? lastFrameIndex, int count)
+        protected virtual void OnFramesNeeded(int lastFrameIndex, int count)
         {
             // Bubble the event. Add reference to this object.
             EventHandler<FramesNeededEventArgs> handler = FramesNeeded;
