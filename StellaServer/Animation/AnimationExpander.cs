@@ -20,14 +20,22 @@ namespace StellaServer.Animation
 
         public List<Frame> Expand(int times)
         {
-            List<Frame> expanded = new List<Frame>();
+            if (times == 1)
+            {
+                return _originalAnimation;
+            }
+
+            List<Frame> expanded = new List<Frame>(_originalAnimation);
+
+            int interval = _originalAnimation[1].TimeStampRelative - _originalAnimation[0].TimeStampRelative; // TODO be able to work with different intervals
+
             int index = _originalAnimation.Count;
-            int timestampRelative = _originalAnimation.Sum(x => x.TimeStampRelative);
-            for (int i = 0; i < times; i++)
+            int timestampRelative = _originalAnimation.Last().TimeStampRelative;
+            for (int i = 0; i < times -1; i++) // -1 as there is already one cycle done (the _originalAnimation is a single cycle on its own)
             {
                 for (int j = 0; j < _originalAnimation.Count; j++)
                 {
-                    timestampRelative += _originalAnimation[j].TimeStampRelative;
+                    timestampRelative += interval;
                     Frame frame = new Frame(index++, timestampRelative);
                     frame.AddRange(_originalAnimation[j]);
                     expanded.Add(frame);
