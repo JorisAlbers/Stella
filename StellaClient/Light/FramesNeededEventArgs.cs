@@ -6,14 +6,14 @@ namespace StellaClient.Light
 {
     public class FramesNeededEventArgs : EventArgs
     {
-        /// <summary> The last known frame index. -1 if unknown. </summary>
-        public int LastFrameIndex { get; }
+        /// <summary> The first frame index requested. </summary>
+        public int FromIndex { get; }
         /// <summary> The number of frames requested. </summary>
         public int Count { get; }
 
-        public FramesNeededEventArgs(int lastFrameIndex, int count)
+        public FramesNeededEventArgs(int fromIndex, int count)
         {
-            LastFrameIndex = lastFrameIndex;
+            FromIndex = fromIndex;
             Count = count;
         }
     }

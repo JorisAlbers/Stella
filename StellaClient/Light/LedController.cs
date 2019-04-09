@@ -125,7 +125,7 @@ namespace StellaClient.Light
             if (framesNeeded > 0)
             {
                 // We need more frames. Fire the event
-                OnFramesNeeded(_lastKnownFrameIndex,framesNeeded);
+                OnFramesNeeded(_lastKnownFrameIndex +1,framesNeeded);
             }
         }
 
@@ -316,7 +316,7 @@ namespace StellaClient.Light
                 _pendingFrameBuffer = new ConcurrentQueue<Frame>();
             }
             // Immediately fire FramesNeeded event. TODO send frames on PrepareFrameSet
-            OnFramesNeeded(-1,FRAME_BUFFER_SIZE);
+            OnFramesNeeded(0,FRAME_BUFFER_SIZE);
         }
 
         protected virtual void OnFramesNeeded(int lastFrameIndex, int count)

@@ -76,8 +76,7 @@ namespace StellaClient
                 return;
             }
             // Notify the server that we need more frames
-            // Add 1 to the lastFrameIndex to get the start index of the range we need
-            _server.SendFrameRequest(e.LastFrameIndex+1, e.Count);
+           _server.SendFrameRequest(e.FromIndex, e.Count);
         }
 
         private void ServerOnAnimationStartReceived(object sender, FrameSetMetadata e)

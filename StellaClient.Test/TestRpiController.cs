@@ -51,7 +51,7 @@ namespace StellaClient.Test
 
             RpiController controller = new RpiController(stellaServerMock.Object, ledControllerMock.Object);
             ledControllerMock.Raise(x => x.FramesNeeded += null, null, expectedFramesNeededEventArgs);
-            Assert.AreEqual(expectedFramesNeededEventArgs.LastFrameIndex, receivedLastFrameIndex);
+            Assert.AreEqual(expectedFramesNeededEventArgs.FromIndex, receivedLastFrameIndex);
             Assert.AreEqual(expectedFramesNeededEventArgs.Count, receivedCount);
         }
 

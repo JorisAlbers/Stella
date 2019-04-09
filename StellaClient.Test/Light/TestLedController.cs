@@ -119,7 +119,7 @@ namespace StellaClient.Test.Light
             controller.FramesNeeded += (sender, args) =>
             {
                 invokeCount++;
-                lastFrameIndex = args.LastFrameIndex;
+                lastFrameIndex = args.FromIndex;
                 count = args.Count;
             };
 
@@ -128,7 +128,7 @@ namespace StellaClient.Test.Light
             Thread.Sleep(100); // async hack. 
             
             Assert.AreEqual(1,invokeCount);
-            Assert.AreEqual(-1,lastFrameIndex);
+            Assert.AreEqual(0,lastFrameIndex);
             Assert.AreEqual(300,count); // FRAME_BUFFER_SIZE
         }
 
@@ -159,7 +159,7 @@ namespace StellaClient.Test.Light
             controller.FramesNeeded += (sender, args) =>
             {
                 invokeCount++;
-                lastFrameIndex = args.LastFrameIndex;
+                lastFrameIndex = args.FromIndex;
                 count = args.Count;
             };
 
@@ -170,7 +170,7 @@ namespace StellaClient.Test.Light
 
 
             Assert.AreEqual(1, invokeCount, "The invoke count was incorrect");
-            Assert.AreEqual(numberOfFrames -1, lastFrameIndex, "The frame index was incorrect" );
+            Assert.AreEqual(numberOfFrames, lastFrameIndex, "The frame index was incorrect" );
             Assert.AreEqual(expectedCount, count, "The count was incorrect"); // FRAME_BUFFER_SIZE - frames in buffer. The LedController dequeues the first 2 frames immediately.
 
         }
