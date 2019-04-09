@@ -37,7 +37,7 @@ namespace StellaClient.Light
         /// CURRENT fields
         private FrameSetMetadata _frameSetMetadata;
         private ConcurrentQueue<Frame> _frameBuffer;
-        private readonly object _frameBufferLock = new object();
+        private readonly object _pendingFrameBufferLock = new object();
         private Frame _nextFrame;
         private long _frameStart = -1; //TODO use TimeStampRelative instead of waitMS. Can be implemented after FrameSet has been implemented.
         private int _lastKnownFrameIndex = -1;
@@ -51,7 +51,7 @@ namespace StellaClient.Light
         {
             get
             {
-                lock (_frameBufferLock)
+                lock (_pendingFrameBufferLock)
                 {
                     if (_frameBuffer == null)
                     {
@@ -66,7 +66,7 @@ namespace StellaClient.Light
         {
             get
             {
-                lock (_frameBufferLock)
+                lock (_pendingFrameBufferLock)
                 {
                     if (_pendingFrameBuffer == null)
                     {
@@ -101,26 +101,25 @@ namespace StellaClient.Light
             }
 
             int framesNeeded = 0;
-            lock(_frameBufferLock)
+           
+            Draw();
+
+            // Check if we need more frames
+            int framesLeft = _pendingFrameBuffer?.Count ?? _frameBuffer.Count;
+
+            if (framesLeft == _framesLeftAtPreviousRequest)
             {
-                Draw();
-
-                // Check if we need more frames
-                int framesLeft = _pendingFrameBuffer?.Count ?? _frameBuffer.Count;
-
-                if (framesLeft == _framesLeftAtPreviousRequest)
-                {
-                    return;
-                }
-
-                if (framesLeft == FRAMES_AT_FIRST_REQUEST ||
-                    framesLeft == FRAMES_AT_SECOND_REQUEST ||
-                    framesLeft == FRAMES_AT_THIRD_REQUEST)
-                {
-                    framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
-                    Interlocked.Exchange(ref _framesLeftAtPreviousRequest,framesLeft);
-                }
+                return;
             }
+
+            if (framesLeft == FRAMES_AT_FIRST_REQUEST ||
+                framesLeft == FRAMES_AT_SECOND_REQUEST ||
+                framesLeft == FRAMES_AT_THIRD_REQUEST)
+            {
+                framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
+                Interlocked.Exchange(ref _framesLeftAtPreviousRequest,framesLeft);
+            }
+            
 
             if (framesNeeded > 0)
             {
@@ -149,18 +148,22 @@ namespace StellaClient.Light
             long now = DateTime.Now.Ticks;
 
             // First, check if the pending frameSet should be drawn
-            if (_pendingFrameSetMetadata != null)
+            lock (_pendingFrameBufferLock)
             {
-                if (now >= _pendingFrameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
+                if (_pendingFrameSetMetadata != null)
                 {
-                    _frameSetMetadata = _pendingFrameSetMetadata;
-                    _frameBuffer = _pendingFrameBuffer;
-                    _frameStart = -1;
-                    _nextFrame = null;
-                    _pendingFrameSetMetadata = null;
-                    _pendingFrameBuffer = null;
+                    if (now >= _pendingFrameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
+                    {
+                        _frameSetMetadata = _pendingFrameSetMetadata;
+                        _frameBuffer = _pendingFrameBuffer;
+                        _frameStart = -1;
+                        _nextFrame = null;
+                        _pendingFrameSetMetadata = null;
+                        _pendingFrameBuffer = null;
+                    }
                 }
             }
+            
             
             // Then, check if we are in case 1
             if(_nextFrame == null)
@@ -242,7 +245,8 @@ namespace StellaClient.Light
         /// <param name="frame"></param>
         public void AddFrame(Frame frame)
         {
-            lock(_frameBufferLock)
+            ConcurrentQueue<Frame> buffer;
+            lock (_pendingFrameBufferLock)
             {
                 if (_frameSetMetadata == null && _pendingFrameSetMetadata == null)
                 {
@@ -250,21 +254,22 @@ namespace StellaClient.Light
                         $"Failed to add frames as the frameSet was not prepared. Call {nameof(PrepareNextFrameSet)} before adding frames.");
                 }
 
-                int lastKnownFrameIndex;
                 if (_pendingFrameBuffer == null)
                 {
-                    _frameBuffer.Enqueue(frame);
-                    lastKnownFrameIndex = frame.Index;
+                    buffer = _frameBuffer;
                 }
                 else
                 {
-                    _pendingFrameBuffer.Enqueue(frame);
-                    lastKnownFrameIndex = frame.Index;
+                    buffer = _pendingFrameBuffer;
                 }
-
-                Interlocked.Exchange(ref _lastKnownFrameIndex, lastKnownFrameIndex);
-                Interlocked.Exchange(ref _framesLeftAtPreviousRequest, int.MaxValue);
             }
+
+            buffer.Enqueue(frame);
+            int lastKnownFrameIndex = frame.Index;
+
+            Interlocked.Exchange(ref _lastKnownFrameIndex, lastKnownFrameIndex);
+            Interlocked.Exchange(ref _framesLeftAtPreviousRequest, int.MaxValue);
+            
         }
 
         /// <summary>
@@ -273,35 +278,34 @@ namespace StellaClient.Light
         /// <param name="frames"></param>
         public void AddFrames(IEnumerable<Frame> frames)
         {
-            lock(_frameBufferLock)
+            ConcurrentQueue<Frame> buffer;
+            lock (_pendingFrameBufferLock)
             {
                 if (_frameSetMetadata == null && _pendingFrameSetMetadata == null)
                 {
                     throw new Exception(
-                        $"Failed to add frames as the frameSet was not prepared. Call { nameof(PrepareNextFrameSet) } before adding frames.");
+                        $"Failed to add frames as the frameSet was not prepared. Call {nameof(PrepareNextFrameSet)} before adding frames.");
                 }
 
-                int lastKnownFrameIndex = -1;
                 if (_pendingFrameBuffer == null)
                 {
-                    foreach (Frame frame in frames)
-                    {
-                        _frameBuffer.Enqueue(frame);
-                        lastKnownFrameIndex = frame.Index;
-                    }
+                    buffer = _frameBuffer;
                 }
                 else
                 {
-                    foreach (Frame frame in frames)
-                    {
-                        _pendingFrameBuffer.Enqueue(frame);
-                        lastKnownFrameIndex = frame.Index;
-                    }
+                    buffer = _pendingFrameBuffer;
                 }
-
-                Interlocked.Exchange(ref _lastKnownFrameIndex, lastKnownFrameIndex);
-                Interlocked.Exchange(ref _framesLeftAtPreviousRequest, int.MaxValue);
             }
+            
+            int lastKnownFrameIndex = -1;
+            foreach (Frame frame in frames)
+            {
+                buffer.Enqueue(frame);
+                lastKnownFrameIndex = frame.Index;
+            }
+           
+            Interlocked.Exchange(ref _lastKnownFrameIndex, lastKnownFrameIndex);
+            Interlocked.Exchange(ref _framesLeftAtPreviousRequest, int.MaxValue);
         }
 
         /// <summary>
@@ -310,7 +314,7 @@ namespace StellaClient.Light
         /// <param name="metadata"></param>
         public void PrepareNextFrameSet(FrameSetMetadata metadata)
         {
-            lock (_frameBufferLock)
+            lock (_pendingFrameBufferLock)
             {
                 _pendingFrameSetMetadata = metadata;
                 _pendingFrameBuffer = new ConcurrentQueue<Frame>();
