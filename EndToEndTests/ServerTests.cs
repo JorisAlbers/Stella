@@ -43,7 +43,7 @@ namespace EndToEndTests
         {
             int port = 20055;
             Console.Out.WriteLine("Starting StellaServer instance");
-            Server server = new Server(port);
+            Server server = new Server("192.168.1.110",port);
             server.Start();
             ClientController clientController = new ClientController(server);
 
@@ -95,7 +95,7 @@ namespace EndToEndTests
 
         private static void StartServerInstance()
         {
-            Server server = new Server(20055);
+            Server server = new Server("192.168.1.110",20055);
             Console.WriteLine("Starting server instance, press enter to quit");
             server.Start();
             Console.ReadLine();

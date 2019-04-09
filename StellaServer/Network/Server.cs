@@ -17,6 +17,7 @@ namespace StellaServer.Network
         private Dictionary<string,Client> _clients;
 
         private int _port;
+        private IPAddress _ip;
         private bool _isShuttingDown = false;
         private object _isShuttingDownLock = new object();
 
@@ -24,8 +25,9 @@ namespace StellaServer.Network
 
         public event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
 
-        public Server(int port)
+        public Server(string ip, int port)
         {
+            _ip = IPAddress.Parse(ip);
             _port = port;
             _newConnections =  new List<Client>();
             _clients = new Dictionary<string, Client>();
@@ -33,19 +35,11 @@ namespace StellaServer.Network
 
         public void Start()
         {
-            // Establish the local endpoint for the socket.  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            if (ipAddress.IsIPv6LinkLocal)
-            {
-                // Use the ipv4 address
-                ipAddress = ipHostInfo.AddressList[1];
-            }
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _port);
+            IPEndPoint localEndPoint = new IPEndPoint(_ip, _port);
 
             Console.Out.WriteLine($"Starting server on {_port}");
             // Create a TCP/IP socket.  
-            _listenerSocket = new SocketConnection(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
+            _listenerSocket = new SocketConnection(_ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
             // Bind the socket to the local endpoint and listen for incoming connections.  
 
             _listenerSocket.Bind(localEndPoint);  
