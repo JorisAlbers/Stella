@@ -65,6 +65,7 @@ namespace StellaServer
                     return;
                 }
 
+                Console.Out.WriteLine($"Sending {frames.Count} frames to client {e.ClientID}");
                 // Send the frames
                 List<byte[]> packages = AnimationRequestProtocol.CreateResponse(frames);
 
