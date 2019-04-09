@@ -23,16 +23,18 @@ namespace StellaServer.Animation.Animators
 
         public List<Frame> Create()
         {
+            int timestampRelative = 0;
             List<Frame> frames = new List<Frame>();
             for (int i = 0; i < _pattern.Length; i++)
             {
-                Frame frame = new Frame(frames.Count,_frameWaitMS);
+                Frame frame = new Frame(frames.Count,timestampRelative);
                 int startIndex = i;
                 for (int j = 0; j < _stripLength; j++) 
                 {
                     frame.Add(new PixelInstruction(){ Index = (uint)j, Color = _pattern[(j + startIndex) % (_pattern.Length)] });
                 }
                 frames.Add(frame);
+                timestampRelative += _frameWaitMS;
             }
             return frames;
         }

@@ -28,11 +28,12 @@ namespace StellaServer.Animation.Animators
 
         public List<Frame> Create()
         {
+            int relativeTimeStamp = 0;
             List<Frame> frames = new List<Frame>();
             foreach (Color[] pattern in _patterns)
             {
                 int patternsInStrip = _lengthStrip / pattern.Length;
-                Frame frame = new Frame(frames.Count,_frameWaitMS);
+                Frame frame = new Frame(frames.Count, relativeTimeStamp);
                 int leftPixelIndex = 0;
                 for (int j = 0; j < patternsInStrip; j++)
                 {
@@ -58,7 +59,7 @@ namespace StellaServer.Animation.Animators
                     });
                 }
                 frames.Add (frame);
-
+                relativeTimeStamp += _frameWaitMS;
             }
             return frames;
         }

@@ -36,7 +36,7 @@ namespace StellaServer.Test.Animation.Animators
             //Frame 1
             Frame frame1 = frames[0];
             Assert.AreEqual(lengthStrip, frame1.Count);
-            Assert.AreEqual(frameWaitMS, frame1.TimeStampRelative);
+            Assert.AreEqual(0, frame1.TimeStampRelative);
             Assert.AreEqual(frame1[0].Color, expectedColor1);
             Assert.AreEqual(frame1[1].Color, expectedColor2);
             Assert.AreEqual(frame1[2].Color, expectedColor3);
@@ -58,7 +58,7 @@ namespace StellaServer.Test.Animation.Animators
             //Frame 3
             Frame frame3 = frames[2];
             Assert.AreEqual(lengthStrip, frame3.Count);
-            Assert.AreEqual(frameWaitMS, frame3.TimeStampRelative);
+            Assert.AreEqual(frameWaitMS * 2, frame3.TimeStampRelative);
             Assert.AreEqual(frame3[0].Color, expectedColor3);
             Assert.AreEqual(frame3[1].Color, expectedColor1);
             Assert.AreEqual(frame3[2].Color, expectedColor2);
