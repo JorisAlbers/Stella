@@ -65,11 +65,16 @@ namespace EndToEndTests
                 }
 
             });
+            AnimationExpander expander = new AnimationExpander(repeatingPatternsAnimator.Create());
+            List<Frame> frames1 = expander.Expand(100);
 
-            List<Frame> frames1 = repeatingPatternsAnimator.Create();
+            SlidingPatternAnimator slidingPatternAnimator = new SlidingPatternAnimator(300,100,new Color[]
+            {
+                Color.Green, Color.Red, Color.Blue, Color.Wheat, Color.Aqua, Color.Green, Color.Orange, Color.Orange, Color.FromArgb(0,0,0)
+            });
 
-            AnimationExpander expander = new AnimationExpander(frames1);
-            frames1 = expander.Expand(100);
+            AnimationExpander expander2 = new AnimationExpander(slidingPatternAnimator.Create());
+            List<Frame> frames2 =  expander2.Expand(110);
 
 
             string input;
@@ -78,15 +83,22 @@ namespace EndToEndTests
 
             while ((input = Console.ReadLine()) != "q")
             {
-                Console.Out.WriteLine("a - Start new animation");
+                Console.Out.WriteLine("r - Start RepeatingPattern animation");
+                Console.Out.WriteLine("s - Start SlidingPattern   animation");
                 Console.Out.WriteLine("q - quit");
 
                 switch (input)
                 {
-                    case "a":
+                    case "r":
                         clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
                         {
                             Frames = frames1
+                        });
+                        break;
+                    case "s":
+                        clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
+                        {
+                            Frames = frames2
                         });
                         break;
                     default:
