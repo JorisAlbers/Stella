@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 using StellaServer;
+using StellaServer.Animation;
 using StellaServer.Animation.Animators;
 using StellaServer.Network;
 
@@ -48,7 +49,7 @@ namespace EndToEndTests
             ClientController clientController = new ClientController(server);
 
 
-            RepeatingPatternsAnimator repeatingPatternsAnimator = new RepeatingPatternsAnimator(300, 50, new List<Color[]>
+            RepeatingPatternsAnimator repeatingPatternsAnimator = new RepeatingPatternsAnimator(300, 100, new List<Color[]>
             {
                 new Color[2]
                 {
@@ -66,6 +67,10 @@ namespace EndToEndTests
             });
 
             List<Frame> frames1 = repeatingPatternsAnimator.Create();
+
+            AnimationExpander expander = new AnimationExpander(frames1);
+            frames1 = expander.Expand(100);
+
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
