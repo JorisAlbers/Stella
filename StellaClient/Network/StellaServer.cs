@@ -24,8 +24,7 @@ namespace StellaClient.Network
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
         private string _id;
-        private ISystemTimeSetter _systemTimeSetter;
-        private TimeSetter _timeSetter;
+        private TimeSetter _timeSetter; // null if the time is NTP synched or when the time has already been synced
         private SocketConnectionController _socketConnectionController;
         private object _resourceLock = new object();
 
@@ -35,11 +34,16 @@ namespace StellaClient.Network
         public event EventHandler<Frame> FrameReceived;
 
 
-        public StellaServer(IPEndPoint serverAdress, string ID, ISystemTimeSetter timeSetter)
+        public StellaServer(IPEndPoint serverAdress, string ID, ISystemTimeSetter systemTimeSetter)
         {
             _serverAdress = serverAdress;
             _id = ID;
-            _systemTimeSetter = timeSetter;
+            if (!systemTimeSetter.TimeIsNTPSynced())
+            {
+                // We want to sync the time with the server
+                _timeSetter = new TimeSetter(systemTimeSetter, 9);
+            }
+
             _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
         }
 
@@ -104,9 +108,8 @@ namespace StellaClient.Network
                 _socketConnectionController.Start();
 
                 // Make sure the time of the server is synced with our time
-                if(!_systemTimeSetter.TimeIsNTPSynced()) // TODO remember if time is synced in case the StellaServer object crashes
+                if(_timeSetter != null)
                 {
-                    _timeSetter = new TimeSetter(_systemTimeSetter,9);
                     Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage(DateTime.Now));
                 }
             } 
