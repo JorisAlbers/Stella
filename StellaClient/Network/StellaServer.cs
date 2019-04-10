@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using StellaClient.Time;
 using StellaLib.Animation;
 using StellaLib.Network;
@@ -18,6 +19,8 @@ namespace StellaClient.Network
     /// </summary>
     public class StellaServer :  IStellaServer, IDisposable
     {
+        private const int RECONNECT_COOLDOWN_SECONDS = 5;
+
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
         private string _id;
@@ -48,7 +51,21 @@ namespace StellaClient.Network
 
         public void Send(MessageType type, byte[] message)
         {
-            _socketConnectionController.Send(type,message);
+            try
+            {
+                if (_socketConnectionController.IsConnected)
+                {
+                    _socketConnectionController.Send(type, message);
+                }
+                else
+                {
+                    Console.Out.WriteLine($"Failed to send message of type {type}. Not connected with server."); // TODO keep buffer of message to send on reconnect
+                }
+            }
+            catch (SocketException exception)
+            {
+                Console.Out.WriteLine($"Failed to send message of type {type}. {exception}"); // TODO keep buffer of message to send on reconnect
+            }
         }
 
         public void SendFrameRequest(int lastFrameIndex, int count)
@@ -83,6 +100,7 @@ namespace StellaClient.Network
                 Console.WriteLine("Connected with StellaServer");
                 _socketConnectionController = new SocketConnectionController(socket);
                 _socketConnectionController.MessageReceived += OnMessageReceived;
+                _socketConnectionController.Disconnect += OnDisconnect;
                 _socketConnectionController.Start();
 
                 // Make sure the time of the server is synced with our time
@@ -94,9 +112,25 @@ namespace StellaClient.Network
             } 
             catch (SocketException e) 
             {  
-                Console.WriteLine($"Failed to open connection with StellaServer\n {e.ToString()}");
-                //TODO OnDisconnect
-            }  
+                Console.WriteLine($"Failed to open connection with StellaServer.{e.SocketErrorCode}.");
+                Reconnect();
+            }
+        }
+
+        private void OnDisconnect(object sender, SocketException e)
+        {
+            Console.Out.WriteLine($"Lost connection with the server, {e.SocketErrorCode}.");
+            _socketConnectionController.Disconnect -= OnDisconnect;
+            _socketConnectionController.MessageReceived -= OnMessageReceived;
+            _socketConnectionController.Dispose();
+
+            Reconnect();
+        }
+
+        private async void Reconnect()
+        {
+            await Task.Delay(RECONNECT_COOLDOWN_SECONDS * 1000);
+            Connect();
         }
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e)

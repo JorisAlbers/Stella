@@ -11,7 +11,7 @@ namespace StellaServer.Network
     {
         private SocketConnectionController SocketConnectionController {get;set;}
         public string ID {get;set;}
-        public event EventHandler Disconnect;
+        public event EventHandler<SocketException> Disconnect;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
 
@@ -42,13 +42,13 @@ namespace StellaServer.Network
             }
         }
 
-        protected virtual void OnDisconnect(object sender, EventArgs eventAgs)
+        protected virtual void OnDisconnect(object sender, SocketException exception)
         {
             // Bubble the event. Add reference to this object.
-            EventHandler handler = Disconnect;
+            EventHandler<SocketException> handler = Disconnect;
             if (handler != null)
             {
-                handler(this, eventAgs);
+                handler(this, exception);
             }
         }
 

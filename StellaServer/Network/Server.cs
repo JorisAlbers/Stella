@@ -138,7 +138,7 @@ namespace StellaServer.Network
             }
         }
 
-        private void Client_Disconnected(object sender, EventArgs e)
+        private void Client_Disconnected(object sender, SocketException exception)
         {
             Client client = (Client)sender;
             if(client.ID == null)
@@ -147,7 +147,7 @@ namespace StellaServer.Network
             }
             else
             {
-                Console.WriteLine($"Client {client.ID} disconnected");
+                Console.WriteLine($"Client {client.ID} disconnected, {exception.SocketErrorCode}"); // TODO add intended disconnect, not just on SocketException
             }
 
             DisposeClient(client);
