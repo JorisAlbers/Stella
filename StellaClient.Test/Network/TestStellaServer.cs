@@ -30,19 +30,28 @@ namespace StellaClient.Test.Network
             // Create a SocketConnectionController
             var mockSystemTimeSetter = new Mock<ISystemTimeSetter>();
             mockSystemTimeSetter.Setup(x=>x.TimeIsNTPSynced()).Returns(true);
-            StellaServer stellaServer = new StellaServer(localEndPoint, "ThisIsAnID", mockSystemTimeSetter.Object);
+            string clientId = "ThisIsAnID";
+            StellaServer stellaServer = new StellaServer(localEndPoint, clientId , mockSystemTimeSetter.Object);
             stellaServer.Start();
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
 
             byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
-            byte[] expected = PacketProtocol.WrapMessage(MessageType.Standard, message);
+            byte[] expectedInit = PacketProtocol.WrapMessage(MessageType.Init, Encoding.ASCII.GetBytes(clientId));
+            byte[] expectedMessage = PacketProtocol.WrapMessage(MessageType.Standard, message);
 
+            // Expected init message
+            byte[] receiveBufferInitMessage = new byte[expectedInit.Length];
+            server_receiver.Receive(receiveBufferInitMessage);
+            Assert.AreEqual(expectedInit, receiveBufferInitMessage);
+
+            // Expected Standard message
             stellaServer.Send(MessageType.Standard, message);
-            byte[] receiveBuffer = new byte[expected.Length];
-            server_receiver.Receive(receiveBuffer);
-            Assert.AreEqual(expected,receiveBuffer);
+            byte[] receiveBufferMessage = new byte[expectedMessage.Length];
+            server_receiver.Receive(receiveBufferMessage);
+            Assert.AreEqual(expectedMessage, receiveBufferMessage);
+
         }
     }
 }
