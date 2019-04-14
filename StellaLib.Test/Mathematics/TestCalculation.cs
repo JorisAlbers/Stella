@@ -10,6 +10,9 @@ namespace StellaLib.Test.Mathematics
         [TestCase(new long[]{1,200,300,400 }    ,ExpectedResult=250)]
         [TestCase(new long[]{-500,-100,-10,50,68},ExpectedResult=-10)]
         [TestCase(new long[]{-1000,-500,-100,-10,50,68},ExpectedResult=-55)]
+        [TestCase(new long[]{-1000,-500,-10,50,68},ExpectedResult=-10)]
+        [TestCase(new long[]{-1000},ExpectedResult=-1000)]
+        [TestCase(new long[]{-1000,-500},ExpectedResult=-750)]
         public double Median(long[] values)
         {
             return Calculation.Median(values);
@@ -18,6 +21,7 @@ namespace StellaLib.Test.Mathematics
         [TestCase(new long[]{-30002724785, -39002725445,-597026527710}, -34502725115,-39002725445,-318014626577.5)]
         [TestCase(new long[]{464,2424,64842}, 1444,2424, 33633)]
         [TestCase(new long[]{111,222,333333333}, 166.5, 222, 166666777.5)]
+        [TestCase(new long[]{-235,-100,-30,100,300,400,500}, -65,100, 350)]
         [TestCase(new long[]{-235,-100,-30,100,300,400,500}, -65,100, 350)]
         public void Percentile(long[] values, double expected_q1, double expected_q2, double expected_q3)
         {
