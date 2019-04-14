@@ -107,6 +107,9 @@ namespace StellaClient.Network
                 _socketConnectionController.Disconnect += OnDisconnect;
                 _socketConnectionController.Start();
 
+                // Send init
+                SendInit();
+
                 // Make sure the time of the server is synced with our time
                 if(_timeSetter != null)
                 {

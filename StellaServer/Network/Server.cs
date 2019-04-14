@@ -98,21 +98,20 @@ namespace StellaServer.Network
             _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
 
             // Handle the new connection
-            ISocketConnection handler = (ISocketConnection) listener.EndAccept(ar);
-
+            ISocketConnection handler = listener.EndAccept(ar);
+            
             // Create a new client.
             Client client = new Client(new SocketConnectionController(handler));
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
-            client.Start();
-            // As we do not now wich client this is, add him to the list of new connection.
-            lock(_newConnections)
+
+            // As we do not yet know which client this is, add him to the list of new connection.
+            lock (_newConnections)
             {
                 _newConnections.Add(client);
             }
 
-            // Request init from client
-            client.Send(MessageType.Init,new byte[0]);
+            client.Start();
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
