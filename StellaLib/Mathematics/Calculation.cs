@@ -28,31 +28,16 @@ namespace StellaLib.Mathematics
         /// <returns></returns>
         public static double Percentile(long[] sortedData, double p)
         {
-            // algo derived from Aczel pg 15 bottom
-            if (p >= 100.0d) return sortedData[sortedData.Length - 1];
+            int N = sortedData.Length;
+            double n = (N - 1) * p + 1;
 
-            double position = (double)(sortedData.Length + 1) * p / 100.0;
-            double leftNumber = 0.0d, rightNumber = 0.0d;
-
-            double n = p / 100.0d * (sortedData.Length - 1) + 1.0d;
-
-            if (position >= 1)
-            {
-                leftNumber = sortedData[(int)System.Math.Floor(n) - 1];
-                rightNumber = sortedData[(int)System.Math.Floor(n)];
-            }
+            if (n == 1d) return sortedData[0];
+            else if (n == N) return sortedData[N - 1];
             else
             {
-                leftNumber = sortedData[0]; // first data
-                rightNumber = sortedData[1]; // first data
-            }
-
-            if (leftNumber == rightNumber)
-                return leftNumber;
-            else
-            {
-                double part = n - System.Math.Floor(n);
-                return leftNumber + part * (rightNumber - leftNumber);
+                int k = (int)n;
+                double d = n - k;
+                return sortedData[k - 1] + d * (sortedData[k] - sortedData[k - 1]);
             }
         }
 
