@@ -3,6 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Timers;
 using StellaLib.Network.Protocol;
 
 namespace StellaLib.Network
@@ -13,6 +15,9 @@ namespace StellaLib.Network
         private bool _isDisposed = false;
         private ISocketConnection _socket;
         private readonly object _parsingMessageLock = new object(); // Lock used by each message parsing thread
+        private System.Timers.Timer _keepAliveTimer;
+        private const int KEEP_ALIVE_TIMER_INTERVAL = 2000; // Send a keep alive message every x seconds
+
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         public event EventHandler<SocketException> Disconnect;
         
@@ -34,7 +39,32 @@ namespace StellaLib.Network
             _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
             IsConnected = true;
             byte[] buffer = new byte[PacketProtocol.BUFFER_SIZE];
-            _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);  
+            _socket.BeginReceive(buffer, 0, PacketProtocol.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);
+
+            // Start sending KeepAlive packages to check if the connection is still open
+            _keepAliveTimer = new System.Timers.Timer();
+            _keepAliveTimer.Interval = KEEP_ALIVE_TIMER_INTERVAL;
+            _keepAliveTimer.Elapsed += new ElapsedEventHandler(KeepAliveCallback);
+            _keepAliveTimer.Enabled = true;
+        }
+
+        private void KeepAliveCallback(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            if (!IsConnected || _isDisposed)
+            {
+                return;
+            }
+
+            try
+            {
+                byte[] keepAliveBytes = PacketProtocol.WrapKeepaliveMessage();
+
+                _socket.BeginSend(keepAliveBytes, 0, keepAliveBytes.Length, 0, new AsyncCallback(SendCallback), _socket);
+            }
+            catch (SocketException e)
+            {
+                OnDisconnect(e);
+            }
         }
 
 
@@ -104,10 +134,10 @@ namespace StellaLib.Network
                 return;
             }
 
-            if (bytesRead > 0) 
-            {  
+            if (bytesRead > 0)
+            {
                 // Parse the message
-                lock(_parsingMessageLock) // TODO FIFO is not guaranteed, maybe add QueuedLock
+                lock(_parsingMessageLock)
                 {
                     try
                     {
@@ -161,6 +191,8 @@ namespace StellaLib.Network
         public void Dispose()
         {
             _isDisposed = true;
+            _keepAliveTimer.Enabled = false;
+            _keepAliveTimer.Stop();
             _packetProtocol.MessageArrived = null;
             _packetProtocol.KeepAliveArrived = null;
             _socket.Disconnect(false);
