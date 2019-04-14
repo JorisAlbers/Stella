@@ -22,7 +22,8 @@ namespace EndToEndTests
             while(run)
             {
                 Console.WriteLine("Client tests");
-                Console.WriteLine("i - Run a StellaClient instance");
+                Console.WriteLine("i1 - Run a StellaClient instance with ID 1");
+                Console.WriteLine("i2 - Run a StellaClient instance with ID 2");
                 Console.WriteLine("c - Run a StellaServer class instance");
                 Console.WriteLine("l - Ledcontroller tests");
                 Console.WriteLine("t - Time related test");
@@ -44,8 +45,11 @@ namespace EndToEndTests
                         TimeTests timeTests = new TimeTests();
                         timeTests.Start();
                         break;
-                    case "i":
-                        CreateStellaClientInstance();
+                    case "i1":
+                        CreateStellaClientInstance("ID_1");
+                        break;
+                    case "i2":
+                        CreateStellaClientInstance("ID_2");
                         break;
 
                     default:
@@ -55,7 +59,7 @@ namespace EndToEndTests
             }
         }
 
-        private static void CreateStellaClientInstance()
+        private static void CreateStellaClientInstance(string id)
         {
             // Light
             int ledCount = 300;
@@ -65,7 +69,6 @@ namespace EndToEndTests
             LedController ledController = new LedController(ledstrip);
             ledController.Run();
 
-            string id = "ID_1";
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.110"), 20055);
             StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, id, new LinuxTimeSetter());
