@@ -175,11 +175,6 @@ namespace StellaClient.Light
                     if (_frameBuffer.TryDequeue(out Frame firstFrame))
                     {
                         PrepareFrame(firstFrame);
-                        // should render in this loop, wait for remaining time
-                        while (DateTime.Now.Ticks < _frameSetMetadata.TimeStamp.Ticks)
-                        {
-                            Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
-                        }
                         Render();
 
                         // Frame 2
@@ -195,17 +190,12 @@ namespace StellaClient.Light
             else
             {
                 // CASE 2, Render, Prepare
-                if(DateTime.Now.Ticks < _frameStart + TIMER_LOOP_DURATION)
+                if(now < _frameStart + TIMER_LOOP_DURATION)
                 {
                     // render will happen in other loop
                     return;
                 }
 
-                // should render in this loop, wait for remaing time
-                while(DateTime.Now.Ticks < _frameStart)
-                {
-                    Thread.Sleep(5); // TODO thread.sleep is unreliable and inefficient
-                }
                 // Render the already loaded frame
                 Render();
 
