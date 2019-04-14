@@ -83,9 +83,9 @@ namespace StellaClient.Time
         {
             // Calculate the IQR and the maximum range
             Array.Sort(deltas);
-            double q1 = Calculation.Percentile(deltas,25);
-            double q2 = Calculation.Percentile(deltas,50);
-            double q3 = Calculation.Percentile(deltas,75);
+            double q1 = Calculation.Percentile(deltas,0.25);
+            double q2 = Calculation.Percentile(deltas,0.50);
+            double q3 = Calculation.Percentile(deltas,0.75);
             double iqr;
 
             if(q1 > q3)
