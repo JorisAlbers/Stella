@@ -76,6 +76,22 @@ namespace EndToEndTests
             AnimationExpander expander2 = new AnimationExpander(slidingPatternAnimator.Create());
             List<Frame> frames2 =  expander2.Expand(110);
 
+            MovingPatternAnimator movingPatternAnimator = new MovingPatternAnimator(300,30,new Color[]
+            {
+                Color.FromArgb(0,0,0),
+                Color.FromArgb(0,0,25),
+                Color.FromArgb(0,0,50),
+                Color.FromArgb(0,0,75),
+                Color.FromArgb(0,0,100),
+                Color.FromArgb(0,0,125),
+                Color.FromArgb(0,0,150),
+                Color.FromArgb(0,0,175),
+                Color.FromArgb(0,0,200),
+                Color.FromArgb(0,0,225),
+                Color.FromArgb(0,0,250),
+            });
+
+            List<Frame> movingDotFrames = movingPatternAnimator.Create();
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
@@ -85,6 +101,7 @@ namespace EndToEndTests
             {
                 Console.Out.WriteLine("r - Start RepeatingPattern animation");
                 Console.Out.WriteLine("s - Start SlidingPattern   animation");
+                Console.Out.WriteLine("m - Start MovingPattern    animation");
                 Console.Out.WriteLine("q - quit");
 
                 switch (input)
@@ -99,6 +116,12 @@ namespace EndToEndTests
                         clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
                         {
                             Frames = frames2
+                        });
+                        break;
+                    case "m":
+                        clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
+                        {
+                            Frames = movingDotFrames
                         });
                         break;
                     default:
