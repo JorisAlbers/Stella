@@ -49,6 +49,21 @@ namespace EndToEndTests
             ClientController clientController = new ClientController(server);
 
 
+            Color[] pattern = new Color[]
+            {
+                Color.FromArgb(0, 0, 0),
+                Color.FromArgb(0, 0, 25),
+                Color.FromArgb(0, 0, 50),
+                Color.FromArgb(0, 0, 75),
+                Color.FromArgb(0, 0, 100),
+                Color.FromArgb(0, 0, 125),
+                Color.FromArgb(0, 0, 150),
+                Color.FromArgb(0, 0, 175),
+                Color.FromArgb(0, 0, 200),
+                Color.FromArgb(0, 0, 225),
+                Color.FromArgb(0, 0, 250),
+            };
+
             RepeatingPatternsAnimator repeatingPatternsAnimator = new RepeatingPatternsAnimator(300, 100, new List<Color[]>
             {
                 new Color[2]
@@ -68,28 +83,12 @@ namespace EndToEndTests
             AnimationExpander expander = new AnimationExpander(repeatingPatternsAnimator.Create());
             List<Frame> frames1 = expander.Expand(100);
 
-            SlidingPatternAnimator slidingPatternAnimator = new SlidingPatternAnimator(300,100,new Color[]
-            {
-                Color.Green, Color.Red, Color.Blue, Color.Wheat, Color.Aqua, Color.Green, Color.Orange, Color.Orange, Color.FromArgb(0,0,0)
-            });
+            SlidingPatternAnimator slidingPatternAnimator = new SlidingPatternAnimator(300,100, pattern);
 
             AnimationExpander expander2 = new AnimationExpander(slidingPatternAnimator.Create());
             List<Frame> frames2 =  expander2.Expand(110);
 
-            MovingPatternAnimator movingPatternAnimator = new MovingPatternAnimator(300,30,new Color[]
-            {
-                Color.FromArgb(0,0,0),
-                Color.FromArgb(0,0,25),
-                Color.FromArgb(0,0,50),
-                Color.FromArgb(0,0,75),
-                Color.FromArgb(0,0,100),
-                Color.FromArgb(0,0,125),
-                Color.FromArgb(0,0,150),
-                Color.FromArgb(0,0,175),
-                Color.FromArgb(0,0,200),
-                Color.FromArgb(0,0,225),
-                Color.FromArgb(0,0,250),
-            });
+            MovingPatternAnimator movingPatternAnimator = new MovingPatternAnimator(300,30,pattern);
 
             List<Frame> movingDotFrames = movingPatternAnimator.Create();
 
