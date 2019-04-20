@@ -80,9 +80,13 @@ namespace StellaLib.Network
                 throw new ObjectDisposedException("SocketConnectionController has been disposed");
             }
 
-            byte[] data = PacketProtocol.WrapMessage(messageType, message);  
+            byte[] data = PacketProtocol.WrapMessage(messageType, message);
 
-            Console.WriteLine($"[OUT] [{messageType}] length:{message.Length}");
+            // Log the incoming message. Ignoring often occurring types.
+            if (messageType != MessageType.Animation_Request)
+            {
+                Console.WriteLine($"[OUT] [{messageType}] length:{message.Length}");
+            }
 
             // Begin sending the data to the remote device.  
             try
@@ -161,7 +165,11 @@ namespace StellaLib.Network
 
         protected virtual void OnMessageReceived(MessageType type, byte[] bytes)
         {
-            Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] bytes received : {bytes.Length}");
+            // Log the incoming message. Ignoring often occurring types.
+            if (type != MessageType.Animation_Request)
+            {
+                Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] bytes received : {bytes.Length}");
+            }
 
             EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
             if (handler != null)
