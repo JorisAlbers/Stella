@@ -19,7 +19,6 @@ namespace StellaClient.Light
         /// color                     | 
         /// Moving dot                |    300     |  13 at most
         /// 
-        private const int TIMER_LOOP_DURATION = 15; // in milliseconds
 
         private const int FRAME_BUFFER_SIZE        = 300;  // the maximum size of the frames buffer.
         private const int FRAMES_AT_FIRST_REQUEST  = 100;
@@ -28,7 +27,6 @@ namespace StellaClient.Light
 
 
         private ILEDStrip _ledStrip;
-        private System.Timers.Timer _timer;
         private bool _isDisposed;
 
         /// <summary> Fires when the frame buffer is running low. </summary>
@@ -81,50 +79,44 @@ namespace StellaClient.Light
         {
             _ledStrip = ledStrip;
             _frameBuffer = new ConcurrentQueue<Frame>();
-            _timer = new System.Timers.Timer();
-            _timer.Interval = TIMER_LOOP_DURATION;
-            _timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
         }
 
-        public void Run()
+        public async void Run()
         {
             _nextFrame = null;
-            _timer.Enabled = true;
+            await new TaskFactory().StartNew(MainLoop);
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void MainLoop()
         {
-            if(_isDisposed)
+            while (!_isDisposed)
             {
-                _timer.Stop();
-                return;
-            }
+                int framesNeeded = 0;
 
-            int framesNeeded = 0;
-           
-            Draw();
+                Draw();
 
-            // Check if we need more frames
-            int framesLeft = _pendingFrameBuffer?.Count ?? _frameBuffer.Count;
+                // Check if we need more frames
+                int framesLeft = _pendingFrameBuffer?.Count ?? _frameBuffer.Count;
 
-            if (framesLeft == _framesLeftAtPreviousRequest)
-            {
-                return;
-            }
+                if (framesLeft == _framesLeftAtPreviousRequest)
+                {
+                    continue;
+                }
 
-            if (framesLeft == FRAMES_AT_FIRST_REQUEST ||
-                framesLeft == FRAMES_AT_SECOND_REQUEST ||
-                framesLeft == FRAMES_AT_THIRD_REQUEST)
-            {
-                framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
-                Interlocked.Exchange(ref _framesLeftAtPreviousRequest,framesLeft);
-            }
-            
+                if (framesLeft == FRAMES_AT_FIRST_REQUEST ||
+                    framesLeft == FRAMES_AT_SECOND_REQUEST ||
+                    framesLeft == FRAMES_AT_THIRD_REQUEST)
+                {
+                    framesNeeded = FRAME_BUFFER_SIZE - framesLeft;
+                    Interlocked.Exchange(ref _framesLeftAtPreviousRequest, framesLeft);
+                }
 
-            if (framesNeeded > 0)
-            {
-                // We need more frames. Fire the event
-                OnFramesNeeded(_lastKnownFrameIndex +1,framesNeeded);
+
+                if (framesNeeded > 0)
+                {
+                    // We need more frames. Fire the event
+                    OnFramesNeeded(_lastKnownFrameIndex + 1, framesNeeded);
+                }
             }
         }
 
@@ -148,11 +140,11 @@ namespace StellaClient.Light
             long now = DateTime.Now.Ticks;
 
             // First, check if the pending frameSet should be drawn
-            lock (_pendingFrameBufferLock)
+            if (_pendingFrameSetMetadata != null)
             {
-                if (_pendingFrameSetMetadata != null)
+                if (now >= _pendingFrameSetMetadata.TimeStamp.Ticks)
                 {
-                    if (now >= _pendingFrameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
+                    lock (_pendingFrameBufferLock)
                     {
                         _frameSetMetadata = _pendingFrameSetMetadata;
                         _frameBuffer = _pendingFrameBuffer;
@@ -163,12 +155,16 @@ namespace StellaClient.Light
                     }
                 }
             }
-            
+
+            if (_frameSetMetadata == null)
+            { // No animation on display.
+                return;
+            }
             
             // Then, check if we are in case 1
             if(_nextFrame == null)
             {
-                if (now >= _frameSetMetadata.TimeStamp.Ticks + TIMER_LOOP_DURATION)
+                if (now >= _frameSetMetadata.TimeStamp.Ticks)
                 {
                     // CASE 1 , Prepare, Render, Prepare
                     // Frame 1
@@ -190,7 +186,7 @@ namespace StellaClient.Light
             else
             {
                 // CASE 2, Render, Prepare
-                if(now < _frameStart + TIMER_LOOP_DURATION)
+                if(now < _frameStart)
                 {
                     // render will happen in other loop
                     return;
