@@ -3,21 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaLib", "StellaLib\StellaLib.csproj", "{0A3463FD-CF48-4B70-BE83-6668D052B70F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaLib", "StellaLib\StellaLib.csproj", "{0A3463FD-CF48-4B70-BE83-6668D052B70F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaLib.Test", "StellaLib.Test\StellaLib.Test.csproj", "{B6D7B5B9-61D4-415D-BA15-C770EF5CE87B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaLib.Test", "StellaLib.Test\StellaLib.Test.csproj", "{B6D7B5B9-61D4-415D-BA15-C770EF5CE87B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServer", "StellaServer\StellaServer.csproj", "{7FEEB1EA-08AD-44CF-877E-90A55F8154EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServer", "StellaServer\StellaServer.csproj", "{7FEEB1EA-08AD-44CF-877E-90A55F8154EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServer.Test", "StellaServer.Test\StellaServer.Test.csproj", "{ABD5A469-EC56-42A9-A34E-E45577D9E169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServer.Test", "StellaServer.Test\StellaServer.Test.csproj", "{ABD5A469-EC56-42A9-A34E-E45577D9E169}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaClient", "StellaClient\StellaClient.csproj", "{E4C9DE13-8324-4F11-9C69-AF0966851609}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClient", "StellaClient\StellaClient.csproj", "{E4C9DE13-8324-4F11-9C69-AF0966851609}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rpi_ws281x", "rpi_ws281x\rpi_ws281x.csproj", "{F2FA304A-ECBA-474A-81A5-C93936778E78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rpi_ws281x", "rpi_ws281x\rpi_ws281x.csproj", "{F2FA304A-ECBA-474A-81A5-C93936778E78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaClient.Test", "StellaClient.Test\StellaClient.Test.csproj", "{87981F8E-BE15-4F69-8E8F-49D1E3D4BA31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClient.Test", "StellaClient.Test\StellaClient.Test.csproj", "{87981F8E-BE15-4F69-8E8F-49D1E3D4BA31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEndTests", "EndToEndTests\EndToEndTests.csproj", "{7889EFE6-7744-4E0B-917F-755539A78029}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EndToEndTests", "EndToEndTests\EndToEndTests.csproj", "{7889EFE6-7744-4E0B-917F-755539A78029}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaVisualizer", "StellaVisualizer\StellaVisualizer.csproj", "{78C0E95F-8E12-4E43-9163-18EB0A966A8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0A3463FD-CF48-4B70-BE83-6668D052B70F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -128,5 +127,23 @@ Global
 		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x64.Build.0 = Release|Any CPU
 		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x86.ActiveCfg = Release|Any CPU
 		{7889EFE6-7744-4E0B-917F-755539A78029}.Release|x86.Build.0 = Release|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Debug|x64.Build.0 = Debug|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Debug|x86.Build.0 = Debug|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Release|x64.ActiveCfg = Release|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Release|x64.Build.0 = Release|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Release|x86.ActiveCfg = Release|Any CPU
+		{78C0E95F-8E12-4E43-9163-18EB0A966A8B}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {321FDEF8-D5B0-4900-8998-6AAC843D19A8}
 	EndGlobalSection
 EndGlobal
