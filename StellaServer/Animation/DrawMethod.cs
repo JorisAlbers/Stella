@@ -7,7 +7,7 @@ namespace StellaServer.Animation
     /// <summary>
     /// The different draw methods available.
     /// </summary>
-    enum DrawMethod
+    public enum DrawMethod
     {
         /// <summary> Not set. </summary>
         Unknown,
