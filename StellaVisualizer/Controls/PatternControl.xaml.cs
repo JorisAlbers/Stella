@@ -10,25 +10,31 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using StellaVisualizer.ViewModels;
 
-namespace StellaVisualizer.Windows
+namespace StellaVisualizer.Controls
 {
     /// <summary>
-    /// Interaction logic for NewAnimationWindow.xaml
+    /// Interaction logic for PatternControl.xaml
     /// </summary>
-    public partial class NewAnimationWindow : Window
+    public partial class PatternControl : UserControl
     {
-        public NewAnimationWindow()
+
+        public PatternControl()
         {
             InitializeComponent();
         }
 
-        private void AddPatternButton_OnClick(object sender, RoutedEventArgs e)
+        private void Grid_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            NewAnimationWindowViewModel viewModel = DataContext as NewAnimationWindowViewModel;
-            viewModel.PatternViewModels.Add(new PatternViewModel(0,0,0));
+            ColorSelectionPopUp.IsOpen = true;
+        }
+
+        private void OkButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ColorSelectionPopUp.IsOpen = false;
         }
     }
 }

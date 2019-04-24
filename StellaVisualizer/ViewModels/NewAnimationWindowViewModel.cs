@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,11 @@ namespace StellaVisualizer.ViewModels
         /// The number of milliseconds each frame will be visible for.
         /// </summary>
         public int WaitMS { get; set; } = 100;
+
+        public ObservableCollection<PatternViewModel> PatternViewModels { get; } = new ObservableCollection<PatternViewModel>
+        {
+            new PatternViewModel(100,100,100)
+        };
 
 
         public NewAnimationWindowViewModel()
