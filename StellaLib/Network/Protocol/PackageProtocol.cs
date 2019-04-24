@@ -227,7 +227,7 @@ public class PacketProtocol
                 }
 
                 // Create the data buffer and start reading into it
-                int dataBufferLength = BitConverter.ToInt32(this.lengthBuffer) - this.messageTypeBuffer.Length;
+                int dataBufferLength = BitConverter.ToInt32(this.lengthBuffer,0) - this.messageTypeBuffer.Length;
                 this.dataBuffer = new byte[dataBufferLength];
                 this.bytesReceived = 0;
             }
