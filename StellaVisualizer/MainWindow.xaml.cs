@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using StellaVisualizer.Controls;
 using StellaVisualizer.ViewModels;
+using StellaVisualizer.Windows;
 
 namespace StellaVisualizer
 {
@@ -23,6 +24,9 @@ namespace StellaVisualizer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private NewAnimationWindow _newAnimationWindow;
+        private NewAnimationWindowViewModel _newAnimationWindowViewModel;
+
         public ObservableCollection<LedStripViewModel> LedStripViewModels { get; set; }
 
         public MainWindow()
@@ -33,6 +37,11 @@ namespace StellaVisualizer
             LedStripViewModels.Add(new LedStripViewModel("RPI_1",300));
             LedStripViewModels.Add(new LedStripViewModel("RPI_2",300));
             LedStripViewModels.Add(new LedStripViewModel("RP1_3",300));
+
+            _newAnimationWindow = new NewAnimationWindow();
+            _newAnimationWindowViewModel = new NewAnimationWindowViewModel();
+            _newAnimationWindow.DataContext = _newAnimationWindowViewModel;
+            _newAnimationWindow.Show();
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)
@@ -53,6 +62,16 @@ namespace StellaVisualizer
         private void NextFrameButton_OnClick(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void SetButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!Application.Current.Windows.OfType<NewAnimationWindow>().Any())
+            {
+                _newAnimationWindow = new NewAnimationWindow();
+                _newAnimationWindow.DataContext = _newAnimationWindowViewModel;
+                _newAnimationWindow.Show();
+            }
         }
     }
 }
