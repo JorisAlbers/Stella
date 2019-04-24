@@ -22,6 +22,8 @@
         <TextBlock Grid.Column="0" Grid.Row="0" Text="Draw method : "/>
         <ComboBox  Grid.Column="1" Grid.Row="0" ItemsSource="{Binding DrawMethods}" SelectedItem="{Binding SelectedDrawMethod}"/>
 
-        
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="WaitMS : "/>
+        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding WaitMS}"/>
+
     </Grid>
 </Window>

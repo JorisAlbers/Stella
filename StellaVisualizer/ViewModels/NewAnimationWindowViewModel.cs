@@ -21,7 +21,12 @@ namespace StellaVisualizer.ViewModels
         /// <summary>
         /// The selected draw method
         /// </summary>
-        public string SelectedDrawMethod { get; set; }
+        public string SelectedDrawMethod { get; set; } = Enum.GetName(typeof(DrawMethod), DrawMethod.Unknown);
+
+        /// <summary>
+        /// The number of milliseconds each frame will be visible for.
+        /// </summary>
+        public int WaitMS { get; set; } = 100;
 
 
         public NewAnimationWindowViewModel()
