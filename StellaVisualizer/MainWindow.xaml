@@ -27,8 +27,8 @@
         <ContentPresenter Grid.Row="2" Margin="0,0,0,5" Content="{Binding LedStripViewModels[2]}"/>
         
         <StackPanel Grid.Row="4" Orientation="Horizontal">
-            <TextBlock Text="Number of frames: " Foreground="WhiteSmoke"/>
-            <TextBlock Text="{Binding Animation.Count, TargetNullValue='0'}"  Foreground="WhiteSmoke"/>
+            <!--<TextBlock Text="Number of frames: " Foreground="WhiteSmoke"/>
+            <TextBlock Text="{Binding Animation.Count, TargetNullValue='0'}"  Foreground="WhiteSmoke"/>-->
         </StackPanel>
 
         <Grid Grid.Row="6">

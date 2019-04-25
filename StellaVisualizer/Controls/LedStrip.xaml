@@ -11,11 +11,15 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="WhiteSmoke"/>
 
-        <UniformGrid Grid.Column="2" Name="UniformGrid"/>
+        <TextBlock Grid.Column="2" Text="{Binding Animation.Count, TargetNullValue='0', FallbackValue='0'}" Foreground="WhiteSmoke"/>
+
+        <UniformGrid Grid.Column="4" Name="UniformGrid"/>
     </Grid>
 
 </UserControl>

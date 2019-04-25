@@ -20,9 +20,7 @@ namespace StellaVisualizer
         private NewAnimationWindowViewModel _newAnimationWindowViewModel;
 
         public ObservableCollection<LedStripViewModel> LedStripViewModels { get; set; }
-
-        public List<Frame> Animation {get;set;}
-
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -42,7 +40,10 @@ namespace StellaVisualizer
         private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
         {
             // The user has created a new animation
-            Animation = e.Animation;
+            for (int i = 0; i < LedStripViewModels.Count; i++)
+            {
+                LedStripViewModels[i].Animation = e.Animation;
+            }
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)
