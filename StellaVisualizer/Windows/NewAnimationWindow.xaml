@@ -23,7 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
@@ -36,15 +36,14 @@
         <TextBlock  Grid.Column="0" Grid.Row="2"  Text="Pattern : "/>
         <Button    Grid.Column="1" Grid.Row="2"  Content="Add" Click="AddPatternButton_OnClick"/>
 
-        <ItemsControl Grid.Column="2" Grid.Row="2" ItemsSource="{Binding PatternViewModels}" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
-            <ItemsControl.ItemsPanel>
+        <ListView  Grid.Column="2" Grid.Row="2" ItemsSource="{Binding PatternViewModels}" SelectedItem="{Binding SelectedPatternViewModel}">
+            <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-
-
-
+            </ListView.ItemsPanel>
+            
+        </ListView>
+            
     </Grid>
 </Window>

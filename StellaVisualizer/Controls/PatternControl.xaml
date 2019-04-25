@@ -16,7 +16,7 @@
           BorderThickness="1"
           MouseDown="Grid_OnMouseDown">
 
-        <Popup Name="ColorSelectionPopUp" PlacementTarget="{Binding ElementName=MainGrid}" Placement="Bottom">
+        <Popup Name="ColorSelectionPopUp" PlacementTarget="{Binding ElementName=MainGrid}" Placement="Bottom" IsOpen="{Binding IsSelected}">
             <StackPanel Background="PaleGoldenrod">
                 <UniformGrid Columns="3" Rows="2">
                     <TextBlock Text="R" Width="30"/>

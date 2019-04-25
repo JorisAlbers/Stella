@@ -25,6 +25,8 @@ namespace StellaVisualizer.ViewModels
             get => new SolidColorBrush(System.Windows.Media.Color.FromRgb(Red, Green, Blue));
         }
 
+        public bool IsSelected { get; set; }
+
         public PatternViewModel(byte red, byte green, byte blue)
         {
             Red = red;
