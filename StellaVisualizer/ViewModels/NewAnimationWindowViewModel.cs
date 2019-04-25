@@ -112,6 +112,7 @@ namespace StellaVisualizer.ViewModels
         {
             SlidingPatternAnimator animator = new SlidingPatternAnimator(300,waitMs, pattern);
             List<Frame> frames = animator.Create();
+            OnAnimationCreated(frames);
         }
 
         private void OnAnimationCreated(List<Frame> animation)

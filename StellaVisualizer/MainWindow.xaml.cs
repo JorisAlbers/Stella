@@ -1,33 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using StellaVisualizer.Controls;
+using StellaLib.Animation;
 using StellaVisualizer.ViewModels;
 using StellaVisualizer.Windows;
+
 
 namespace StellaVisualizer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window , INotifyPropertyChanged
     {
         private NewAnimationWindow _newAnimationWindow;
         private NewAnimationWindowViewModel _newAnimationWindowViewModel;
 
         public ObservableCollection<LedStripViewModel> LedStripViewModels { get; set; }
+
+        public List<Frame> Animation {get;set;}
 
         public MainWindow()
         {
@@ -48,8 +42,7 @@ namespace StellaVisualizer
         private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
         {
             // The user has created a new animation
-
-
+            Animation = e.Animation;
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)
@@ -81,5 +74,7 @@ namespace StellaVisualizer
                 _newAnimationWindow.Show();
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

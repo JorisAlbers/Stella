@@ -10,16 +10,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Background="Black">
-<Window.Resources>
-        <DataTemplate DataType="{x:Type viewModels:LedStripViewModel}">
-            <controls:LedStrip/>
-        </DataTemplate>
-    </Window.Resources>
-
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="50"/>
             <RowDefinition Height="*" MaxHeight="50"/>
+            <RowDefinition Height="*" MaxHeight="50"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*" MaxHeight="50"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*" MaxHeight="50"/>
@@ -29,9 +25,13 @@
         <ContentPresenter Grid.Row="0" Margin="0,0,0,5" Content="{Binding LedStripViewModels[0]}"/>
         <ContentPresenter Grid.Row="1" Margin="0,0,0,5" Content="{Binding LedStripViewModels[1]}"/>
         <ContentPresenter Grid.Row="2" Margin="0,0,0,5" Content="{Binding LedStripViewModels[2]}"/>
+        
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <TextBlock Text="Number of frames: " Foreground="WhiteSmoke"/>
+            <TextBlock Text="{Binding Animation.Count, TargetNullValue='0'}"  Foreground="WhiteSmoke"/>
+        </StackPanel>
 
-
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="30"/>
@@ -47,7 +47,7 @@
             <Button Content="&gt;" Grid.Column="4" Click="NextFrameButton_OnClick"/>
         </Grid>
 
-        <Grid Grid.Row="5">
+        <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="50"/>
@@ -63,6 +63,11 @@
 
 
     </Grid>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:LedStripViewModel}">
+            <controls:LedStrip/>
+        </DataTemplate>
+    </Window.Resources>
 
 
 </Window>
