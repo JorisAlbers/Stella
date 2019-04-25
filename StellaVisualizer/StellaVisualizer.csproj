@@ -58,6 +58,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -80,6 +81,7 @@
       <DependentUpon>PatternControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\AnimationCreatedEventArgs.cs" />
     <Compile Include="ViewModels\PatternViewModel.cs" />
     <Compile Include="Windows\NewAnimationWindow.xaml.cs">
       <DependentUpon>NewAnimationWindow.xaml</DependentUpon>

@@ -40,8 +40,16 @@ namespace StellaVisualizer
 
             _newAnimationWindow = new NewAnimationWindow();
             _newAnimationWindowViewModel = new NewAnimationWindowViewModel();
+            _newAnimationWindowViewModel.AnimationCreated += NewAnimationWindowViewModel_OnAnimationCreated;
             _newAnimationWindow.DataContext = _newAnimationWindowViewModel;
             _newAnimationWindow.Show();
+        }
+
+        private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
+        {
+            // The user has created a new animation
+
+
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)
