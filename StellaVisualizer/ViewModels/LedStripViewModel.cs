@@ -28,7 +28,11 @@ namespace StellaVisualizer.ViewModels
         {
             Length = length;
             Name = name;
-            PixelViewModels = new ObservableCollection<PixelViewModel>(Enumerable.Repeat(new PixelViewModel(), length));
+            PixelViewModels = new ObservableCollection<PixelViewModel>();
+            for (int i = 0; i < length; i++)
+            {
+                PixelViewModels.Add(new PixelViewModel());
+            }
         }
 
         public void SetAnimation(List<Frame> animation)
