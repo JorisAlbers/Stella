@@ -99,6 +99,7 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.RepeatingPattern:
                     break;
                 case DrawMethod.MovingPattern:
+                    CreateMovingPatternAnimation(pattern, WaitMS);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -111,6 +112,13 @@ namespace StellaVisualizer.ViewModels
         private void CreateSlidingPatternAnimation(Color[] pattern, int waitMs)
         {
             SlidingPatternAnimator animator = new SlidingPatternAnimator(30,waitMs, pattern);
+            List<Frame> frames = animator.Create();
+            OnAnimationCreated(frames);
+        }
+
+        private void CreateMovingPatternAnimation(Color[] pattern, int waitMS)
+        {
+            MovingPatternAnimator animator = new MovingPatternAnimator(30,waitMS,pattern);
             List<Frame> frames = animator.Create();
             OnAnimationCreated(frames);
         }
