@@ -70,7 +70,7 @@ namespace EndToEndTests
             ledController.Run();
 
             // Server
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.110"), 20055);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
             StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, id, new LinuxTimeSetter());
             stellaServer.Start();
 

@@ -4,6 +4,9 @@ namespace EndToEndTests
 {
     class Program
     {
+        /// <summary> IP of the server. </summary>
+        public static readonly string SERVER_IP = "192.168.2.30";
+
         static void Main(string[] args)
         {
             bool run = true;
