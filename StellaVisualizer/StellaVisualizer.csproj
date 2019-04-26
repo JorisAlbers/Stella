@@ -83,6 +83,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\AnimationCreatedEventArgs.cs" />
     <Compile Include="ViewModels\PatternViewModel.cs" />
+    <Compile Include="ViewModels\PixelViewModel.cs" />
     <Compile Include="Windows\NewAnimationWindow.xaml.cs">
       <DependentUpon>NewAnimationWindow.xaml</DependentUpon>
     </Compile>

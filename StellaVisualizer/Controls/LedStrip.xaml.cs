@@ -24,18 +24,6 @@ namespace StellaVisualizer.Controls
         public LedStrip()
         {
             InitializeComponent();
-            Loaded += OnLoaded;
-        }
-
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            LedStripViewModel vm = DataContext as LedStripViewModel;
-            UniformGrid.Columns = vm.Length;
-            for (int i = 0; i < vm.Length; i++)
-            {
-                UniformGrid.Children.Add(new Canvas()
-                    { Background = i % 2 == 0 ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Blue) });
-            }
         }
     }
 }

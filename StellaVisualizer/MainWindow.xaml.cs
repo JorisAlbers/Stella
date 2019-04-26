@@ -26,9 +26,9 @@ namespace StellaVisualizer
             InitializeComponent();
             DataContext = this;
             LedStripViewModels = new ObservableCollection<LedStripViewModel>();
-            LedStripViewModels.Add(new LedStripViewModel("RPI_1",300));
-            LedStripViewModels.Add(new LedStripViewModel("RPI_2",300));
-            LedStripViewModels.Add(new LedStripViewModel("RP1_3",300));
+            LedStripViewModels.Add(new LedStripViewModel("RPI_1",30));
+            LedStripViewModels.Add(new LedStripViewModel("RPI_2",30));
+            LedStripViewModels.Add(new LedStripViewModel("RP1_3",30));
 
             _newAnimationWindow = new NewAnimationWindow();
             _newAnimationWindowViewModel = new NewAnimationWindowViewModel();
@@ -42,7 +42,7 @@ namespace StellaVisualizer
             // The user has created a new animation
             for (int i = 0; i < LedStripViewModels.Count; i++)
             {
-                LedStripViewModels[i].Animation = e.Animation;
+                LedStripViewModels[i].SetAnimation(e.Animation);
             }
         }
 
@@ -58,12 +58,18 @@ namespace StellaVisualizer
 
         private void PreviousFrameButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            foreach (LedStripViewModel ledStripViewModel in LedStripViewModels)
+            {
+                ledStripViewModel.PreviousFrame();
+            }
         }
         
         private void NextFrameButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            foreach (LedStripViewModel ledStripViewModel in LedStripViewModels)
+            {
+                ledStripViewModel.NextFrame();
+            }
         }
 
         private void SetButton_OnClick(object sender, RoutedEventArgs e)
