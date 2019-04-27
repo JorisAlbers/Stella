@@ -70,7 +70,7 @@ namespace StellaVisualizer.ViewModels
         public void CreateAnimation()
         {
             // Validate input
-            Color[] pattern = PatternViewModels.Select(x => Color.FromArgb(x.Red,x.Green,x.Green)).ToArray();
+            Color[] pattern = PatternViewModels.Select(x => Color.FromArgb(x.Red,x.Green,x.Blue)).ToArray();
 
             if (pattern.Length == 0)
             {
