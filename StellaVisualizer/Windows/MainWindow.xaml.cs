@@ -75,7 +75,7 @@ namespace StellaVisualizer.Windows
             _time += 50;
             int nextFrameIndex = _lastFrameIndex + 1;
 
-            if (Animation.Count < nextFrameIndex)
+            if (Animation.Count <= nextFrameIndex)
             {
                 return;
             }
