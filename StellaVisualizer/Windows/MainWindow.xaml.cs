@@ -9,7 +9,7 @@ using StellaVisualizer.ViewModels;
 using StellaVisualizer.Windows;
 
 
-namespace StellaVisualizer
+namespace StellaVisualizer.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
