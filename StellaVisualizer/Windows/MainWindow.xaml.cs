@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using StellaLib.Animation;
 using StellaVisualizer.ViewModels;
@@ -25,6 +26,8 @@ namespace StellaVisualizer.Windows
         private uint _time;
         private int _lastFrameIndex;
 
+        private Timer _playTimer;
+
 
         
         public MainWindow()
@@ -41,37 +44,18 @@ namespace StellaVisualizer.Windows
             _newAnimationWindowViewModel.AnimationCreated += NewAnimationWindowViewModel_OnAnimationCreated;
             _newAnimationWindow.DataContext = _newAnimationWindowViewModel;
             _newAnimationWindow.Show();
+
+            _playTimer = new Timer(50);
+            _playTimer.AutoReset = true;
+            _playTimer.Elapsed += PlayTimerOnElapsed;
         }
 
-        private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
+        private void PlayTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            // The user has created a new animation
-            _time = 0;
-            _lastFrameIndex = 0;
-            Animation = e.Animation;
-            for (int i = 0; i < LedStripViewModels.Count; i++)
-            {
-                LedStripViewModels[i].Clear();
-                LedStripViewModels[i].NumberOfFrames = e.Animation.Count;
-            }
+            IncrementTime();
         }
 
-        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PauseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PreviousFrameButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        
-        private void NextFrameButton_OnClick(object sender, RoutedEventArgs e)
+        private void IncrementTime()
         {
             _time += 50;
             int nextFrameIndex = _lastFrameIndex + 1;
@@ -93,6 +77,39 @@ namespace StellaVisualizer.Windows
             }
 
             _lastFrameIndex = nextFrameIndex;
+        }
+
+        private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
+        {
+            // The user has created a new animation
+            _time = 0;
+            _lastFrameIndex = 0;
+            Animation = e.Animation;
+            for (int i = 0; i < LedStripViewModels.Count; i++)
+            {
+                LedStripViewModels[i].Clear();
+                LedStripViewModels[i].NumberOfFrames = e.Animation.Count;
+            }
+        }
+
+        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _playTimer.Enabled = true;
+        }
+
+        private void PauseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _playTimer.Enabled = false;
+        }
+
+        private void PreviousFrameButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        
+        private void NextFrameButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            IncrementTime();
         }
 
 
