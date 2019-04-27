@@ -28,7 +28,7 @@ namespace StellaVisualizer.Windows
         private void AddPatternButton_OnClick(object sender, RoutedEventArgs e)
         {
             NewAnimationWindowViewModel viewModel = DataContext as NewAnimationWindowViewModel;
-            viewModel.PatternViewModels.Add(new PatternViewModel(0,0,0));
+            viewModel.AddPatternViewModel();
         }
 
         private void CreateAnimationButton_OnClick(object sender, RoutedEventArgs e)

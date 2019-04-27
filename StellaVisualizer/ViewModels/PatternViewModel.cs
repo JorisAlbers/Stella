@@ -12,6 +12,8 @@ namespace StellaVisualizer.ViewModels
 {
     public class PatternViewModel : INotifyPropertyChanged
     {
+        public event EventHandler RemoveRequested;
+
         public byte Red
         {
             get;
@@ -36,5 +38,13 @@ namespace StellaVisualizer.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public void OnRemoveRequested()
+        {
+            EventHandler handler = RemoveRequested;
+            if (handler != null)
+            {
+                handler.Invoke(this,new EventArgs());
+            }
+        }
     }
 }

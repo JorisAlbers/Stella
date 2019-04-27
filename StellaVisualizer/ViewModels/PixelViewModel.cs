@@ -11,9 +11,7 @@ namespace StellaVisualizer.ViewModels
 {
     public class PixelViewModel : INotifyPropertyChanged
     {
-        public Color Color {
-            get;
-            set; }
+        public Color Color {get;set; }
 
         public SolidColorBrush SolidColorBrush => new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.R,Color.G,Color.B));
     

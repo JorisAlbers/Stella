@@ -36,5 +36,11 @@ namespace StellaVisualizer.Controls
         {
             ColorSelectionPopUp.IsOpen = false;
         }
+
+        private void Remove_OnClick(object sender, RoutedEventArgs e)
+        {
+            PatternViewModel vm = DataContext as PatternViewModel;
+            vm.OnRemoveRequested();
+        }
     }
 }

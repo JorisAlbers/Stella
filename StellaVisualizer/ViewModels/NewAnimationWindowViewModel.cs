@@ -56,19 +56,15 @@ namespace StellaVisualizer.ViewModels
             }
         }
 
-        public ObservableCollection<PatternViewModel> PatternViewModels { get; } = new ObservableCollection<PatternViewModel>
-        {
-            new PatternViewModel(255,0,0),
-            new PatternViewModel(0,255,0),
-            new PatternViewModel(0,0,255)
-        };
-
-
+        public ObservableCollection<PatternViewModel> PatternViewModels { get; } = new ObservableCollection<PatternViewModel>();
+       
         public NewAnimationWindowViewModel()
         {
-            
+            AddPatternViewModel(255, 0, 0);
+            AddPatternViewModel(0, 255,0);
+            AddPatternViewModel(0, 0, 255);
         }
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void CreateAnimation()
@@ -132,6 +128,34 @@ namespace StellaVisualizer.ViewModels
             {
                 handler.Invoke(this,new AnimationCreatedEventArgs(animation, StripLength));
             }
+        }
+
+        public void AddPatternViewModel()
+        {
+            PatternViewModel lastItem = PatternViewModels.LastOrDefault();
+
+            if (lastItem == null)
+            {
+                AddPatternViewModel(0, 0, 0);
+            }
+            else
+            {
+                AddPatternViewModel(lastItem.Red,lastItem.Green, lastItem.Blue);
+            }
+        }
+
+        private void AddPatternViewModel(byte red, byte green, byte blue)
+        {
+            PatternViewModel vm = new PatternViewModel(red, green, blue);
+            vm.RemoveRequested += PatternViewModel_OnRemoveRequested;
+            PatternViewModels.Add(vm);
+        }
+
+        private void PatternViewModel_OnRemoveRequested(object sender, EventArgs e)
+        {
+            PatternViewModel vm = sender as PatternViewModel;
+            vm.RemoveRequested -= PatternViewModel_OnRemoveRequested;
+            PatternViewModels.Remove(vm);
         }
     }
 }

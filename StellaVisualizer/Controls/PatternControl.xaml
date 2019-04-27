@@ -15,6 +15,13 @@
           BorderBrush="Black"
           BorderThickness="1"
           MouseDown="Grid_OnMouseDown">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Remove pixel" Click="Remove_OnClick"/>
+            </ContextMenu>
+        </Border.ContextMenu>
+    
+
 
         <Popup Name="ColorSelectionPopUp" PlacementTarget="{Binding ElementName=MainGrid}" Placement="Bottom" IsOpen="{Binding IsSelected}">
             <StackPanel Background="PaleGoldenrod">
