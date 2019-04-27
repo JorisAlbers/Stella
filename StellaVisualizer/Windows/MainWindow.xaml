@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Content="&lt;" Grid.Column="1" Click="PreviousFrameButton_OnClick"/>
+            <Button Content="&lt;" Grid.Column="1" Click="PreviousFrameButton_OnClick" IsEnabled="False"/>
             <Button Content="Play" Grid.Column="2" Click="PlayButton_OnClick"/>
             <Button Content="Pause" Grid.Column="3" Click="PauseButton_OnClick"/>
             <Button Content="&gt;" Grid.Column="4" Click="NextFrameButton_OnClick"/>
