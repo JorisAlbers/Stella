@@ -96,12 +96,12 @@ namespace StellaVisualizer.ViewModels
                     Console.Out.WriteLine($"Method can't be set to unknown");
                     return;
                 case DrawMethod.SlidingPattern:
-                    CreateSlidingPatternAnimation(pattern, WaitMS);
+                    CreateSlidingPatternAnimation(StripLength,pattern, WaitMS);
                     break;
                 case DrawMethod.RepeatingPattern:
                     break;
                 case DrawMethod.MovingPattern:
-                    CreateMovingPatternAnimation(pattern, WaitMS);
+                    CreateMovingPatternAnimation(StripLength,pattern, WaitMS);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -111,16 +111,16 @@ namespace StellaVisualizer.ViewModels
 
 
 
-        private void CreateSlidingPatternAnimation(Color[] pattern, int waitMs)
+        private void CreateSlidingPatternAnimation(int stripLength, Color[] pattern, int waitMs)
         {
-            SlidingPatternAnimator animator = new SlidingPatternAnimator(30,waitMs, pattern);
+            SlidingPatternAnimator animator = new SlidingPatternAnimator(stripLength,waitMs, pattern);
             List<Frame> frames = animator.Create();
             OnAnimationCreated(frames);
         }
 
-        private void CreateMovingPatternAnimation(Color[] pattern, int waitMS)
+        private void CreateMovingPatternAnimation(int stripLength, Color[] pattern, int waitMS)
         {
-            MovingPatternAnimator animator = new MovingPatternAnimator(30,waitMS,pattern);
+            MovingPatternAnimator animator = new MovingPatternAnimator(stripLength,waitMS,pattern);
             List<Frame> frames = animator.Create();
             OnAnimationCreated(frames);
         }
@@ -130,7 +130,7 @@ namespace StellaVisualizer.ViewModels
             EventHandler<AnimationCreatedEventArgs> handler = AnimationCreated;
             if (handler != null)
             {
-                handler.Invoke(this,new AnimationCreatedEventArgs(animation));
+                handler.Invoke(this,new AnimationCreatedEventArgs(animation, StripLength));
             }
         }
     }

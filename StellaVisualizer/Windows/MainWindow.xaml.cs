@@ -35,9 +35,9 @@ namespace StellaVisualizer.Windows
             InitializeComponent();
             DataContext = this;
             LedStripViewModels = new ObservableCollection<LedStripViewModel>();
-            LedStripViewModels.Add(new LedStripViewModel("RPI_1",30));
-            LedStripViewModels.Add(new LedStripViewModel("RPI_2",30));
-            LedStripViewModels.Add(new LedStripViewModel("RP1_3",30));
+            LedStripViewModels.Add(new LedStripViewModel("RPI_1",300));
+            LedStripViewModels.Add(new LedStripViewModel("RPI_2",300));
+            LedStripViewModels.Add(new LedStripViewModel("RP1_3",300));
 
             _newAnimationWindow = new NewAnimationWindow();
             _newAnimationWindowViewModel = new NewAnimationWindowViewModel();
@@ -59,6 +59,12 @@ namespace StellaVisualizer.Windows
         {
             _time += 50;
             int nextFrameIndex = _lastFrameIndex + 1;
+
+            if (Animation == null)
+            {
+                _playTimer.Enabled = false;
+                return;
+            }
 
             if (Animation.Count <= nextFrameIndex)
             {
@@ -84,6 +90,16 @@ namespace StellaVisualizer.Windows
             // The user has created a new animation
             _time = 0;
             _lastFrameIndex = 0;
+
+            // If the strip length has changed, create new LedStripViewModels.
+            if (e.StripLength != LedStripViewModels[0].Length)
+            {
+                for (int i = 0; i < LedStripViewModels.Count; i++)
+                {
+                    LedStripViewModels[i] = new LedStripViewModel(LedStripViewModels[i].Name, e.StripLength);
+                }
+            }
+
             Animation = e.Animation;
             for (int i = 0; i < LedStripViewModels.Count; i++)
             {

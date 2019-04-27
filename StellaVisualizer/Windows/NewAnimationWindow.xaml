@@ -16,11 +16,12 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="35"/>
@@ -31,13 +32,16 @@
         <TextBlock Grid.Column="0" Grid.Row="0" Text="Draw method : "/>
         <ComboBox  Grid.Column="1" Grid.Row="0" ItemsSource="{Binding DrawMethods}" SelectedItem="{Binding SelectedDrawMethod}"/>
 
-        <TextBlock Grid.Column="0" Grid.Row="1" Text="WaitMS : "/>
-        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding WaitMS}"/>
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="Led strip length : "/>
+        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding StripLength}"/>
 
-        <TextBlock  Grid.Column="0" Grid.Row="2"  Text="Pattern : "/>
-        <Button    Grid.Column="1" Grid.Row="2"  Content="Add" Click="AddPatternButton_OnClick"/>
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="WaitMS : "/>
+        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding WaitMS}"/>
 
-        <ListView  Grid.Column="2" Grid.Row="2" ItemsSource="{Binding PatternViewModels}" SelectedItem="{Binding SelectedPatternViewModel}">
+        <TextBlock  Grid.Column="0" Grid.Row="3"  Text="Pattern : "/>
+        <Button     Grid.Column="1" Grid.Row="3"  Content="Add" Click="AddPatternButton_OnClick"/>
+
+        <ListView  Grid.Column="2" Grid.Row="3" ItemsSource="{Binding PatternViewModels}" SelectedItem="{Binding SelectedPatternViewModel}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
@@ -45,7 +49,7 @@
             </ListView.ItemsPanel>
         </ListView>
 
-        <Button  Grid.Column="2" Grid.Row="4"  Content="Create animation" Click="CreateAnimationButton_OnClick"/>
+        <Button  Grid.Column="2" Grid.Row="5"  Content="Create animation" Click="CreateAnimationButton_OnClick"/>
 
     </Grid>
 </Window>
