@@ -58,7 +58,9 @@ namespace StellaVisualizer.ViewModels
 
         public ObservableCollection<PatternViewModel> PatternViewModels { get; } = new ObservableCollection<PatternViewModel>
         {
-            new PatternViewModel(100,100,100)
+            new PatternViewModel(255,0,0),
+            new PatternViewModel(0,255,0),
+            new PatternViewModel(0,0,255)
         };
 
 
