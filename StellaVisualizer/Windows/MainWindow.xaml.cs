@@ -52,6 +52,7 @@ namespace StellaVisualizer.Windows
             for (int i = 0; i < LedStripViewModels.Count; i++)
             {
                 LedStripViewModels[i].Clear();
+                LedStripViewModels[i].NumberOfFrames = e.Animation.Count;
             }
         }
 

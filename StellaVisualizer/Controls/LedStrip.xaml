@@ -26,7 +26,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="WhiteSmoke"/>
 
-        <TextBlock Grid.Column="2" Text="{Binding Animation.Count, TargetNullValue='0', FallbackValue='0'}" Foreground="WhiteSmoke"/>
+        <TextBlock Grid.Column="2" Text="{Binding NumberOfFrames}" Foreground="WhiteSmoke"/>
 
         <ListBox Grid.Column="4" ItemsSource="{Binding PixelViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="white"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">

@@ -19,6 +19,8 @@ namespace StellaVisualizer.ViewModels
         public string Name { get; }
 
         public ObservableCollection<PixelViewModel> PixelViewModels { get; set; }
+        public int NumberOfFrames { get; set; } = 0;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -49,6 +51,8 @@ namespace StellaVisualizer.ViewModels
             {
                 vm.Color = Color.FromArgb(0, 0, 0);
             }
+
+            NumberOfFrames = 0;
         }
     }
 }
