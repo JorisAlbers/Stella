@@ -36,5 +36,23 @@ namespace StellaVisualizer.Windows
             NewAnimationWindowViewModel viewModel = DataContext as NewAnimationWindowViewModel;
             viewModel.CreateAnimation();
         }
+
+        private void StoreAnimationButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            NewAnimationWindowViewModel viewModel = DataContext as NewAnimationWindowViewModel;
+            viewModel.StoreAnimation();
+        }
+
+        private void LoadPatternButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            NewAnimationWindowViewModel viewModel = DataContext as NewAnimationWindowViewModel;
+            viewModel.LoadPattern();
+        }
+
+        private void SavePatternButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            NewAnimationWindowViewModel viewModel = DataContext as NewAnimationWindowViewModel;
+            viewModel.StorePattern();
+        }
     }
 }

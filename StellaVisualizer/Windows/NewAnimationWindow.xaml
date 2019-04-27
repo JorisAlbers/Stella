@@ -39,7 +39,12 @@
         <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding WaitMS}"/>
 
         <TextBlock  Grid.Column="0" Grid.Row="3"  Text="Pattern : "/>
-        <Button     Grid.Column="1" Grid.Row="3"  Content="Add" Click="AddPatternButton_OnClick"/>
+        <StackPanel  Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
+            <Button      Content="Add"  Click="AddPatternButton_OnClick"/>
+            <Button      Content="Load" Click="LoadPatternButton_OnClick"/>
+            <Button      Content="Save" Click="SavePatternButton_OnClick"/>
+        </StackPanel>
+       
 
         <ListView  Grid.Column="2" Grid.Row="3" ItemsSource="{Binding PatternViewModels}" SelectedItem="{Binding SelectedPatternViewModel}">
             <ListView.ItemsPanel>
@@ -49,7 +54,12 @@
             </ListView.ItemsPanel>
         </ListView>
 
-        <Button  Grid.Column="2" Grid.Row="5"  Content="Create animation" Click="CreateAnimationButton_OnClick"/>
+        <StackPanel Grid.Column="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,2">
+
+        <Button Content="Store animation"  Click="StoreAnimationButton_OnClick" Margin="10,0" IsEnabled="False"/>
+        <Button Content="Create animation" Click="CreateAnimationButton_OnClick"/>
+        </StackPanel>
+
 
     </Grid>
 </Window>

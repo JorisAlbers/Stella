@@ -80,6 +80,7 @@
     <Compile Include="Controls\PatternControl.xaml.cs">
       <DependentUpon>PatternControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="model\AnimatorSettings\PatternSettings.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\AnimationCreatedEventArgs.cs" />
     <Compile Include="ViewModels\PatternViewModel.cs" />

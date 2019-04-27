@@ -4,9 +4,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Drawing;
+using System.IO;
+using System.Xml.Serialization;
 using StellaLib.Animation;
 using StellaServer.Animation;
 using StellaServer.Animation.Animators;
+using StellaVisualizer.model.AnimatorSettings;
 
 
 namespace StellaVisualizer.ViewModels
@@ -16,6 +19,8 @@ namespace StellaVisualizer.ViewModels
     /// </summary>
     public class NewAnimationWindowViewModel : INotifyPropertyChanged
     {
+        private readonly string _patternSerializationFilePath = $"{Directory.GetCurrentDirectory()}/pattern.xml";
+
         /// <summary>
         /// The draw methods available
         /// </summary>
@@ -57,7 +62,7 @@ namespace StellaVisualizer.ViewModels
         }
 
         public ObservableCollection<PatternViewModel> PatternViewModels { get; } = new ObservableCollection<PatternViewModel>();
-       
+
         public NewAnimationWindowViewModel()
         {
             AddPatternViewModel(255, 0, 0);
@@ -70,7 +75,7 @@ namespace StellaVisualizer.ViewModels
         public void CreateAnimation()
         {
             // Validate input
-            Color[] pattern = PatternViewModels.Select(x => Color.FromArgb(x.Red,x.Green,x.Blue)).ToArray();
+            Color[] pattern = GetPatternFromViewModels(); 
 
             if (pattern.Length == 0)
             {
@@ -144,6 +149,8 @@ namespace StellaVisualizer.ViewModels
             }
         }
 
+        
+
         private void AddPatternViewModel(byte red, byte green, byte blue)
         {
             PatternViewModel vm = new PatternViewModel(red, green, blue);
@@ -156,6 +163,50 @@ namespace StellaVisualizer.ViewModels
             PatternViewModel vm = sender as PatternViewModel;
             vm.RemoveRequested -= PatternViewModel_OnRemoveRequested;
             PatternViewModels.Remove(vm);
+        }
+
+        private Color[] GetPatternFromViewModels()
+        {
+            return PatternViewModels.Select(x => Color.FromArgb(x.Red,x.Green,x.Blue)).ToArray();
+        }
+
+        public void StoreAnimation()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StorePattern()
+        {
+            PatternSettings patternSettings = new PatternSettings(GetPatternFromViewModels());
+
+            using (StreamWriter myWriter = new StreamWriter(_patternSerializationFilePath, false))
+            {
+                XmlSerializer mySerializer = new XmlSerializer(typeof(PatternSettings));
+                mySerializer.Serialize(myWriter, patternSettings);
+            }
+
+        }
+
+        public void LoadPattern()
+        {
+            if (!File.Exists(_patternSerializationFilePath))
+            {
+                return;
+            }
+
+            PatternSettings settings;
+
+            using (StreamReader reader = new StreamReader(_patternSerializationFilePath))
+            {
+                XmlSerializer mySerializer = new XmlSerializer(typeof(PatternSettings));
+                settings = (PatternSettings) mySerializer.Deserialize(reader);
+            }
+
+            PatternViewModels.Clear(); // TODO event handler leak
+            foreach (Color color in settings.Pattern)
+            {
+                AddPatternViewModel(color.R, color.G, color.B);
+            }
         }
     }
 }
