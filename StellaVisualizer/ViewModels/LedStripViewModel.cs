@@ -18,12 +18,10 @@ namespace StellaVisualizer.ViewModels
 
         public string Name { get; }
 
-        public List<Frame> Animation { get; private set; }
-
-        private int _currentAnimationIndex = -1;
-
         public ObservableCollection<PixelViewModel> PixelViewModels { get; set; }
-        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
         public LedStripViewModel(string name, int length)
         {
             Length = length;
@@ -35,50 +33,21 @@ namespace StellaVisualizer.ViewModels
             }
         }
 
-        public void SetAnimation(List<Frame> animation)
+        
+        public void DrawFrame(Frame frame)
         {
-            Animation = animation;
-            _currentAnimationIndex = -1;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void PreviousFrame()
-        {
-            if (_currentAnimationIndex == -1)
+            foreach (PixelInstruction pixelInstruction in frame)
             {
-                return;
-            }
-
-            if (--_currentAnimationIndex == -1)
-            {
-                // Clear
-                foreach (PixelViewModel pixelViewModel in PixelViewModels)
-                {
-                    pixelViewModel.Color = Color.FromArgb(0, 0, 0);
-                }
-
-                return;
-            }
-
-            if (Animation != null && _currentAnimationIndex < Animation.Count - 1)
-            {
-                foreach (PixelInstruction instruction in Animation[_currentAnimationIndex])
-                {
-                    PixelViewModels[(int)instruction.Index].Color = instruction.Color;
-                }
+                PixelViewModels[(int)pixelInstruction.Index].Color = pixelInstruction.Color;
             }
         }
 
-        public void NextFrame()
-        {
-            if (Animation != null && _currentAnimationIndex++ < Animation.Count -1)
-            {
-                foreach (PixelInstruction instruction in Animation[_currentAnimationIndex])
-                {
-                    PixelViewModels[(int)instruction.Index].Color = instruction.Color;
-                }
 
+        public void Clear()
+        {
+            foreach (PixelViewModel vm in PixelViewModels)
+            {
+                vm.Color = Color.FromArgb(0, 0, 0);
             }
         }
     }

@@ -20,6 +20,12 @@ namespace StellaVisualizer.Windows
         private NewAnimationWindowViewModel _newAnimationWindowViewModel;
 
         public ObservableCollection<LedStripViewModel> LedStripViewModels { get; set; }
+
+        public List<Frame> Animation { get; set; }
+        private uint _time;
+        private int _lastFrameIndex;
+
+
         
         public MainWindow()
         {
@@ -40,9 +46,12 @@ namespace StellaVisualizer.Windows
         private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
         {
             // The user has created a new animation
+            _time = 0;
+            _lastFrameIndex = 0;
+            Animation = e.Animation;
             for (int i = 0; i < LedStripViewModels.Count; i++)
             {
-                LedStripViewModels[i].SetAnimation(e.Animation);
+                LedStripViewModels[i].Clear();
             }
         }
 
@@ -58,19 +67,34 @@ namespace StellaVisualizer.Windows
 
         private void PreviousFrameButton_OnClick(object sender, RoutedEventArgs e)
         {
-            foreach (LedStripViewModel ledStripViewModel in LedStripViewModels)
-            {
-                ledStripViewModel.PreviousFrame();
-            }
+            throw new NotImplementedException();
         }
         
         private void NextFrameButton_OnClick(object sender, RoutedEventArgs e)
         {
+            _time += 50;
+            int nextFrameIndex = _lastFrameIndex + 1;
+
+            if (Animation.Count < nextFrameIndex)
+            {
+                return;
+            }
+
+            Frame nextFrame = Animation[nextFrameIndex];
+            if (nextFrame.TimeStampRelative > _time)
+            {
+                return;
+            }
+
             foreach (LedStripViewModel ledStripViewModel in LedStripViewModels)
             {
-                ledStripViewModel.NextFrame();
+                ledStripViewModel.DrawFrame(nextFrame);
             }
+
+            _lastFrameIndex = nextFrameIndex;
         }
+
+
 
         private void SetButton_OnClick(object sender, RoutedEventArgs e)
         {
