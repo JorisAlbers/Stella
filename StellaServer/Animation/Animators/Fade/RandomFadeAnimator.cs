@@ -26,32 +26,8 @@ namespace StellaServer.Animation.Animators.Fade
 
         public List<Frame> Create()
         {
-            // Calculate increments
-            float[][] increments = new float[_pattern.Length][];
-            for (int i = 0; i < _pattern.Length; i++)
-            {
-                float[] incrementForPattern = new float[3];
-                incrementForPattern[0] = _pattern[i].R / _fadeSteps;
-                incrementForPattern[1] = _pattern[i].G / _fadeSteps;
-                incrementForPattern[2] = _pattern[i].B / _fadeSteps;
-                increments[i] = incrementForPattern;
-            }
+            Color[][] fadePatterns = FadeCalculation.CalculateFadedPatterns(_pattern, _fadeSteps);
 
-            // Get the possible patterns given the number of fade steps.
-            // From black to the color
-            Color[][] fadePatterns = new Color[_fadeSteps][];
-            for (int i = 0; i < _pattern.Length; i++)
-            {
-                fadePatterns[i] = new Color[_fadeSteps];
-                for (int j = 0; j < _fadeSteps; j++)
-                {
-                    byte red   =  (byte) (increments[i][0] * j);
-                    byte green =  (byte) (increments[i][1] * j);
-                    byte blue  =  (byte) (increments[i][2] * j);
-                    fadePatterns[i][j] = Color.FromArgb(red, green, blue);
-                }
-            }
-            
             Random random = new Random();
             List<FadingItem> fadeItems = new List<FadingItem>();
 
