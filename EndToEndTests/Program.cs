@@ -5,7 +5,8 @@ namespace EndToEndTests
     class Program
     {
         /// <summary> IP of the server. </summary>
-        public static readonly string SERVER_IP = "192.168.1.110";
+        //public static readonly string SERVER_IP = "192.168.1.110";
+        public static readonly string SERVER_IP = "192.168.0.100";
 
         static void Main(string[] args)
         {

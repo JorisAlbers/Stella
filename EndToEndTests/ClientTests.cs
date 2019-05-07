@@ -11,6 +11,9 @@ using System.Net;
 using System.Threading;
 using StellaClient;
 using StellaServer;
+using StellaServer.Animation;
+using StellaServer.Animation.Animators;
+using StellaServer.Animation.Animators.Fade;
 
 namespace EndToEndTests
 {
@@ -96,7 +99,7 @@ namespace EndToEndTests
 
         private static void LedControllerTests()
         {
-            int ledCount = 300;
+            int ledCount = 960;
             Settings settings = Settings.CreateDefaultSettings();
             settings.Channels[0] = new Channel(ledCount, 18, 255, false, StripType.WS2812_STRIP);
             WS281x ledstrip = new WS281x(settings);
@@ -106,6 +109,8 @@ namespace EndToEndTests
             {
                 Console.WriteLine("LedController tests");
                 Console.WriteLine("m - Moving dot");
+                Console.WriteLine("fp - Fading pulse");
+                Console.WriteLine("sp - Sliding pattern");
                 Console.WriteLine("s - Color switch");
                 Console.WriteLine("slow - Slow Color switch");
                 Console.WriteLine("p - Pending FramSet test");
@@ -150,33 +155,39 @@ namespace EndToEndTests
                         break;
                     case "s":
                     {
-                        FrameSetMetadata metadata = new FrameSetMetadata(DateTime.Now);
-                        int waitMS = 100;
+                        int waitMS = 25;
 
                         Color[] colors = new Color[]
                         {
-                            Color.Red,
-                            Color.Green,
+                            Color.White,
+                            Color.Empty,
                         };
                         List<Frame> frames = new List<Frame>();
                         for (int i = 0; i < 100; i++)
                         {
-                            for (int j = 0; j < colors.Length; j++)
+                            Frame frame = new Frame(i, i * waitMS);
+                            Color color;
+                            if (i % 2 == 0)
                             {
-                                Frame frame = new Frame(j, i * waitMS);
-                                for (uint k = 0; k < ledCount; k++)
-                                {
-                                    frame.Add(new PixelInstruction {Index = k, Color = colors[j]});
-                                }
-
-                                frames.Add(frame);
+                                color = colors[0];
                             }
+                            else
+                            {
+                                color = colors[1];
+                            }
+
+                            for (uint k = 0; k < ledCount; k++)
+                            {
+                                frame.Add(new PixelInstruction {Index = k, Color = color});
+                            }
+
+                            frames.Add(frame);
                         }
 
                         LedController controller = new LedController(ledstrip);
 
                         controller.Run();
-                        controller.PrepareNextFrameSet(metadata);
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now + TimeSpan.FromMilliseconds(500)));
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
                         Console.ReadLine();
@@ -316,6 +327,77 @@ namespace EndToEndTests
                         controller.Dispose();
                     }
                         break;
+                    case "fp":
+                    {
+                        int waitMS = 50;
+                        FadingPulseAnimator animator = new FadingPulseAnimator(ledCount, waitMS, Color.Gold, 150, 15);
+                        List<Frame> frames = animator.Create();
+
+                        Random random = new Random();
+                        for (int i = 0; i < 500; i++)
+                        {
+                            animator.Create(frames, random.Next(0, ledCount), random.Next(0, 1000));
+                        }
+
+                        LedController controller = new LedController(ledstrip);
+
+                        controller.Run();
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now + TimeSpan.FromMilliseconds(500)));
+                        controller.AddFrames(frames);
+                        Console.WriteLine("Press enter to quit");
+                        Console.ReadLine();
+                        controller.Dispose();
+                       
+                        }
+                        break;
+                    case "sp":
+                    {
+                        int waitMS = 50;
+                        Color[] pattern = new Color[]
+                        {
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,40),
+                            Color.FromArgb(0,0,50),
+                            Color.FromArgb(0,0,70),
+                            Color.FromArgb(0,0,80),
+                            Color.FromArgb(0,0,100),
+                            Color.FromArgb(0,0,180),
+                            Color.FromArgb(255,255,255),
+                            Color.FromArgb(0,0,180),
+                            Color.FromArgb(0,0,100),
+                            Color.FromArgb(0,0,80),
+                            Color.FromArgb(0,0,70),
+                            Color.FromArgb(0,0,50),
+                            Color.FromArgb(0,0,40),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                            Color.FromArgb(0,0,0),
+                        };
+                        SlidingPatternAnimator animator = new SlidingPatternAnimator(ledCount, waitMS, pattern);
+                        List<Frame> frames = animator.Create();
+
+                        AnimationExpander expander = new AnimationExpander(frames);
+                        frames =  expander.Expand(1000);
+                        
+
+                        LedController controller = new LedController(ledstrip);
+
+                        controller.Run();
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now + TimeSpan.FromMilliseconds(500)));
+                        controller.AddFrames(frames);
+                        Console.WriteLine("Press enter to quit");
+                        Console.ReadLine();
+                        controller.Dispose();
+
+                    }
+                        break;
+
                     case "clear":
                     {
                         int waitMS = 0;
