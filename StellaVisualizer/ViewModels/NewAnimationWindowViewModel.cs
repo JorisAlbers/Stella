@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using StellaLib.Animation;
 using StellaServer.Animation;
 using StellaServer.Animation.Animators;
+using StellaServer.Animation.Animators.Fade;
 using StellaVisualizer.model.AnimatorSettings;
 
 
@@ -104,12 +105,27 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.MovingPattern:
                     CreateMovingPatternAnimation(StripLength,pattern, WaitMS);
                     break;
+                case DrawMethod.FadingPulseAnimator:
+                    CreatePulseAnimation(StripLength, pattern[0], WaitMS);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
         }
 
+        private void CreatePulseAnimation(int stripLength, Color color, int waitMs)
+        {
+            FadingPulseAnimator animator = new FadingPulseAnimator(stripLength, waitMs, color, 150, 30);
+            List<Frame> frames = animator.Create();
+
+            Random random = new Random();
+            for (int i = 0; i < 1000; i++)
+            {
+                animator.Create(frames, random.Next(0,stripLength), random.Next(0,1000));
+            }
+            OnAnimationCreated(frames);
+        }
 
 
         private void CreateSlidingPatternAnimation(int stripLength, Color[] pattern, int waitMs)
