@@ -25,6 +25,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -54,7 +55,11 @@
             </ListView.ItemsPanel>
         </ListView>
 
-        <StackPanel Grid.Column="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,2">
+
+        <TextBlock Grid.Column="0" Grid.Row="4" Text="Image path: "/>
+        <TextBox   Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding ImagePath}"/>
+
+        <StackPanel Grid.Column="2" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,2">
 
         <Button Content="Store animation"  Click="StoreAnimationButton_OnClick" Margin="10,0" IsEnabled="False"/>
         <Button Content="Create animation" Click="CreateAnimationButton_OnClick"/>

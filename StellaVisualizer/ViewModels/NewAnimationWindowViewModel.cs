@@ -39,6 +39,8 @@ namespace StellaVisualizer.ViewModels
 
         public int StripLength { get; set; } = 300;
 
+        public string ImagePath { get; set; } = Path.Combine(Environment.CurrentDirectory, "image.png");
+
         /// <summary>
         /// Fired when the user has created a new animation
         /// </summary>
@@ -108,10 +110,27 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.FadingPulseAnimator:
                     CreatePulseAnimation(StripLength, pattern[0], WaitMS);
                     break;
+                case DrawMethod.Bitmap:
+                    CreateBitMapAnimation(StripLength, WaitMS, ImagePath);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
+        }
+
+        private void CreateBitMapAnimation(int stripLength, int waitMs, string imagePath)
+        {
+            if (!File.Exists(imagePath))
+            {
+                Console.Out.WriteLine($"The image at {imagePath} does not exist.");
+                return;
+            }
+
+            Bitmap bitmap = new Bitmap(Image.FromFile(imagePath));
+            BitmapAnimator animator = new BitmapAnimator(stripLength, waitMs, bitmap);
+            List<Frame> frames = animator.Create();
+            OnAnimationCreated(frames);
         }
 
         private void CreatePulseAnimation(int stripLength, Color color, int waitMs)

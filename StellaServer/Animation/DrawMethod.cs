@@ -23,7 +23,10 @@ namespace StellaServer.Animation
         MovingPattern,
 
         /// <summary> Creates a fading pulse in both directions, starting from a given position </summary>
-        FadingPulseAnimator
+        FadingPulseAnimator,
+
+        /// <summary> Scans an image to create an image where x,y = x = pixelIndex, y = frameIndex. </summary>
+        Bitmap,
 
 
 
