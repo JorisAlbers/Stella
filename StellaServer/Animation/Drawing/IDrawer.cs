@@ -4,7 +4,7 @@ using StellaLib.Animation;
 namespace StellaServer.Animation.Drawing
 {
     /// <summary>
-    /// An Animator creates a new frameset.
+    /// A Drawer creates a list of frames
     /// </summary>
     public interface IDrawer
     {
