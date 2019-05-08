@@ -4,7 +4,7 @@ using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation.Drawing;
 
-namespace StellaServer.Test.Drawing
+namespace StellaServer.Test.Animation.Drawing
 {
     [TestFixture]
     public class TestSlidingPatternDrawer
