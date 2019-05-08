@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators
+namespace StellaServer.Animation.Drawing
 {
     /// <summary>
     /// Moves a pattern over the led strip from the start of the led strip till the end.
     /// </summary>
-    public class MovingPatternAnimator : IAnimator
+    public class MovingPatternDrawer : IDrawer
     {
         private Color[] _pattern;
         private int _stripLength;
         private int _frameWaitMS;
 
-        public MovingPatternAnimator(int stripLength, int frameWaitMS, Color[] pattern)
+        public MovingPatternDrawer(int stripLength, int frameWaitMS, Color[] pattern)
         {
             _stripLength = stripLength;
             _frameWaitMS = frameWaitMS;

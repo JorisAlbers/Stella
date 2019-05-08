@@ -12,8 +12,8 @@ using System.Threading;
 using StellaClient;
 using StellaServer;
 using StellaServer.Animation;
-using StellaServer.Animation.Animators;
-using StellaServer.Animation.Animators.Fade;
+using StellaServer.Animation.Drawing;
+using StellaServer.Animation.Drawing.Fade;
 
 namespace EndToEndTests
 {
@@ -330,13 +330,13 @@ namespace EndToEndTests
                     case "fp":
                     {
                         int waitMS = 50;
-                        FadingPulseAnimator animator = new FadingPulseAnimator(ledCount, waitMS, Color.Gold, 150, 15);
-                        List<Frame> frames = animator.Create();
+                        FadingPulseDrawer drawer = new FadingPulseDrawer(ledCount, waitMS, Color.Gold, 150, 15);
+                        List<Frame> frames = drawer.Create();
 
                         Random random = new Random();
                         for (int i = 0; i < 500; i++)
                         {
-                            animator.Create(frames, random.Next(0, ledCount), random.Next(0, 1000));
+                            drawer.Create(frames, random.Next(0, ledCount), random.Next(0, 1000));
                         }
 
                         LedController controller = new LedController(ledstrip);
@@ -379,8 +379,8 @@ namespace EndToEndTests
                             Color.FromArgb(0,0,0),
                             Color.FromArgb(0,0,0),
                         };
-                        SlidingPatternAnimator animator = new SlidingPatternAnimator(ledCount, waitMS, pattern);
-                        List<Frame> frames = animator.Create();
+                        SlidingPatternDrawer drawer = new SlidingPatternDrawer(ledCount, waitMS, pattern);
+                        List<Frame> frames = drawer.Create();
 
                         AnimationExpander expander = new AnimationExpander(frames);
                         frames =  expander.Expand(1000);

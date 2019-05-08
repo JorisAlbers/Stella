@@ -1,14 +1,13 @@
 using System.Collections.Generic;
+using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServer.Animation.Animators;
-using StellaLib.Network;
-using System.Drawing;
+using StellaServer.Animation.Drawing;
 
-namespace StellaServer.Test.Animation.Animators
+namespace StellaServer.Test.Drawing
 {
     [TestFixture]
-    public class TestRepeatingPatternsAnimator
+    public class TestRepeatingPatternsDrawer
     {
         [Test]
         public void Create_singlePattern_CreatesCorrectFrames()
@@ -21,14 +20,14 @@ namespace StellaServer.Test.Animation.Animators
                  };
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip,frameWaitMS,new List<Color[]>{pattern});
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(lengthStrip,frameWaitMS,new List<Color[]>{pattern});
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            List<Frame> frames = animator.Create();
+            List<Frame> frames = drawer.Create();
 
             //Assert
             Assert.AreEqual(1,frames.Count);
@@ -54,13 +53,13 @@ namespace StellaServer.Test.Animation.Animators
 
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsAnimator animator = new RepeatingPatternsAnimator(lengthStrip,frameWaitMS, patterns);
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(lengthStrip,frameWaitMS, patterns);
 
             // Expected
             Color expectedColor1 =  Color.FromArgb(1,2,3);
             Color expectedColor2 =  Color.FromArgb(4,5,6);
 
-            List<Frame> frames = animator.Create();
+            List<Frame> frames = drawer.Create();
 
             //Assert
             Assert.AreEqual(2,frames.Count);

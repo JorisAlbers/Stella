@@ -8,8 +8,8 @@ using System.IO;
 using System.Xml.Serialization;
 using StellaLib.Animation;
 using StellaServer.Animation;
-using StellaServer.Animation.Animators;
-using StellaServer.Animation.Animators.Fade;
+using StellaServer.Animation.Drawing;
+using StellaServer.Animation.Drawing.Fade;
 using StellaVisualizer.model.AnimatorSettings;
 
 
@@ -128,20 +128,20 @@ namespace StellaVisualizer.ViewModels
             }
 
             Bitmap bitmap = new Bitmap(Image.FromFile(imagePath));
-            BitmapAnimator animator = new BitmapAnimator(stripLength, waitMs, bitmap);
-            List<Frame> frames = animator.Create();
+            BitmapDrawer drawer = new BitmapDrawer(stripLength, waitMs, bitmap);
+            List<Frame> frames = drawer.Create();
             OnAnimationCreated(frames);
         }
 
         private void CreatePulseAnimation(int stripLength, Color color, int waitMs)
         {
-            FadingPulseAnimator animator = new FadingPulseAnimator(stripLength, waitMs, color, 150, 30);
-            List<Frame> frames = animator.Create();
+            FadingPulseDrawer drawer = new FadingPulseDrawer(stripLength, waitMs, color, 150, 30);
+            List<Frame> frames = drawer.Create();
 
             Random random = new Random();
             for (int i = 0; i < 1000; i++)
             {
-                animator.Create(frames, random.Next(0,stripLength), random.Next(0,1000));
+                drawer.Create(frames, random.Next(0,stripLength), random.Next(0,1000));
             }
             OnAnimationCreated(frames);
         }
@@ -149,15 +149,15 @@ namespace StellaVisualizer.ViewModels
 
         private void CreateSlidingPatternAnimation(int stripLength, Color[] pattern, int waitMs)
         {
-            SlidingPatternAnimator animator = new SlidingPatternAnimator(stripLength,waitMs, pattern);
-            List<Frame> frames = animator.Create();
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(stripLength,waitMs, pattern);
+            List<Frame> frames = drawer.Create();
             OnAnimationCreated(frames);
         }
 
         private void CreateMovingPatternAnimation(int stripLength, Color[] pattern, int waitMS)
         {
-            MovingPatternAnimator animator = new MovingPatternAnimator(stripLength,waitMS,pattern);
-            List<Frame> frames = animator.Create();
+            MovingPatternDrawer drawer = new MovingPatternDrawer(stripLength,waitMS,pattern);
+            List<Frame> frames = drawer.Create();
             OnAnimationCreated(frames);
         }
 

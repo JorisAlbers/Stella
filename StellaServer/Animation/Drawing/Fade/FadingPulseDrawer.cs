@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators.Fade
+namespace StellaServer.Animation.Drawing.Fade
 {
-    public class FadingPulseAnimator : IAnimator
+    public class FadingPulseDrawer : IDrawer
 
     {
         private readonly int _stripLength;
@@ -15,7 +13,7 @@ namespace StellaServer.Animation.Animators.Fade
         private readonly int _pulsePosition;
         private readonly int _fadeSteps;
 
-        public FadingPulseAnimator(int stripLength, int frameWaitMS, Color color, int pulsePosition, int fadeSteps)
+        public FadingPulseDrawer(int stripLength, int frameWaitMS, Color color, int pulsePosition, int fadeSteps)
         {
             _stripLength = stripLength;
             _frameWaitMs = frameWaitMS;

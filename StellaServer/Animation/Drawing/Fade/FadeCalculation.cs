@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 
-namespace StellaServer.Animation.Animators.Fade
+namespace StellaServer.Animation.Drawing.Fade
 {
     public static  class FadeCalculation
     {

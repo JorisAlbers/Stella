@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using StellaLib.Animation;
-using StellaServer.Animation.Animators;
+using StellaServer.Animation.Drawing;
 
-namespace StellaServer.Test.Animators
+namespace StellaServer.Test.Drawing
 {
     [TestFixture]
-    public class TestMovingPatternAnimator
+    public class TestMovingPatternDrawer
     {
         [Test]
         public void Create_pattern_CorrectlyCreatesListOfFrames()
@@ -28,8 +25,8 @@ namespace StellaServer.Test.Animators
             };
             int lengthStrip = 4;
             int frameWaitMS = 100;
-            MovingPatternAnimator animator = new MovingPatternAnimator(lengthStrip, frameWaitMS, pattern);
-            List<Frame> frames = animator.Create();
+            MovingPatternDrawer drawer = new MovingPatternDrawer(lengthStrip, frameWaitMS, pattern);
+            List<Frame> frames = drawer.Create();
 
             //Assert
             Assert.AreEqual(6, frames.Count); // slide in = 2, normal = 1 , slide out = 2

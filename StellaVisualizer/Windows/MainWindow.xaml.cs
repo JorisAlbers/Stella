@@ -7,8 +7,7 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using StellaLib.Animation;
-using StellaServer.Animation.Animators;
-using StellaServer.Animation.Animators.Fade;
+using StellaServer.Animation.Drawing.Fade;
 using StellaVisualizer.ViewModels;
 using StellaVisualizer.Windows;
 
@@ -57,8 +56,8 @@ namespace StellaVisualizer.Windows
                 Color.FromArgb(180, 180, 180),
                 Color.FromArgb(100, 100, 100),
             };
-            RandomFadeAnimator animator = new RandomFadeAnimator(300,100, pattern,5, 10, 1000);
-            List<Frame> frames = animator.Create();
+            RandomFadeDrawer drawer = new RandomFadeDrawer(300,100, pattern,5, 10, 1000);
+            List<Frame> frames = drawer.Create();
             NewAnimationWindowViewModel_OnAnimationCreated(this, new AnimationCreatedEventArgs(frames,300));
 
             _playTimer = new Timer(50);

@@ -1,6 +1,6 @@
-# Animators
+# Drawers
 
-Animators are used to generate frame sets. There are multiple animators available that use different strategies:
+Drawers are used to generate frames. There are multiple animators available that use different strategies:
 
 1. Repeating patterns
 2. Sliding pattern

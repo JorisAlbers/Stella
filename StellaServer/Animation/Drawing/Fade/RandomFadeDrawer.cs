@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators.Fade
+namespace StellaServer.Animation.Drawing.Fade
 {
-    public class RandomFadeAnimator : IAnimator
+    public class RandomFadeDrawer : IDrawer
     {
         private readonly Color[] _pattern;
         private readonly int _stripLength;
@@ -14,7 +14,7 @@ namespace StellaServer.Animation.Animators.Fade
         private readonly int _fadeSteps;
         private readonly int _maxPatternsVisible;
 
-        public RandomFadeAnimator(int stripLength, int frameWaitMS, Color[] pattern, int fadeSteps, int maxPatternsVisible, int numberOfFadeCycles)
+        public RandomFadeDrawer(int stripLength, int frameWaitMS, Color[] pattern, int fadeSteps, int maxPatternsVisible, int numberOfFadeCycles)
         {
             _stripLength = stripLength;
             _frameWaitMS = frameWaitMS;

@@ -2,19 +2,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators
+namespace StellaServer.Animation.Drawing
 {
     /// <summary>
     /// Repeats a pattern over the ledstrip and moves the start point of the pattern each
     /// frame by +1.
     /// </summary>
-    public class SlidingPatternAnimator : IAnimator
+    public class SlidingPatternDrawer : IDrawer
     {
         private Color[] _pattern;
         private int _stripLength;
         private int _frameWaitMS;
 
-        public SlidingPatternAnimator(int stripLength, int frameWaitMS, Color[] pattern)
+        public SlidingPatternDrawer(int stripLength, int frameWaitMS, Color[] pattern)
         {
             _stripLength = stripLength;
             _frameWaitMS = frameWaitMS;

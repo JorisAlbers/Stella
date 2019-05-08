@@ -4,7 +4,7 @@ using System.Drawing;
 using StellaLib.Animation;
 using StellaServer;
 using StellaServer.Animation;
-using StellaServer.Animation.Animators;
+using StellaServer.Animation.Drawing;
 using StellaServer.Network;
 
 namespace EndToEndTests
@@ -64,7 +64,7 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 250),
             };
 
-            RepeatingPatternsAnimator repeatingPatternsAnimator = new RepeatingPatternsAnimator(300, 100, new List<Color[]>
+            RepeatingPatternsDrawer repeatingPatternsDrawer = new RepeatingPatternsDrawer(300, 100, new List<Color[]>
             {
                 new Color[2]
                 {
@@ -80,17 +80,17 @@ namespace EndToEndTests
                 }
 
             });
-            AnimationExpander expander = new AnimationExpander(repeatingPatternsAnimator.Create());
+            AnimationExpander expander = new AnimationExpander(repeatingPatternsDrawer.Create());
             List<Frame> frames1 = expander.Expand(100);
 
-            SlidingPatternAnimator slidingPatternAnimator = new SlidingPatternAnimator(300,100, pattern);
+            SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(300,100, pattern);
 
-            AnimationExpander expander2 = new AnimationExpander(slidingPatternAnimator.Create());
+            AnimationExpander expander2 = new AnimationExpander(slidingPatternDrawer.Create());
             List<Frame> frames2 =  expander2.Expand(110);
 
-            MovingPatternAnimator movingPatternAnimator = new MovingPatternAnimator(300,30,pattern);
+            MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(300,30,pattern);
 
-            List<Frame> movingDotFrames = movingPatternAnimator.Create();
+            List<Frame> movingDotFrames = movingPatternDrawer.Create();
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");

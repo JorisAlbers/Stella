@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using NUnit.Framework;
-using StellaServer.Animation.Animators.Fade;
+using StellaServer.Animation.Drawing.Fade;
 
-namespace StellaServer.Test.Animators.Fade
+namespace StellaServer.Test.Drawing.Fade
 {
     [TestFixture]
     public class TestFadeCalculation

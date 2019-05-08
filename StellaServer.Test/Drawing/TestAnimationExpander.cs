@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation;
 
-namespace StellaServer.Test.Animators
+namespace StellaServer.Test.Drawing
 {
     [TestFixture]
     public class TestAnimationExpander

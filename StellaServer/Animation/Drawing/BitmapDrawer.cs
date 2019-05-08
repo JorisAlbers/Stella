@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators
+namespace StellaServer.Animation.Drawing
 {
     /// <summary>
     /// Reads a bitmap.
     /// Each row in the bitmap is a frame.
     /// </summary>
-    public class BitmapAnimator : IAnimator
+    public class BitmapDrawer : IDrawer
     {
         private readonly int _stripLength;
         private readonly int _frameWaitMs;
         private readonly Bitmap _bitmap;
 
-        public BitmapAnimator(int stripLength, int frameWaitMS, Bitmap bitmap)
+        public BitmapDrawer(int stripLength, int frameWaitMS, Bitmap bitmap)
         {
             _stripLength = stripLength;
             _frameWaitMs = frameWaitMS;

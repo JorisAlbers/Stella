@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators
+namespace StellaServer.Animation.Drawing
 {
     /// <summary>
     /// Repeats one or multiple pattern(s) over the length of the ledstip.
     /// Each frame is a Color[] pattern repeeated over the ledstrip.
     /// </summary>
-    public class RepeatingPatternsAnimator : IAnimator
+    public class RepeatingPatternsDrawer : IDrawer
     {
         private int _lengthStrip;
         private int _frameWaitMS;
@@ -19,7 +19,7 @@ namespace StellaServer.Animation.Animators
         /// Each frame is the next pattern, repeated.
         /// </summary>
         /// <param name="patterns"></param>
-        public RepeatingPatternsAnimator(int lengthStrip,int frameWaitMS, List<Color[]> patterns)
+        public RepeatingPatternsDrawer(int lengthStrip,int frameWaitMS, List<Color[]> patterns)
         {
             _lengthStrip = lengthStrip;
             _patterns = patterns;

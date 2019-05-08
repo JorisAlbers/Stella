@@ -1,14 +1,13 @@
 using System.Collections.Generic;
+using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServer.Animation.Animators;
-using StellaLib.Network;
-using System.Drawing;
+using StellaServer.Animation.Drawing;
 
-namespace StellaServer.Test.Animation.Animators
+namespace StellaServer.Test.Drawing
 {
     [TestFixture]
-    public class TestSlidingPatternAnimator
+    public class TestSlidingPatternDrawer
     {
         [Test]
         public void Create_ThreeColors_CreatesCorrectFrames()
@@ -22,14 +21,14 @@ namespace StellaServer.Test.Animation.Animators
             };
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            SlidingPatternAnimator animator = new SlidingPatternAnimator(lengthStrip,frameWaitMS,pattern);
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(lengthStrip,frameWaitMS,pattern);
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            List<Frame> frames = animator.Create();
+            List<Frame> frames = drawer.Create();
 
             //Assert
             Assert.AreEqual(3,frames.Count);

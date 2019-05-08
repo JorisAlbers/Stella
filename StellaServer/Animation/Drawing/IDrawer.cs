@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Animators
+namespace StellaServer.Animation.Drawing
 {
     /// <summary>
     /// An Animator creates a new frameset.
     /// </summary>
-    public interface IAnimator
+    public interface IDrawer
     {
          List<Frame> Create();
     }

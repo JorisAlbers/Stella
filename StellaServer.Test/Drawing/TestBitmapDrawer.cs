@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServer.Animation.Animators;
+using StellaServer.Animation.Drawing;
 
-
-namespace StellaServer.Test.Animators
+namespace StellaServer.Test.Drawing
 {
     [TestFixture]
-    class TestBitmapAnimator
+    class TestBitmapDrawer
     {
         [Test]
         public void Create_BitmapWithOneRow_CreatesAnimationWithOneFrame()
@@ -35,8 +30,8 @@ namespace StellaServer.Test.Animators
             bitmap.SetPixel(2,0,expectedColor3);
             
             // ACT
-            BitmapAnimator animator = new BitmapAnimator(stripLength,frameWaitMs,bitmap);
-            List<Frame> frames = animator.Create();
+            BitmapDrawer drawer = new BitmapDrawer(stripLength,frameWaitMs,bitmap);
+            List<Frame> frames = drawer.Create();
 
             // ASSERT
             Assert.AreEqual(height, frames.Count);
@@ -73,8 +68,8 @@ namespace StellaServer.Test.Animators
             bitmap.SetPixel(2, 1, expectedColor6);
 
             // ACT
-            BitmapAnimator animator = new BitmapAnimator(stripLength, frameWaitMs, bitmap);
-            List<Frame> frames = animator.Create();
+            BitmapDrawer drawer = new BitmapDrawer(stripLength, frameWaitMs, bitmap);
+            List<Frame> frames = drawer.Create();
 
             // ASSERT
             Assert.AreEqual(height, frames.Count);
