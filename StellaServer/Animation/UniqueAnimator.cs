@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using StellaLib.Animation;
 using StellaServer.Animation.Drawing;
 
@@ -24,8 +25,13 @@ namespace StellaServer.Animation
         /// <inheritdoc />
         public Frame GetNextFrame(int piIndex)
         {
-            int frameIndex = _lastFramePerPi[piIndex]++;
-            return _framesPerPi[piIndex][frameIndex];
+            Debug.Assert(piIndex < _lastFramePerPi.Length, "The piIndex should not exceed the numberOfPis given on construction");
+            
+            int frameIndex = _lastFramePerPi[piIndex];
+            Frame frame = _framesPerPi[piIndex][frameIndex];
+            _lastFramePerPi[piIndex] = ++frameIndex % _framesPerPi[piIndex].Count - 1;
+
+            return frame;
         }
     }
 }
