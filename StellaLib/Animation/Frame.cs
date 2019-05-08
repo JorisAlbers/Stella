@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ namespace StellaLib.Animation
     ///     2. The display time 
     /// 
     /// </summary>
-    public class Frame : List<PixelInstruction>
+    public class Frame : List<PixelInstruction> , IEquatable<Frame>
     {   
         /// <summary>
         /// The index of the Frame in the frameSet.
@@ -26,6 +27,24 @@ namespace StellaLib.Animation
         {
             Index = index;
             TimeStampRelative = timeStampRelative;
+        }
+
+        public bool Equals(Frame other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (Index != other.Index) return false;
+            if (TimeStampRelative != other.TimeStampRelative) return false;
+            if (Count != other.Count) return false;
+            for (int i = 0; i < Count; i++)
+            {
+                if (!this[i].Equals(other[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
