@@ -26,8 +26,11 @@ namespace StellaServer.Animation
         {
             Debug.Assert(piIndex < _lastFramePerPi.Length, "The piIndex should not exceed the numberOfPis given on construction");
 
-            int frameIndex = _lastFramePerPi[piIndex]++;
-            return _frames[frameIndex];
+            int frameIndex = _lastFramePerPi[piIndex];
+            Frame frame = _frames[_lastFramePerPi[frameIndex]];
+            _lastFramePerPi[piIndex] = ++frameIndex % _frames.Count -1;
+
+            return frame;
         }
     }
 }
