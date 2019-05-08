@@ -11,7 +11,10 @@ namespace StellaServer.Animation
         Unknown,
 
         /// <summary> Duplicate the same animation on all pi's </summary>
-        Mirror
+        Mirror,
+
+        /// <summary> Create an unique animation on all pi's </summary>
+        Unique,
 
     }
 }
