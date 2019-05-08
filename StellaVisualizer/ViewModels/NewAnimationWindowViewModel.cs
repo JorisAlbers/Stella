@@ -107,7 +107,7 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.MovingPattern:
                     CreateMovingPatternAnimation(StripLength,pattern, WaitMS);
                     break;
-                case DrawMethod.FadingPulseAnimator:
+                case DrawMethod.FadingPulse:
                     CreatePulseAnimation(StripLength, pattern[0], WaitMS);
                     break;
                 case DrawMethod.Bitmap:
