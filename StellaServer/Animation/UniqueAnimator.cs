@@ -29,7 +29,7 @@ namespace StellaServer.Animation
             
             int frameIndex = _lastFramePerPi[piIndex];
             Frame frame = _framesPerPi[piIndex][frameIndex];
-            _lastFramePerPi[piIndex] = ++frameIndex % _framesPerPi[piIndex].Count - 1;
+            _lastFramePerPi[piIndex] = ++frameIndex % _framesPerPi[piIndex].Count;
 
             return frame;
         }
