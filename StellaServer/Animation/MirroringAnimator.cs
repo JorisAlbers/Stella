@@ -14,11 +14,13 @@ namespace StellaServer.Animation
     {
         private readonly List<Frame> _frames;
         private readonly int[] _lastFramePerPi;
+        private readonly FrameSetMetadata _frameSetMetadata;
 
-        public MirroringAnimator(IDrawer drawer, int numberOfPis)
+        public MirroringAnimator(IDrawer drawer, int numberOfPis, DateTime startAt)
         {
             _lastFramePerPi = new int[numberOfPis];
             _frames = drawer.Create();
+            _frameSetMetadata = new FrameSetMetadata(startAt);
         }
 
         /// <inheritdoc />
@@ -31,6 +33,13 @@ namespace StellaServer.Animation
             _lastFramePerPi[piIndex] = ++frameIndex % _frames.Count;
 
             return frame;
+        }
+
+
+        /// <inheritdoc />
+        public FrameSetMetadata GetFrameSetMetadata(int piIndex)
+        {
+            return _frameSetMetadata;
         }
     }
 }

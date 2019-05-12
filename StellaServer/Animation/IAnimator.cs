@@ -15,5 +15,12 @@ namespace StellaServer.Animation
         /// <returns></returns>
         Frame GetNextFrame(int piIndex);
 
+        /// <summary>
+        /// Get the frame set metadata for a pi at a certain index
+        /// </summary>
+        /// <param name="piIndex"></param>
+        /// <returns></returns>
+        FrameSetMetadata GetFrameSetMetadata(int piIndex);
+
     }
 }
