@@ -17,20 +17,20 @@ namespace StellaServer.Test
         {
             //SETUP
             DateTime timeStamp = DateTime.Now;
-            string expectedID = "ID1";
+            int expectedID = 0;
             MessageType expectedMessageType = MessageType.Animation_Start;
             var mock = new Mock<IServer>();
             FrameSet frameSet = new FrameSet(timeStamp);
             byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSet.Metadata);
-            mock.SetupGet(x=> x.ConnectedClients).Returns(new string[]{expectedID});
+            mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
-            string id = null;
+            int id = -1;
             MessageType messageType = MessageType.Unknown;
             byte[] bytes = null;
-            mock.Setup(x=> x.SendMessageToClient(It.IsAny<string>(),
+            mock.Setup(x=> x.SendMessageToClient(It.IsAny<int>(),
                                                  It.IsAny<MessageType>(),
                                                  It.IsAny<byte[]>()))
-                                                 .Callback<string,MessageType,byte[]>((i,t,b) =>
+                                                 .Callback<int,MessageType,byte[]>((i,t,b) =>
             {
                 id = i;
                 messageType = t;
@@ -52,7 +52,7 @@ namespace StellaServer.Test
         {
             //SETUP
             DateTime timeStamp = DateTime.Now;
-            string expectedID = "ID1";
+            int expectedID = 0;
             MessageType expectedMessageType = MessageType.Animation_Request;
             FrameSet frameSet = new FrameSet(timeStamp);
 
@@ -63,17 +63,17 @@ namespace StellaServer.Test
             byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frameSet.Frames[0],PacketProtocol.MAX_MESSAGE_SIZE)[0];
             byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frameSet.Frames[1],PacketProtocol.MAX_MESSAGE_SIZE)[0];
             var mock = new Mock<IServer>();
-            mock.SetupGet(x=> x.ConnectedClients).Returns(new string[]{expectedID});
+            mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
-            string id1 = null,  id2 = null;
+            int id1 = -1,  id2 = -1;
             MessageType messageType1 = MessageType.Unknown, messageType2 = MessageType.Unknown;
             byte[] bytes1 = null, bytes2 = null;
             int callCount = 0;
 
-            mock.Setup(x=> x.SendMessageToClient(It.IsAny<string>(),
+            mock.Setup(x=> x.SendMessageToClient(It.IsAny<int>(),
                                                  It.IsAny<MessageType>(),
                                                  It.IsAny<byte[]>()))
-                                                 .Callback<string,MessageType,byte[]>((i,t,b) =>
+                                                 .Callback<int,MessageType,byte[]>((i,t,b) =>
             {
                 if(t == MessageType.Animation_Request && callCount++ == 0)
                 {

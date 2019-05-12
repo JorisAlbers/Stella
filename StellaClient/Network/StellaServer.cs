@@ -23,7 +23,7 @@ namespace StellaClient.Network
 
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
-        private string _id;
+        private int _id;
         private TimeSetter _timeSetter; // null if the time is NTP synched or when the time has already been synced
         private SocketConnectionController _socketConnectionController;
         private object _resourceLock = new object();
@@ -34,7 +34,7 @@ namespace StellaClient.Network
         public event EventHandler<Frame> FrameReceived;
 
 
-        public StellaServer(IPEndPoint serverAdress, string ID, ISystemTimeSetter systemTimeSetter)
+        public StellaServer(IPEndPoint serverAdress, int ID, ISystemTimeSetter systemTimeSetter)
         {
             _serverAdress = serverAdress;
             _id = ID;
@@ -80,7 +80,7 @@ namespace StellaClient.Network
 
         private void SendInit()
         {
-            Send(MessageType.Init,Encoding.ASCII.GetBytes(_id));
+            Send(MessageType.Init, BitConverter.GetBytes(_id));
         }
         
         private void Connect()

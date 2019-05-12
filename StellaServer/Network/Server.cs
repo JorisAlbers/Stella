@@ -14,7 +14,7 @@ namespace StellaServer.Network
     public class Server : IServer, IDisposable
     {
         private List<Client> _newConnections;
-        private Dictionary<string,Client> _clients;
+        private Dictionary<int,Client> _clients;
 
         private int _port;
         private IPAddress _ip;
@@ -30,7 +30,7 @@ namespace StellaServer.Network
             _ip = IPAddress.Parse(ip);
             _port = port;
             _newConnections =  new List<Client>();
-            _clients = new Dictionary<string, Client>();
+            _clients = new Dictionary<int, Client>();
         }
 
         public void Start()
@@ -49,7 +49,7 @@ namespace StellaServer.Network
             _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket );  
         }
 
-        public string[] ConnectedClients
+        public int[] ConnectedClients
         {
             get
             {
@@ -71,7 +71,7 @@ namespace StellaServer.Network
             }
         }
 
-        public void SendMessageToClient(string clientID, MessageType messageType, byte[] message)
+        public void SendMessageToClient(int clientID, MessageType messageType, byte[] message)
         {
             lock(_clients)
             {
@@ -154,11 +154,11 @@ namespace StellaServer.Network
 
         private void ParseInitMessage(Client client, byte[] message)
         {
-            string id = Encoding.ASCII.GetString(message);
+            int id = BitConverter.ToInt32(message,0);
             
             lock(_clients)
             {
-                if(client.ID != null && client.ID != id)
+                if(client.ID != id)
                 {
                     Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {id}, but he already has an ID.");
                     return;
@@ -190,7 +190,7 @@ namespace StellaServer.Network
             client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(DateTime.Now,message));
         }
 
-        private void OnAnimationRequestReceived(string clientID, byte[] message)
+        private void OnAnimationRequestReceived(int clientID, byte[] message)
         {
             int startIndex, count;
             AnimationRequestProtocol.ParseRequest(message,out startIndex,out count);

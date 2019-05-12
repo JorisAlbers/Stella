@@ -6,9 +6,9 @@ namespace StellaServer.Network
     public interface IServer
     {
         void Start();
-        string[] ConnectedClients{get;}
+        int[] ConnectedClients{get;}
         int NewConnectionsCount{get;}
-        void SendMessageToClient(string clientID, MessageType messageType, byte[] message);
+        void SendMessageToClient(int clientID, MessageType messageType, byte[] message);
         event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
     }
 }

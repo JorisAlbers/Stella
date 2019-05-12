@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -30,7 +31,7 @@ namespace StellaClient.Test.Network
             // Create a SocketConnectionController
             var mockSystemTimeSetter = new Mock<ISystemTimeSetter>();
             mockSystemTimeSetter.Setup(x=>x.TimeIsNTPSynced()).Returns(true);
-            string clientId = "ThisIsAnID";
+            int clientId = 0;
             StellaServer stellaServer = new StellaServer(localEndPoint, clientId , mockSystemTimeSetter.Object);
             stellaServer.Start();
             
@@ -38,7 +39,7 @@ namespace StellaClient.Test.Network
             Thread.Sleep(1000);
 
             byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
-            byte[] expectedInit = PacketProtocol.WrapMessage(MessageType.Init, Encoding.ASCII.GetBytes(clientId));
+            byte[] expectedInit = PacketProtocol.WrapMessage(MessageType.Init, BitConverter.GetBytes(clientId));
             byte[] expectedMessage = PacketProtocol.WrapMessage(MessageType.Standard, message);
 
             // Expected init message

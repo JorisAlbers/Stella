@@ -33,8 +33,8 @@ namespace StellaServer.Test.Animation.Network
             // Connect to the remote endpoint.  
             client.Connect( remoteEP);  
             Thread.Sleep(1000); // async hack
-            string ID = "ThisIsAnIdentifier";
-            byte[] id_bytes = Encoding.ASCII.GetBytes("ThisIsAnIdentifier");
+            int ID = 0;
+            byte[] id_bytes = BitConverter.GetBytes(ID);
             // Then send the init values
             client.Send(PacketProtocol.WrapMessage(MessageType.Init, id_bytes));
             Thread.Sleep(10000); // async hack

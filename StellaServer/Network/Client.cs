@@ -10,7 +10,7 @@ namespace StellaServer.Network
     public class Client : IDisposable
     {
         private SocketConnectionController SocketConnectionController {get;set;}
-        public string ID {get;set;}
+        public int ID {get;set;}
         public event EventHandler<SocketException> Disconnect;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 

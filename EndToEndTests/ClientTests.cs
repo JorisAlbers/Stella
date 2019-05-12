@@ -25,8 +25,8 @@ namespace EndToEndTests
             while(run)
             {
                 Console.WriteLine("Client tests");
+                Console.WriteLine("i0 - Run a StellaClient instance with ID 0");
                 Console.WriteLine("i1 - Run a StellaClient instance with ID 1");
-                Console.WriteLine("i2 - Run a StellaClient instance with ID 2");
                 Console.WriteLine("c - Run a StellaServer class instance");
                 Console.WriteLine("l - Ledcontroller tests");
                 Console.WriteLine("t - Time related test");
@@ -49,10 +49,10 @@ namespace EndToEndTests
                         timeTests.Start();
                         break;
                     case "i1":
-                        CreateStellaClientInstance("ID_1");
+                        CreateStellaClientInstance(0);
                         break;
                     case "i2":
-                        CreateStellaClientInstance("ID_2");
+                        CreateStellaClientInstance(1);
                         break;
 
                     default:
@@ -62,7 +62,7 @@ namespace EndToEndTests
             }
         }
 
-        private static void CreateStellaClientInstance(string id)
+        private static void CreateStellaClientInstance(int id)
         {
             // Light
             int ledCount = 300;
@@ -440,11 +440,13 @@ namespace EndToEndTests
             Console.WriteLine("Enter ip:");
             string ip = Console.ReadLine();
 
+            int id = 0;
+
             // Establish the local endpoint for the socket.  
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);
 
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, "ID_1", new LinuxTimeSetter());
+            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, 0, new LinuxTimeSetter());
             Console.WriteLine("Starting Client, press enter to quit");
             stellaServer.Start();
             Console.ReadLine();
