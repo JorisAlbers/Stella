@@ -8,7 +8,7 @@ namespace StellaServer.Animation
     /// <summary>
     /// A animator decides what the next frame of a pi looks like. 
     /// </summary>
-    interface IAnimator
+    public interface IAnimator
     {
         /// <summary> Get the next frame for a pi at a certain index</summary>
         /// <param name="piIndex"></param>

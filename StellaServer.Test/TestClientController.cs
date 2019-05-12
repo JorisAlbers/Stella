@@ -4,8 +4,11 @@ using StellaLib.Animation;
 using StellaLib.Network.Protocol.Animation;
 using Moq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
+using StellaServer.Animation;
 
 namespace StellaServer.Test
 {
@@ -16,12 +19,16 @@ namespace StellaServer.Test
         public void StartAnimation_AnimationWithOneClient_SendsAnimationStartToServer()
         {
             //SETUP
-            DateTime timeStamp = DateTime.Now;
             int expectedID = 0;
             MessageType expectedMessageType = MessageType.Animation_Start;
             var mock = new Mock<IServer>();
-            FrameSet frameSet = new FrameSet(timeStamp);
-            byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSet.Metadata);
+
+            FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);
+
+            var animatorMock = new Mock<IAnimator>();
+            animatorMock.Setup(x => x.GetFrameSetMetadata(It.IsAny<int>())).Returns(frameSetMetadata);
+
+            byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
             int id = -1;
@@ -39,7 +46,7 @@ namespace StellaServer.Test
 
             //EXECUTE
             ClientController controller = new ClientController(mock.Object);
-            controller.StartAnimation(frameSet);
+            controller.StartAnimation(animatorMock.Object);
 
             //ASSERT
             Assert.AreEqual(expectedID,id);
@@ -51,40 +58,36 @@ namespace StellaServer.Test
         public void AnimationRequestReceived_TwoFramesRequested_SendsTheFrames()
         {
             //SETUP
-            DateTime timeStamp = DateTime.Now;
             int expectedID = 0;
             MessageType expectedMessageType = MessageType.Animation_Request;
-            FrameSet frameSet = new FrameSet(timeStamp);
+            
+            Frame frame1 = new Frame(0,100){new PixelInstruction(10,1,2,3)};
+            Frame frame2 = new Frame(1,200){new PixelInstruction(20,4,5,6)};
+            Frame frame3 = new Frame(2,200){new PixelInstruction(30,7,8,9)};
+            
+            var animatorMock = new Mock<IAnimator>();
+            animatorMock.Setup(x => x.GetFrameSetMetadata(0)).Returns(new FrameSetMetadata(DateTime.Now));
+            animatorMock.SetupSequence(x => x.GetNextFrame(0)).Returns(frame1).Returns(frame2).Returns(frame3);
 
-            frameSet.Frames.Add(new Frame(0,100){new PixelInstruction(10,1,2,3)});
-            frameSet.Frames.Add(new Frame(1,200){new PixelInstruction(20,4,5,6)});
-            frameSet.Frames.Add(new Frame(2,200){new PixelInstruction(30,7,8,9)});
-
-            byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frameSet.Frames[0],PacketProtocol.MAX_MESSAGE_SIZE)[0];
-            byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frameSet.Frames[1],PacketProtocol.MAX_MESSAGE_SIZE)[0];
+            byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frame1,PacketProtocol.MAX_MESSAGE_SIZE)[0];
+            byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frame2,PacketProtocol.MAX_MESSAGE_SIZE)[0];
             var mock = new Mock<IServer>();
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
-            int id1 = -1,  id2 = -1;
-            MessageType messageType1 = MessageType.Unknown, messageType2 = MessageType.Unknown;
             byte[] bytes1 = null, bytes2 = null;
             int callCount = 0;
 
-            mock.Setup(x=> x.SendMessageToClient(It.IsAny<int>(),
-                                                 It.IsAny<MessageType>(),
+            mock.Setup(x=> x.SendMessageToClient(0,
+                                                 MessageType.Animation_Request,
                                                  It.IsAny<byte[]>()))
                                                  .Callback<int,MessageType,byte[]>((i,t,b) =>
             {
-                if(t == MessageType.Animation_Request && callCount++ == 0)
+                if(callCount++ == 0)
                 {
-                    id1 = i;
-                    messageType1 = t;
                     bytes1 = b;
                 }
                 else
                 {
-                    id2 = i;
-                    messageType2 = t;
                     bytes2 = b;
                 }
                 
@@ -92,18 +95,15 @@ namespace StellaServer.Test
 
             //EXECUTE
             ClientController controller = new ClientController(mock.Object);
-            controller.StartAnimation(frameSet);
+            controller.StartAnimation(animatorMock.Object);
 
             mock.Raise(m => m.AnimationRequestReceived += null, new AnimationRequestEventArgs(expectedID,0,2));
 
             //ASSERT
+            Assert.AreEqual(2, callCount);
             // Frame1
-            Assert.AreEqual(expectedID,id1);
-            Assert.AreEqual(expectedMessageType,messageType1);
             Assert.AreEqual(expectedBytes1,bytes1);
             // Frame 2            
-            Assert.AreEqual(expectedID,id2);
-            Assert.AreEqual(expectedMessageType,messageType2);
             Assert.AreEqual(expectedBytes2,bytes2);
         }
     }

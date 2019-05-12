@@ -42,6 +42,7 @@ namespace EndToEndTests
 
         private static void StartStellaServerInstance()
         {
+            int numberOfPis = 2;
             int port = 20055;
             Console.Out.WriteLine("Starting StellaServer instance");
             Server server = new Server(Program.SERVER_IP,port);
@@ -80,17 +81,10 @@ namespace EndToEndTests
                 }
 
             });
-            AnimationExpander expander = new AnimationExpander(repeatingPatternsDrawer.Create());
-            List<Frame> frames1 = expander.Expand(100);
 
             SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(300,100, pattern);
-
-            AnimationExpander expander2 = new AnimationExpander(slidingPatternDrawer.Create());
-            List<Frame> frames2 =  expander2.Expand(110);
-
             MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(300,30,pattern);
 
-            List<Frame> movingDotFrames = movingPatternDrawer.Create();
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
@@ -106,22 +100,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
-                        {
-                            Frames = frames1
-                        });
+                        clientController.StartAnimation(new MirroringAnimator(repeatingPatternsDrawer, numberOfPis, DateTime.Now + TimeSpan.FromSeconds(1)));
                         break;
                     case "s":
-                        clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
-                        {
-                            Frames = frames2
-                        });
+                        clientController.StartAnimation(new MirroringAnimator(slidingPatternDrawer, numberOfPis, DateTime.Now + TimeSpan.FromSeconds(1)));
                         break;
                     case "m":
-                        clientController.StartAnimation(new FrameSet(DateTime.Now + TimeSpan.FromSeconds(1))
-                        {
-                            Frames = movingDotFrames
-                        });
+                        clientController.StartAnimation(new MirroringAnimator(movingPatternDrawer, numberOfPis, DateTime.Now + TimeSpan.FromSeconds(1)));
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");
