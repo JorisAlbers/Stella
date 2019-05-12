@@ -140,7 +140,7 @@ namespace StellaServer.Network
         private void Client_Disconnected(object sender, SocketException exception)
         {
             Client client = (Client)sender;
-            if(client.ID == null)
+            if(client.ID == -1)
             {
                 Console.WriteLine($"New client disconnected");
             }
@@ -158,7 +158,7 @@ namespace StellaServer.Network
             
             lock(_clients)
             {
-                if(client.ID != id)
+                if(client.ID != -1)
                 {
                     Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {id}, but he already has an ID.");
                     return;
