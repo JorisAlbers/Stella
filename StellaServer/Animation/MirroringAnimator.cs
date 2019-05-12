@@ -26,7 +26,10 @@ namespace StellaServer.Animation
         /// <inheritdoc />
         public Frame GetNextFrame(int piIndex)
         {
-            Debug.Assert(piIndex < _lastFramePerPi.Length, "The piIndex should not exceed the numberOfPis given on construction");
+            if (piIndex > _lastFramePerPi.Length)
+            {
+                throw new ArgumentException($"The {nameof(piIndex)} should not exceed the numberOfPis given on construction");
+            }
 
             int frameIndex = _lastFramePerPi[piIndex];
             Frame frame = _frames[frameIndex];
