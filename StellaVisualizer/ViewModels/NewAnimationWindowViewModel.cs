@@ -139,7 +139,7 @@ namespace StellaVisualizer.ViewModels
 
         private void CreateRandomFadeAnimation(int stripLength, Color[] pattern, int waitMs)
         {
-            RandomFadeDrawer drawer = new RandomFadeDrawer(stripLength, waitMs, pattern, 30);
+            RandomFadeDrawer drawer = new RandomFadeDrawer(stripLength, waitMs, pattern, 5);
             OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
         }
 

@@ -79,7 +79,7 @@ namespace StellaServer.Animation.Drawing.Fade
                     for (int i = 0; i < pattern.Length; i++)
                     {
                         int pixelIndex = i + fadePoint.Point;
-                        if (i < 0 || i > _stripLength - 1)
+                        if (pixelIndex < 0 || pixelIndex > _stripLength - 1)
                         {
                             continue;
                         }
