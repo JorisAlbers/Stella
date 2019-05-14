@@ -107,6 +107,9 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.MovingPattern:
                     CreateMovingPatternAnimation(StripLength,pattern, WaitMS);
                     break;
+                case DrawMethod.RandomFade:
+                    CreateRandomFadeAnimation(StripLength, pattern, WaitMS);
+                    break;
                 case DrawMethod.FadingPulse:
                     CreatePulseAnimation(StripLength, pattern[0], WaitMS);
                     break;
@@ -119,6 +122,8 @@ namespace StellaVisualizer.ViewModels
 
         }
 
+       
+
         private void CreateBitMapAnimation(int stripLength, int waitMs, string imagePath)
         {
             if (!File.Exists(imagePath))
@@ -129,6 +134,12 @@ namespace StellaVisualizer.ViewModels
 
             Bitmap bitmap = new Bitmap(Image.FromFile(imagePath));
             BitmapDrawer drawer = new BitmapDrawer(stripLength, waitMs, bitmap);
+            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
+        }
+
+        private void CreateRandomFadeAnimation(int stripLength, Color[] pattern, int waitMs)
+        {
+            RandomFadeDrawer drawer = new RandomFadeDrawer(stripLength, waitMs, pattern, 30);
             OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
         }
 

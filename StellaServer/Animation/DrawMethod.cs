@@ -22,6 +22,9 @@ namespace StellaServer.Animation
         /// <summary> Moves a pattern over the led strip from the start of the led strip till the end. </summary>
         MovingPattern,
 
+        /// <summary> Duplicates a pattern a random number of times. The patterns create are randomly placed and fade over time</summary>
+        RandomFade,
+
         /// <summary> Creates a fading pulse in both directions, starting from a given position </summary>
         FadingPulse,
 
