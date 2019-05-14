@@ -48,7 +48,7 @@ namespace StellaServer.Animation.Drawing.Fade
                 DrawFadePoints(fadePointsPerFadeStep, frame);
 
                 // remove FadePoints that have elapsed
-                if (fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+                if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
                 {
                     fadePointsPerFadeStep.RemoveFirst();
                 }
@@ -97,21 +97,6 @@ namespace StellaServer.Animation.Drawing.Fade
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-    }
-
-    internal class FadePoint
-    {
-        /// <summary>First index the fade point starts from </summary>
-        public int Point { get; }
-
-
-        /// <summary> The step the fade point is currently at </summary>
-        public int Step { get; set; }
-        
-        public FadePoint(int point)
-        {
-            Point = point;
         }
     }
 }
