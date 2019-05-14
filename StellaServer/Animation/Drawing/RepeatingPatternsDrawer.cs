@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
@@ -26,42 +27,53 @@ namespace StellaServer.Animation.Drawing
             _frameWaitMS = frameWaitMS;
         }
 
-        public List<Frame> Create()
+        /// <inheritdoc />
+        public IEnumerator<Frame> GetEnumerator()
         {
             int relativeTimeStamp = 0;
-            List<Frame> frames = new List<Frame>();
-            foreach (Color[] pattern in _patterns)
+            int frameIndex = 0;
+            while (true)
             {
-                int patternsInStrip = _lengthStrip / pattern.Length;
-                Frame frame = new Frame(frames.Count, relativeTimeStamp);
-                int leftPixelIndex = 0;
-                for (int j = 0; j < patternsInStrip; j++)
+                foreach (Color[] pattern in _patterns)
                 {
-                    leftPixelIndex = pattern.Length * j;
-                    for (int k = 0; k < pattern.Length; k++)
+                    int patternsInStrip = _lengthStrip / pattern.Length;
+                    Frame frame = new Frame(frameIndex++, relativeTimeStamp);
+                    int leftPixelIndex = 0;
+                    for (int j = 0; j < patternsInStrip; j++)
                     {
-                        int pixelIndex = (int) leftPixelIndex + k;
-                        frame.Add (new PixelInstruction ()
+                        leftPixelIndex = pattern.Length * j;
+                        for (int k = 0; k < pattern.Length; k++)
                         {
-                            Index = (uint) pixelIndex, Color = pattern[k]
+                            int pixelIndex = (int)leftPixelIndex + k;
+                            frame.Add(new PixelInstruction()
+                            {
+                                Index = (uint)pixelIndex,
+                                Color = pattern[k]
+                            });
+                        }
+                    }
+
+                    leftPixelIndex = leftPixelIndex + pattern.Length;
+                    // draw remaining pixels of the pattern that does not completely fit on the end of the led strip
+                    for (int j = 0; j < _lengthStrip % pattern.Length; j++)
+                    {
+                        int pixelIndex = (int)leftPixelIndex + j;
+                        frame.Add(new PixelInstruction()
+                        {
+                            Index = (uint)pixelIndex,
+                            Color = pattern[j]
                         });
                     }
-                }
 
-                leftPixelIndex = leftPixelIndex + pattern.Length;
-                // draw remaining pixels of the pattern that does not completely fit on the end of the led strip
-                for (int j = 0; j < _lengthStrip % pattern.Length; j++)
-                {
-                    int pixelIndex = (int) leftPixelIndex + j;
-                    frame.Add (new PixelInstruction ()
-                    {
-                        Index = (uint) pixelIndex, Color = pattern[j]
-                    });
+                    yield return frame;
+                    relativeTimeStamp += _frameWaitMS;
                 }
-                frames.Add (frame);
-                relativeTimeStamp += _frameWaitMS;
             }
-            return frames;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

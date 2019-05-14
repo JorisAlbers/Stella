@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using StellaClient;
@@ -48,10 +49,10 @@ namespace EndToEndTests
                         TimeTests timeTests = new TimeTests();
                         timeTests.Start();
                         break;
-                    case "i1":
+                    case "i0":
                         CreateStellaClientInstance(0);
                         break;
-                    case "i2":
+                    case "i1":
                         CreateStellaClientInstance(1);
                         break;
 
@@ -330,15 +331,14 @@ namespace EndToEndTests
                     case "fp":
                     {
                         int waitMS = 50;
-                        FadingPulseDrawer drawer = new FadingPulseDrawer(ledCount, waitMS, Color.Gold, 150, 15);
-                        List<Frame> frames = drawer.Create();
+                        FadingPulseDrawer drawer = new FadingPulseDrawer(ledCount, waitMS, Color.Gold,15);
+                        MirroringAnimator animator = new MirroringAnimator(drawer, 1, DateTime.Now + TimeSpan.FromMilliseconds(500));
 
-                        Random random = new Random();
+                        List<Frame> frames = new List<Frame>();
                         for (int i = 0; i < 500; i++)
                         {
-                            drawer.Create(frames, random.Next(0, ledCount), random.Next(0, 1000));
+                            frames.Add(animator.GetNextFrame(0));
                         }
-
                         LedController controller = new LedController(ledstrip);
 
                         controller.Run();
@@ -380,16 +380,20 @@ namespace EndToEndTests
                             Color.FromArgb(0,0,0),
                         };
                         SlidingPatternDrawer drawer = new SlidingPatternDrawer(ledCount, waitMS, pattern);
-                        List<Frame> frames = drawer.Create();
-
-                        AnimationExpander expander = new AnimationExpander(frames);
-                        frames =  expander.Expand(1000);
-                        
+                       
 
                         LedController controller = new LedController(ledstrip);
 
+                        MirroringAnimator animator = new MirroringAnimator(drawer,1, DateTime.Now + TimeSpan.FromMilliseconds(500));
+
+                        List<Frame> frames = new List<Frame>();
+                        for (int i = 0; i < 500; i++)
+                        {
+                            frames.Add(animator.GetNextFrame(0));
+                        }
+
                         controller.Run();
-                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now + TimeSpan.FromMilliseconds(500)));
+                        controller.PrepareNextFrameSet(animator.GetFrameSetMetadata(0));
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
                         Console.ReadLine();

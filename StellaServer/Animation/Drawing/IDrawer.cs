@@ -6,8 +6,7 @@ namespace StellaServer.Animation.Drawing
     /// <summary>
     /// A Drawer creates a list of frames
     /// </summary>
-    public interface IDrawer
+    public interface IDrawer : IEnumerable<Frame>
     {
-         List<Frame> Create();
     }
 }

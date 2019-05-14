@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
@@ -20,49 +21,57 @@ namespace StellaServer.Animation.Drawing
             _pattern = pattern;
         }
 
-        public List<Frame> Create()
+
+        /// <inheritdoc />
+        public IEnumerator<Frame> GetEnumerator()
         {
             int timestampRelative = 0;
-            List<Frame> frames = new List<Frame>();
-
-            // Slide into view
-            for (int i = 0; i < _pattern.Length-1; i++)
+            int frameIndex = 0;
+            while (true)
             {
-                Frame frame = new Frame(frames.Count, timestampRelative);
-                for (uint j = 0; j < i+1; j++)
+                // Slide into view
+                for (int i = 0; i < _pattern.Length - 1; i++)
                 {
-                    frame.Add(new PixelInstruction(j ,_pattern[_pattern.Length -1 - i + j]));
-                }
-                frames.Add(frame);
-                timestampRelative += _frameWaitMS;
-            }
-
-            // Normal
-            for (uint i = 0; i < _stripLength - _pattern.Length + 1; i++)
-            {
-                Frame frame = new Frame(frames.Count, timestampRelative);
-                for (uint j = 0; j < _pattern.Length; j++)
-                {
-                    frame.Add(new PixelInstruction{ Index = i + j, Color = _pattern[j] });
+                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    for (uint j = 0; j < i + 1; j++)
+                    {
+                        frame.Add(new PixelInstruction(j, _pattern[_pattern.Length - 1 - i + j]));
+                    }
+                    yield return frame;
+                    timestampRelative += _frameWaitMS;
                 }
 
-                frames.Add(frame);
-                timestampRelative += _frameWaitMS;
-            }
-
-            // Slide out of view
-            for (int i = 0; i < _pattern.Length - 1; i++)
-            {
-                Frame frame = new Frame(frames.Count, timestampRelative);
-                for (uint j = 0; j < _pattern.Length - 1 - i; j++)
+                // Normal
+                for (uint i = 0; i < _stripLength - _pattern.Length + 1; i++)
                 {
-                    frame.Add(new PixelInstruction((uint) (_stripLength - (_pattern.Length - 1  -  j - i)), _pattern[j]));
-                }
-                frames.Add(frame);
-                timestampRelative += _frameWaitMS;
-            }
+                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    for (uint j = 0; j < _pattern.Length; j++)
+                    {
+                        frame.Add(new PixelInstruction { Index = i + j, Color = _pattern[j] });
+                    }
 
-            return frames;
+                    yield return frame;
+                    timestampRelative += _frameWaitMS;
+                }
+
+                // Slide out of view
+                for (int i = 0; i < _pattern.Length - 1; i++)
+                {
+                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    for (uint j = 0; j < _pattern.Length - 1 - i; j++)
+                    {
+                        frame.Add(new PixelInstruction((uint)(_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
+                    }
+
+                    yield return frame;
+                    timestampRelative += _frameWaitMS;
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

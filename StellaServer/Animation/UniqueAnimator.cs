@@ -9,8 +9,7 @@ namespace StellaServer.Animation
     /// <summary> Creates an unique animation on all pi's </summary>
     public class UniqueAnimator : IAnimator
     {
-        private readonly List<Frame>[] _framesPerPi;
-        private readonly int[] _lastFramePerPi;
+        private readonly IEnumerator<Frame>[] _frameEnumerators;
         private readonly FrameSetMetadata[] _frameSetMetadataPerPi;
 
 
@@ -21,12 +20,11 @@ namespace StellaServer.Animation
                 throw new ArgumentException($"{nameof(drawersPerPi)} & {nameof(startAtPerPi)} must be of the same length");
             }
 
-            _lastFramePerPi = new int[drawersPerPi.Length];
-            _framesPerPi = new List<Frame>[drawersPerPi.Length];
             _frameSetMetadataPerPi = new FrameSetMetadata[drawersPerPi.Length];
+            _frameEnumerators = new IEnumerator<Frame>[drawersPerPi.Length];
             for (int i = 0; i < drawersPerPi.Length; i++)
             {
-                _framesPerPi[i] = drawersPerPi[i].Create();
+                _frameEnumerators[i] = drawersPerPi[i].GetEnumerator();
                 _frameSetMetadataPerPi[i] = new FrameSetMetadata(startAtPerPi[i]);
             }
 
@@ -35,14 +33,13 @@ namespace StellaServer.Animation
         /// <inheritdoc />
         public Frame GetNextFrame(int piIndex)
         {
-            if (piIndex > _lastFramePerPi.Length - 1)
+            if (piIndex > _frameEnumerators.Length - 1)
             {
                 throw new ArgumentException($"The {nameof(piIndex)} should not exceed the numberOfPis given on construction");
             }
-            
-            int frameIndex = _lastFramePerPi[piIndex];
-            Frame frame = _framesPerPi[piIndex][frameIndex];
-            _lastFramePerPi[piIndex] = ++frameIndex % _framesPerPi[piIndex].Count;
+
+            _frameEnumerators[piIndex].MoveNext();
+            Frame frame = _frameEnumerators[piIndex].Current;
 
             return frame;
         }
@@ -50,7 +47,7 @@ namespace StellaServer.Animation
         /// <inheritdoc />
         public FrameSetMetadata GetFrameSetMetadata(int piIndex)
         {
-            if (piIndex > _lastFramePerPi.Length - 1)
+            if (piIndex > _frameEnumerators.Length - 1)
             {
                 throw new ArgumentException($"The {nameof(piIndex)} should not exceed the numberOfPis given on construction");
             }

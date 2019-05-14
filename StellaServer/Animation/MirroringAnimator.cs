@@ -12,28 +12,29 @@ namespace StellaServer.Animation
     /// </summary>
     public class MirroringAnimator : IAnimator
     {
-        private readonly List<Frame> _frames;
-        private readonly int[] _lastFramePerPi;
+        private readonly IEnumerator<Frame>[] _frames;
         private readonly FrameSetMetadata _frameSetMetadata;
 
         public MirroringAnimator(IDrawer drawer, int numberOfPis, DateTime startAt)
         {
-            _lastFramePerPi = new int[numberOfPis];
-            _frames = drawer.Create();
+            _frames = new IEnumerator<Frame>[numberOfPis];
+            for (int i = 0; i < numberOfPis; i++)
+            {
+                _frames[i] = drawer.GetEnumerator();
+            }
             _frameSetMetadata = new FrameSetMetadata(startAt);
         }
 
         /// <inheritdoc />
         public Frame GetNextFrame(int piIndex)
         {
-            if (piIndex > _lastFramePerPi.Length -1)
+            if (piIndex > _frames.Length -1)
             {
                 throw new ArgumentException($"The {nameof(piIndex)} should not exceed the numberOfPis given on construction");
             }
 
-            int frameIndex = _lastFramePerPi[piIndex];
-            Frame frame = _frames[frameIndex];
-            _lastFramePerPi[piIndex] = ++frameIndex % _frames.Count;
+            _frames[piIndex].MoveNext();
+            Frame frame = _frames[piIndex].Current;
 
             return frame;
         }

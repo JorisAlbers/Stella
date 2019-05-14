@@ -3,6 +3,7 @@ using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation.Drawing;
+using System.Linq;
 
 namespace StellaServer.Test.Animation.Drawing
 {
@@ -31,13 +32,13 @@ namespace StellaServer.Test.Animation.Drawing
             
             // ACT
             BitmapDrawer drawer = new BitmapDrawer(stripLength,frameWaitMs,bitmap);
-            List<Frame> frames = drawer.Create();
+
+            Frame frame = drawer.First();
 
             // ASSERT
-            Assert.AreEqual(height, frames.Count);
-            Assert.AreEqual(expectedColor1, frames[0][0].Color);
-            Assert.AreEqual(expectedColor2, frames[0][1].Color);
-            Assert.AreEqual(expectedColor3, frames[0][2].Color);
+            Assert.AreEqual(expectedColor1, frame[0].Color);
+            Assert.AreEqual(expectedColor2, frame[1].Color);
+            Assert.AreEqual(expectedColor3, frame[2].Color);
         }
 
         [Test]
@@ -69,10 +70,9 @@ namespace StellaServer.Test.Animation.Drawing
 
             // ACT
             BitmapDrawer drawer = new BitmapDrawer(stripLength, frameWaitMs, bitmap);
-            List<Frame> frames = drawer.Create();
+            List<Frame> frames = drawer.Take(2).ToList();
 
             // ASSERT
-            Assert.AreEqual(height, frames.Count);
             // row 1
             Assert.AreEqual(3, frames[0].Count);
             Assert.AreEqual(expectedColor1, frames[0][0].Color);

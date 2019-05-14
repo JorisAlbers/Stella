@@ -129,44 +129,33 @@ namespace StellaVisualizer.ViewModels
 
             Bitmap bitmap = new Bitmap(Image.FromFile(imagePath));
             BitmapDrawer drawer = new BitmapDrawer(stripLength, waitMs, bitmap);
-            List<Frame> frames = drawer.Create();
-            OnAnimationCreated(frames);
+            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
         }
 
         private void CreatePulseAnimation(int stripLength, Color color, int waitMs)
         {
-            FadingPulseDrawer drawer = new FadingPulseDrawer(stripLength, waitMs, color, 150, 30);
-            List<Frame> frames = drawer.Create();
-
-            Random random = new Random();
-            for (int i = 0; i < 1000; i++)
-            {
-                drawer.Create(frames, random.Next(0,stripLength), random.Next(0,1000));
-            }
-            OnAnimationCreated(frames);
+            FadingPulseDrawer drawer = new FadingPulseDrawer(stripLength, waitMs, color, 30);
+            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
         }
-
 
         private void CreateSlidingPatternAnimation(int stripLength, Color[] pattern, int waitMs)
         {
             SlidingPatternDrawer drawer = new SlidingPatternDrawer(stripLength,waitMs, pattern);
-            List<Frame> frames = drawer.Create();
-            OnAnimationCreated(frames);
+            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
         }
 
         private void CreateMovingPatternAnimation(int stripLength, Color[] pattern, int waitMS)
         {
             MovingPatternDrawer drawer = new MovingPatternDrawer(stripLength,waitMS,pattern);
-            List<Frame> frames = drawer.Create();
-            OnAnimationCreated(frames);
+            OnAnimationCreated(new MirroringAnimator(drawer,3,DateTime.Now));
         }
 
-        private void OnAnimationCreated(List<Frame> animation)
+        private void OnAnimationCreated(IAnimator animator)
         {
             EventHandler<AnimationCreatedEventArgs> handler = AnimationCreated;
             if (handler != null)
             {
-                handler.Invoke(this,new AnimationCreatedEventArgs(animation, StripLength));
+                handler.Invoke(this,new AnimationCreatedEventArgs(animator, StripLength));
             }
         }
 

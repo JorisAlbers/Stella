@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Animation;
@@ -35,9 +36,9 @@ namespace StellaServer.Test.Animation
             DateTime[] dateTimes = new DateTime[] { DateTime.Now, DateTime.Now };
             
             var drawer1 = new Mock<IDrawer>();
-            drawer1.Setup(x => x.Create()).Returns(frames1);
+            drawer1.Setup(x => x.GetEnumerator()).Returns(frames1.GetEnumerator());
             var drawer2 = new Mock<IDrawer>();
-            drawer2.Setup(x => x.Create()).Returns(frames2);
+            drawer2.Setup(x => x.GetEnumerator()).Returns(frames2.GetEnumerator());
 
             UniqueAnimator animator = new UniqueAnimator(new IDrawer[]{drawer1.Object,drawer2.Object}, dateTimes);
 
@@ -69,7 +70,7 @@ namespace StellaServer.Test.Animation
             DateTime[] dateTimes = new DateTime[]{DateTime.Now };
 
             var drawer = new Mock<IDrawer>();
-            drawer.Setup(x => x.Create()).Returns(frames);
+            drawer.Setup(x => x.GetEnumerator()).Returns(frames.Concat(frames).GetEnumerator);
 
             UniqueAnimator animator = new UniqueAnimator(new IDrawer[] { drawer.Object }, dateTimes);
 
@@ -103,7 +104,7 @@ namespace StellaServer.Test.Animation
             };
 
             var drawer = new Mock<IDrawer>();
-            drawer.Setup(x => x.Create()).Returns(frames);
+            drawer.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
 
             UniqueAnimator animator = new UniqueAnimator(new IDrawer[] { drawer.Object, drawer.Object }, new DateTime[]{expectedDateTime1,expectedDateTime2});
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
@@ -189,6 +190,21 @@ namespace StellaServer.Animation.Drawing.Fade
                 }
             }
             return true;
+        }
+
+        public IEnumerable<Frame> Frames()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<Frame> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 

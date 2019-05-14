@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation.Drawing;
@@ -25,11 +26,11 @@ namespace StellaServer.Test.Animation.Drawing
             };
             int lengthStrip = 4;
             int frameWaitMS = 100;
+            int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(lengthStrip, frameWaitMS, pattern);
-            List<Frame> frames = drawer.Create();
+            List<Frame> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
-            Assert.AreEqual(6, frames.Count); // slide in = 2, normal = 1 , slide out = 2
             //Frame 1, slide in
             Frame frame = frames[0];
             Assert.AreEqual(1, frame.Count);

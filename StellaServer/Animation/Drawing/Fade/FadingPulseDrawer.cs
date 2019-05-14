@@ -1,70 +1,117 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
 namespace StellaServer.Animation.Drawing.Fade
 {
     public class FadingPulseDrawer : IDrawer
-
     {
         private readonly int _stripLength;
         private readonly int _frameWaitMs;
-        private readonly Color _color;
-        private readonly int _pulsePosition;
         private readonly int _fadeSteps;
+        private readonly Color[] _fadeColors; 
+        
 
-        public FadingPulseDrawer(int stripLength, int frameWaitMS, Color color, int pulsePosition, int fadeSteps)
+        public FadingPulseDrawer(int stripLength, int frameWaitMS, Color color, int fadeSteps)
         {
             _stripLength = stripLength;
             _frameWaitMs = frameWaitMS;
-            _color = color;
-            _pulsePosition = pulsePosition;
             _fadeSteps = fadeSteps;
-        }
 
-        public List<Frame> Create()
-        {
-            List<Frame> frames = new List<Frame>();
-            Create(frames, _pulsePosition,0);
-            return frames;
-        }
-
-        public void Create(List<Frame> frames, int pulsePosition, int frameStartIndex)
-        {
-            Color[] fadeColors = new Color[_fadeSteps];
-
-            Color[][] fadedPatterns = FadeCalculation.CalculateFadedPatterns(new Color[] { _color }, _fadeSteps);
-
+            Color[][] fadedPatterns = FadeCalculation.CalculateFadedPatterns(new Color[] { color }, _fadeSteps);
+            _fadeColors = new Color[_fadeSteps];
             for (int i = 0; i < _fadeSteps; i++)
             {
-                fadeColors[i] = fadedPatterns[i][0];
+                _fadeColors[i] = fadedPatterns[i][0];
             }
-
-            for (int i = 0; i < _fadeSteps; i++)
-            {
-                Color color = fadeColors[fadeColors.Length - 1 - i];
-                int missingFrames = frameStartIndex + _fadeSteps - frames.Count;
-                if (missingFrames > 0)
-                {
-                    for (int j = 0; j < missingFrames; j++)
-                    {
-                        frames.Add(new Frame(frames.Count,frames.Count * _frameWaitMs));
-                    }
-                }
-
-                Frame frame = frames[frameStartIndex + i];
-                for (int j = pulsePosition - i; j < pulsePosition + i; j++)
-                {
-                    if (j < 0 || j > _stripLength - 1)
-                    {
-                        continue;
-                    }
-                    frame.Add(new PixelInstruction((uint)j, color));
-                }
-                
-            }
-
         }
 
+        public IEnumerator<Frame> GetEnumerator()
+        {
+            Random random = new Random();
+            int frameIndex = 0;
+            int timestampRelative = 0;
+            LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
+            while (true)
+            {
+                // Create new FadePoints
+                int fadePointsToAdd = random.Next(0, 5);
+                if (fadePointsToAdd > 0)
+                {
+                    fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
+                }
+
+                // draw existing FadePoints
+                Frame frame = new Frame(frameIndex++, timestampRelative += _frameWaitMs);
+                DrawFadePoints(fadePointsPerFadeStep, frame);
+
+                // remove FadePoints that have elapsed
+                if (fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+                {
+                    fadePointsPerFadeStep.RemoveFirst();
+                }
+
+                yield return frame;
+            }
+        }
+
+        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, Frame frame)
+        {
+            foreach (List<FadePoint> fadePoints in fadePointsPerFadeStep)
+            {
+                // All fade points at this index have the same fade step count.
+                int fadeStep = fadePoints[0].Step;
+                Color color = _fadeColors[_fadeColors.Length - 1 - fadeStep];
+
+                foreach (FadePoint fadePoint in fadePoints)
+                {
+                    for (int j = fadePoint.Point - fadeStep; j < fadePoint.Point + fadeStep; j++)
+                    {
+                        if (j < 0 || j > _stripLength - 1)
+                        {
+                            continue;
+                        }
+                        frame.Add(new PixelInstruction((uint)j, color));
+                    }
+
+                    fadePoint.Step++;
+                }
+            }
+        }
+
+        private List<FadePoint> CreateNewFadePoints(Random random, int number)
+        {
+            List<FadePoint> fadePoints = new List<FadePoint>();
+            // start random n of new fade points
+            for (int i = 0; i < number; i++)
+            {
+                fadePoints.Add(new FadePoint(random.Next(0,_stripLength)));
+            }
+
+            return fadePoints;
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
+    internal class FadePoint
+    {
+        /// <summary>First index the fade point starts from </summary>
+        public int Point { get; }
+
+
+        /// <summary> The step the fade point is currently at </summary>
+        public int Step { get; set; }
+        
+        public FadePoint(int point)
+        {
+            Point = point;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
@@ -21,22 +22,30 @@ namespace StellaServer.Animation.Drawing
             _pattern = pattern;
         }
 
-        public List<Frame> Create()
+        public IEnumerator<Frame> GetEnumerator()
         {
             int timestampRelative = 0;
-            List<Frame> frames = new List<Frame>();
-            for (int i = 0; i < _pattern.Length; i++)
+            int frameIndex = 0;
+            while (true)
             {
-                Frame frame = new Frame(frames.Count,timestampRelative);
-                int startIndex = i;
-                for (int j = 0; j < _stripLength; j++) 
+                for (int i = 0; i < _pattern.Length; i++)
                 {
-                    frame.Add(new PixelInstruction(){ Index = (uint)j, Color = _pattern[(j + startIndex) % (_pattern.Length)] });
+                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    int startIndex = i;
+                    for (int j = 0; j < _stripLength; j++)
+                    {
+                        frame.Add(new PixelInstruction() { Index = (uint)j, Color = _pattern[(j + startIndex) % (_pattern.Length)] });
+                    }
+
+                    yield return frame;
+                    timestampRelative += _frameWaitMS;
                 }
-                frames.Add(frame);
-                timestampRelative += _frameWaitMS;
             }
-            return frames;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

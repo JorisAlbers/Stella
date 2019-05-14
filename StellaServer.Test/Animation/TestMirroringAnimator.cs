@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Moq;
 using NUnit.Framework;
@@ -32,7 +33,7 @@ namespace StellaServer.Test.Animation
             };
 
             var drawer = new Mock<IDrawer>();
-            drawer.Setup(x => x.Create()).Returns(frames);
+            drawer.Setup(x => x.GetEnumerator()).Returns(frames.Concat(frames).GetEnumerator);
 
             MirroringAnimator animator = new MirroringAnimator(drawer.Object,2, DateTime.Now);
 
@@ -64,7 +65,7 @@ namespace StellaServer.Test.Animation
             };
 
             var drawer = new Mock<IDrawer>();
-            drawer.Setup(x => x.Create()).Returns(frames);
+            drawer.Setup(x => x.GetEnumerator()).Returns(frames.Concat(frames).GetEnumerator);
 
             MirroringAnimator animator = new MirroringAnimator(drawer.Object, 1, DateTime.Now);
 
@@ -97,7 +98,7 @@ namespace StellaServer.Test.Animation
             };
 
             var drawer = new Mock<IDrawer>();
-            drawer.Setup(x => x.Create()).Returns(frames);
+            drawer.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
 
             MirroringAnimator animator = new MirroringAnimator(drawer.Object, 2, expectedDateTime);
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using StellaLib.Animation;
+using StellaServer.Animation;
 using StellaServer.Animation.Drawing.Fade;
 using StellaVisualizer.ViewModels;
 using StellaVisualizer.Windows;
@@ -19,12 +20,13 @@ namespace StellaVisualizer.Windows
     /// </summary>
     public partial class MainWindow : Window , INotifyPropertyChanged
     {
+        private const int NUMBER_OF_PIS = 3;
         private NewAnimationWindow _newAnimationWindow;
         private NewAnimationWindowViewModel _newAnimationWindowViewModel;
 
         public ObservableCollection<LedStripViewModel> LedStripViewModels { get; set; }
 
-        public List<Frame> Animation { get; set; }
+        public IAnimator Animator { get; set; }
         private uint _time;
         private int _lastFrameIndex;
 
@@ -48,7 +50,7 @@ namespace StellaVisualizer.Windows
             _newAnimationWindow.Show();
 
             // temp
-            Color[] pattern = new Color[]
+            /*Color[] pattern = new Color[]
             {
                 Color.FromArgb(100, 100, 100),
                 Color.FromArgb(180, 180, 180),
@@ -57,8 +59,7 @@ namespace StellaVisualizer.Windows
                 Color.FromArgb(100, 100, 100),
             };
             RandomFadeDrawer drawer = new RandomFadeDrawer(300,100, pattern,5, 10, 1000);
-            List<Frame> frames = drawer.Create();
-            NewAnimationWindowViewModel_OnAnimationCreated(this, new AnimationCreatedEventArgs(frames,300));
+            NewAnimationWindowViewModel_OnAnimationCreated(this, new AnimationCreatedEventArgs(new MirroringAnimator(drawer,3,DateTime.Now), 300));*/
 
             _playTimer = new Timer(50);
             _playTimer.AutoReset = true;
@@ -73,31 +74,17 @@ namespace StellaVisualizer.Windows
         private void IncrementTime()
         {
             _time += 50;
-            int nextFrameIndex = _lastFrameIndex + 1;
 
-            if (Animation == null)
+            if (Animator == null)
             {
                 _playTimer.Enabled = false;
                 return;
             }
 
-            if (Animation.Count <= nextFrameIndex)
+            for (int i = 0; i < NUMBER_OF_PIS; i++)
             {
-                return;
+                LedStripViewModels[i].DrawFrame(Animator.GetNextFrame(i));
             }
-
-            Frame nextFrame = Animation[nextFrameIndex];
-            if (nextFrame.TimeStampRelative > _time)
-            {
-                return;
-            }
-
-            foreach (LedStripViewModel ledStripViewModel in LedStripViewModels)
-            {
-                ledStripViewModel.DrawFrame(nextFrame);
-            }
-
-            _lastFrameIndex = nextFrameIndex;
         }
 
         private void NewAnimationWindowViewModel_OnAnimationCreated(object sender, AnimationCreatedEventArgs e)
@@ -115,11 +102,10 @@ namespace StellaVisualizer.Windows
                 }
             }
 
-            Animation = e.Animation;
+            Animator = e.Animator;
             for (int i = 0; i < LedStripViewModels.Count; i++)
             {
                 LedStripViewModels[i].Clear();
-                LedStripViewModels[i].NumberOfFrames = e.Animation.Count;
             }
         }
 

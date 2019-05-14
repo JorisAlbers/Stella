@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServer.Animation.Drawing;
@@ -21,6 +22,7 @@ namespace StellaServer.Test.Animation.Drawing
             };
             int lengthStrip = 7;
             int frameWaitMS = 100;
+            int framesToTake = 3;
             SlidingPatternDrawer drawer = new SlidingPatternDrawer(lengthStrip,frameWaitMS,pattern);
 
             // Expected
@@ -28,10 +30,9 @@ namespace StellaServer.Test.Animation.Drawing
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            List<Frame> frames = drawer.Create();
+            List<Frame> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
-            Assert.AreEqual(3,frames.Count);
             //Frame 1
             Frame frame1 = frames[0];
             Assert.AreEqual(lengthStrip, frame1.Count);

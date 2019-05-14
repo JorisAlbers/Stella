@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StellaLib.Animation;
+using StellaServer.Animation;
 
 namespace StellaVisualizer.ViewModels
 {
     public class AnimationCreatedEventArgs : EventArgs
     {
-        public List<Frame> Animation { get; }
+        public IAnimator Animator { get; }
         public int StripLength { get; }
 
-        public AnimationCreatedEventArgs(List<Frame> animation, int stripLength)
+        public AnimationCreatedEventArgs(IAnimator animator, int stripLength)
         {
-            Animation = animation;
+            Animator = animator;
             StripLength = stripLength;
         }
     }

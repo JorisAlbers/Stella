@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
@@ -22,23 +23,28 @@ namespace StellaServer.Animation.Drawing
             _bitmap = bitmap;
         }
 
-        public List<Frame> Create()
+        public IEnumerator<Frame> GetEnumerator()
         {
             int width = Math.Min(_bitmap.Width, _stripLength);
-
-            List<Frame> frames = new List<Frame>();
-            for (int i = 0; i < _bitmap.Height; i++)
+            while (true)
             {
-                Frame frame = new Frame(i, i*_frameWaitMs);
-                for (int j = 0; j < width; j++)
+                for (int i = 0; i < _bitmap.Height; i++)
                 {
-                    Color color = _bitmap.GetPixel(j, i);
-                    frame.Add(new PixelInstruction((uint)j,color));
-                }
-                frames.Add(frame);
-            }
+                    Frame frame = new Frame(i, i * _frameWaitMs);
+                    for (int j = 0; j < width; j++)
+                    {
+                        Color color = _bitmap.GetPixel(j, i);
+                        frame.Add(new PixelInstruction((uint)j, color));
+                    }
 
-            return frames;
+                    yield return frame;
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
