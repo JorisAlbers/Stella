@@ -49,18 +49,6 @@ namespace StellaVisualizer.Windows
             _newAnimationWindow.DataContext = _newAnimationWindowViewModel;
             _newAnimationWindow.Show();
 
-            // temp
-            /*Color[] pattern = new Color[]
-            {
-                Color.FromArgb(100, 100, 100),
-                Color.FromArgb(180, 180, 180),
-                Color.FromArgb(255, 255, 255),
-                Color.FromArgb(180, 180, 180),
-                Color.FromArgb(100, 100, 100),
-            };
-            RandomFadeDrawer drawer = new RandomFadeDrawer(300,100, pattern,5, 10, 1000);
-            NewAnimationWindowViewModel_OnAnimationCreated(this, new AnimationCreatedEventArgs(new MirroringAnimator(drawer,3,DateTime.Now), 300));*/
-
             _playTimer = new Timer(50);
             _playTimer.AutoReset = true;
             _playTimer.Elapsed += PlayTimerOnElapsed;
