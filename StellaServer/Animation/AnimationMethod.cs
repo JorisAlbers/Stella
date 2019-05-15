@@ -5,7 +5,7 @@ using System.Text;
 namespace StellaServer.Animation
 {
     /// <summary> The method at which to animate </summary>
-    enum AnimationMethod
+    public enum AnimationMethod
     {
         /// <summary> Not set </summary>
         Unknown,

@@ -26,11 +26,13 @@ namespace StellaVisualizer.ViewModels
         /// The draw methods available
         /// </summary>
         public string[] DrawMethods { get; } = Enum.GetNames(typeof(DrawMethod));
+        public string[] AnimationMethods { get; } = Enum.GetNames(typeof(AnimationMethod));
 
         /// <summary>
         /// The selected draw method
         /// </summary>
         public string SelectedDrawMethod { get; set; } = Enum.GetName(typeof(DrawMethod), DrawMethod.Unknown);
+        public string SelectedAnimationMethod { get; set; } = Enum.GetName(typeof(AnimationMethod), AnimationMethod.Mirror);
 
         /// <summary>
         /// The number of milliseconds each frame will be visible for.
@@ -66,6 +68,8 @@ namespace StellaVisualizer.ViewModels
 
         public ObservableCollection<PatternViewModel> PatternViewModels { get; } = new ObservableCollection<PatternViewModel>();
 
+
+
         public NewAnimationWindowViewModel()
         {
             AddPatternViewModel(255, 0, 0);
@@ -92,7 +96,8 @@ namespace StellaVisualizer.ViewModels
                 return;
             }
 
-            // Create List of Frames
+            // Get Drawer
+            IDrawer drawer = null;
             DrawMethod method = (DrawMethod)Enum.Parse(typeof(DrawMethod), SelectedDrawMethod);
             switch (method)
             {
@@ -100,66 +105,55 @@ namespace StellaVisualizer.ViewModels
                     Console.Out.WriteLine($"Method can't be set to unknown");
                     return;
                 case DrawMethod.SlidingPattern:
-                    CreateSlidingPatternAnimation(StripLength,pattern, WaitMS);
+                    drawer = new SlidingPatternDrawer(StripLength, WaitMS, pattern);
                     break;
                 case DrawMethod.RepeatingPattern:
                     break;
                 case DrawMethod.MovingPattern:
-                    CreateMovingPatternAnimation(StripLength,pattern, WaitMS);
+                    drawer = new MovingPatternDrawer(StripLength, WaitMS, pattern);
                     break;
                 case DrawMethod.RandomFade:
-                    CreateRandomFadeAnimation(StripLength, pattern, WaitMS);
+                    drawer = new RandomFadeDrawer(StripLength, WaitMS, pattern, 5);
                     break;
                 case DrawMethod.FadingPulse:
-                    CreatePulseAnimation(StripLength, pattern[0], WaitMS);
+                    drawer = new FadingPulseDrawer(StripLength, WaitMS, pattern[0], 30);
                     break;
                 case DrawMethod.Bitmap:
-                    CreateBitMapAnimation(StripLength, WaitMS, ImagePath);
+                    if (!File.Exists(ImagePath))
+                    {
+                        Console.Out.WriteLine($"The image at {ImagePath} does not exist.");
+                        return;
+                    }
+                    drawer = new BitmapDrawer(StripLength, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-        }
-
-       
-
-        private void CreateBitMapAnimation(int stripLength, int waitMs, string imagePath)
-        {
-            if (!File.Exists(imagePath))
+            IAnimator animator = null;
+            // Get Animator
+            AnimationMethod animationMethod = (AnimationMethod)Enum.Parse(typeof(AnimationMethod), SelectedAnimationMethod);
+            switch (animationMethod)
             {
-                Console.Out.WriteLine($"The image at {imagePath} does not exist.");
-                return;
+                case AnimationMethod.Mirror:
+                    animator = new MirroringAnimator(drawer, 3, new DateTime(0));
+                    break;
+                case AnimationMethod.Unique:
+                    long start1 = 0;
+                    long start2 = 1000;
+                    long start3 = 2000;
+                    animator = new UniqueAnimator(new IDrawer[] {drawer, drawer, drawer},
+                        new DateTime[]
+                        {
+                            new DateTime(start1),
+                            new DateTime(start2),
+                            new DateTime(start3)
+                        });
+                    break;
             }
-
-            Bitmap bitmap = new Bitmap(Image.FromFile(imagePath));
-            BitmapDrawer drawer = new BitmapDrawer(stripLength, waitMs, bitmap);
-            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
+            OnAnimationCreated(animator);
         }
-
-        private void CreateRandomFadeAnimation(int stripLength, Color[] pattern, int waitMs)
-        {
-            RandomFadeDrawer drawer = new RandomFadeDrawer(stripLength, waitMs, pattern, 5);
-            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
-        }
-
-        private void CreatePulseAnimation(int stripLength, Color color, int waitMs)
-        {
-            FadingPulseDrawer drawer = new FadingPulseDrawer(stripLength, waitMs, color, 30);
-            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
-        }
-
-        private void CreateSlidingPatternAnimation(int stripLength, Color[] pattern, int waitMs)
-        {
-            SlidingPatternDrawer drawer = new SlidingPatternDrawer(stripLength,waitMs, pattern);
-            OnAnimationCreated(new MirroringAnimator(drawer, 3, DateTime.Now));
-        }
-
-        private void CreateMovingPatternAnimation(int stripLength, Color[] pattern, int waitMS)
-        {
-            MovingPatternDrawer drawer = new MovingPatternDrawer(stripLength,waitMS,pattern);
-            OnAnimationCreated(new MirroringAnimator(drawer,3,DateTime.Now));
-        }
+        
 
         private void OnAnimationCreated(IAnimator animator)
         {

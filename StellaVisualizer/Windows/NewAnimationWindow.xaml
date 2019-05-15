@@ -24,6 +24,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="35"/>
             <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
@@ -59,7 +60,10 @@
         <TextBlock Grid.Column="0" Grid.Row="4" Text="Image path: "/>
         <TextBox   Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding ImagePath}"/>
 
-        <StackPanel Grid.Column="2" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,2">
+        <TextBlock Grid.Column="0" Grid.Row="5" Text="Animator :"/>
+        <ComboBox Grid.Column="1" Grid.Row="5" ItemsSource="{Binding AnimationMethods}" SelectedItem="{Binding SelectedAnimationMethod}"/>
+
+        <StackPanel Grid.Column="2" Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,2">
 
         <Button Content="Store animator"  Click="StoreAnimationButton_OnClick" Margin="10,0" IsEnabled="False"/>
         <Button Content="Create animator" Click="CreateAnimationButton_OnClick"/>

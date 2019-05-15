@@ -61,6 +61,7 @@ namespace StellaVisualizer.Windows
 
         // TODO race condition
         private Frame[] _nextFramePerLedStripViewModel = null;
+        private long[] _startAtPerPi;
 
         private void IncrementTime()
         {
@@ -79,12 +80,15 @@ namespace StellaVisualizer.Windows
 
             for (int i = 0; i < NUMBER_OF_PIS; i++)
             {
-                Frame nextFrame = _nextFramePerLedStripViewModel[i];
-                if (_time  > nextFrame.TimeStampRelative)
+                if (_time > _startAtPerPi[i])
                 {
-                    nextFrame = Animator.GetNextFrame(i);
-                    LedStripViewModels[i].DrawFrame(nextFrame);
-                    _nextFramePerLedStripViewModel[i] = nextFrame;
+                    Frame nextFrame = _nextFramePerLedStripViewModel[i];
+                    if (_time > _startAtPerPi[i] + nextFrame.TimeStampRelative)
+                    {
+                        nextFrame = Animator.GetNextFrame(i);
+                        LedStripViewModels[i].DrawFrame(nextFrame);
+                        _nextFramePerLedStripViewModel[i] = nextFrame;
+                    }
                 }
             }
         }
@@ -110,9 +114,11 @@ namespace StellaVisualizer.Windows
                 LedStripViewModels[i].Clear();
             }
 
+            _startAtPerPi = new long[LedStripViewModels.Count];
             _nextFramePerLedStripViewModel = new Frame[LedStripViewModels.Count];
             for (int i = 0; i < _nextFramePerLedStripViewModel.Length; i++)
             {
+                _startAtPerPi[i] = Animator.GetFrameSetMetadata(i).TimeStamp.Ticks;
                 _nextFramePerLedStripViewModel[i] = Animator.GetNextFrame(i);
             }
         }
