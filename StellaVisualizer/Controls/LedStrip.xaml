@@ -28,7 +28,7 @@
 
         <TextBlock Grid.Column="2" Text="{Binding NumberOfFrames}" Foreground="WhiteSmoke"/>
 
-        <ListBox Grid.Column="4" ItemsSource="{Binding PixelViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="white"
+        <ListBox Grid.Column="4" ItemsSource="{Binding PixelViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Height="10" BorderThickness="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -51,6 +51,7 @@
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="Padding" Value="0"/>
                     <Setter Property="Margin" Value="-1 "/>
+                    <Setter Property="Height" Value="4 "/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
