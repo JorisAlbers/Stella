@@ -9,27 +9,12 @@
              d:DataContext="{d:DesignInstance viewModels:LedStripViewModel}">
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type viewModels:PixelViewModel}">
-            <Grid Background="{Binding SolidColorBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-
-
-            </Grid>
-            <!--<Border Background="{Binding SolidColorBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="10"/>-->
+            <Grid Background="{Binding SolidColorBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="WhiteSmoke"/>
-
-        <TextBlock Grid.Column="2" Text="{Binding NumberOfFrames}" Foreground="WhiteSmoke"/>
-
-        <ListBox Grid.Column="4" ItemsSource="{Binding PixelViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Height="10" BorderThickness="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        <ListBox  ItemsSource="{Binding PixelViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Red" BorderThickness="0" Height="10"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                     VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid IsItemsHost="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Rows="1">
@@ -39,7 +24,7 @@
                     </UniformGrid>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <ContentPresenter Content="{Binding}"/>
@@ -51,11 +36,7 @@
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="Padding" Value="0"/>
                     <Setter Property="Margin" Value="-1 "/>
-                    <Setter Property="Height" Value="4 "/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-
-    </Grid>
-
 </UserControl>

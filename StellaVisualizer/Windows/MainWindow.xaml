@@ -22,9 +22,9 @@
             <RowDefinition Height="*" MaxHeight="50"/>
         </Grid.RowDefinitions>
 
-        <ContentPresenter Grid.Row="0" Margin="0,0,0,5" Content="{Binding LedStripViewModels[0]}"/>
-        <ContentPresenter Grid.Row="1" Margin="0,0,0,5" Content="{Binding LedStripViewModels[1]}"/>
-        <ContentPresenter Grid.Row="2" Margin="0,0,0,5" Content="{Binding LedStripViewModels[2]}"/>
+        <ContentPresenter Grid.Row="0" Margin="0,0,0,5" Content="{Binding RpiViewModels[0]}"/>
+        <ContentPresenter Grid.Row="1" Margin="0,0,0,5" Content="{Binding RpiViewModels[1]}"/>
+        <ContentPresenter Grid.Row="2" Margin="0,0,0,5" Content="{Binding RpiViewModels[2]}"/>
         
         <StackPanel Grid.Row="4" Orientation="Horizontal">
             <!--<TextBlock Text="Number of frames: " Foreground="WhiteSmoke"/>
@@ -64,8 +64,8 @@
 
     </Grid>
     <Window.Resources>
-        <DataTemplate DataType="{x:Type viewModels:LedStripViewModel}">
-            <controls:LedStrip/>
+        <DataTemplate DataType="{x:Type viewModels:RpiViewModel}">
+            <controls:RPi/>
         </DataTemplate>
     </Window.Resources>
 

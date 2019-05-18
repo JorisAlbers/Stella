@@ -24,11 +24,14 @@ namespace StellaVisualizer.Windows
         private NewAnimationWindow _newAnimationWindow;
         private NewAnimationWindowViewModel _newAnimationWindowViewModel;
 
-        public ObservableCollection<LedStripViewModel> LedStripViewModels { get; set; }
+        public RpiViewModel[] RpiViewModels { get; }
+
 
         public IAnimator Animator { get; set; }
         private uint _time;
         private int _lastFrameIndex;
+        private int _lengthPerSection;
+        private int _sections;
 
         private Timer _playTimer;
 
@@ -38,10 +41,16 @@ namespace StellaVisualizer.Windows
         {
             InitializeComponent();
             DataContext = this;
-            LedStripViewModels = new ObservableCollection<LedStripViewModel>();
-            LedStripViewModels.Add(new LedStripViewModel("RPI_1",300));
-            LedStripViewModels.Add(new LedStripViewModel("RPI_2",300));
-            LedStripViewModels.Add(new LedStripViewModel("RP1_3",300));
+
+            int sections = 2;
+            int lengthPerSection = 600;
+            _sections = sections;
+
+            _lengthPerSection = lengthPerSection;
+            RpiViewModels = new RpiViewModel[3];
+            RpiViewModels[0] = new RpiViewModel(sections,lengthPerSection);
+            RpiViewModels[1] = new RpiViewModel(sections,lengthPerSection);
+            RpiViewModels[2] = new RpiViewModel(sections,lengthPerSection);
 
             _newAnimationWindow = new NewAnimationWindow();
             _newAnimationWindowViewModel = new NewAnimationWindowViewModel();
@@ -86,7 +95,7 @@ namespace StellaVisualizer.Windows
                     if (_time > _startAtPerPi[i] + nextFrame.TimeStampRelative)
                     {
                         nextFrame = Animator.GetNextFrame(i);
-                        LedStripViewModels[i].DrawFrame(nextFrame);
+                        RpiViewModels[i].DrawFrame(nextFrame);
                         _nextFramePerLedStripViewModel[i] = nextFrame;
                     }
                 }
@@ -100,22 +109,25 @@ namespace StellaVisualizer.Windows
             _lastFrameIndex = 0;
 
             // If the strip length has changed, create new LedStripViewModels.
-            if (e.StripLength != LedStripViewModels[0].Length)
+            if (e.StripLength != _lengthPerSection)
             {
-                for (int i = 0; i < LedStripViewModels.Count; i++)
+                //
+
+                /*f
+                 or (int i = 0; i < LedStripViewModels.Count; i++)
                 {
                     LedStripViewModels[i] = new LedStripViewModel(LedStripViewModels[i].Name, e.StripLength);
-                }
+                }*/
             }
 
             Animator = e.Animator;
-            for (int i = 0; i < LedStripViewModels.Count; i++)
+            for (int i = 0; i < RpiViewModels.Length; i++)
             {
-                LedStripViewModels[i].Clear();
+                RpiViewModels[i].Clear();
             }
 
-            _startAtPerPi = new long[LedStripViewModels.Count];
-            _nextFramePerLedStripViewModel = new Frame[LedStripViewModels.Count];
+            _startAtPerPi = new long[RpiViewModels.Length];
+            _nextFramePerLedStripViewModel = new Frame[RpiViewModels.Length];
             for (int i = 0; i < _nextFramePerLedStripViewModel.Length; i++)
             {
                 _startAtPerPi[i] = Animator.GetFrameSetMetadata(i).TimeStamp.Ticks;

@@ -14,36 +14,19 @@ namespace StellaVisualizer.ViewModels
 {
     public class LedStripViewModel : INotifyPropertyChanged
     {
-        public int Length { get; }
-
-        public string Name { get; }
-
-        public ObservableCollection<PixelViewModel> PixelViewModels { get; set; }
-        public int NumberOfFrames { get; set; } = 0;
+        public PixelViewModel[] PixelViewModels { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        public LedStripViewModel(string name, int length)
+        public LedStripViewModel(int length)
         {
-            Length = length;
-            Name = name;
-            PixelViewModels = new ObservableCollection<PixelViewModel>();
+            PixelViewModels = new PixelViewModel[length];
             for (int i = 0; i < length; i++)
             {
-                PixelViewModels.Add(new PixelViewModel());
+                PixelViewModels[i] = new PixelViewModel();
             }
         }
-
-        
-        public void DrawFrame(Frame frame)
-        {
-            foreach (PixelInstruction pixelInstruction in frame)
-            {
-                PixelViewModels[(int)pixelInstruction.Index].Color = pixelInstruction.Color;
-            }
-        }
-
 
         public void Clear()
         {
@@ -51,8 +34,11 @@ namespace StellaVisualizer.ViewModels
             {
                 vm.Color = Color.FromArgb(0, 0, 0);
             }
+        }
 
-            NumberOfFrames = 0;
+        public void DrawPixel(int index, Color pixelInstructionColor)
+        {
+            PixelViewModels[index].Color = pixelInstructionColor;
         }
     }
 }

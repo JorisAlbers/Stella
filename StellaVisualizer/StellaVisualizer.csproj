@@ -83,11 +83,15 @@
     <Compile Include="Controls\PatternControl.xaml.cs">
       <DependentUpon>PatternControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RPi.xaml.cs">
+      <DependentUpon>RPi.xaml</DependentUpon>
+    </Compile>
     <Compile Include="model\AnimatorSettings\PatternSettings.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\AnimationCreatedEventArgs.cs" />
     <Compile Include="ViewModels\PatternViewModel.cs" />
     <Compile Include="ViewModels\PixelViewModel.cs" />
+    <Compile Include="ViewModels\RpiViewModel.cs" />
     <Compile Include="Windows\NewAnimationWindow.xaml.cs">
       <DependentUpon>NewAnimationWindow.xaml</DependentUpon>
     </Compile>
@@ -98,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PatternControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RPi.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

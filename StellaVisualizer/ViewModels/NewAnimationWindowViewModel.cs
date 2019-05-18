@@ -39,7 +39,8 @@ namespace StellaVisualizer.ViewModels
         /// </summary>
         public int WaitMS { get; set; } = 100;
 
-        public int StripLength { get; set; } = 300;
+        public int StripLength { get; set; } = 1200;
+        public int LengthPerSection { get; set; } = 1200;
 
         public string ImagePath { get; set; } = Path.Combine(Environment.CurrentDirectory, "image.png");
 
