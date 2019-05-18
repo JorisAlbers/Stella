@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace StellaLib.Animation
 {
@@ -10,6 +11,7 @@ namespace StellaLib.Animation
     ///     2. The display time 
     /// 
     /// </summary>
+    [DebuggerDisplay("Index = {Index}, TSR = {TimeStampRelative}, Count = {Count}")]
     public class Frame : List<PixelInstruction> , IEquatable<Frame>
     {   
         /// <summary>
