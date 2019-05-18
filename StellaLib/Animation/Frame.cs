@@ -21,7 +21,7 @@ namespace StellaLib.Animation
         /// The number of milliseconds after the start of the FrameSet (animation) this frame will be shown.
         /// </summary>
         /// <value></value>
-        public int TimeStampRelative {get;private set;}
+        public int TimeStampRelative {get; set;}
 
         public Frame(int index, int timeStampRelative)
         {
