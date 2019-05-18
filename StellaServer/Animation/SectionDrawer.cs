@@ -11,6 +11,7 @@ namespace StellaServer.Animation
 {
     /// <summary>
     /// Wrapper around multiple drawers. Combines the drawers to a single frame.
+    /// This class allows us to draw multiple animations to the same led strip.
     /// </summary>
     public class SectionDrawer : IDrawer
     {
@@ -35,7 +36,6 @@ namespace StellaServer.Animation
         public IEnumerator<Frame> GetEnumerator()
         {
             int frameIndex = 0;
-            int timestampRelative = 0;
 
             // Initialize frames
             for (int i = 0; i < _drawers.Length; i++)
@@ -81,9 +81,7 @@ namespace StellaServer.Animation
                 }
 
                 // Prepare for the next round
-               
                 frameIndex++;
-
             }
         }
 
