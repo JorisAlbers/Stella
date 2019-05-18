@@ -12,18 +12,23 @@ namespace StellaServer.Animation
     /// <summary>
     /// Wrapper around multiple drawers. Combines the drawers to a single frame.
     /// </summary>
-    public class SectionDrawer : ISectionDrawer
+    public class SectionDrawer : IDrawer
     {
         private readonly IEnumerator<Frame>[] _drawers;
         private readonly Frame[] _frames;
-        private readonly DateTime[] _timestamps;
-        public DateTime Timestamp { get; }
+        private readonly int[] _relativeTimestamps;
+        private readonly int _firstTimestamp;
 
-        public SectionDrawer(IDrawer[] drawers, DateTime[] timestamps)
+        /// <summary>
+        /// CTOR
+        /// </summary>
+        /// <param name="drawers"></param>
+        /// <param name="relativeTimestamps">The time to start each frame relative to each other, in milliseconds</param>
+        public SectionDrawer(IDrawer[] drawers, int[] relativeTimestamps)
         {
             _drawers = drawers.Select(x=>x.GetEnumerator()).ToArray();
-            _timestamps = timestamps;
-            Timestamp = timestamps.Min();
+            _relativeTimestamps = relativeTimestamps;
+            _firstTimestamp = relativeTimestamps.Min();
             _frames = new Frame[drawers.Length];
         }
 
@@ -52,9 +57,10 @@ namespace StellaServer.Animation
                 Frame frame = _frames[drawersInNextFrame[0]];
 
                 // Calculate the timestampRelative
-                long timestampFirstDrawer = _timestamps[drawersInNextFrame[0]].Ticks + TimeSpan.FromMilliseconds(frame.TimeStampRelative).Ticks;
-                long deltaWithOverallTimestamp = timestampFirstDrawer - Timestamp.Ticks;
-                frame.TimeStampRelative = (int)(deltaWithOverallTimestamp / TimeSpan.TicksPerMillisecond);
+                
+                int timestampFirstDrawer = _relativeTimestamps[drawersInNextFrame[0]] + frame.TimeStampRelative;
+                int deltaWithOverallTimestamp = timestampFirstDrawer - _firstTimestamp;
+                frame.TimeStampRelative = deltaWithOverallTimestamp;
                 frame.Index = frameIndex;
                 
                 // If there are more than one drawers in this frame, add their data to the frame.
@@ -87,11 +93,11 @@ namespace StellaServer.Animation
         /// <returns></returns>
         private List<int> GetNextInLineDrawers()
         {
-            DateTime firstTimestamp = DateTime.MaxValue;
+            int firstTimestamp = int.MaxValue;
             List<int> sectionIndexes = null;
             for (int i = 0; i < _frames.Length; i++)
             {
-                DateTime startAt = _timestamps[i] + TimeSpan.FromMilliseconds(_frames[i].TimeStampRelative);
+                int startAt = _relativeTimestamps[i] + _frames[i].TimeStampRelative;
                 if (startAt < firstTimestamp)
                 {
                     firstTimestamp = startAt;
