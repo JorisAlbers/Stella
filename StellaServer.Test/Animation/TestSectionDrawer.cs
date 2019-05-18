@@ -68,17 +68,65 @@ namespace StellaServer.Test.Animation
 
             List<Frame> receivedFrames = sectionDrawer.Take(4).ToList();
 
-
-
             Assert.AreEqual(expectedFrame1, receivedFrames[0]);
             Assert.AreEqual(expectedFrame2, receivedFrames[1]);
             Assert.AreEqual(expectedFrame3, receivedFrames[2]);
             Assert.AreEqual(expectedFrame4, receivedFrames[3]);
         }
 
+        [Test]
+        public void IEnumerable_TwoDrawersInFrame_CorrectlyIteratesFrames()
+        {
+            List<Frame> frames1 = new List<Frame>
+            {
+                new Frame(0, 0)
+                {
+                    new PixelInstruction(0, 1, 2, 3)
+                },
+                new Frame(1, 100)
+                {
+                    new PixelInstruction(2, 1, 2, 3)
+                },
+                new Frame(2, 200)
+                {
+                    new PixelInstruction(3, 1, 2, 3)
+                }
+            };
 
+            List<Frame> frames2 = new List<Frame>
+            {
+                new Frame(0, 0)
+                {
+                    new PixelInstruction(7, 1, 2, 3)
+                },
+                new Frame(1, 100)
+                {
+                    new PixelInstruction(8, 1, 2, 3)
+                },
+                new Frame(2, 100)
+                {
+                    new PixelInstruction(9, 1, 2, 3)
+                }
+            };
 
+            // EXPECTED
+            Frame expectedFrame1 = new Frame(0, 0)   { frames1[0][0],  frames2[0][0] };
+            Frame expectedFrame2 = new Frame(1, 100) { frames1[1][0] , frames2[1][0] };
 
+            var mockDrawer1 = new Mock<IDrawer>();
+            mockDrawer1.Setup(x => x.GetEnumerator()).Returns(frames1.GetEnumerator());
 
+            var mockDrawer2 = new Mock<IDrawer>();
+            mockDrawer2.Setup(x => x.GetEnumerator()).Returns(frames2.GetEnumerator());
+
+            int start1 = 0;
+            int start2 = 0; // Both are in frame
+            SectionDrawer sectionDrawer = new SectionDrawer(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 });
+
+            List<Frame> receivedFrames = sectionDrawer.Take(2).ToList();
+
+            Assert.AreEqual(expectedFrame1, receivedFrames[0]);
+            Assert.AreEqual(expectedFrame2, receivedFrames[1]);
+        }
     }
 }
