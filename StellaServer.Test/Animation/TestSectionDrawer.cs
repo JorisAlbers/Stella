@@ -20,5 +20,18 @@ namespace StellaServer.Test.Animation
             SectionDrawer sectionDrawer = new SectionDrawer(new IDrawer[]{mockDrawer.Object}, new DateTime[]{dateTime});
             Assert.AreEqual(dateTime,sectionDrawer.Timestamp);
         }
+
+        [Test]
+        public void TimeStamp_MultipleDrawers_CorrectlySet()
+        {
+            var mockDrawer = new Mock<IDrawer>();
+            DateTime dateTime1 = DateTime.Now;
+            DateTime dateTime2 = DateTime.Now + TimeSpan.FromMinutes(1);
+            DateTime dateTime3 = DateTime.Now + TimeSpan.FromMinutes(2);
+            SectionDrawer sectionDrawer = new SectionDrawer(new IDrawer[] { mockDrawer.Object,mockDrawer.Object,mockDrawer.Object }, new DateTime[] { dateTime1,dateTime2,dateTime3 });
+            Assert.AreEqual(dateTime1, sectionDrawer.Timestamp);
+        }
+
+
     }
 }
