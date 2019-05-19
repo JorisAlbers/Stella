@@ -15,8 +15,7 @@ namespace StellaServer.Animation
     /// </summary>
     public class SectionDrawer : IDrawer
     {
-        private readonly IEnumerator<Frame>[] _drawers;
-        private readonly Frame[] _frames;
+        private readonly IDrawer[] _drawers;
         private readonly int[] _relativeTimestamps;
         private readonly int _firstTimestamp;
 
@@ -27,34 +26,36 @@ namespace StellaServer.Animation
         /// <param name="relativeTimestamps">The time to start each frame relative to each other, in milliseconds</param>
         public SectionDrawer(IDrawer[] drawers, int[] relativeTimestamps)
         {
-            _drawers = drawers.Select(x=>x.GetEnumerator()).ToArray();
+            _drawers = drawers;
             _relativeTimestamps = relativeTimestamps;
             _firstTimestamp = relativeTimestamps.Min();
-            _frames = new Frame[drawers.Length];
         }
 
         public IEnumerator<Frame> GetEnumerator()
         {
+            IEnumerator<Frame>[] enumerators = _drawers.Select(x => x.GetEnumerator()).ToArray();
+            Frame[] frames = new Frame[_drawers.Length];
+
             int frameIndex = 0;
 
             // Initialize frames
             for (int i = 0; i < _drawers.Length; i++)
             {
-               _drawers[i].MoveNext();
-               _frames[i] = _drawers[i].Current;
+               enumerators[i].MoveNext();
+               frames[i] = enumerators[i].Current;
             }
 
             while (true)
             {
                 // Find the section that will start first
-                List<int> drawersInNextFrame = GetNextInLineDrawers();
+                List<int> drawersInNextFrame = GetNextInLineDrawers(frames);
                 if (drawersInNextFrame.Count == 0)
                 {
                     throw new Exception("There must always be a next frame");
                 }
 
                 // Overwrite the metadata of the frame of the fist drawer.
-                Frame frame = _frames[drawersInNextFrame[0]];
+                Frame frame = frames[drawersInNextFrame[0]];
 
                 // Calculate the timestampRelative
                 
@@ -66,7 +67,7 @@ namespace StellaServer.Animation
                 // If there are more than one drawers in this frame, add their data to the frame.
                 for (int i = 1; i < drawersInNextFrame.Count; i++)
                 {
-                    frame.AddRange(_frames[drawersInNextFrame[i]]);
+                    frame.AddRange(frames[drawersInNextFrame[i]]);
                 }
 
                 yield return frame;
@@ -76,8 +77,8 @@ namespace StellaServer.Animation
                 // Get the next frames of the used drawers
                 foreach (int sectionIndex in drawersInNextFrame)
                 {
-                    _drawers[sectionIndex].MoveNext();
-                    _frames[sectionIndex] = _drawers[sectionIndex].Current;
+                    enumerators[sectionIndex].MoveNext();
+                    frames[sectionIndex] = enumerators[sectionIndex].Current;
                 }
 
                 // Prepare for the next round
@@ -89,13 +90,13 @@ namespace StellaServer.Animation
         /// Returns the indexes of the drawers that have a frame starting before the other drawers.
         /// </summary>
         /// <returns></returns>
-        private List<int> GetNextInLineDrawers()
+        private List<int> GetNextInLineDrawers(Frame[] frames)
         {
             int firstTimestamp = int.MaxValue;
             List<int> sectionIndexes = null;
-            for (int i = 0; i < _frames.Length; i++)
+            for (int i = 0; i < frames.Length; i++)
             {
-                int startAt = _relativeTimestamps[i] + _frames[i].TimeStampRelative;
+                int startAt = _relativeTimestamps[i] + frames[i].TimeStampRelative;
                 if (startAt < firstTimestamp)
                 {
                     firstTimestamp = startAt;
