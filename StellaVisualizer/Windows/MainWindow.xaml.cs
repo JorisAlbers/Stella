@@ -94,8 +94,8 @@ namespace StellaVisualizer.Windows
                     Frame nextFrame = _nextFramePerLedStripViewModel[i];
                     if (_time > _startAtPerPi[i] + nextFrame.TimeStampRelative)
                     {
-                        nextFrame = Animator.GetNextFrame(i);
                         RpiViewModels[i].DrawFrame(nextFrame);
+                        nextFrame = Animator.GetNextFrame(i);
                         _nextFramePerLedStripViewModel[i] = nextFrame;
                     }
                 }
