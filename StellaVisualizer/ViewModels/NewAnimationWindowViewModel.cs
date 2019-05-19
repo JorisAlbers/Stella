@@ -40,7 +40,7 @@ namespace StellaVisualizer.ViewModels
         public int WaitMS { get; set; } = 100;
 
         public int StripLength { get; set; } = 1200;
-        public int LengthPerSection { get; set; } = 1200;
+        public int LengthPerSection { get; set; } = 600;
 
         public string ImagePath { get; set; } = Path.Combine(Environment.CurrentDirectory, "image.png");
 
@@ -111,7 +111,7 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.RepeatingPattern:
                     break;
                 case DrawMethod.MovingPattern:
-                    drawer = new MovingPatternDrawer(StripLength, WaitMS, pattern);
+                    drawer = new MovingPatternDrawer(0,StripLength, WaitMS, pattern);
                     break;
                 case DrawMethod.RandomFade:
                     drawer = new RandomFadeDrawer(StripLength, WaitMS, pattern, 5);
