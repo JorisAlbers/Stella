@@ -11,11 +11,20 @@ namespace StellaServer.Animation.Drawing
     public class MovingPatternDrawer : IDrawer
     {
         private Color[] _pattern;
+        private readonly uint _startIndex;
         private int _stripLength;
         private int _frameWaitMS;
 
-        public MovingPatternDrawer(int stripLength, int frameWaitMS, Color[] pattern)
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="startIndex">The start index on the led strip</param>
+        /// <param name="stripLength">The length of the section to draw</param>
+        /// <param name="frameWaitMS">The frame duration</param>
+        /// <param name="pattern">The pattern to move</param>
+        public MovingPatternDrawer(uint startIndex, int stripLength, int frameWaitMS, Color[] pattern)
         {
+            _startIndex = startIndex;
             _stripLength = stripLength;
             _frameWaitMS = frameWaitMS;
             _pattern = pattern;
@@ -35,7 +44,7 @@ namespace StellaServer.Animation.Drawing
                     Frame frame = new Frame(frameIndex++, timestampRelative);
                     for (uint j = 0; j < i + 1; j++)
                     {
-                        frame.Add(new PixelInstruction(j, _pattern[_pattern.Length - 1 - i + j]));
+                        frame.Add(new PixelInstruction(_startIndex + j, _pattern[_pattern.Length - 1 - i + j]));
                     }
                     yield return frame;
                     timestampRelative += _frameWaitMS;
@@ -47,7 +56,7 @@ namespace StellaServer.Animation.Drawing
                     Frame frame = new Frame(frameIndex++, timestampRelative);
                     for (uint j = 0; j < _pattern.Length; j++)
                     {
-                        frame.Add(new PixelInstruction { Index = i + j, Color = _pattern[j] });
+                        frame.Add(new PixelInstruction { Index = _startIndex + i + j, Color = _pattern[j] });
                     }
 
                     yield return frame;
@@ -60,7 +69,7 @@ namespace StellaServer.Animation.Drawing
                     Frame frame = new Frame(frameIndex++, timestampRelative);
                     for (uint j = 0; j < _pattern.Length - 1 - i; j++)
                     {
-                        frame.Add(new PixelInstruction((uint)(_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
+                        frame.Add(new PixelInstruction(_startIndex + (uint)(_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
                     }
 
                     yield return frame;
