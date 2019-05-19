@@ -138,6 +138,7 @@ namespace StellaVisualizer.ViewModels
             {
                 case AnimationMethod.Mirror:
                     animator = new MirroringAnimator(drawer, 3, new DateTime(0));
+
                     break;
                 case AnimationMethod.Unique:
                     long start1 = 0;

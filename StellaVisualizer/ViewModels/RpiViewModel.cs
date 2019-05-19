@@ -27,10 +27,23 @@ namespace StellaVisualizer.ViewModels
 
         public void DrawFrame(Frame frame)
         {
+            // Split the frame per section
+            List<PixelInstruction>[] instructionsPerSection = new List<PixelInstruction>[_sections];
+            for (int i = 0; i < _sections; i++)
+            {
+                instructionsPerSection[i] = new List<PixelInstruction>();
+            }
+
             foreach (PixelInstruction pixelInstruction in frame)
             {
                 int sectionIndex = (int) (pixelInstruction.Index / _lengthPerSection);
-                LedStripViewModels[sectionIndex].DrawPixel((int) (pixelInstruction.Index % _lengthPerSection),  pixelInstruction.Color);
+                instructionsPerSection[sectionIndex].Add(new PixelInstruction((uint) (pixelInstruction.Index % _lengthPerSection),  pixelInstruction.Color));
+            }
+
+            // send the buffers
+            for (int i = 0; i < _sections; i++)
+            {
+                LedStripViewModels[i].SetFrame(instructionsPerSection[i]);
             }
         }
 

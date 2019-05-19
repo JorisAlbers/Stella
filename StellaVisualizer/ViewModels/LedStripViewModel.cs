@@ -14,31 +14,37 @@ namespace StellaVisualizer.ViewModels
 {
     public class LedStripViewModel : INotifyPropertyChanged
     {
-        public PixelViewModel[] PixelViewModels { get; }
+        public int Length { get; set; }
+
+        /// <summary> Fired then the led strip should be cleared </summary>
+        public event EventHandler ClearRequested;
+        /// <summary> Fired when the led strip should draw a new frame </summary>
+        public event EventHandler<List<PixelInstruction>> NewFrameRequested;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
 
         public LedStripViewModel(int length)
         {
-            PixelViewModels = new PixelViewModel[length];
-            for (int i = 0; i < length; i++)
-            {
-                PixelViewModels[i] = new PixelViewModel();
-            }
+            Length = length;
         }
 
         public void Clear()
         {
-            foreach (PixelViewModel vm in PixelViewModels)
+            EventHandler eventHandler = ClearRequested;
+            if (eventHandler != null)
             {
-                vm.Color = Color.FromArgb(0, 0, 0);
+                eventHandler.Invoke(this,new EventArgs());
             }
         }
 
-        public void DrawPixel(int index, Color pixelInstructionColor)
+        public void SetFrame(List<PixelInstruction> pixelInstructions)
         {
-            PixelViewModels[index].Color = pixelInstructionColor;
+            EventHandler<List<PixelInstruction>> eventHandler = NewFrameRequested;
+            if (eventHandler != null)
+            {
+                eventHandler.Invoke(this, pixelInstructions);
+            }
         }
     }
 }
