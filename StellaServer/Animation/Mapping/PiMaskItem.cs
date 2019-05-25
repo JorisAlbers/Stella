@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace StellaServer.Animation.Mapping
@@ -7,6 +8,7 @@ namespace StellaServer.Animation.Mapping
     /// <summary>
     /// Points to a pi and pixelIndex on that pi.
     /// </summary>
+    [DebuggerDisplay("Index = {PixelIndex}, piIndex = {PiIndex}")]
     public class PiMaskItem
     {
         /// <summary> The index of the pi </summary>
