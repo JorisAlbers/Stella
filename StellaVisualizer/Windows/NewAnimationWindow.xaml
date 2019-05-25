@@ -60,8 +60,6 @@
         <TextBlock Grid.Column="0" Grid.Row="4" Text="Image path: "/>
         <TextBox   Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding ImagePath}"/>
 
-        <TextBlock Grid.Column="0" Grid.Row="5" Text="Animator :"/>
-        <ComboBox Grid.Column="1" Grid.Row="5" ItemsSource="{Binding AnimationMethods}" SelectedItem="{Binding SelectedAnimationMethod}"/>
 
         <StackPanel Grid.Column="2" Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,2">
 

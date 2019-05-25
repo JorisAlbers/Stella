@@ -27,13 +27,11 @@ namespace StellaVisualizer.ViewModels
         /// The draw methods available
         /// </summary>
         public string[] DrawMethods { get; } = Enum.GetNames(typeof(DrawMethod));
-        public string[] AnimationMethods { get; } = Enum.GetNames(typeof(AnimationMethod));
 
         /// <summary>
         /// The selected draw method
         /// </summary>
         public string SelectedDrawMethod { get; set; } = Enum.GetName(typeof(DrawMethod), DrawMethod.Unknown);
-        public string SelectedAnimationMethod { get; set; } = Enum.GetName(typeof(AnimationMethod), AnimationMethod.Mirror);
 
         /// <summary>
         /// The number of milliseconds each frame will be visible for.
