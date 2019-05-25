@@ -23,9 +23,10 @@
         /// The sections inside this mapping. 
         /// The section start positions. Each item means a switch in direction from that position.
         ///
-        /// If the length is 15
+        /// If startIndex = 100
+        /// And the length = 15
         /// 
-        /// 5,    means [0,1,2,3,4, 14,13,12,11,10,9,8,7,6,5]
+        /// 5,    means [0,1,2,3,4, 14,13,12,11,10,9,8,7,6,5] means [
         /// 5, 10 means [0,1,2,3,4, 9,8,7,6,5 10,11,12,13,14]
         ///
         /// When FirstSectionIsInverted:
