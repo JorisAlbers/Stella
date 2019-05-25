@@ -39,6 +39,11 @@ namespace StellaServer.Animation.Mapping
                 if (piMapping.FirstSectionIsInverted)
                 {
                     // Reversed
+                    for (int i = 0; i < piMapping.Length; i++)
+                    {
+                        int pixelIndexOnPi = piMapping.StartIndexOnPi + piMapping.Length -1 - i;
+                        mask.Add(new PiMaskItem(piMapping.PiIndex, pixelIndexOnPi));
+                    }
                 }
                 else
                 {
