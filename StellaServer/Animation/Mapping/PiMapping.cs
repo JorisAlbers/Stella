@@ -9,10 +9,6 @@
         /// <summary> The index of the pi </summary>
         public int PiIndex { get; }
 
-        /// <summary> The start index on the combined led strip, combining all pis </summary>
-        ///  TODO removable if we assume the piMappings are ordered and start from 0.
-        public int StartIndex { get; }
-
         /// <summary> The length on the combined sequence </summary>
         public int Length { get; }
 
@@ -39,10 +35,9 @@
 
         public bool FirstSectionIsInverted { get; }
         
-        public PiMapping(int piIndex, int startIndex,int length, int startIndexOnPi, int[] sectionStarts, bool firstSectionIsInverted)
+        public PiMapping(int piIndex, int length, int startIndexOnPi, int[] sectionStarts, bool firstSectionIsInverted)
         {
             PiIndex = piIndex;
-            StartIndex = startIndex;
             Length = length;
             StartIndexOnPi = startIndexOnPi;
             SectionStarts = sectionStarts;

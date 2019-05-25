@@ -15,12 +15,11 @@ namespace StellaServer.Test.Animation.Mapping
         {
             int expectedPiIndex = 9;
             int expectedLength = 5;
-            int expectedStartIndex = 0;
             int expectedStartIndexOnPi = 500;
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedStartIndex,expectedLength,expectedStartIndexOnPi,new int[]{},false)
+                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,new int[]{},false)
             };
             
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -55,12 +54,11 @@ namespace StellaServer.Test.Animation.Mapping
         {
             int expectedPiIndex = 9;
             int expectedLength = 5;
-            int expectedStartIndex = 0;
             int expectedStartIndexOnPi = 500;
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedStartIndex,expectedLength,expectedStartIndexOnPi,new int[]{},true)
+                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,new int[]{},true)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -96,15 +94,13 @@ namespace StellaServer.Test.Animation.Mapping
             int expectedPiIndex1 = 9;
             int expectedPiIndex2 = 1;
             int expectedLength = 2;
-            int expectedStartIndex1 = 0;
-            int expectedStartIndex2 = 0;
             int expectedStartIndexOnPi1 = 500;
             int expectedStartIndexOnPi2 = 100;
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex1,expectedStartIndex1,expectedLength,expectedStartIndexOnPi1,new int[]{},false),
-                new PiMapping(expectedPiIndex2,expectedStartIndex2,expectedLength,expectedStartIndexOnPi2, new int[]{},false)
+                new PiMapping(expectedPiIndex1,expectedLength,expectedStartIndexOnPi1,new int[]{},false),
+                new PiMapping(expectedPiIndex2,expectedLength,expectedStartIndexOnPi2, new int[]{},false)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -137,14 +133,13 @@ namespace StellaServer.Test.Animation.Mapping
         {
             int expectedPiIndex = 9;
             int expectedLength = 5;
-            int expectedStartIndex = 0;
             int expectedStartIndexOnPi = 500;
 
             int[] sections = new int[] { 2 };
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedStartIndex,expectedLength,expectedStartIndexOnPi,sections,true)
+                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,sections,true)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -179,14 +174,13 @@ namespace StellaServer.Test.Animation.Mapping
         {
             int expectedPiIndex = 9;
             int expectedLength = 6;
-            int expectedStartIndex = 0;
             int expectedStartIndexOnPi = 500;
 
             int[] sections = new int[] { 2,4 };
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedStartIndex,expectedLength,expectedStartIndexOnPi,sections,true)
+                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,sections,true)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -225,14 +219,13 @@ namespace StellaServer.Test.Animation.Mapping
         {
             int expectedPiIndex = 9;
             int expectedLength = 6;
-            int expectedStartIndex = 0;
             int expectedStartIndexOnPi = 500;
 
             int[] sections = new int[] { 2, 4 };
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedStartIndex,expectedLength,expectedStartIndexOnPi,sections,false)
+                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,sections,false)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
