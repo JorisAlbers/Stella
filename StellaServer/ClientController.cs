@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
@@ -14,6 +15,9 @@ namespace StellaServer
         private readonly IServer _server;
         private IAnimator _animator;
         private object _frameSetLock = new object();
+
+        private List<Frame[]> _framesPerPi;
+
         public ClientController(IServer server)
         {
             _server = server;
@@ -25,13 +29,18 @@ namespace StellaServer
             lock(_frameSetLock)
             {
                 _animator = animator;
+
+                // Create a buffer of frames per pi
+                _framesPerPi = new List<Frame[]>();
+                _framesPerPi.Add(_animator.GetNextFramePerPi());
+
                 // Send the ANIMATION_START message to all clients.
                 // When the client has received the message and has prepared the animation buffer,
                 // The client will request the first frames to fill it's buffer.
-
+                FrameSetMetadata frameSetMetadata = _animator.GetFrameSetMetadata();
                 foreach(int clientID in _server.ConnectedClients)
                 {
-                    byte[] message = FrameSetMetadataProtocol.Serialize(_animator.GetFrameSetMetadata(clientID));
+                    byte[] message = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
                     _server.SendMessageToClient(clientID,MessageType.Animation_Start,message);
                 }
             }
@@ -49,17 +58,26 @@ namespace StellaServer
                     return;
                 }
 
+                // TODO remove buffer from pis and implement Real Time protocol.
+                // TODO then this ClientController can decide when to send a new frame instead of the pis requesting new frames.
+                int lastFrameIndex = _framesPerPi[_framesPerPi.Count-1][0].Index;
+                int framesMissing = e.StartIndex + e.Count - lastFrameIndex;
+                if (framesMissing > 0)
+                {
+                    // Generate new frames
+                    for (int i = 0; i < framesMissing + 50; i++)
+                    {
+                        _framesPerPi.Add(_animator.GetNextFramePerPi());
+                    }
+                    // TODO remove frames to prevent memory overflow
+                }
+
                 List<Frame> frames = new List<Frame>();
                 for (int i = 0; i < e.Count; i++)
                 {
-                    frames.Add(_animator.GetNextFrame(e.ClientID));
+                    frames.Add(_framesPerPi[i + e.StartIndex][e.ClientID]);
                 }
-
-                if(frames.Count < 1)
-                {
-                    Console.WriteLine($"Not sending frames to client {e.ClientID} as there are not any frames in the frameSet from {e.StartIndex} till {e.StartIndex + e.Count}.");
-                    return;
-                }
+                   
 
                 Console.Out.WriteLine($"Sending {frames.Count} frames to client {e.ClientID}");
                 // Send the frames

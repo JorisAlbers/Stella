@@ -70,7 +70,7 @@ namespace StellaVisualizer.Windows
 
         // TODO race condition
         private Frame[] _nextFramePerLedStripViewModel = null;
-        private long[] _startAtPerPi;
+        private long _startAt;
 
         private void IncrementTime()
         {
@@ -87,18 +87,14 @@ namespace StellaVisualizer.Windows
                 return;
             }
 
-            for (int i = 0; i < NUMBER_OF_PIS; i++)
+            if (_time > _startAt && _time > _startAt + _nextFramePerLedStripViewModel[0].TimeStampRelative)
             {
-                if (_time > _startAtPerPi[i])
+                for (int i = 0; i < NUMBER_OF_PIS; i++)
                 {
-                    Frame nextFrame = _nextFramePerLedStripViewModel[i];
-                    if (_time > _startAtPerPi[i] + nextFrame.TimeStampRelative)
-                    {
-                        RpiViewModels[i].DrawFrame(nextFrame);
-                        nextFrame = Animator.GetNextFrame(i);
-                        _nextFramePerLedStripViewModel[i] = nextFrame;
-                    }
+                    RpiViewModels[i].DrawFrame(_nextFramePerLedStripViewModel[i]);
                 }
+
+                _nextFramePerLedStripViewModel = Animator.GetNextFramePerPi();
             }
         }
 
@@ -126,13 +122,8 @@ namespace StellaVisualizer.Windows
                 RpiViewModels[i].Clear();
             }
 
-            _startAtPerPi = new long[RpiViewModels.Length];
-            _nextFramePerLedStripViewModel = new Frame[RpiViewModels.Length];
-            for (int i = 0; i < _nextFramePerLedStripViewModel.Length; i++)
-            {
-                _startAtPerPi[i] = Animator.GetFrameSetMetadata(i).TimeStamp.Ticks;
-                _nextFramePerLedStripViewModel[i] = Animator.GetNextFrame(i);
-            }
+            _startAt = Animator.GetFrameSetMetadata().TimeStamp.Ticks;
+            _nextFramePerLedStripViewModel = Animator.GetNextFramePerPi();
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)

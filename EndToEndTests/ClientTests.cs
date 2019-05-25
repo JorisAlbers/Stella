@@ -15,6 +15,7 @@ using StellaServer;
 using StellaServer.Animation;
 using StellaServer.Animation.Drawing;
 using StellaServer.Animation.Drawing.Fade;
+using StellaServer.Animation.Mapping;
 
 namespace EndToEndTests
 {
@@ -104,7 +105,6 @@ namespace EndToEndTests
             Settings settings = Settings.CreateDefaultSettings();
             settings.Channels[0] = new Channel(ledCount, 18, 255, false, StripType.WS2812_STRIP);
             WS281x ledstrip = new WS281x(settings);
-
             bool run = true;
             while(run)
             {
@@ -332,13 +332,8 @@ namespace EndToEndTests
                     {
                         int waitMS = 50;
                         FadingPulseDrawer drawer = new FadingPulseDrawer(ledCount, waitMS, Color.Gold,15);
-                        MirroringAnimator animator = new MirroringAnimator(drawer, 1, DateTime.Now + TimeSpan.FromMilliseconds(500));
 
-                        List<Frame> frames = new List<Frame>();
-                        for (int i = 0; i < 500; i++)
-                        {
-                            frames.Add(animator.GetNextFrame(0));
-                        }
+                        List<Frame> frames = drawer.Take(500).ToList();
                         LedController controller = new LedController(ledstrip);
 
                         controller.Run();
@@ -383,17 +378,10 @@ namespace EndToEndTests
                        
 
                         LedController controller = new LedController(ledstrip);
-
-                        MirroringAnimator animator = new MirroringAnimator(drawer,1, DateTime.Now + TimeSpan.FromMilliseconds(500));
-
-                        List<Frame> frames = new List<Frame>();
-                        for (int i = 0; i < 500; i++)
-                        {
-                            frames.Add(animator.GetNextFrame(0));
-                        }
+                        List<Frame> frames = drawer.Take(500).ToList();
 
                         controller.Run();
-                        controller.PrepareNextFrameSet(animator.GetFrameSetMetadata(0));
+                        controller.PrepareNextFrameSet(new FrameSetMetadata(DateTime.Now));
                         controller.AddFrames(frames);
                         Console.WriteLine("Press enter to quit");
                         Console.ReadLine();

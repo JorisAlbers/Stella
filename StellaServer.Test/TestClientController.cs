@@ -26,7 +26,7 @@ namespace StellaServer.Test
             FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);
 
             var animatorMock = new Mock<IAnimator>();
-            animatorMock.Setup(x => x.GetFrameSetMetadata(It.IsAny<int>())).Returns(frameSetMetadata);
+            animatorMock.Setup(x => x.GetFrameSetMetadata()).Returns(frameSetMetadata);
 
             byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
@@ -64,10 +64,15 @@ namespace StellaServer.Test
             Frame frame1 = new Frame(0,100){new PixelInstruction(10,1,2,3)};
             Frame frame2 = new Frame(1,200){new PixelInstruction(20,4,5,6)};
             Frame frame3 = new Frame(2,200){new PixelInstruction(30,7,8,9)};
+
+            Frame[] framesPerPi1 = new Frame[]{frame1,null,null};
+            Frame[] framesPerPi2 = new Frame[]{frame2,null,null};
+            Frame[] framesPerPi3 = new Frame[]{frame3,null,null};
+
             
             var animatorMock = new Mock<IAnimator>();
-            animatorMock.Setup(x => x.GetFrameSetMetadata(0)).Returns(new FrameSetMetadata(DateTime.Now));
-            animatorMock.SetupSequence(x => x.GetNextFrame(0)).Returns(frame1).Returns(frame2).Returns(frame3);
+            animatorMock.Setup(x => x.GetFrameSetMetadata()).Returns(new FrameSetMetadata(DateTime.Now));
+            animatorMock.SetupSequence(x => x.GetNextFramePerPi()).Returns(framesPerPi1).Returns(framesPerPi2).Returns(framesPerPi3);
 
             byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frame1,PacketProtocol.MAX_MESSAGE_SIZE)[0];
             byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frame2,PacketProtocol.MAX_MESSAGE_SIZE)[0];

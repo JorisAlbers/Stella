@@ -10,17 +10,15 @@ namespace StellaServer.Animation
     /// </summary>
     public interface IAnimator
     {
-        /// <summary> Get the next frame for a pi at a certain index</summary>
-        /// <param name="piIndex"></param>
-        /// <returns></returns>
-        Frame GetNextFrame(int piIndex);
+        /// <summary> Get the next frame, split over the pis</summary>
+        /// <returns>A frame for each pi.</returns>
+        Frame[] GetNextFramePerPi();
 
         /// <summary>
-        /// Get the frame set metadata for a pi at a certain index
+        /// Get the frame set metadata
         /// </summary>
-        /// <param name="piIndex"></param>
         /// <returns></returns>
-        FrameSetMetadata GetFrameSetMetadata(int piIndex);
+        FrameSetMetadata GetFrameSetMetadata();
 
     }
 }

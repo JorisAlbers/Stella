@@ -5,6 +5,7 @@ using StellaLib.Animation;
 using StellaServer;
 using StellaServer.Animation;
 using StellaServer.Animation.Drawing;
+using StellaServer.Animation.Mapping;
 using StellaServer.Network;
 
 namespace EndToEndTests
@@ -43,12 +44,21 @@ namespace EndToEndTests
         private static void StartStellaServerInstance()
         {
             int numberOfPis = 2;
+            int lengthPerPi = 1200;
             int port = 20055;
             Console.Out.WriteLine("Starting StellaServer instance");
             Server server = new Server(Program.SERVER_IP,port);
             server.Start();
             ClientController clientController = new ClientController(server);
 
+            // Set mapping and create mask
+            List<PiMapping> piMappings = new List<PiMapping>();
+            for (int i = 0; i < numberOfPis; i++)
+            {
+                piMappings.Add(new PiMapping(i,lengthPerPi,0,new int[]{lengthPerPi/2},false));
+            }
+            PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
+            List<PiMaskItem> mask = piMaskCalculator.Calculate();
 
             Color[] pattern = new Color[]
             {
@@ -100,13 +110,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new MirroringAnimator(repeatingPatternsDrawer, numberOfPis, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer,mask,DateTime.Now + TimeSpan.FromSeconds(1)));
                         break;
                     case "s":
-                        clientController.StartAnimation(new MirroringAnimator(slidingPatternDrawer, numberOfPis, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(slidingPatternDrawer, mask, DateTime.Now + TimeSpan.FromSeconds(1)));
                         break;
                     case "m":
-                        clientController.StartAnimation(new MirroringAnimator(movingPatternDrawer, numberOfPis, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(movingPatternDrawer, mask, DateTime.Now + TimeSpan.FromSeconds(1)));
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");

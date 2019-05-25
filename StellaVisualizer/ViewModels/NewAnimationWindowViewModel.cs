@@ -10,6 +10,7 @@ using StellaLib.Animation;
 using StellaServer.Animation;
 using StellaServer.Animation.Drawing;
 using StellaServer.Animation.Drawing.Fade;
+using StellaServer.Animation.Mapping;
 using StellaVisualizer.model.AnimatorSettings;
 
 
@@ -111,7 +112,13 @@ namespace StellaVisualizer.ViewModels
                 case DrawMethod.RepeatingPattern:
                     break;
                 case DrawMethod.MovingPattern:
-                    drawer = new MovingPatternDrawer(0,StripLength, WaitMS, pattern);
+                    //drawer = new MovingPatternDrawer(0, StripLength, WaitMS, pattern);
+
+                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, WaitMS, pattern);
+                    IDrawer drawer2 = new MovingPatternDrawer((uint) LengthPerSection,LengthPerSection*2, WaitMS,pattern);
+                    drawer = new SectionDrawer(new IDrawer[]{drawer1,drawer2}, new int[]{0,1000} );
+                    
+
                     break;
                 case DrawMethod.RandomFade:
                     drawer = new RandomFadeDrawer(StripLength, WaitMS, pattern, 5);
@@ -131,28 +138,13 @@ namespace StellaVisualizer.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-            IAnimator animator = null;
-            // Get Animator
-            AnimationMethod animationMethod = (AnimationMethod)Enum.Parse(typeof(AnimationMethod), SelectedAnimationMethod);
-            switch (animationMethod)
+            PiMaskCalculator piMaskCalculator = new PiMaskCalculator(new List<PiMapping>
             {
-                case AnimationMethod.Mirror:
-                    animator = new MirroringAnimator(drawer, 3, new DateTime(0));
-
-                    break;
-                case AnimationMethod.Unique:
-                    long start1 = 0;
-                    long start2 = 1000;
-                    long start3 = 2000;
-                    animator = new UniqueAnimator(new IDrawer[] {drawer, drawer, drawer},
-                        new DateTime[]
-                        {
-                            new DateTime(start1),
-                            new DateTime(start2),
-                            new DateTime(start3)
-                        });
-                    break;
-            }
+                new PiMapping(0,StripLength,9,new int[]{StripLength/2},false),
+                new PiMapping(1,StripLength,9,new int[]{StripLength/2},false),
+                new PiMapping(2,StripLength,9,new int[]{StripLength/2},false),
+            });
+            IAnimator animator = new Animator(drawer, piMaskCalculator.Calculate(),DateTime.Now);
             OnAnimationCreated(animator);
         }
         
