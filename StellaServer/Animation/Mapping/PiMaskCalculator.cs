@@ -40,30 +40,20 @@ namespace StellaServer.Animation.Mapping
             }
             else
             {
-                // There are multiple sections
-                if (piMapping.FirstSectionIsInverted)
+                // Append first item
+                AppendSection(piMapping.FirstSectionIsInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.SectionStarts[0]);
+
+                // Iterate sections in the middle
+                bool currentlyInverted = !piMapping.FirstSectionIsInverted;
+                for (int i = 1; i < piMapping.SectionStarts.Length; i++)
                 {
-                    // Append first item
-                    AppendSection(true, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.SectionStarts[0]);
-
-                    // Iterate sections in the middle
-                    bool currentlyInverted = false;
-                    for (int i = 1; i < piMapping.SectionStarts.Length; i++)
-                    {
-                        AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[i - 1], piMapping.SectionStarts[i] - piMapping.SectionStarts[i - 1]);
-                        currentlyInverted = !currentlyInverted;
-                    }
-
-                    // Append last item
-                    int lastSectionStart = piMapping.SectionStarts[piMapping.SectionStarts.Length - 1];
-                    AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[piMapping.SectionStarts.Length - 1], piMapping.Length - lastSectionStart);
-                }
-                else
-                {
-                    // Forward first
-
+                    AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[i - 1], piMapping.SectionStarts[i] - piMapping.SectionStarts[i - 1]);
+                    currentlyInverted = !currentlyInverted;
                 }
 
+                // Append last item
+                int lastSectionStart = piMapping.SectionStarts[piMapping.SectionStarts.Length - 1];
+                AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[piMapping.SectionStarts.Length - 1], piMapping.Length - lastSectionStart);
             }
         }
 
