@@ -36,52 +36,27 @@ namespace StellaServer.Animation.Mapping
             // Check if there is just one section.
             if (piMapping.SectionStarts.Length == 0)
             {
-                if (piMapping.FirstSectionIsInverted)
-                {
-                    // Reversed
-                    AppendBackwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
-                }
-                else
-                {
-                    // Forwards
-                    AppendForwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
-                }
+                AppendSection(piMapping.FirstSectionIsInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
             }
             else
             {
                 // There are multiple sections
                 if (piMapping.FirstSectionIsInverted)
                 {
-                    // Reversed first
                     // Append first item
-                    AppendBackwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.SectionStarts[0]);
+                    AppendSection(true, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.SectionStarts[0]);
 
                     // Iterate sections in the middle
-                    bool currentlyForwards = true;
+                    bool currentlyInverted = false;
                     for (int i = 1; i < piMapping.SectionStarts.Length; i++)
                     {
-                        if (currentlyForwards)
-                        {
-                            AppendForwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[i-1], piMapping.SectionStarts[i] - piMapping.SectionStarts[i-1]);
-                        }
-                        else
-                        {
-                            AppendForwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[i - 1], piMapping.SectionStarts[i] - piMapping.SectionStarts[i - 1]);
-                        }
-
-                        currentlyForwards = !currentlyForwards;
+                        AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[i - 1], piMapping.SectionStarts[i] - piMapping.SectionStarts[i - 1]);
+                        currentlyInverted = !currentlyInverted;
                     }
+
                     // Append last item
                     int lastSectionStart = piMapping.SectionStarts[piMapping.SectionStarts.Length - 1];
-                    if (currentlyForwards)
-                    {
-                        AppendForwardsSection(mask,piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[piMapping.SectionStarts.Length-1], piMapping.Length - lastSectionStart);
-                    }
-                    else
-                    {
-                        AppendBackwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[piMapping.SectionStarts.Length - 1], piMapping.Length - lastSectionStart);
-                    }
-
+                    AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[piMapping.SectionStarts.Length - 1], piMapping.Length - lastSectionStart);
                 }
                 else
                 {
@@ -89,6 +64,18 @@ namespace StellaServer.Animation.Mapping
 
                 }
 
+            }
+        }
+
+        private void AppendSection(bool invertedDirection, List<PiMaskItem> mask, int piIndex, int startIndexOnPi, int length)
+        {
+            if (invertedDirection)
+            {
+                AppendBackwardsSection(mask, piIndex, startIndexOnPi, length);
+            }
+            else
+            {
+                AppendForwardsSection(mask, piIndex, startIndexOnPi, length);
             }
         }
 
