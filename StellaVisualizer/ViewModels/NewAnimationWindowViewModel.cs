@@ -111,10 +111,14 @@ namespace StellaVisualizer.ViewModels
                     break;
                 case DrawMethod.MovingPattern:
                     //drawer = new MovingPatternDrawer(0, StripLength, WaitMS, pattern);
+                    
 
-                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, WaitMS, pattern);
-                    IDrawer drawer2 = new MovingPatternDrawer((uint) LengthPerSection,LengthPerSection*2, WaitMS,pattern);
-                    drawer = new SectionDrawer(new IDrawer[]{drawer1,drawer2}, new int[]{0,1000} );
+
+                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, WaitMS, new Color[]{Color.Red});
+                    IDrawer drawer2 = new MovingPatternDrawer((uint) LengthPerSection,LengthPerSection*2, WaitMS, new Color[] { Color.Green });
+                    IDrawer drawer3 = new MovingPatternDrawer((uint) (LengthPerSection * 3 + LengthPerSection /2), LengthPerSection * 5, WaitMS, new Color[] { Color.Blue });
+
+                    drawer = new SectionDrawer(new IDrawer[]{drawer1,drawer2,drawer3}, new int[]{0,0,0} );
                     
 
                     break;
@@ -138,11 +142,11 @@ namespace StellaVisualizer.ViewModels
 
             PiMaskCalculator piMaskCalculator = new PiMaskCalculator(new List<PiMapping>
             {
-                new PiMapping(0,StripLength,9,new int[]{StripLength/2},false),
-                new PiMapping(1,StripLength,9,new int[]{StripLength/2},false),
-                new PiMapping(2,StripLength,9,new int[]{StripLength/2},false),
+                new PiMapping(0,StripLength,0,new int[0], false),
+                new PiMapping(1,StripLength,0,new int[0], false),
+                new PiMapping(2,StripLength,0,new int[0], false),
             });
-            IAnimator animator = new Animator(drawer, piMaskCalculator.Calculate(),DateTime.Now);
+            IAnimator animator = new Animator(drawer, piMaskCalculator.Calculate(),new DateTime(0));
             OnAnimationCreated(animator);
         }
         
