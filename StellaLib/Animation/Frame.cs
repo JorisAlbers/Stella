@@ -25,6 +25,8 @@ namespace StellaLib.Animation
         /// <value></value>
         public int TimeStampRelative {get; set;}
 
+
+        [DebuggerStepThrough]
         public Frame(int index, int timeStampRelative)
         {
             Index = index;

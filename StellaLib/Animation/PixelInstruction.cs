@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 
 namespace StellaLib.Animation
@@ -17,12 +18,14 @@ namespace StellaLib.Animation
         /// </summary>
         public Color Color;
 
+        [DebuggerStepThrough]
         public PixelInstruction(uint index, Color color)
         {
             Index = index;
             Color = color;
         }
 
+        [DebuggerStepThrough]
         public PixelInstruction(uint index, byte red, byte green, byte blue)
         {
             Index = index;
