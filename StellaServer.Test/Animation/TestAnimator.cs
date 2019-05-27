@@ -14,6 +14,43 @@ namespace StellaServer.Test.Animation
     public class TestAnimator
     {
         [Test]
+        public void GetNextFramePerPi_OnePiMapping_ReturnsFrameForOnePi()
+        {
+            Color expectedColor = Color.FromArgb(1, 2, 3);
+            int piIndex = 0;
+            int expectedPixelIndex = 20;
+            int expectedFrameIndex = 1;
+            int expectedRelativeTimeStamp = 10;
+
+            List<Frame> frames = new List<Frame>
+            {
+                new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
+                {
+                    new PixelInstruction(0,expectedColor),
+                }
+            };
+
+            var drawerMock = new Mock<IDrawer>();
+            drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
+            List<PiMaskItem> mask = new List<PiMaskItem>
+            {
+                new PiMaskItem(piIndex , expectedPixelIndex)
+            };
+
+            Animator animator = new Animator(drawerMock.Object, mask, DateTime.Now);
+            Frame[] framePerPi = animator.GetNextFramePerPi();
+
+            Assert.AreEqual(1, framePerPi.Length);
+
+            Frame frame = framePerPi[0];
+            Assert.AreEqual(expectedFrameIndex, frame.Index);
+            Assert.AreEqual(expectedRelativeTimeStamp, frame.TimeStampRelative);
+            Assert.AreEqual(expectedPixelIndex, frame[0].Index);
+            Assert.AreEqual(expectedColor, frame[0].Color);
+           
+        }
+
+        [Test]
         public void GetNextFramePerPi_ThreePiMappings_ReturnsFrameForEachPi()
         {
             Color expectedColor1 = Color.FromArgb(1, 2, 3);
@@ -73,7 +110,6 @@ namespace StellaServer.Test.Animation
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
             Assert.AreEqual(expectedPixelIndex3, frame3[0].Index);
             Assert.AreEqual(expectedColor3, frame3[0].Color);
-
         }
 
     }
