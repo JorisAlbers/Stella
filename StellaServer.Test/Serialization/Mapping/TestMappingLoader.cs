@@ -46,6 +46,9 @@ namespace StellaServer.Test.Serialization.Mapping
             Assert.AreEqual(expectedLength,mapping.Length);
             Assert.AreEqual(expectedStartIndexOnPi,mapping.StartIndexOnPi);
             Assert.AreEqual(expectedFirstSectionIsInverted, mapping.FirstSectionIsInverted);
+            Assert.AreEqual(expectedFirstSection,  mapping.SectionStarts[0]);
+            Assert.AreEqual(expectedSecondSection, mapping.SectionStarts[1]);
+
 
         }
 
@@ -75,13 +78,13 @@ namespace StellaServer.Test.Serialization.Mapping
             stringBuilder.AppendLine($"    FirstSectionIsInverted:  {expectedFirstSectionIsInverted1}");
             stringBuilder.AppendLine($"    SectionStarts:");
             stringBuilder.AppendLine($"      - {expectedFirstSection1}");
-            stringBuilder.AppendLine($"      - {expectedFirstSection2}");
+            stringBuilder.AppendLine($"      - {expectedSecondSection1}");
             stringBuilder.AppendLine($"  - PiIndex: {expectedPiIndex2}");
             stringBuilder.AppendLine($"    Length:  {expectedLength2}");
             stringBuilder.AppendLine($"    StartIndexOnPi:  {expectedStartIndexOnPi2}");
             stringBuilder.AppendLine($"    FirstSectionIsInverted:  {expectedFirstSectionIsInverted2}");
             stringBuilder.AppendLine($"    SectionStarts:");
-            stringBuilder.AppendLine($"      - {expectedSecondSection1}");
+            stringBuilder.AppendLine($"      - {expectedFirstSection2}");
             stringBuilder.AppendLine($"      - {expectedSecondSection2}");
 
             MappingLoader loader = new MappingLoader();
@@ -97,12 +100,16 @@ namespace StellaServer.Test.Serialization.Mapping
             Assert.AreEqual(expectedLength1, mapping1.Length);
             Assert.AreEqual(expectedStartIndexOnPi1, mapping1.StartIndexOnPi);
             Assert.AreEqual(expectedFirstSectionIsInverted1, mapping1.FirstSectionIsInverted);
+            Assert.AreEqual(expectedFirstSection1,  mapping1.SectionStarts[0]);
+            Assert.AreEqual(expectedSecondSection1, mapping1.SectionStarts[1]);
             // Mapping 2
             PiMapping mapping2 = mappings[1];
             Assert.AreEqual(expectedPiIndex2, mapping2.PiIndex);
             Assert.AreEqual(expectedLength2, mapping2.Length);
             Assert.AreEqual(expectedStartIndexOnPi2, mapping2.StartIndexOnPi);
             Assert.AreEqual(expectedFirstSectionIsInverted2, mapping2.FirstSectionIsInverted);
+            Assert.AreEqual(expectedFirstSection2, mapping2.SectionStarts[0]);
+            Assert.AreEqual(expectedSecondSection2, mapping2.SectionStarts[1]);
 
         }
 
