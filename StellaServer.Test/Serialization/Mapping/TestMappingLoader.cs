@@ -19,6 +19,8 @@ namespace StellaServer.Test.Serialization.Mapping
             int  expectedLength = 20;
             int  expectedStartIndexOnPi = 100;
             bool expectedFirstSectionIsInverted = true;
+            int expectedFirstSection = 30;
+            int expectedSecondSection = 31;
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!MappingSettings");
@@ -27,6 +29,10 @@ namespace StellaServer.Test.Serialization.Mapping
             stringBuilder.AppendLine($"    Length:  {expectedLength}");
             stringBuilder.AppendLine($"    StartIndexOnPi:  {expectedStartIndexOnPi}");
             stringBuilder.AppendLine($"    FirstSectionIsInverted:  {expectedFirstSectionIsInverted}");
+            stringBuilder.AppendLine($"    SectionStarts:");
+            stringBuilder.AppendLine($"      - {expectedFirstSection}");
+            stringBuilder.AppendLine($"      - {expectedSecondSection}");
+
 
             MappingLoader loader = new MappingLoader();
 
@@ -54,6 +60,11 @@ namespace StellaServer.Test.Serialization.Mapping
             int expectedStartIndexOnPi2 = 222;
             bool expectedFirstSectionIsInverted1 = true;
             bool expectedFirstSectionIsInverted2 = false;
+            int expectedFirstSection1 = 30;
+            int expectedFirstSection2 = 31;
+            int expectedSecondSection1 = 40;
+            int expectedSecondSection2 = 41;
+
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!MappingSettings");
@@ -62,10 +73,16 @@ namespace StellaServer.Test.Serialization.Mapping
             stringBuilder.AppendLine($"    Length:  {expectedLength1}");
             stringBuilder.AppendLine($"    StartIndexOnPi:  {expectedStartIndexOnPi1}");
             stringBuilder.AppendLine($"    FirstSectionIsInverted:  {expectedFirstSectionIsInverted1}");
+            stringBuilder.AppendLine($"    SectionStarts:");
+            stringBuilder.AppendLine($"      - {expectedFirstSection1}");
+            stringBuilder.AppendLine($"      - {expectedFirstSection2}");
             stringBuilder.AppendLine($"  - PiIndex: {expectedPiIndex2}");
             stringBuilder.AppendLine($"    Length:  {expectedLength2}");
             stringBuilder.AppendLine($"    StartIndexOnPi:  {expectedStartIndexOnPi2}");
             stringBuilder.AppendLine($"    FirstSectionIsInverted:  {expectedFirstSectionIsInverted2}");
+            stringBuilder.AppendLine($"    SectionStarts:");
+            stringBuilder.AppendLine($"      - {expectedSecondSection1}");
+            stringBuilder.AppendLine($"      - {expectedSecondSection2}");
 
             MappingLoader loader = new MappingLoader();
 
