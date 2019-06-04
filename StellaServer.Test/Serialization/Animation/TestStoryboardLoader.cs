@@ -216,6 +216,38 @@ namespace StellaServer.Test.Serialization.Animation
         }
 
         [Test]
+        public void Load_StoryBoardWithBitmapAnimation_LoadsCorrectly()
+        {
+            int expectedStartIndex = 10;
+            int expectedStripLength = 20;
+            int expectedFrameWaitMs = 30;
+            string expectedImagePath = "this/is/a/fake/path.png"; 
+
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine("Animations:");
+            stringBuilder.AppendLine($"  - !Bitmap");
+            stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
+            stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
+            stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    ImagePath:  {expectedImagePath}");
+
+            StoryboardLoader loader = new StoryboardLoader();
+
+            StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
+
+            Storyboard storyboard = loader.Load(mockStream);
+
+            Assert.AreEqual(1, storyboard.AnimationSettings.Length);
+            BitmapAnimationSettings settings = (BitmapAnimationSettings)storyboard.AnimationSettings[0];
+            Assert.AreEqual(expectedStartIndex, settings.StartIndex);
+            Assert.AreEqual(expectedImagePath, settings.ImagePath);
+            Assert.AreEqual(expectedStripLength, settings.StripLength);
+            Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+        }
+
+        [Test]
         public void Load_StoryBoardWithMultipleAnimations_LoadsCorrectly()
         {
             StringBuilder stringBuilder = new StringBuilder();
