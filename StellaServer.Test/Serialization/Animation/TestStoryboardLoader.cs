@@ -178,5 +178,41 @@ namespace StellaServer.Test.Serialization.Animation
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
             CollectionAssert.AreEqual(expectedPattern, settings.Pattern);
         }
+
+        [Test]
+        public void Load_StoryBoardWithFadingPulseAnimation_LoadsCorrectly()
+        {
+            Color expectedColor = Color.FromArgb(1, 2, 3);
+            
+            int expectedStartIndex = 10;
+            int expectedStripLength = 20;
+            int expectedFrameWaitMs = 30;
+            int expectedFadeSteps = 5;
+
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine("Animations:");
+            stringBuilder.AppendLine($"  - !FadingPulse");
+            stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
+            stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
+            stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    FadeSteps:  {expectedFadeSteps}");
+            stringBuilder.AppendLine($"    Color:  [{expectedColor.R},{expectedColor.G},{expectedColor.B}]");
+
+            StoryboardLoader loader = new StoryboardLoader();
+
+            StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
+
+            Storyboard storyboard = loader.Load(mockStream);
+
+            Assert.AreEqual(1, storyboard.AnimationSettings.Length);
+            FadingPulseAnimationSettings settings = (FadingPulseAnimationSettings)storyboard.AnimationSettings[0];
+            Assert.AreEqual(expectedStartIndex, settings.StartIndex);
+            Assert.AreEqual(expectedFadeSteps, settings.FadeSteps);
+            Assert.AreEqual(expectedStripLength, settings.StripLength);
+            Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            Assert.AreEqual(expectedColor, settings.Color);
+        }
     }
 }
