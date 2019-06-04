@@ -137,5 +137,46 @@ namespace StellaServer.Test.Serialization.Animation
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
             CollectionAssert.AreEqual(expectedPatterns, settings.Patterns);
         }
+
+        [Test]
+        public void Load_StoryBoardWithRandomFadeAnimation_LoadsCorrectly()
+        {
+            Color[] expectedPattern = new Color[]
+            {
+                Color.FromArgb(1, 2, 3),
+                Color.FromArgb(4, 5, 6)
+            };
+
+            int expectedStartIndex = 10;
+            int expectedStripLength = 20;
+            int expectedFrameWaitMs = 30;
+            int expectedFadeSteps = 5;
+
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine("Animations:");
+            stringBuilder.AppendLine($"  - !RandomFade");
+            stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
+            stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
+            stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    FadeSteps:  {expectedFadeSteps}");
+            stringBuilder.Append(    $"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
+            stringBuilder.AppendLine(    $"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
+
+            StoryboardLoader loader = new StoryboardLoader();
+
+            StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
+
+            Storyboard storyboard = loader.Load(mockStream);
+
+            Assert.AreEqual(1, storyboard.AnimationSettings.Length);
+            RandomFadeAnimationSettings settings = (RandomFadeAnimationSettings)storyboard.AnimationSettings[0];
+            Assert.AreEqual(expectedStartIndex, settings.StartIndex);
+            Assert.AreEqual(expectedFadeSteps, settings.FadeSteps);
+            Assert.AreEqual(expectedStripLength, settings.StripLength);
+            Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            CollectionAssert.AreEqual(expectedPattern, settings.Pattern);
+        }
     }
 }
