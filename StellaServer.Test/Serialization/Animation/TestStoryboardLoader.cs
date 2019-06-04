@@ -87,5 +87,55 @@ namespace StellaServer.Test.Serialization.Animation
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
             CollectionAssert.AreEqual(expectedPattern, settings.Pattern);
         }
+
+        [Test]
+        public void Load_StoryBoardWithRepeatingPatternsAnimation_LoadsCorrectly()
+        {
+            Color[][] expectedPatterns = new Color[][]
+            {
+                new Color[]
+                {
+                    Color.FromArgb(1, 2, 3),
+                    Color.FromArgb(4, 5, 6)
+                },
+                new Color[]
+                {
+                    Color.FromArgb(7, 8, 9),
+                    Color.FromArgb(10, 11, 12)
+                }, 
+                
+            };
+
+            int expectedStartIndex = 10;
+            int expectedStripLength = 20;
+            int expectedFrameWaitMs = 30;
+
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine("Animations:");
+            stringBuilder.AppendLine($"  - !RepeatingPattern");
+            stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
+            stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
+            stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.Append(    $"    Patterns: [[[{expectedPatterns[0][0].R},{expectedPatterns[0][0].G},{expectedPatterns[0][0].B}],");
+            stringBuilder.Append(         $"[{expectedPatterns[0][1].R},{expectedPatterns[0][1].G},{expectedPatterns[0][1].B}]],");
+            stringBuilder.Append(         $"[[{expectedPatterns[1][0].R},{expectedPatterns[1][0].G},{expectedPatterns[1][0].B}],");
+            stringBuilder.Append(         $"[{expectedPatterns[1][1].R},{expectedPatterns[1][1].G},{expectedPatterns[1][1].B}]]]");
+
+
+            StoryboardLoader loader = new StoryboardLoader();
+
+            StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
+
+            Storyboard storyboard = loader.Load(mockStream);
+
+            Assert.AreEqual(1, storyboard.AnimationSettings.Length);
+            RepeatingPatternAnimationSettings settings = (RepeatingPatternAnimationSettings)storyboard.AnimationSettings[0];
+            Assert.AreEqual(expectedStartIndex, settings.StartIndex);
+            Assert.AreEqual(expectedStripLength, settings.StripLength);
+            Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            CollectionAssert.AreEqual(expectedPatterns, settings.Patterns);
+        }
     }
 }
