@@ -221,7 +221,7 @@ namespace StellaServer.Test.Serialization.Animation
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
-            string expectedImagePath = "this/is/a/fake/path.png"; 
+            string expectedImagePath = Path.Combine(TestContext.CurrentContext.TestDirectory,"TestData","TestStoryBoardLoader","fakeImage.png"); 
 
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -253,12 +253,17 @@ namespace StellaServer.Test.Serialization.Animation
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
             stringBuilder.AppendLine("Animations:");
-            stringBuilder.AppendLine("  - !FadingPulse");
-            stringBuilder.AppendLine("    StartIndex:  10");
+            stringBuilder.AppendLine($"  - !FadingPulse");
+            stringBuilder.AppendLine($"    StartIndex:  1");
+            stringBuilder.AppendLine($"    StripLength:  1");
+            stringBuilder.AppendLine($"    FrameWaitMs:  1");
+            stringBuilder.AppendLine($"    FadeSteps:  1");
+            stringBuilder.AppendLine($"    Color:  [1,1,1]");
             stringBuilder.AppendLine("  - !MovingPattern");
-            stringBuilder.AppendLine("    StartIndex:  10");
-            stringBuilder.AppendLine("  - !RepeatingPattern");
-            stringBuilder.AppendLine("    StartIndex:  10");
+            stringBuilder.AppendLine($"    StartIndex:  2");
+            stringBuilder.AppendLine($"    StripLength:  2");
+            stringBuilder.AppendLine($"    FrameWaitMs:  2");
+            stringBuilder.AppendLine($"    Pattern: [[2,2,2]]");
 
             StoryboardLoader loader = new StoryboardLoader();
 
@@ -266,7 +271,7 @@ namespace StellaServer.Test.Serialization.Animation
 
             Storyboard storyboard = loader.Load(mockStream);
 
-            Assert.AreEqual(3, storyboard.AnimationSettings.Length);
+            Assert.AreEqual(2, storyboard.AnimationSettings.Length);
         }
     }
 }

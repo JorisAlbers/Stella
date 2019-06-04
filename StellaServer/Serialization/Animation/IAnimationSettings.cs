@@ -9,6 +9,8 @@ namespace StellaServer.Serialization.Animation
     /// </summary>
     public interface IAnimationSettings
     {
-
+        int StartIndex { get; set; }
+        int StripLength { get; set; }
+        int FrameWaitMs { get; set; }
     }
 }

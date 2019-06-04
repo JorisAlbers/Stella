@@ -17,20 +17,20 @@ namespace StellaServer.Serialization.Animation
 
         [YamlMember(nameof(Patterns))]
         [YamlStyle(YamlStyle.Flow)]
-        internal byte[][][] InternalPattern { get; set; }
+        internal byte[][][] InternalPatterns { get; set; }
 
         [YamlIgnore]
         public Color[][] Patterns
         {
             get
             {
-                Color[][] pattern = new Color[InternalPattern.Length][];
-                for (int i = 0; i < InternalPattern.Length; i++)
+                Color[][] pattern = new Color[InternalPatterns.Length][];
+                for (int i = 0; i < InternalPatterns.Length; i++)
                 {
-                    pattern[i] = new Color[InternalPattern[i].Length];
-                    for (int j = 0; j < InternalPattern[i].Length; j++)
+                    pattern[i] = new Color[InternalPatterns[i].Length];
+                    for (int j = 0; j < InternalPatterns[i].Length; j++)
                     {
-                        pattern[i][j] = Color.FromArgb(InternalPattern[i][j][0], InternalPattern[i][j][1], InternalPattern[i][j][2]);
+                        pattern[i][j] = Color.FromArgb(InternalPatterns[i][j][0], InternalPatterns[i][j][1], InternalPatterns[i][j][2]);
                     }
                 }
 
@@ -39,13 +39,13 @@ namespace StellaServer.Serialization.Animation
             }
             set
             {
-                InternalPattern = new byte[value.Length][][];
+                InternalPatterns = new byte[value.Length][][];
                 for (int i = 0; i < value.Length; i++)
                 {
-                    InternalPattern[i] = new byte[value[i].Length][];
+                    InternalPatterns[i] = new byte[value[i].Length][];
                     for (int j = 0; j < value[i].Length; j++)
                     {
-                        InternalPattern[i][j] = new byte[] { value[i][j].R, value[i][j].G, value[i][j].B };
+                        InternalPatterns[i][j] = new byte[] { value[i][j].R, value[i][j].G, value[i][j].B };
                     }
                 }
             }
