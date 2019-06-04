@@ -214,5 +214,27 @@ namespace StellaServer.Test.Serialization.Animation
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
             Assert.AreEqual(expectedColor, settings.Color);
         }
+
+        [Test]
+        public void Load_StoryBoardWithMultipleAnimations_LoadsCorrectly()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine("Animations:");
+            stringBuilder.AppendLine("  - !FadingPulse");
+            stringBuilder.AppendLine("    StartIndex:  10");
+            stringBuilder.AppendLine("  - !MovingPattern");
+            stringBuilder.AppendLine("    StartIndex:  10");
+            stringBuilder.AppendLine("  - !RepeatingPattern");
+            stringBuilder.AppendLine("    StartIndex:  10");
+
+            StoryboardLoader loader = new StoryboardLoader();
+
+            StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
+
+            Storyboard storyboard = loader.Load(mockStream);
+
+            Assert.AreEqual(3, storyboard.AnimationSettings.Length);
+        }
     }
 }
