@@ -37,7 +37,7 @@ namespace StellaVisualizer.ViewModels
             foreach (PixelInstruction pixelInstruction in frame)
             {
                 int sectionIndex = (int) (pixelInstruction.Index / _lengthPerSection);
-                instructionsPerSection[sectionIndex].Add(new PixelInstruction((uint) (pixelInstruction.Index % _lengthPerSection),  pixelInstruction.Color));
+                instructionsPerSection[sectionIndex].Add(new PixelInstruction(pixelInstruction.Index % _lengthPerSection,  pixelInstruction.Color));
             }
 
             // send the buffers

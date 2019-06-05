@@ -49,7 +49,7 @@ namespace StellaServer.Animation
             for (int i = 0; i < combinedFrame.Count; i++)
             {
                 PiMaskItem maskItem = mask[(int) combinedFrame[i].Index];
-                framePerPi[maskItem.PiIndex].Add(new PixelInstruction((uint) maskItem.PixelIndex,combinedFrame[i].Color));
+                framePerPi[maskItem.PiIndex].Add(new PixelInstruction(maskItem.PixelIndex,combinedFrame[i].Color));
             }
 
             return framePerPi;

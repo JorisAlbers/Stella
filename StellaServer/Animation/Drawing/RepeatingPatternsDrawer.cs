@@ -49,7 +49,7 @@ namespace StellaServer.Animation.Drawing
                             int pixelIndex = (int)leftPixelIndex + k;
                             frame.Add(new PixelInstruction()
                             {
-                                Index = (uint)pixelIndex,
+                                Index = pixelIndex,
                                 Color = pattern[k]
                             });
                         }
@@ -62,7 +62,7 @@ namespace StellaServer.Animation.Drawing
                         int pixelIndex = (int)leftPixelIndex + j;
                         frame.Add(new PixelInstruction()
                         {
-                            Index = (uint)pixelIndex,
+                            Index = pixelIndex,
                             Color = pattern[j]
                         });
                     }

@@ -26,7 +26,7 @@ namespace StellaServer.Animation.Drawing
                 for (int j = 0; j < width; j++)
                 {
                     Color color = bitmap.GetPixel(j, i);
-                    frame.Add(new PixelInstruction((uint) (startIndex + j), color));
+                    frame.Add(new PixelInstruction(startIndex + j, color));
                 }
 
                 _frames[i] = frame;

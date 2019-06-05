@@ -11,7 +11,7 @@ namespace StellaLib.Animation
         /// <summary>
         /// The index of the pixel to change
         /// </summary>
-        public uint Index;
+        public int Index;
 
         /// <summary>
         /// The color to set the pixel to
@@ -19,14 +19,14 @@ namespace StellaLib.Animation
         public Color Color;
 
         [DebuggerStepThrough]
-        public PixelInstruction(uint index, Color color)
+        public PixelInstruction(int index, Color color)
         {
             Index = index;
             Color = color;
         }
 
         [DebuggerStepThrough]
-        public PixelInstruction(uint index, byte red, byte green, byte blue)
+        public PixelInstruction(int index, byte red, byte green, byte blue)
         {
             Index = index;
             Color = Color.FromArgb(red,green,blue);

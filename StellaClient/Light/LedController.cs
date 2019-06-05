@@ -215,7 +215,7 @@ namespace StellaClient.Light
             for(int i=0; i< frame.Count;i++)
             {
                 PixelInstruction instruction = frame[i];
-                _ledStrip.SetLEDColor(0,(int)instruction.Index,instruction.Color);
+                _ledStrip.SetLEDColor(0,instruction.Index,instruction.Color);
             }
         }
 

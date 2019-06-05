@@ -136,13 +136,13 @@ namespace EndToEndTests
                         {
                             frames.Add(new Frame(i, i * waitMS)
                             {
-                                new PixelInstruction {Index = (uint) i - 1, Color = clearColor},
-                                new PixelInstruction {Index = (uint) i, Color = color}
+                                new PixelInstruction {Index =  i - 1, Color = clearColor},
+                                new PixelInstruction {Index =  i, Color = color}
                             });
                         }
 
                         frames.Add(new Frame(ledCount, ledCount * waitMS)
-                            {new PixelInstruction {Index = (uint) ledCount - 1, Color = clearColor}});
+                            {new PixelInstruction {Index =  ledCount - 1, Color = clearColor}});
 
                         LedController controller = new LedController(ledstrip);
                         //LedController controller = new LedController(new FakeLedStrip());
@@ -177,7 +177,7 @@ namespace EndToEndTests
                                 color = colors[1];
                             }
 
-                            for (uint k = 0; k < ledCount; k++)
+                            for (int k = 0; k < ledCount; k++)
                             {
                                 frame.Add(new PixelInstruction {Index = k, Color = color});
                             }
@@ -211,7 +211,7 @@ namespace EndToEndTests
                             for (int j = 0; j < colors1.Length; j++)
                             {
                                 Frame frame = new Frame(j, timeStampRelative);
-                                for (uint k = 0; k < ledCount; k++)
+                                for (int k = 0; k < ledCount; k++)
                                 {
                                     frame.Add(new PixelInstruction {Index = k, Color = colors1[j]});
                                 }
@@ -234,7 +234,7 @@ namespace EndToEndTests
                             for (int j = 0; j < colors2.Length; j++)
                             {
                                 Frame frame = new Frame(j, timeStampRelative);
-                                for (uint k = 0; k < ledCount; k++)
+                                for (int k = 0; k < ledCount; k++)
                                 {
                                     frame.Add(new PixelInstruction {Index = k, Color = colors2[j]});
                                 }
@@ -290,7 +290,7 @@ namespace EndToEndTests
                             for (int j = 0; j < colors1.Length; j++)
                             {
                                 Frame frame = new Frame(index++, timeStampRelative);
-                                for (uint k = 0; k < ledCount; k++)
+                                for (int k = 0; k < ledCount; k++)
                                 {
                                     frame.Add(new PixelInstruction {Index = k, Color = colors1[j]});
                                 }
@@ -401,7 +401,7 @@ namespace EndToEndTests
                         int timeStampRelative = 0;
                         List<Frame> frames1 = new List<Frame>();
                         Frame frame = new Frame(0, timeStampRelative);
-                        for (uint k = 0; k < ledCount; k++)
+                        for (int k = 0; k < ledCount; k++)
                         {
                             frame.Add(new PixelInstruction { Index = k, Color = colors1[0] });
                         }

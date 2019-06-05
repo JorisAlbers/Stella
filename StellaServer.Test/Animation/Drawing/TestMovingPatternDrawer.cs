@@ -96,7 +96,7 @@ namespace StellaServer.Test.Animation.Drawing
                 expectedColor2,
                 expectedColor3,
             };
-            uint startIndex = 10;
+            int startIndex = 10;
             int lengthStrip = 4;
             int frameWaitMS = 100;
             int framesToTake = 6;

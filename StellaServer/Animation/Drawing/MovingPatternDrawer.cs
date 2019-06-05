@@ -11,7 +11,7 @@ namespace StellaServer.Animation.Drawing
     public class MovingPatternDrawer : IDrawer
     {
         private Color[] _pattern;
-        private readonly uint _startIndex;
+        private readonly int _startIndex;
         private int _stripLength;
         private int _frameWaitMS;
 
@@ -22,7 +22,7 @@ namespace StellaServer.Animation.Drawing
         /// <param name="stripLength">The length of the section to draw</param>
         /// <param name="frameWaitMS">The frame duration</param>
         /// <param name="pattern">The pattern to move</param>
-        public MovingPatternDrawer(uint startIndex, int stripLength, int frameWaitMS, Color[] pattern)
+        public MovingPatternDrawer(int startIndex, int stripLength, int frameWaitMS, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
@@ -42,7 +42,7 @@ namespace StellaServer.Animation.Drawing
                 for (int i = 0; i < _pattern.Length - 1; i++)
                 {
                     Frame frame = new Frame(frameIndex++, timestampRelative);
-                    for (uint j = 0; j < i + 1; j++)
+                    for (int j = 0; j < i + 1; j++)
                     {
                         frame.Add(new PixelInstruction(_startIndex + j, _pattern[_pattern.Length - 1 - i + j]));
                     }
@@ -51,10 +51,10 @@ namespace StellaServer.Animation.Drawing
                 }
 
                 // Normal
-                for (uint i = 0; i < _stripLength - _pattern.Length + 1; i++)
+                for (int i = 0; i < _stripLength - _pattern.Length + 1; i++)
                 {
                     Frame frame = new Frame(frameIndex++, timestampRelative);
-                    for (uint j = 0; j < _pattern.Length; j++)
+                    for (int j = 0; j < _pattern.Length; j++)
                     {
                         frame.Add(new PixelInstruction { Index = _startIndex + i + j, Color = _pattern[j] });
                     }
@@ -67,9 +67,9 @@ namespace StellaServer.Animation.Drawing
                 for (int i = 0; i < _pattern.Length - 1; i++)
                 {
                     Frame frame = new Frame(frameIndex++, timestampRelative);
-                    for (uint j = 0; j < _pattern.Length - 1 - i; j++)
+                    for (int j = 0; j < _pattern.Length - 1 - i; j++)
                     {
-                        frame.Add(new PixelInstruction(_startIndex + (uint)(_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
+                        frame.Add(new PixelInstruction(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
                     }
 
                     yield return frame;

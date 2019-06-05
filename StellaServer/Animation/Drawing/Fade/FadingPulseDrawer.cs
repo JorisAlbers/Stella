@@ -75,7 +75,7 @@ namespace StellaServer.Animation.Drawing.Fade
                         {
                             continue;
                         }
-                        frame.Add(new PixelInstruction((uint)(_startIndex + j), color));
+                        frame.Add(new PixelInstruction(_startIndex + j, color));
                     }
 
                     fadePoint.Step++;

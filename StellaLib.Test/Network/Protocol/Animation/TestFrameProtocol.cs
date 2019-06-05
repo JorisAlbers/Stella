@@ -57,7 +57,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame frame = new Frame(frameIndex,frameWaitMS);
-            for (uint i = 0; i < 300; i++)
+            for (int i = 0; i < 300; i++)
             {
                 frame.Add(new PixelInstruction(i,1,2,3));
             }
@@ -147,7 +147,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame expectedFrame = new Frame(frameIndex,frameWaitMS);
-            for (uint i = 0; i < 300; i++)
+            for (int i = 0; i < 300; i++)
             {
                 expectedFrame.Add(new PixelInstruction(i,1,2,3));
             }      
@@ -176,7 +176,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame expectedFrame = new Frame(frameIndex,frameWaitMS);
-            for (uint i = 0; i < 300; i++)
+            for (int i = 0; i < 300; i++)
             {
                 expectedFrame.Add(new PixelInstruction(i,1,2,3));
             }      
@@ -205,7 +205,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             int frameIndex = 9;
             Frame expectedFrame = new Frame(frameIndex, frameWaitMS);
-            for (uint i = 0; i < 300; i++)
+            for (int i = 0; i < 300; i++)
             {
                 expectedFrame.Add(new PixelInstruction(i, 1, 2, 3));
             }

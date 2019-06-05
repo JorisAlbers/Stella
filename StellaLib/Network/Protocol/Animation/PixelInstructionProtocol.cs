@@ -20,7 +20,7 @@ namespace StellaLib.Network.Protocol.Animation
         public static PixelInstruction Deserialize(byte[] bytes, int startIndex)
         {
             PixelInstruction pixelInstruction = new PixelInstruction();
-            pixelInstruction.Index = (uint) BitConverter.ToInt32(bytes,startIndex);
+            pixelInstruction.Index = BitConverter.ToInt32(bytes,startIndex);
             pixelInstruction.Color = Color.FromArgb(bytes[startIndex+4], bytes[startIndex+5], bytes[startIndex+6]);
             return pixelInstruction;
         }
