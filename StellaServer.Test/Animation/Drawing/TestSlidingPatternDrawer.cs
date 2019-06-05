@@ -23,7 +23,7 @@ namespace StellaServer.Test.Animation.Drawing
             int lengthStrip = 7;
             int frameWaitMS = 100;
             int framesToTake = 3;
-            SlidingPatternDrawer drawer = new SlidingPatternDrawer(lengthStrip,frameWaitMS,pattern);
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,lengthStrip,frameWaitMS,pattern);
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -66,6 +66,38 @@ namespace StellaServer.Test.Animation.Drawing
             Assert.AreEqual(frame3[4].Color, expectedColor1);
             Assert.AreEqual(frame3[5].Color, expectedColor2);
             Assert.AreEqual(frame3[6].Color, expectedColor3);
+        }
+
+        [Test]
+        public void Create_StartIndexOf100_CreatesCorrectFrames()
+        {
+            // Setup
+            Color[] pattern = new Color[]
+            {
+                Color.FromArgb(1,2,3),
+            };
+            int lengthStrip = 3;
+            int frameWaitMS = 100;
+            int framesToTake = 1;
+            int startIndex = 100;
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(startIndex,lengthStrip,frameWaitMS,pattern);
+
+            // Expected
+            int expectedIndex1 = 100;
+            int expectedIndex2 = 101;
+            int expectedIndex3 = 102;
+
+            List<Frame> frames = drawer.Take(framesToTake).ToList();
+
+            //Assert
+            //Frame 1
+            Frame frame1 = frames[0];
+            Assert.AreEqual(lengthStrip, frame1.Count);
+            Assert.AreEqual(0, frame1.TimeStampRelative);
+            Assert.AreEqual(frame1[0].Index, expectedIndex1);
+            Assert.AreEqual(frame1[1].Index, expectedIndex2);
+            Assert.AreEqual(frame1[2].Index, expectedIndex3);
+           
         }
     }
 }

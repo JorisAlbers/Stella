@@ -12,11 +12,13 @@ namespace StellaServer.Animation.Drawing
     public class SlidingPatternDrawer : IDrawer
     {
         private Color[] _pattern;
+        private readonly int _startIndex;
         private int _stripLength;
         private int _frameWaitMS;
 
-        public SlidingPatternDrawer(int stripLength, int frameWaitMS, Color[] pattern)
+        public SlidingPatternDrawer(int startIndex, int stripLength, int frameWaitMS, Color[] pattern)
         {
+            _startIndex = startIndex;
             _stripLength = stripLength;
             _frameWaitMS = frameWaitMS;
             _pattern = pattern;
@@ -31,10 +33,10 @@ namespace StellaServer.Animation.Drawing
                 for (int i = 0; i < _pattern.Length; i++)
                 {
                     Frame frame = new Frame(frameIndex++, timestampRelative);
-                    int startIndex = i;
+                    int patternStart = i;
                     for (int j = 0; j < _stripLength; j++)
                     {
-                        frame.Add(new PixelInstruction() { Index = (uint)j, Color = _pattern[(j + startIndex) % (_pattern.Length)] });
+                        frame.Add(new PixelInstruction() { Index = (uint) (_startIndex + j), Color = _pattern[(j + patternStart) % (_pattern.Length)] });
                     }
 
                     yield return frame;

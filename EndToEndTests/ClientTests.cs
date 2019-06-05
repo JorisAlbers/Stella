@@ -374,7 +374,7 @@ namespace EndToEndTests
                             Color.FromArgb(0,0,0),
                             Color.FromArgb(0,0,0),
                         };
-                        SlidingPatternDrawer drawer = new SlidingPatternDrawer(ledCount, waitMS, pattern);
+                        SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,ledCount, waitMS, pattern);
                        
 
                         LedController controller = new LedController(ledstrip);

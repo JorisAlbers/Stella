@@ -105,7 +105,7 @@ namespace StellaVisualizer.ViewModels
                     Console.Out.WriteLine($"Method can't be set to unknown");
                     return;
                 case DrawMethod.SlidingPattern:
-                    drawer = new SlidingPatternDrawer(StripLength, WaitMS, pattern);
+                    drawer = new SlidingPatternDrawer(0,StripLength, WaitMS, pattern);
                     break;
                 case DrawMethod.RepeatingPattern:
                     break;
