@@ -11,6 +11,7 @@ namespace StellaServer.Animation.Drawing
     /// </summary>
     public class RepeatingPatternsDrawer : IDrawer
     {
+        private readonly int _startIndex;
         private int _lengthStrip;
         private int _frameWaitMS;
         private List<Color[]> _patterns;
@@ -20,8 +21,9 @@ namespace StellaServer.Animation.Drawing
         /// Each frame is the next pattern, repeated.
         /// </summary>
         /// <param name="patterns"></param>
-        public RepeatingPatternsDrawer(int lengthStrip,int frameWaitMS, List<Color[]> patterns)
+        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, int frameWaitMS, List<Color[]> patterns)
         {
+            _startIndex = startIndex;
             _lengthStrip = lengthStrip;
             _patterns = patterns;
             _frameWaitMS = frameWaitMS;
@@ -41,7 +43,7 @@ namespace StellaServer.Animation.Drawing
                     int leftPixelIndex = 0;
                     for (int j = 0; j < patternsInStrip; j++)
                     {
-                        leftPixelIndex = pattern.Length * j;
+                        leftPixelIndex = _startIndex + pattern.Length * j;
                         for (int k = 0; k < pattern.Length; k++)
                         {
                             int pixelIndex = (int)leftPixelIndex + k;
