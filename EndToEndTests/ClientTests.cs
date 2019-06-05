@@ -331,7 +331,7 @@ namespace EndToEndTests
                     case "fp":
                     {
                         int waitMS = 50;
-                        FadingPulseDrawer drawer = new FadingPulseDrawer(ledCount, waitMS, Color.Gold,15);
+                        FadingPulseDrawer drawer = new FadingPulseDrawer(0,ledCount, waitMS, Color.Gold,15);
 
                         List<Frame> frames = drawer.Take(500).ToList();
                         LedController controller = new LedController(ledstrip);

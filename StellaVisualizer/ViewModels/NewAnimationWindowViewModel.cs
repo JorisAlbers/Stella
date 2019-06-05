@@ -126,7 +126,7 @@ namespace StellaVisualizer.ViewModels
                     drawer = new RandomFadeDrawer(StripLength, WaitMS, pattern, 5);
                     break;
                 case DrawMethod.FadingPulse:
-                    drawer = new FadingPulseDrawer(StripLength, WaitMS, pattern[0], 30);
+                    drawer = new FadingPulseDrawer(0,StripLength, WaitMS, pattern[0], 30);
                     break;
                 case DrawMethod.Bitmap:
                     if (!File.Exists(ImagePath))

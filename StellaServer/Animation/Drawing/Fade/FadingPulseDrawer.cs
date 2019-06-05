@@ -8,14 +8,16 @@ namespace StellaServer.Animation.Drawing.Fade
 {
     public class FadingPulseDrawer : IDrawer
     {
+        private readonly int _startIndex;
         private readonly int _stripLength;
         private readonly int _frameWaitMs;
         private readonly int _fadeSteps;
         private readonly Color[] _fadeColors; 
         
 
-        public FadingPulseDrawer(int stripLength, int frameWaitMS, Color color, int fadeSteps)
+        public FadingPulseDrawer(int startIndex, int stripLength, int frameWaitMS, Color color, int fadeSteps)
         {
+            _startIndex = startIndex;
             _stripLength = stripLength;
             _frameWaitMs = frameWaitMS;
             _fadeSteps = fadeSteps;
@@ -73,7 +75,7 @@ namespace StellaServer.Animation.Drawing.Fade
                         {
                             continue;
                         }
-                        frame.Add(new PixelInstruction((uint)j, color));
+                        frame.Add(new PixelInstruction((uint)(_startIndex + j), color));
                     }
 
                     fadePoint.Step++;
