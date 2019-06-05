@@ -19,6 +19,7 @@ namespace StellaServer.Test.Animation.Drawing
 
             int stripLength = 3;
             int frameWaitMs = 100;
+            int startIndex = 0;
 
             Color expectedColor1 = Color.FromArgb(255, 255, 0, 0);
             Color expectedColor2 = Color.FromArgb(255, 0, 255, 0);
@@ -31,7 +32,7 @@ namespace StellaServer.Test.Animation.Drawing
             bitmap.SetPixel(2,0,expectedColor3);
             
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(stripLength,frameWaitMs,bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength,frameWaitMs,bitmap);
 
             Frame frame = drawer.First();
 
@@ -50,7 +51,8 @@ namespace StellaServer.Test.Animation.Drawing
 
             int stripLength = 3;
             int frameWaitMs = 100;
-
+            int startIndex = 0;
+            
             Color expectedColor1 = Color.FromArgb(255, 255, 0, 0);
             Color expectedColor2 = Color.FromArgb(255, 0, 255, 0);
             Color expectedColor3 = Color.FromArgb(255, 0, 0, 255);
@@ -69,7 +71,7 @@ namespace StellaServer.Test.Animation.Drawing
             bitmap.SetPixel(2, 1, expectedColor6);
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(stripLength, frameWaitMs, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex,stripLength, frameWaitMs, bitmap);
             List<Frame> frames = drawer.Take(2).ToList();
 
             // ASSERT
@@ -84,6 +86,37 @@ namespace StellaServer.Test.Animation.Drawing
             Assert.AreEqual(expectedColor5, frames[1][1].Color);
             Assert.AreEqual(expectedColor6, frames[1][2].Color);
 
+        }
+
+        [Test]
+        public void Create_BitmapWithOneRowAndStartIndexOf100_CreatesAnimationWithCorrectStartIndex()
+        {
+            // SETUP
+            int width = 3;
+            int height = 1;
+
+            int stripLength = 3;
+            int frameWaitMs = 100;
+            int startIndex = 100;
+
+            int expectedIndex1 = 100;
+            int expectedIndex2 = 101;
+            int expectedIndex3 = 102;
+
+            Bitmap bitmap = new Bitmap(width, height);
+            bitmap.SetPixel(0, 0, Color.FromArgb(255, 255, 0, 0));
+            bitmap.SetPixel(1, 0, Color.FromArgb(255, 0, 255, 0));
+            bitmap.SetPixel(2, 0, Color.FromArgb(255, 0, 0, 255));
+
+            // ACT
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, frameWaitMs, bitmap);
+
+            Frame frame = drawer.First();
+
+            // ASSERT
+            Assert.AreEqual(expectedIndex1, frame[0].Index);
+            Assert.AreEqual(expectedIndex2, frame[1].Index);
+            Assert.AreEqual(expectedIndex3, frame[2].Index);
         }
 
     }

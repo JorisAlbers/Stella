@@ -15,7 +15,7 @@ namespace StellaServer.Animation.Drawing
         private readonly int _frameWaitMs;
         private readonly List<PixelInstruction>[] _frames;
 
-        public BitmapDrawer(int stripLength, int frameWaitMS, Bitmap bitmap)
+        public BitmapDrawer(int startIndex, int stripLength, int frameWaitMS, Bitmap bitmap)
         {
             // Convert the bitmap to frames
             int width = Math.Min(bitmap.Width, stripLength);
@@ -26,7 +26,7 @@ namespace StellaServer.Animation.Drawing
                 for (int j = 0; j < width; j++)
                 {
                     Color color = bitmap.GetPixel(j, i);
-                    frame.Add(new PixelInstruction((uint)j, color));
+                    frame.Add(new PixelInstruction((uint) (startIndex + j), color));
                 }
 
                 _frames[i] = frame;

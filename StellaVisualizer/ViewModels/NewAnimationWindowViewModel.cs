@@ -134,7 +134,7 @@ namespace StellaVisualizer.ViewModels
                         Console.Out.WriteLine($"The image at {ImagePath} does not exist.");
                         return;
                     }
-                    drawer = new BitmapDrawer(StripLength, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    drawer = new BitmapDrawer(0,StripLength, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
