@@ -10,13 +10,15 @@ namespace StellaServer.Animation.Drawing.Fade
     {
         private readonly Color[] _pattern;
         private readonly Color[][] _fadePatterns;
+        private readonly int _startIndex;
         private readonly int _stripLength;
         private readonly int _frameWaitMS;
         private readonly int _fadeSteps;
 
 
-        public RandomFadeDrawer(int stripLength, int frameWaitMS, Color[] pattern, int fadeSteps)
+        public RandomFadeDrawer(int startIndex, int stripLength, int frameWaitMS, Color[] pattern, int fadeSteps)
         {
+            _startIndex = startIndex;
             _stripLength = stripLength;
             _frameWaitMS = frameWaitMS;
             _pattern = pattern;
@@ -84,7 +86,7 @@ namespace StellaServer.Animation.Drawing.Fade
                             continue;
                         }
 
-                        frame.Add(new PixelInstruction((uint)pixelIndex, pattern[i]));
+                        frame.Add(new PixelInstruction((uint)(_startIndex + pixelIndex), pattern[i]));
                     }
                     fadePoint.Step++;
                 }

@@ -123,7 +123,7 @@ namespace StellaVisualizer.ViewModels
 
                     break;
                 case DrawMethod.RandomFade:
-                    drawer = new RandomFadeDrawer(StripLength, WaitMS, pattern, 5);
+                    drawer = new RandomFadeDrawer(0,StripLength, WaitMS, pattern, 5);
                     break;
                 case DrawMethod.FadingPulse:
                     drawer = new FadingPulseDrawer(0,StripLength, WaitMS, pattern[0], 30);
