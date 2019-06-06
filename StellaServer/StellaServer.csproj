@@ -19,8 +19,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <ApplicationIcon />
-    <OutputType>Exe</OutputType>
-    <StartupObject>StellaServer.Program</StartupObject>
+    <OutputType>Library</OutputType>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
 </Project>
