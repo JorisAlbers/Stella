@@ -6,3 +6,4 @@
 /.vs/Stella/v15
 /_ReSharper.Caches
 /packages
+/StellaServerConsole/Properties/launchSettings.json
