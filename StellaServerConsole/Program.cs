@@ -14,6 +14,8 @@ namespace StellaServerConsole
 
             // Parse args
             string mappingFilePath = null;
+            string ip = null;
+            int port = 0;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -28,21 +30,22 @@ namespace StellaServerConsole
                         case "-m":
                             mappingFilePath = args[++i];
                             break;
+                        case "-ip":
+                            ip = args[++i];
+                            break;
+                        case "-port":
+                            port = int.Parse(args[++i]);
+                            break;
                         default:
                             Console.Out.WriteLine($"Unknown flag {args[i]}");
                             return;
                     }
                 }
             }
+            ValidateCommandLineArguments(mappingFilePath,ip,port);
+            
 
-            if (mappingFilePath == null)
-            {
-                Console.Out.WriteLine("The mapping file must be set. Use -m <mapping_filepath>");
-                Console.ReadLine();
-                return;
-            }
-
-            _stellaServer = new StellaServer(mappingFilePath);
+            _stellaServer = new StellaServer(mappingFilePath, ip, port);
 
             try
             {
@@ -64,6 +67,31 @@ namespace StellaServerConsole
             }
 
             Console.ReadLine();
+        }
+
+        static void ValidateCommandLineArguments(string mappingFilePath, string ip, int port)
+        {
+            if (mappingFilePath == null)
+            {
+                Console.Out.WriteLine("The mapping file must be set. Use -m <mapping_filepath>");
+                Console.ReadLine();
+                return;
+            }
+
+            if (port == 0)
+            {
+                Console.Out.WriteLine("The port must be set. Use -port <port value>");
+                Console.ReadLine();
+                return;
+            }
+
+            if (ip == null)
+            {
+                Console.Out.WriteLine("The ip must be set. Use -ip <ip value>");
+                Console.ReadLine();
+                return;
+            }
+
         }
 
 
