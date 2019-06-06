@@ -7,7 +7,7 @@ using StellaServerLib.Serialization.Mapping;
 
 namespace StellaServerLib
 {
-    public class StellaServer
+    public class StellaServer : IDisposable
     {
         private readonly string _mappingFilePath;
         private readonly string _ip;
@@ -78,6 +78,11 @@ namespace StellaServerLib
             {
                 throw new Exception("Failed to start the ClientController.");
             }
+        }
+
+        public void Dispose()
+        {
+            _server?.Dispose();
         }
     }
 }

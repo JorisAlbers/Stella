@@ -25,7 +25,7 @@ namespace StellaServerConsole
                     switch (args[i])
                     {
                         case "-h":
-                            outputHelp();
+                            OutputHelp();
                             return;
                         case "-m":
                             mappingFilePath = args[++i];
@@ -43,7 +43,6 @@ namespace StellaServerConsole
                 }
             }
             ValidateCommandLineArguments(mappingFilePath,ip,port);
-            
 
             _stellaServer = new StellaServer(mappingFilePath, ip, port);
 
@@ -63,10 +62,20 @@ namespace StellaServerConsole
                     Console.Out.WriteLine(e.InnerException.Message);
                     Console.Out.WriteLine(e.InnerException.StackTrace);
                 }
-
             }
 
-            Console.ReadLine();
+            while (true)
+            {
+                OutputMenu();
+                string input = Console.ReadLine();
+                if (input == "q")
+                {
+                    _stellaServer.Dispose();
+                    break;
+                }
+            }
+
+            Console.Out.WriteLine("End of StellaServer.");
         }
 
         static void ValidateCommandLineArguments(string mappingFilePath, string ip, int port)
@@ -95,10 +104,18 @@ namespace StellaServerConsole
         }
 
 
-        static void outputHelp()
+        static void OutputHelp()
         {
             Console.Out.WriteLine("StellaServer");
             Console.Out.WriteLine("To run: StellaServer -m <mapping_filepath>");
+            Console.Out.WriteLine();
+        }
+
+        static void OutputMenu()
+        {
+            Console.Out.WriteLine("Exit program = q");
+            Console.Out.WriteLine("Start animation:");
+            Console.Out.WriteLine("1 - Red Fading Pulse"); // TODO load all saved animation names
             Console.Out.WriteLine();
         }
     }
