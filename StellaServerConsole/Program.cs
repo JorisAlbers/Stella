@@ -53,6 +53,14 @@ namespace StellaServerConsole
                 Console.Out.WriteLine("An exception occured when starting StellaServer.");
                 Console.Out.WriteLine(e.Message);
                 Console.Out.WriteLine(e.StackTrace);
+
+                if (e.InnerException != null)
+                {
+                    Console.Out.WriteLine("InnerException :");
+                    Console.Out.WriteLine(e.InnerException.Message);
+                    Console.Out.WriteLine(e.InnerException.StackTrace);
+                }
+
             }
 
             Console.ReadLine();
