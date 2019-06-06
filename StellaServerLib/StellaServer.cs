@@ -15,6 +15,7 @@ namespace StellaServerLib
 
         private List<PiMaskItem> _mask;
         private Server _server;
+        private ClientController _clientController;
 
 
         public StellaServer(string mappingFilePath, string ip, int port)
@@ -30,6 +31,8 @@ namespace StellaServerLib
             _mask = LoadMask(_mappingFilePath);
             // Start Server
             _server = StartServer(_ip, _port);
+            // Start ClientController
+            _clientController = StartClientController(_server);
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath)
@@ -61,6 +64,19 @@ namespace StellaServerLib
             catch (Exception e)
             {
                 throw new Exception("Failed to start the server.");
+            }
+        }
+
+        private ClientController StartClientController(IServer server)
+        {
+            try
+            {
+                ClientController clientController = new ClientController(server);
+                return clientController;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to start the ClientController.");
             }
         }
     }
