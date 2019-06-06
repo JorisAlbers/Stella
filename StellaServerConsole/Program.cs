@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace StellaServer
+namespace StellaServerConsole
 {
     class Program
     {
-        private static StellaServer _stellaServer;
+        private static StellaServer.StellaServer _stellaServer;
 
 
         static void Main(string[] args)
@@ -37,10 +37,11 @@ namespace StellaServer
             if (mappingFilePath == null)
             {
                 Console.Out.WriteLine("The mapping file must be set. Use -m <mapping_filepath>");
+                Console.ReadLine();
                 return;
             }
 
-            _stellaServer = new StellaServer(mappingFilePath);
+            _stellaServer = new StellaServer.StellaServer(mappingFilePath);
 
             try
             {
