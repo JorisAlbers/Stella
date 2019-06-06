@@ -1,17 +1,14 @@
+using System;
+using Moq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaLib.Network.Protocol.Animation;
-using Moq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
-using StellaServerLib;
+using StellaLib.Network.Protocol.Animation;
 using StellaServerLib.Animation;
 using StellaServerLib.Network;
 
-namespace StellaServer.Test
+namespace StellaServerLib.Test
 {
     [TestFixture]
     public class TestClientController

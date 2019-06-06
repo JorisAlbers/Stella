@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Serialization.Mapping;
 
-namespace StellaServer.Test.Serialization.Mapping
+namespace StellaServerLib.Test.Serialization.Mapping
 {
     [TestFixture]
     public class TestMappingLoader

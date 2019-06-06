@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using System.Linq;
 using StellaServerLib.Animation.Drawing;
 
-namespace StellaServer.Test.Animation.Drawing
+namespace StellaServerLib.Test.Animation.Drawing
 {
     [TestFixture]
     class TestBitmapDrawer

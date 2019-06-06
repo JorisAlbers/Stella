@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using StellaServerLib.Animation.Drawing.Fade;
 
-namespace StellaServer.Test.Animation.Drawing.Fade
+namespace StellaServerLib.Test.Animation.Drawing.Fade
 {
     [TestFixture]
     public class TestFadeCalculation

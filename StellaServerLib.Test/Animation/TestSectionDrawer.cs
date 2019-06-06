@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using StellaLib.Animation;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
-namespace StellaServer.Test.Animation
+namespace StellaServerLib.Test.Animation
 {
     [TestFixture]
     public class TestSectionDrawer

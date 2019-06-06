@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
 
-namespace StellaServer.Test.Serialization.Animation
+namespace StellaServerLib.Test.Serialization.Animation
 {
     [TestFixture]
     public class TestStoryboardLoader

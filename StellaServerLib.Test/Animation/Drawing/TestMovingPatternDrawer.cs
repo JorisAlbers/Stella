@@ -5,7 +5,7 @@ using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
-namespace StellaServer.Test.Animation.Drawing
+namespace StellaServerLib.Test.Animation.Drawing
 {
     [TestFixture]
     public class TestMovingPatternDrawer

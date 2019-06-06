@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using StellaServerLib.Animation.Mapping;
 
-namespace StellaServer.Test.Animation.Mapping
+namespace StellaServerLib.Test.Animation.Mapping
 {
     [TestFixture]
     public class TestPiMaskCalculator

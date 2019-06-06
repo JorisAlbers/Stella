@@ -8,7 +8,7 @@ using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Mapping;
 
-namespace StellaServer.Test.Animation
+namespace StellaServerLib.Test.Animation
 {
     [TestFixture]
     public class TestAnimator

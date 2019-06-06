@@ -9,7 +9,7 @@ using StellaLib.Network;
 using StellaLib.Network.Protocol;
 using StellaServerLib.Network;
 
-namespace StellaServer.Test.Animation.Network
+namespace StellaServerLib.Test.Network
 {
     [TestFixture]
     public class TestServer
