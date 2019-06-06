@@ -173,9 +173,9 @@
       <Project>{0a3463fd-cf48-4b70-be83-6668d052b70f}</Project>
       <Name>StellaLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\StellaServer\StellaServer.csproj">
+    <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj">
       <Project>{7feeb1ea-08ad-44cf-877e-90a55f8154ef}</Project>
-      <Name>StellaServer</Name>
+      <Name>StellaServerLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StellaClient\StellaClient.csproj" />
-    <ProjectReference Include="..\StellaServer\StellaServer.csproj" />
+    <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

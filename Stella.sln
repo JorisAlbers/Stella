@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaLib", "StellaLib\Stel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaLib.Test", "StellaLib.Test\StellaLib.Test.csproj", "{B6D7B5B9-61D4-415D-BA15-C770EF5CE87B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServer", "StellaServer\StellaServer.csproj", "{7FEEB1EA-08AD-44CF-877E-90A55F8154EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServerLib", "StellaServerLib\StellaServerLib.csproj", "{7FEEB1EA-08AD-44CF-877E-90A55F8154EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServer.Test", "StellaServer.Test\StellaServer.Test.csproj", "{ABD5A469-EC56-42A9-A34E-E45577D9E169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServerLib.Test", "StellaServerLib.Test\StellaServerLib.Test.csproj", "{ABD5A469-EC56-42A9-A34E-E45577D9E169}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClient", "StellaClient\StellaClient.csproj", "{E4C9DE13-8324-4F11-9C69-AF0966851609}"
 EndProject
