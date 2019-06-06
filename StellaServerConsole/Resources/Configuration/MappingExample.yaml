@@ -1,20 +1,20 @@
 ﻿!MappingSettings
-	Mappings:
-	 - PiIndex: 0
-	   Length:  1200
-	   StartIndexOnPi:  0
-	   FirstSectionIsInverted:  false
-	   SectionStarts:
-	     - 600
-	 - PiIndex: 1
-	   Length:  1200
-	   StartIndexOnPi:  0
-	   FirstSectionIsInverted:  false
-	   SectionStarts:
-	     - 600
-	 - PiIndex: 2
-	   Length:  1200
-	   StartIndexOnPi:  0
-	   FirstSectionIsInverted:  false
-	   SectionStarts:
-	     - 600
+Mappings:
+ - PiIndex: 0
+   Length:  1200
+   StartIndexOnPi:  0
+   FirstSectionIsInverted:  False
+   SectionStarts:
+    - 600
+ - PiIndex: 1
+   Length:  1200
+   StartIndexOnPi:  0
+   FirstSectionIsInverted:  False
+   SectionStarts:
+    - 600
+ - PiIndex: 2
+   Length:  1200
+   StartIndexOnPi:  0
+   FirstSectionIsInverted:  False
+   SectionStarts:
+    - 600
