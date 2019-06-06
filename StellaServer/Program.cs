@@ -37,6 +37,7 @@ namespace StellaServer
             if (mappingFilePath == null)
             {
                 Console.Out.WriteLine("The mapping file must be set. Use -m <mapping_filepath>");
+                return;
             }
 
             _stellaServer = new StellaServer(mappingFilePath);
