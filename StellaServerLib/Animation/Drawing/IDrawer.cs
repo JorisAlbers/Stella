@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Drawing
+namespace StellaServerLib.Animation.Drawing
 {
     /// <summary>
     /// A Drawer creates a list of frames

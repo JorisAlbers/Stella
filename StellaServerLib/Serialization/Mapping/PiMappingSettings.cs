@@ -1,7 +1,7 @@
 ﻿using SharpYaml.Serialization;
-using StellaServer.Animation.Mapping;
+using StellaServerLib.Animation.Mapping;
 
-namespace StellaServer.Serialization.Mapping
+namespace StellaServerLib.Serialization.Mapping
 {
     [YamlTag(nameof(PiMapping))]
     internal class PiMappingSettings

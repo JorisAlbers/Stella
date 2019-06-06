@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using NUnit.Framework;
-using StellaServer.Animation.Drawing.Fade;
+using StellaServerLib.Animation.Drawing.Fade;
 
 namespace StellaServer.Test.Animation.Drawing.Fade
 {

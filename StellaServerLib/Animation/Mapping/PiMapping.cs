@@ -1,4 +1,4 @@
-﻿namespace StellaServer.Animation.Mapping
+﻿namespace StellaServerLib.Animation.Mapping
 {
     /// <summary>
     /// A mapping allows us to transform coordinates to a certain pi and a certain section

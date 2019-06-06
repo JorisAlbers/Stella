@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using StellaServer.Network;
 using StellaLib.Animation;
 using StellaLib.Network.Protocol.Animation;
 using Moq;
@@ -8,7 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
-using StellaServer.Animation;
+using StellaServerLib;
+using StellaServerLib.Animation;
+using StellaServerLib.Network;
 
 namespace StellaServer.Test
 {

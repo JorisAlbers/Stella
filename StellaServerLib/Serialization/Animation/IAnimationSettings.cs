@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StellaServer.Serialization.Animation
+﻿namespace StellaServerLib.Serialization.Animation
 {
     /// <summary>
     /// Settings of an animation

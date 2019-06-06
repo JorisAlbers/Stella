@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SharpYaml.Serialization;
-using StellaServer.Animation;
+﻿using SharpYaml.Serialization;
+using StellaServerLib.Animation;
 
-namespace StellaServer.Serialization.Animation
+namespace StellaServerLib.Serialization.Animation
 {
     [YamlTag(nameof(DrawMethod.Bitmap))]
     public class BitmapAnimationSettings : IAnimationSettings

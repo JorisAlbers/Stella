@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using StellaLib.Animation;
-using StellaServer.Animation.Drawing;
-using StellaServer.Animation.Mapping;
+using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.Mapping;
 
-namespace StellaServer.Animation
+namespace StellaServerLib.Animation
 {
     public class Animator : IAnimator
     {

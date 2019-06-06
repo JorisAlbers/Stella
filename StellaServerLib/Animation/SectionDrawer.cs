@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using StellaLib.Animation;
-using StellaServer.Animation.Drawing;
+using StellaServerLib.Animation.Drawing;
 
-namespace StellaServer.Animation
+namespace StellaServerLib.Animation
 {
     /// <summary>
     /// Wrapper around multiple drawers. Combines the drawers to a single frame.

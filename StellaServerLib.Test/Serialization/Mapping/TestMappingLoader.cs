@@ -4,8 +4,8 @@ using System.IO;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using StellaServer.Animation.Mapping;
-using StellaServer.Serialization.Mapping;
+using StellaServerLib.Animation.Mapping;
+using StellaServerLib.Serialization.Mapping;
 
 namespace StellaServer.Test.Serialization.Mapping
 {

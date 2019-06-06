@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using SharpYaml.Serialization;
-using StellaServer.Animation.Mapping;
+using StellaServerLib.Animation.Mapping;
 
-namespace StellaServer.Serialization.Mapping
+namespace StellaServerLib.Serialization.Mapping
 {
     /// <summary>
     /// Loads a list of piMappings from file

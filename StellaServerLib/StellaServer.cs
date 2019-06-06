@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using StellaServer.Animation.Mapping;
-using StellaServer.Serialization;
-using StellaServer.Serialization.Mapping;
+using StellaServerLib.Animation.Mapping;
+using StellaServerLib.Serialization.Mapping;
 
-namespace StellaServer
+namespace StellaServerLib
 {
     public class StellaServer
     {

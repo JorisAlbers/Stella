@@ -2,8 +2,8 @@
 using System.Drawing;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServer.Animation.Drawing;
 using System.Linq;
+using StellaServerLib.Animation.Drawing;
 
 namespace StellaServer.Test.Animation.Drawing
 {

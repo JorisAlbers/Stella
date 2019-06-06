@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SharpYaml.Serialization;
 
-namespace StellaServer.Serialization.Mapping
+namespace StellaServerLib.Serialization.Mapping
 {
     [YamlTag(nameof(MappingSettings))]
     internal class MappingSettings

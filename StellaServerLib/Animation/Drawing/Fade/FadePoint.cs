@@ -1,4 +1,4 @@
-﻿namespace StellaServer.Animation.Drawing.Fade
+﻿namespace StellaServerLib.Animation.Drawing.Fade
 {
     internal class FadePoint
     {

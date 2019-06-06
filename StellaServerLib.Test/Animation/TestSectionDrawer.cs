@@ -6,8 +6,8 @@ using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using StellaLib.Animation;
-using StellaServer.Animation;
-using StellaServer.Animation.Drawing;
+using StellaServerLib.Animation;
+using StellaServerLib.Animation.Drawing;
 
 namespace StellaServer.Test.Animation
 {

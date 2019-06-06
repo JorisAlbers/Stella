@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServer.Animation.Drawing;
+using StellaServerLib.Animation.Drawing;
 
 namespace StellaServer.Test.Animation.Drawing
 {

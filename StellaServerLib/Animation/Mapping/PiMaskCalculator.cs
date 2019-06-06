@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace StellaServer.Animation.Mapping
+namespace StellaServerLib.Animation.Mapping
 {
     /// <summary>
     /// Calculates a PiMask, a list of sorted PiMaskItems that map to a pi and the led strip index on that pi.

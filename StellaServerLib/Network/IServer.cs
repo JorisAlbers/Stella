@@ -1,7 +1,7 @@
 using System;
 using StellaLib.Network;
 
-namespace StellaServer.Network
+namespace StellaServerLib.Network
 {
     public interface IServer
     {

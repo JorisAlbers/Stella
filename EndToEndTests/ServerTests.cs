@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
-using StellaServer;
-using StellaServer.Animation;
-using StellaServer.Animation.Drawing;
-using StellaServer.Animation.Mapping;
-using StellaServer.Network;
+using StellaServerLib;
+using StellaServerLib.Animation;
+using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.Mapping;
+using StellaServerLib.Network;
 
 namespace EndToEndTests
 {

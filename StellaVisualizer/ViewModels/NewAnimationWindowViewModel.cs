@@ -7,10 +7,10 @@ using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
 using StellaLib.Animation;
-using StellaServer.Animation;
-using StellaServer.Animation.Drawing;
-using StellaServer.Animation.Drawing.Fade;
-using StellaServer.Animation.Mapping;
+using StellaServerLib.Animation;
+using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.Drawing.Fade;
+using StellaServerLib.Animation.Mapping;
 using StellaVisualizer.model.AnimatorSettings;
 
 

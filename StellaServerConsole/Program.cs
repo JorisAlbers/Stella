@@ -1,10 +1,11 @@
 ﻿using System;
+using StellaServerLib;
 
 namespace StellaServerConsole
 {
     class Program
     {
-        private static StellaServer.StellaServer _stellaServer;
+        private static StellaServer _stellaServer;
 
 
         static void Main(string[] args)
@@ -41,7 +42,7 @@ namespace StellaServerConsole
                 return;
             }
 
-            _stellaServer = new StellaServer.StellaServer(mappingFilePath);
+            _stellaServer = new StellaServer(mappingFilePath);
 
             try
             {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StellaLib.Animation;
-using StellaServer.Animation;
+using StellaServerLib.Animation;
 
 namespace StellaVisualizer.ViewModels
 {

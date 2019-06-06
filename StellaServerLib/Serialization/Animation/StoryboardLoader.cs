@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using SharpYaml.Serialization;
-using StellaServer.Animation;
+using StellaServerLib.Animation;
 
-
-namespace StellaServer.Serialization.Animation
+namespace StellaServerLib.Serialization.Animation
 {
     /// <summary>
     /// Loads a storyboard

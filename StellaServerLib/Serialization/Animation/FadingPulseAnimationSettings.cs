@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using SharpYaml;
 using SharpYaml.Serialization;
-using StellaServer.Animation;
+using StellaServerLib.Animation;
 
-namespace StellaServer.Serialization.Animation
+namespace StellaServerLib.Serialization.Animation
 {
     [YamlTag(nameof(DrawMethod.FadingPulse))]
     public class FadingPulseAnimationSettings : IAnimationSettings

@@ -1,6 +1,6 @@
 using System;
 
-namespace StellaServer.Network
+namespace StellaServerLib.Network
 {
     public class AnimationRequestEventArgs: EventArgs
     {

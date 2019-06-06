@@ -11,11 +11,8 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using StellaClient;
-using StellaServer;
-using StellaServer.Animation;
-using StellaServer.Animation.Drawing;
-using StellaServer.Animation.Drawing.Fade;
-using StellaServer.Animation.Mapping;
+using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.Drawing.Fade;
 
 namespace EndToEndTests
 {

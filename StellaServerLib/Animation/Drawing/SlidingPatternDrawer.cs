@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Drawing
+namespace StellaServerLib.Animation.Drawing
 {
     /// <summary>
     /// Repeats a pattern over the ledstrip and moves the start point of the pattern each

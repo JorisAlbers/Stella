@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 
-namespace StellaServer.Animation.Mapping
+namespace StellaServerLib.Animation.Mapping
 {
     /// <summary>
     /// Points to a pi and pixelIndex on that pi.

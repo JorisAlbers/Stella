@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Drawing.Fade
+namespace StellaServerLib.Animation.Drawing.Fade
 {
     public class FadingPulseDrawer : IDrawer
     {

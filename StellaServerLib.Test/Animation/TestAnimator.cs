@@ -4,9 +4,9 @@ using System.Drawing;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServer.Animation;
-using StellaServer.Animation.Drawing;
-using StellaServer.Animation.Mapping;
+using StellaServerLib.Animation;
+using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.Mapping;
 
 namespace StellaServer.Test.Animation
 {

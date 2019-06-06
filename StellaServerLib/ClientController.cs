@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
 using StellaLib.Network.Protocol.Animation;
-using StellaServer.Animation;
-using StellaServer.Network;
+using StellaServerLib.Animation;
+using StellaServerLib.Network;
 
-namespace StellaServer
+namespace StellaServerLib
 {
     public class ClientController
     {

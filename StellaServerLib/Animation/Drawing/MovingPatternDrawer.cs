@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation.Drawing
+namespace StellaServerLib.Animation.Drawing
 {
     /// <summary>
     /// Moves a pattern over the led strip from the start of the led strip till the end.

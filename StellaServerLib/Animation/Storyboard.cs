@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SharpYaml.Serialization;
-using StellaServer.Animation.Drawing;
-using StellaServer.Serialization.Animation;
+﻿using SharpYaml.Serialization;
+using StellaServerLib.Serialization.Animation;
 
-namespace StellaServer.Animation
+namespace StellaServerLib.Animation
 {
     /// <summary>
     /// Collection of animations.

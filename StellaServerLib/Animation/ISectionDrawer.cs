@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using StellaLib.Animation;
 
-namespace StellaServer.Animation
+namespace StellaServerLib.Animation
 {
     public interface ISectionDrawer : IEnumerable<Frame>
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StellaServer.Animation
+﻿namespace StellaServerLib.Animation
 {
     /// <summary>
     /// The different draw methods available.

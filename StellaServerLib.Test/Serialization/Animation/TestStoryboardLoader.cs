@@ -4,8 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using StellaServer.Animation;
-using StellaServer.Serialization.Animation;
+using StellaServerLib.Animation;
+using StellaServerLib.Serialization.Animation;
 
 namespace StellaServer.Test.Serialization.Animation
 {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using StellaLib.Animation;
+﻿using StellaLib.Animation;
 
-namespace StellaServer.Animation
+namespace StellaServerLib.Animation
 {
     /// <summary>
     /// A animator decides what the next frame of a pi looks like. 

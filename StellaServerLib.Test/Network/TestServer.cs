@@ -7,7 +7,7 @@ using System.Threading;
 using NUnit.Framework;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
-using StellaServer.Network;
+using StellaServerLib.Network;
 
 namespace StellaServer.Test.Animation.Network
 {

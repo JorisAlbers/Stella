@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace StellaServer.Animation.Drawing.Fade
+namespace StellaServerLib.Animation.Drawing.Fade
 {
     public static  class FadeCalculation
     {

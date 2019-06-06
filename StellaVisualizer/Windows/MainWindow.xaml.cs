@@ -7,8 +7,7 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using StellaLib.Animation;
-using StellaServer.Animation;
-using StellaServer.Animation.Drawing.Fade;
+using StellaServerLib.Animation;
 using StellaVisualizer.ViewModels;
 using StellaVisualizer.Windows;
 
