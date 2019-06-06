@@ -9,6 +9,12 @@
     <ProjectReference Include="..\StellaLib\StellaLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\Configuration\MappingExample.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
