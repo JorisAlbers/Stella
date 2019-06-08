@@ -16,7 +16,7 @@ namespace StellaServerLib.Test.Animation.Mapping
 
             List<PiMapping> mappings = new List<PiMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,new int[]{},false)
+                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,null,false)
             };
             
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);

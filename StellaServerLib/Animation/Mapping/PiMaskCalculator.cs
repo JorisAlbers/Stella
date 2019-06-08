@@ -34,7 +34,7 @@ namespace StellaServerLib.Animation.Mapping
         private void AppendPiMapping(PiMapping piMapping, List<PiMaskItem> mask)
         {
             // Check if there is just one section.
-            if (piMapping.SectionStarts.Length == 0)
+            if (piMapping.SectionStarts == null || piMapping.SectionStarts.Length == 0)
             {
                 AppendSection(piMapping.FirstSectionIsInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
             }
