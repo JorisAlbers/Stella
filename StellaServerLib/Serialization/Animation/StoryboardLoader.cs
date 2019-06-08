@@ -79,9 +79,9 @@ namespace StellaServerLib.Serialization.Animation
             {
                 errors.Add($"{typeName} at index {animationIndex}: StripLength must be > 0");
             }
-            if (animationSettings.StartIndex < 1)
+            if (animationSettings.StartIndex < 0)
             {
-                errors.Add($"{typeName} at index {animationIndex}: StartIndex must be > 0");
+                errors.Add($"{typeName} at index {animationIndex}: StartIndex must be >= 0");
             }
             if (animationSettings.FrameWaitMs < 1)
             {
