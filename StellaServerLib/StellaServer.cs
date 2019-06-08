@@ -96,7 +96,7 @@ namespace StellaServerLib
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to start the ClientController.");
+                throw new Exception("Failed to start the ClientController.",e);
             }
         }
 
