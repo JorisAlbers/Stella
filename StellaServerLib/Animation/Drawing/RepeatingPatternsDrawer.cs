@@ -14,14 +14,14 @@ namespace StellaServerLib.Animation.Drawing
         private readonly int _startIndex;
         private int _lengthStrip;
         private int _frameWaitMS;
-        private List<Color[]> _patterns;
+        private Color[][] _patterns;
 
         /// <summary>
         /// Each array of colors in the patterns list will be repeated over the length of the ledstip.
         /// Each frame is the next pattern, repeated.
         /// </summary>
         /// <param name="patterns"></param>
-        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, int frameWaitMS, List<Color[]> patterns)
+        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, int frameWaitMS, Color[][] patterns)
         {
             _startIndex = startIndex;
             _lengthStrip = lengthStrip;

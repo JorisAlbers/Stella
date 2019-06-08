@@ -54,7 +54,7 @@ namespace StellaServerLib.Animation
             }
             if (animationSetting is RepeatingPatternAnimationSettings repeatingPatternSetting)
             {
-                return new RepeatingPatternsDrawer(repeatingPatternSetting.StartIndex, repeatingPatternSetting.StripLength, repeatingPatternSetting.FrameWaitMs, repeatingPatternSetting.Patterns.ToList());
+                return new RepeatingPatternsDrawer(repeatingPatternSetting.StartIndex, repeatingPatternSetting.StripLength, repeatingPatternSetting.FrameWaitMs, repeatingPatternSetting.Patterns);
             }
             if (animationSetting is RandomFadeAnimationSettings randomFadeSetting)
             {

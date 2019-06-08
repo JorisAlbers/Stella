@@ -21,7 +21,7 @@ namespace StellaServerLib.Test.Animation.Drawing
                  };
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,frameWaitMS,new List<Color[]>{pattern});
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,frameWaitMS,new Color[][]{pattern});
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -54,7 +54,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int startIndex = 100;
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip, frameWaitMS, new List<Color[]> { pattern });
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip, frameWaitMS, new Color[][] { pattern });
 
             // Expected
             int expectedIndex1 = 100;
@@ -83,9 +83,12 @@ namespace StellaServerLib.Test.Animation.Drawing
         public void Create_TwoPatterns_CreatesFrameListWithTwoFrames()
         {
             // Setup
-            List<Color[]> patterns = new List<Color[]>();
-            patterns.Add(new Color[] { Color.FromArgb(1,2,3) });
-            patterns.Add(new Color[] { Color.FromArgb(4,5,6) });
+            Color[][] patterns = new Color[][]
+            {
+                new Color[] {Color.FromArgb(1, 2, 3)},
+                new Color[] {Color.FromArgb(4, 5, 6)}
+
+            };
 
             int lengthStrip = 7;
             int frameWaitMS = 100;
