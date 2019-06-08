@@ -101,7 +101,17 @@ namespace StellaServerConsole
                         Console.Out.WriteLine("Invalid animation");
                         continue;
                     }
-                    _stellaServer.StartStoryboard(storyboards[storyboardToPlay]);
+
+                    try
+                    {
+                        _stellaServer.StartStoryboard(storyboards[storyboardToPlay]);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.Out.WriteLine($"Failed to start storyboard.");
+                        Console.Out.WriteLine(e.Message);
+                        Console.Out.WriteLine(e.StackTrace);
+                    }
                 }
             }
 

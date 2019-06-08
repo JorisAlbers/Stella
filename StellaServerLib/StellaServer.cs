@@ -40,8 +40,18 @@ namespace StellaServerLib
         {
             Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
 
-            // TODO create new animator
-            // TODO start storyboard by passing animator to clientController
+            IAnimator animator;
+            try
+            {
+                animator = AnimatorCreation.Create(storyboard, _mask, DateTime.Now);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to create new animator.",e);
+            }
+
+            _clientController.StartAnimation(animator);
+
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath)
