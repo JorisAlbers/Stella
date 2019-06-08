@@ -10,5 +10,5 @@ Animations:
    StartIndex:  15
    StripLength: 15
    FrameWaitMs: 50
-   RelativeStart: 1000q
+   RelativeStart: 1000
    Pattern: [[0,0,0], [0,0,255], [0,0,0]]
