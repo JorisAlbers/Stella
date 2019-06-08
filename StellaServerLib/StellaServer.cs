@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using StellaServerLib.Animation;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
 using StellaServerLib.Serialization.Mapping;
@@ -33,6 +34,14 @@ namespace StellaServerLib
             _server = StartServer(_ip, _port);
             // Start ClientController
             _clientController = StartClientController(_server);
+        }
+
+        public void StartStoryboard(Storyboard storyboard)
+        {
+            Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
+
+            // TODO create new animator
+            // TODO start storyboard by passing animator to clientController
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath)
