@@ -74,6 +74,7 @@ namespace StellaServerLib
 
         private Server StartServer(string ip, int port)
         {
+            Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
                 Server server = new Server(ip, port);
@@ -82,7 +83,7 @@ namespace StellaServerLib
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to start the server.");
+                throw new Exception("Failed to start the server.",e);
             }
         }
 
