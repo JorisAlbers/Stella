@@ -19,8 +19,14 @@ namespace StellaServerLib.Serialization.Animation
             var serializer = new Serializer(settings);
             Storyboard storyboard = serializer.Deserialize<Storyboard>(streamReader);
 
+            // Validate storyboard properties
+            if (String.IsNullOrWhiteSpace(storyboard.Name))
+            {
+                throw new FormatException($"Failed to load the storyboard. The name must be set.");
+            }
+
             // Validate animations
-            if(!AnimationsAreValid(storyboard.AnimationSettings, out List<string> errors))
+            if (!AnimationsAreValid(storyboard.AnimationSettings, out List<string> errors))
             {
                 throw new FormatException($"Failed to load the storyboard. Errors that occured:\n {String.Join("\n",errors)}");
             }

@@ -13,6 +13,7 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithMovingPatternAnimation_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             Color[] expectedPattern = new Color[]
             {
                 Color.FromArgb(1, 2, 3),
@@ -22,10 +23,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
-
+            
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !MovingPattern");
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
@@ -51,6 +53,7 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithSlidingPatternAnimation_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             Color[] expectedPattern = new Color[]
             {
                 Color.FromArgb(1, 2, 3),
@@ -64,6 +67,7 @@ namespace StellaServerLib.Test.Serialization.Animation
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !SlidingPattern");
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
@@ -89,6 +93,7 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithRepeatingPatternsAnimation_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             Color[][] expectedPatterns = new Color[][]
             {
                 new Color[]
@@ -111,6 +116,7 @@ namespace StellaServerLib.Test.Serialization.Animation
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !RepeatingPattern");
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
@@ -139,6 +145,7 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithRandomFadeAnimation_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             Color[] expectedPattern = new Color[]
             {
                 Color.FromArgb(1, 2, 3),
@@ -153,6 +160,7 @@ namespace StellaServerLib.Test.Serialization.Animation
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !RandomFade");
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
@@ -180,6 +188,7 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithFadingPulseAnimation_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             Color expectedColor = Color.FromArgb(1, 2, 3);
             
             int expectedStartIndex = 10;
@@ -190,6 +199,7 @@ namespace StellaServerLib.Test.Serialization.Animation
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !FadingPulse");
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
@@ -216,6 +226,7 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithBitmapAnimation_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
@@ -224,6 +235,7 @@ namespace StellaServerLib.Test.Serialization.Animation
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !Bitmap");
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
@@ -248,8 +260,10 @@ namespace StellaServerLib.Test.Serialization.Animation
         [Test]
         public void Load_StoryBoardWithMultipleAnimations_LoadsCorrectly()
         {
+            string expectedName = "Storyboard name";
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
+            stringBuilder.AppendLine($"Name: {expectedName}");
             stringBuilder.AppendLine("Animations:");
             stringBuilder.AppendLine($"  - !FadingPulse");
             stringBuilder.AppendLine($"    StartIndex:  1");
