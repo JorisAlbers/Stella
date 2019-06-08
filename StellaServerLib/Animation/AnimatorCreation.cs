@@ -33,9 +33,8 @@ namespace StellaServerLib.Animation
                 // First, get the drawers
                 IDrawer[] drawers = storyboardAnimationSettings.Select(CreateDrawer).ToArray();
 
-                // TODO implement relativeTimestamps in the animationsettings.
-                // TODO for now, start them at the same time.
-                int[] relativeTimeStamps = Enumerable.Repeat(0, drawers.Length).ToArray();
+                // Then, get the relative starts
+                int[] relativeTimeStamps = storyboardAnimationSettings.Select(x => x.RelativeStart).ToArray();
 
                 // Then, combine them in a single drawer by using the SectionDrawer
                 return new SectionDrawer(drawers, relativeTimeStamps);
