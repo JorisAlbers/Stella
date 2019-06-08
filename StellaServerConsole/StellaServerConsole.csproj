@@ -10,9 +10,17 @@
   </ItemGroup>
 
     <ItemGroup>
+    <None Update="Resources\Configuration\SmallTest.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
     <None Update="Resources\Configuration\MappingExample.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Update="Resources\Storyboards\SmallTest.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
     <None Update="Resources\Storyboards\StoryboardExample.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
