@@ -11,6 +11,7 @@ namespace StellaServerLib.Serialization.Animation
         public int StartIndex { get; set; }
         public int StripLength { get; set; }
         public int FrameWaitMs { get; set; }
+        public int RelativeStart { get; set; }
 
         [YamlMember(nameof(Patterns))]
         [YamlStyle(YamlStyle.Flow)]

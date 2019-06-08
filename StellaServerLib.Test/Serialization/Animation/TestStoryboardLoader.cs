@@ -23,6 +23,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
+            int expectedRelativeStart = 99;
             
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -33,6 +34,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.Append    ($"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
             stringBuilder.AppendLine($"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
 
@@ -47,6 +49,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             Assert.AreEqual(expectedStartIndex,settings.StartIndex);
             Assert.AreEqual(expectedStripLength,settings.StripLength);
             Assert.AreEqual(expectedFrameWaitMs,settings.FrameWaitMs);
+            Assert.AreEqual(expectedRelativeStart,settings.RelativeStart);
             CollectionAssert.AreEqual(expectedPattern, settings.Pattern);
         }
 
@@ -63,7 +66,8 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
-
+            int expectedRelativeStart = 99;
+            
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
@@ -73,6 +77,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.Append    ($"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
             stringBuilder.AppendLine($"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
 
@@ -87,6 +92,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             Assert.AreEqual(expectedStartIndex, settings.StartIndex);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
             CollectionAssert.AreEqual(expectedPattern, settings.Pattern);
         }
 
@@ -112,7 +118,8 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
-
+            int expectedRelativeStart = 99;
+            
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
@@ -122,6 +129,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.Append(    $"    Patterns: [[[{expectedPatterns[0][0].R},{expectedPatterns[0][0].G},{expectedPatterns[0][0].B}],");
             stringBuilder.Append(         $"[{expectedPatterns[0][1].R},{expectedPatterns[0][1].G},{expectedPatterns[0][1].B}]],");
             stringBuilder.Append(         $"[[{expectedPatterns[1][0].R},{expectedPatterns[1][0].G},{expectedPatterns[1][0].B}],");
@@ -139,6 +147,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             Assert.AreEqual(expectedStartIndex, settings.StartIndex);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
             CollectionAssert.AreEqual(expectedPatterns, settings.Patterns);
         }
 
@@ -156,7 +165,8 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
             int expectedFadeSteps = 5;
-
+            int expectedRelativeStart = 99;
+            
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
@@ -166,6 +176,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.AppendLine($"    FadeSteps:  {expectedFadeSteps}");
             stringBuilder.Append(    $"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
             stringBuilder.AppendLine(    $"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
@@ -182,6 +193,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             Assert.AreEqual(expectedFadeSteps, settings.FadeSteps);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
             CollectionAssert.AreEqual(expectedPattern, settings.Pattern);
         }
 
@@ -195,7 +207,8 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
             int expectedFadeSteps = 5;
-
+            int expectedRelativeStart = 99;
+            
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Storyboard");
@@ -205,6 +218,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.AppendLine($"    FadeSteps:  {expectedFadeSteps}");
             stringBuilder.AppendLine($"    Color:  [{expectedColor.R},{expectedColor.G},{expectedColor.B}]");
 
@@ -220,6 +234,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             Assert.AreEqual(expectedFadeSteps, settings.FadeSteps);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
+            Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
             Assert.AreEqual(expectedColor, settings.Color);
         }
 
@@ -230,6 +245,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
+            int expectedRelativeStart = 99;
             string expectedImagePath = Path.Combine(TestContext.CurrentContext.TestDirectory,"TestData","TestStoryBoardLoader","fakeImage.png"); 
 
 
@@ -241,6 +257,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"    StripLength:  {expectedStripLength}");
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
+            stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.AppendLine($"    ImagePath:  {expectedImagePath}");
 
             StoryboardLoader loader = new StoryboardLoader();
@@ -254,6 +271,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             Assert.AreEqual(expectedStartIndex, settings.StartIndex);
             Assert.AreEqual(expectedImagePath, settings.ImagePath);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
+            Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);
         }
 

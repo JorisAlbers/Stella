@@ -87,6 +87,10 @@ namespace StellaServerLib.Serialization.Animation
             {
                 errors.Add($"{typeName} at index {animationIndex}: FrameWaitMs must be > 0");
             }
+            if (animationSettings.RelativeStart < 0)
+            {
+                errors.Add($"{typeName} at index {animationIndex}: RelativeStart must be >= 0");
+            }
         }
 
         private void ValidateMovingPattern(MovingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
