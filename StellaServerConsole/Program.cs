@@ -51,14 +51,16 @@ namespace StellaServerConsole
                     }
                 }
             }
-            ValidateCommandLineArguments(mappingFilePath,ip,port, storyboardDirPath);
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, storyboardDirPath))
+            {
+                return;
+            }
 
             // Load animations from disc
             List<Storyboard> storyboards = LoadAnimations(storyboardDirPath);
             if (storyboards.Count < 1)
             {
                 Console.Out.WriteLine("No storyboards found!");
-                Console.ReadLine();
                 return;
             }
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
@@ -73,15 +75,8 @@ namespace StellaServerConsole
             catch (Exception e)
             {
                 Console.Out.WriteLine("An exception occured when starting StellaServer.");
-                Console.Out.WriteLine(e.Message);
-                Console.Out.WriteLine(e.StackTrace);
-
-                if (e.InnerException != null)
-                {
-                    Console.Out.WriteLine("InnerException :");
-                    Console.Out.WriteLine(e.InnerException.Message);
-                    Console.Out.WriteLine(e.InnerException.StackTrace);
-                }
+                OutputError(e);
+                return;
             }
 
             while (true)
@@ -109,8 +104,7 @@ namespace StellaServerConsole
                     catch (Exception e)
                     {
                         Console.Out.WriteLine($"Failed to start storyboard.");
-                        Console.Out.WriteLine(e.Message);
-                        Console.Out.WriteLine(e.StackTrace);
+                        OutputError(e);
                     }
                 }
             }
@@ -118,44 +112,40 @@ namespace StellaServerConsole
             Console.Out.WriteLine("End of StellaServer.");
         }
 
-        static void ValidateCommandLineArguments(string mappingFilePath, string ip, int port, string storyboardDirPath)
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, string storyboardDirPath)
         {
             // TODO path and file exist validation
             if (mappingFilePath == null)
             {
                 Console.Out.WriteLine("The mapping file must be set. Use -m <mapping_filepath>");
-                Console.ReadLine();
-                return;
+                return false;
             }
 
             if (port == 0)
             {
                 Console.Out.WriteLine("The port must be set. Use -port <port value>");
-                Console.ReadLine();
-                return;
+                return false;
             }
 
             if (ip == null)
             {
                 Console.Out.WriteLine("The ip must be set. Use -ip <ip value>");
-                Console.ReadLine();
-                return;
+                return false;
             }
 
             if (storyboardDirPath == null)
             {
                 Console.Out.WriteLine("The storyboard directory path must be set. Use -s <dir path>");
-                Console.ReadLine();
-                return;
+                return false;
             }
 
             if (!Directory.Exists(storyboardDirPath))
             {
                 Console.Out.WriteLine("The storyboard directory path does not point to an existing directory");
-                Console.ReadLine();
-                return;
+                return false;
             }
 
+            return true;
         }
 
         static void OutputHelp()
@@ -174,6 +164,17 @@ namespace StellaServerConsole
                 Console.Out.WriteLine($"{i} - {storyboardNames[i]}");
             }
             Console.Out.WriteLine();
+        }
+
+        static void OutputError(Exception e)
+        {
+            Console.Out.WriteLine(e.Message);
+            Console.Out.WriteLine(e.StackTrace);
+            if (e.InnerException != null)
+            {
+                Console.Out.WriteLine(e.InnerException.Message);
+                Console.Out.WriteLine(e.InnerException.StackTrace);
+            }
         }
 
         private static List<Storyboard> LoadAnimations(string storyboardDirPath)
