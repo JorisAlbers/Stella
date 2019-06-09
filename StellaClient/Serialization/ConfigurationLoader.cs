@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using SharpYaml.Serialization;
 using StellaLib.Serialization;
 
@@ -15,9 +17,33 @@ namespace StellaClient.Serialization
             settings.RegisterAssembly(typeof(ConfigurationSettings).Assembly);
             var serializer = new Serializer(settings);
             ConfigurationSettings configuration = serializer.Deserialize<ConfigurationSettings>(streamReader);
-            
+
+            if(!ValidateConfigurationSettings(configuration, out List<string> errors))
+            {
+                throw new FormatException($"Failed to load the configuration. Errors that occured:\n {String.Join("\n", errors)}");
+            }
+
             return new Configuration(configuration.Id, configuration.Ip, configuration.Port,
                 configuration.LedCount, configuration.PwmPin, configuration.DmaChannel);
+        }
+
+        private bool ValidateConfigurationSettings(ConfigurationSettings configuration, out List<string> errors)
+        {
+            errors = new List<string>();
+            if (configuration.Id < 0)
+            {
+                errors.Add($"The Id must be >= 0.");
+            }
+            if (String.IsNullOrWhiteSpace(configuration.Ip))
+            {
+                errors.Add($"The Ip must be set.");
+            }
+            if (configuration.LedCount < 0)
+            {
+                errors.Add($"The LedCount must be >= 0.");
+            }
+
+            return errors.Count == 0;
         }
     }
 
