@@ -1,0 +1,7 @@
+﻿!Configuration
+Id: 0
+Ip: 192.168.1.110
+Port: 20055
+LedCount: 120
+PwmPin: 18
+DmaChannel: 10
