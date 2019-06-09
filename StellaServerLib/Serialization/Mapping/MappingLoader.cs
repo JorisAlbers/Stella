@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using SharpYaml.Serialization;
+using StellaLib.Serialization;
 using StellaServerLib.Animation.Mapping;
 
 namespace StellaServerLib.Serialization.Mapping

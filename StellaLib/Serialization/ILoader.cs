@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace StellaServerLib.Serialization
+namespace StellaLib.Serialization
 {
     /// <summary>
     /// Loads an object from disc

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using SharpYaml.Serialization;
+using StellaLib.Serialization;
 using StellaServerLib.Animation;
 
 namespace StellaServerLib.Serialization.Animation
