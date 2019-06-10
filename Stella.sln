@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EndToEndTests", "EndToEndTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaVisualizer", "StellaVisualizer\StellaVisualizer.csproj", "{78C0E95F-8E12-4E43-9163-18EB0A966A8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServerConsole", "StellaServerConsole\StellaServerConsole.csproj", "{69CE885D-65C0-413A-8842-48B19E8848F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServerConsole", "StellaServerConsole\StellaServerConsole.csproj", "{69CE885D-65C0-413A-8842-48B19E8848F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServerAPI", "StellaServerAPI\StellaServerAPI.csproj", "{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,18 @@ Global
 		{69CE885D-65C0-413A-8842-48B19E8848F3}.Release|x64.Build.0 = Release|Any CPU
 		{69CE885D-65C0-413A-8842-48B19E8848F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{69CE885D-65C0-413A-8842-48B19E8848F3}.Release|x86.Build.0 = Release|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Debug|x64.Build.0 = Debug|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Debug|x86.Build.0 = Debug|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Release|x64.ActiveCfg = Release|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Release|x64.Build.0 = Release|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Release|x86.ActiveCfg = Release|Any CPU
+		{54B047F4-E0CF-4643-B178-9CFEB81F9D2C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
