@@ -69,7 +69,7 @@ namespace StellaServerAPI
 
             // Create a new client.
             Client client = new Client(new SocketConnectionController<MessageType>(handler));
-            //client.MessageReceived += Client_MessageReceived;
+            client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 
             ConnectedClients.Add(client);
@@ -86,7 +86,16 @@ namespace StellaServerAPI
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
-            throw new NotImplementedException();
+            Console.Out.WriteLine($"[IN] {e.MessageType}");
+            switch (e.MessageType)
+            {
+                case MessageType.None:
+                    break;
+                case MessageType.GetAvailableStoryboards:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"Unknown message type {e}");
+            }
         }
 
         public void Dispose()
@@ -116,7 +125,7 @@ namespace StellaServerAPI
 
         private void DisposeClient(Client client)
         {
-            //client.MessageReceived -= Client_MessageReceived;
+            client.MessageReceived -= Client_MessageReceived;
             client.Disconnect -= Client_Disconnected;
             client.Dispose();
         }
