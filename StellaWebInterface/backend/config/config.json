@@ -1,0 +1,5 @@
+{
+  "express": {
+    "sessionSecret": "cogito-session-secret-try-out"
+  }
+}

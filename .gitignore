@@ -1,6 +1,7 @@
 **/bin
 **/obj
 **/publish
+.idea
 .vscode
 .DS_Store
 /.vs/Stella/v15
