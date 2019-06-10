@@ -36,7 +36,7 @@ namespace StellaServerLib.Test.Network
             int ID = 0;
             byte[] id_bytes = BitConverter.GetBytes(ID);
             // Then send the init values
-            client.Send(PacketProtocol.WrapMessage(MessageType.Init, id_bytes));
+            client.Send(PacketProtocol<MessageType>.WrapMessage(MessageType.Init, id_bytes));
             Thread.Sleep(10000); // async hack
 
             client.Receive(new byte[1024]); // retrieve and skip the INIT message
@@ -47,7 +47,7 @@ namespace StellaServerLib.Test.Network
             byte[] buffer = new byte[1024];
             int bytesRead = client.Receive(buffer);
             
-            byte[] expectedBytes = PacketProtocol.WrapMessage(MessageType.Standard,message);
+            byte[] expectedBytes = PacketProtocol<MessageType>.WrapMessage(MessageType.Standard,message);
             Assert.AreEqual(expectedBytes, buffer.Take(bytesRead).ToArray());
             server.Dispose();
         }
@@ -75,12 +75,12 @@ namespace StellaServerLib.Test.Network
 
             byte[] buffer = new byte[1024];
             int bytesReceived = client.Receive(buffer); // retrieve the INIT message
-            byte[] expectedInitRequest = PacketProtocol.WrapMessage(MessageType.Init,new byte[0]);
+            byte[] expectedInitRequest = PacketProtocol<MessageType>.WrapMessage(MessageType.Init,new byte[0]);
             Assert.AreEqual(expectedInitRequest,buffer.Take(bytesReceived).ToArray());
 
             string expectedID = "ThisIsAnIdentifier";
             byte[] expectedIDBytes = Encoding.ASCII.GetBytes(expectedID);
-            byte[] message = PacketProtocol.WrapMessage(MessageType.Init, expectedIDBytes);
+            byte[] message = PacketProtocol<MessageType>.WrapMessage(MessageType.Init, expectedIDBytes);
             // Then send the init values
             client.Send(message);
             Thread.Sleep(1000); // async hack
@@ -130,7 +130,7 @@ namespace StellaServerLib.Test.Network
             string expectedID = "ThisIsAnIdentifier";
             byte[] expectedIdBytes = Encoding.ASCII.GetBytes(expectedID);
             // Then send the init values
-            client.Send(PacketProtocol.WrapMessage(MessageType.Init,expectedIdBytes));
+            client.Send(PacketProtocol<MessageType>.WrapMessage(MessageType.Init,expectedIdBytes));
             Thread.Sleep(1000); // async hack
 
             Assert.AreEqual(0,server.NewConnectionsCount);
@@ -161,13 +161,13 @@ namespace StellaServerLib.Test.Network
             client.Connect( remoteEP);  
               
             // Send the data through the socket.  
-            int bytesSent = client.Send(PacketProtocol.WrapMessage(MessageType.Standard,new byte[0]));   
+            int bytesSent = client.Send(PacketProtocol<MessageType>.WrapMessage(MessageType.Standard,new byte[0]));   
 
             Thread.Sleep(1000); // async hack
             server.Dispose();
             Thread.Sleep(1000); // async hack
-            client.Send(PacketProtocol.WrapKeepaliveMessage()); // send keepalive messages.
-            SocketException exception  = Assert.Throws<SocketException>(() => client.Send(PacketProtocol.WrapKeepaliveMessage()));
+            client.Send(PacketProtocol<MessageType>.WrapKeepaliveMessage()); // send keepalive messages.
+            SocketException exception  = Assert.Throws<SocketException>(() => client.Send(PacketProtocol<MessageType>.WrapKeepaliveMessage()));
             Assert.True(SocketError.Shutdown == exception.SocketErrorCode || SocketError.ConnectionAborted == exception.SocketErrorCode);
         }
 

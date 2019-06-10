@@ -98,7 +98,7 @@ namespace StellaServerLib.Network
             ISocketConnection handler = listener.EndAccept(ar);
             
             // Create a new client.
-            Client client = new Client(new SocketConnectionController(handler));
+            Client client = new Client(new SocketConnectionController<MessageType>(handler));
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 

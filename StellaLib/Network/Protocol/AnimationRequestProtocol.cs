@@ -28,7 +28,7 @@ namespace StellaLib.Network.Protocol
             List<byte[]> packages = new List<byte[]>();
             foreach (Frame frame in frames)
             {
-                packages.AddRange(FrameProtocol.SerializeFrame(frame, PacketProtocol.MAX_MESSAGE_SIZE));
+                packages.AddRange(FrameProtocol.SerializeFrame(frame, PacketProtocol<MessageType>.MAX_MESSAGE_SIZE));
             }
             return packages;
         }

@@ -6,13 +6,13 @@ namespace StellaServerLib.Network
 {
     public class Client : IDisposable
     {
-        private SocketConnectionController SocketConnectionController { get; set; }
+        private SocketConnectionController<MessageType> SocketConnectionController { get; set; }
         public int ID { get; set; } = -1;
         public event EventHandler<SocketException> Disconnect;
         public event EventHandler<MessageReceivedEventArgs<MessageType>> MessageReceived;
 
 
-        public Client(SocketConnectionController socketConnectionController)
+        public Client(SocketConnectionController<MessageType> socketConnectionController)
         {
             SocketConnectionController = socketConnectionController;
             SocketConnectionController.Disconnect += OnDisconnect;

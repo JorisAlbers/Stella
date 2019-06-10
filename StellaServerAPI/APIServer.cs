@@ -68,8 +68,8 @@ namespace StellaServerAPI
             ISocketConnection handler = listener.EndAccept(ar);
 
             // Create a new client.
-            Client client = new Client(new SocketConnectionController(handler));
-            //client.MessageReceived += Client_MessageReceived;
+            Client client = new Client(new SocketConnectionController<MessageType>(handler));
+            client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 
             ConnectedClients.Add(client);
@@ -78,13 +78,25 @@ namespace StellaServerAPI
 
         private void Client_Disconnected(object sender, SocketException e)
         {
-            throw new NotImplementedException();
+            Client client = (Client)sender;
+            Console.WriteLine($"Client {client.ID} disconnected, {e.SocketErrorCode}"); // TODO add intended disconnect, not just on SocketException
+            ConnectedClients.Remove(client);
+            DisposeClient(client);
         }
 
-        /*private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MT e)
+        private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
-            throw new NotImplementedException();
-        }*/
+            Console.Out.WriteLine($"[IN] {e.MessageType}");
+            switch (e.MessageType)
+            {
+                case MessageType.None:
+                    break;
+                case MessageType.GetAvailableStoryboards:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"Unknown message type {e}");
+            }
+        }
 
         public void Dispose()
         {
@@ -113,7 +125,7 @@ namespace StellaServerAPI
 
         private void DisposeClient(Client client)
         {
-            //client.MessageReceived -= Client_MessageReceived;
+            client.MessageReceived -= Client_MessageReceived;
             client.Disconnect -= Client_Disconnected;
             client.Dispose();
         }

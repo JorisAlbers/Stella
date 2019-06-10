@@ -28,13 +28,13 @@ namespace StellaLib.Test.Network.Protocol
             SocketConnection socket = new SocketConnection(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
             socket.Connect(localEndPoint);
 
-            SocketConnectionController socketConnectionController = new SocketConnectionController(socket);
+            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(socket);
             socketConnectionController.Start();
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);
             byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
-            byte[] expectedData = PacketProtocol.WrapMessage(MessageType.Standard,message);
+            byte[] expectedData = PacketProtocol<MessageType>.WrapMessage(MessageType.Standard,message);
 
             socketConnectionController.Send(MessageType.Standard, message);
             byte[] receiveBuffer = new byte[expectedData.Length];

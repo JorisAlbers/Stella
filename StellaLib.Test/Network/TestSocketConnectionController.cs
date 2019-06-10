@@ -21,7 +21,7 @@ namespace StellaLib.Test.Network
             var mock = new Mock<ISocketConnection>();
             mock.Setup(x => x.Connected).Returns(true);
 
-            byte[] expectedMessage = PacketProtocol.WrapMessage(messageType, message);
+            byte[] expectedMessage = PacketProtocol<MessageType>.WrapMessage(messageType, message);
 
             byte[] receivedMessage = null;
             mock.Setup(x => x.BeginSend(
@@ -36,7 +36,7 @@ namespace StellaLib.Test.Network
                          receivedMessage = data;
                      });
 
-            SocketConnectionController controller = new SocketConnectionController(mock.Object);
+            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object);
             controller.Start();
             controller.Send(messageType, message);
             Assert.AreEqual(expectedMessage, receivedMessage);
@@ -47,7 +47,7 @@ namespace StellaLib.Test.Network
         {
             MessageType messageType = MessageType.Init;
             byte[] message = Encoding.ASCII.GetBytes("test message");
-            byte[] expectedMessage = PacketProtocol.WrapMessage(messageType, message);
+            byte[] expectedMessage = PacketProtocol<MessageType>.WrapMessage(messageType, message);
 
             var mock = new Mock<ISocketConnection>();
             mock.Setup(x => x.Connected).Returns(true);
@@ -68,7 +68,7 @@ namespace StellaLib.Test.Network
             mock.Setup(x => x.EndSend(It.IsAny<IAsyncResult>())).Throws<SocketException>();
             // Listen to the Disconnect event
             bool disconnectInvoked = false;
-            SocketConnectionController controller = new SocketConnectionController(mock.Object);
+            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object);
             controller.Disconnect += (sender, args) => disconnectInvoked = true;
 
             // Run
@@ -86,7 +86,7 @@ namespace StellaLib.Test.Network
             var mock = new Mock<ISocketConnection>();
             mock.Setup(x => x.Connected).Returns(true);
 
-            byte[] dataToSend = PacketProtocol.WrapMessage(messageType, message);
+            byte[] dataToSend = PacketProtocol<MessageType>.WrapMessage(messageType, message);
 
 
             var asyncStateMock = new Mock<IAsyncResult>();
@@ -112,7 +112,7 @@ namespace StellaLib.Test.Network
             bool endSendCalled = false;
             mock.Setup(x => x.EndReceive(It.IsAny<IAsyncResult>())).Returns(dataToSend.Length).Callback(() => endSendCalled = true);
 
-            SocketConnectionController controller = new SocketConnectionController(mock.Object);
+            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object);
             MessageReceivedEventArgs<MessageType> messageReceivedEventArgs = null;
             controller.MessageReceived += (sender, args) => { messageReceivedEventArgs = args; };
             controller.Start();

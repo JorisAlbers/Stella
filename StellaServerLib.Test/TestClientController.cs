@@ -72,8 +72,8 @@ namespace StellaServerLib.Test
             animatorMock.Setup(x => x.GetFrameSetMetadata()).Returns(new FrameSetMetadata(DateTime.Now));
             animatorMock.SetupSequence(x => x.GetNextFramePerPi()).Returns(framesPerPi1).Returns(framesPerPi2).Returns(framesPerPi3);
 
-            byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frame1,PacketProtocol.MAX_MESSAGE_SIZE)[0];
-            byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frame2,PacketProtocol.MAX_MESSAGE_SIZE)[0];
+            byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frame1,PacketProtocol<MessageType>.MAX_MESSAGE_SIZE)[0];
+            byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frame2,PacketProtocol<MessageType>.MAX_MESSAGE_SIZE)[0];
             var mock = new Mock<IServer>();
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 

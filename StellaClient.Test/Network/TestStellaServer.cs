@@ -39,8 +39,8 @@ namespace StellaClient.Test.Network
             Thread.Sleep(1000);
 
             byte[] message = Encoding.ASCII.GetBytes("ThisIsAMessage");
-            byte[] expectedInit = PacketProtocol.WrapMessage(MessageType.Init, BitConverter.GetBytes(clientId));
-            byte[] expectedMessage = PacketProtocol.WrapMessage(MessageType.Standard, message);
+            byte[] expectedInit = PacketProtocol<MessageType>.WrapMessage(MessageType.Init, BitConverter.GetBytes(clientId));
+            byte[] expectedMessage = PacketProtocol<MessageType>.WrapMessage(MessageType.Standard, message);
 
             // Expected init message
             byte[] receiveBufferInitMessage = new byte[expectedInit.Length];
