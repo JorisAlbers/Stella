@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "StellaClient": {
+      "commandName": "Project",
+      "commandLineArgs": "-c Resources\\Configuration.yaml"
+    }
+  }
+}

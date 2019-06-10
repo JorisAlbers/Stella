@@ -13,8 +13,8 @@ namespace StellaLib.Network.Protocol
 /// <para>This class uses a 4-byte signed integer length prefix, which allows for message sizes up to 2 GB. Keepalive messages are supported as messages with a length prefix of 0 and no message data.</para>
 /// <para>This is EXAMPLE CODE! It is not particularly efficient; in particular, if this class is rewritten so that a particular interface is used (e.g., Socket's IAsyncResult methods), some buffer copies become unnecessary and may be removed.</para>
 /// </remarks>
-public class PacketProtocol
-{
+public class PacketProtocol<TMessageType> where TMessageType : System.Enum
+    {
     public const int BUFFER_SIZE = 1024;
     public const int MAX_MESSAGE_SIZE = BUFFER_SIZE - sizeof(int) - sizeof(int); //  - length , - messageType
 
@@ -24,11 +24,12 @@ public class PacketProtocol
     /// <remarks>
     /// <para>Generates a length prefix for the message and returns the combined length prefix and message.</para>
     /// </remarks>
+    /// <param name="type"></param>
     /// <param name="message">The message to send.</param>
-    public static byte[] WrapMessage(MessageType type, byte[] message)
+    public static byte[] WrapMessage(TMessageType type, byte[] message)
     {
         // Get the message type prefix
-        byte[] messageTypePrefix  = BitConverter.GetBytes((int)type);
+        byte[] messageTypePrefix  = BitConverter.GetBytes((int)(object)type);
 
         // Get the length prefix for the message
         byte[] lengthPrefix = BitConverter.GetBytes(messageTypePrefix.Length + message.Length);
@@ -90,7 +91,7 @@ public class PacketProtocol
     /// <remarks>
     /// <para>This event is invoked from within a call to <see cref="DataReceived"/>. Handlers for this event should not call <see cref="DataReceived"/>.</para>
     /// </remarks>
-    public Action<MessageType, byte[]> MessageArrived { get; set; }
+    public Action<TMessageType, byte[]> MessageArrived { get; set; }
 
     /// <summary>
     /// Indicates the retrieval of a KeepAlive message
@@ -221,7 +222,7 @@ public class PacketProtocol
                 int messageType = BitConverter.ToInt32(this.messageTypeBuffer, 0);
   
                 // Check if the message type exists
-                if(!Enum.IsDefined(typeof(MessageType), messageType))
+                if(!Enum.IsDefined(typeof(TMessageType), messageType))
                 {
                     throw new System.Net.ProtocolViolationException($"Message type {messageType} is invalid ");
                 }
@@ -243,7 +244,7 @@ public class PacketProtocol
             {
                 // We've gotten an entire packet
                 if (this.MessageArrived != null)
-                    this.MessageArrived((MessageType) BitConverter.ToInt32(this.messageTypeBuffer, 0), dataBuffer);
+                    this.MessageArrived((TMessageType)(object) BitConverter.ToInt32(this.messageTypeBuffer, 0), dataBuffer);
   
                 // Start reading the length buffer again
                 this.dataBuffer = null;

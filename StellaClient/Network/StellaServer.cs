@@ -25,7 +25,7 @@ namespace StellaClient.Network
         private IPEndPoint _serverAdress;
         private int _id;
         private TimeSetter _timeSetter; // null if the time is NTP synched or when the time has already been synced
-        private SocketConnectionController _socketConnectionController;
+        private SocketConnectionController<MessageType> _socketConnectionController;
         private object _resourceLock = new object();
 
         private Dictionary<int, FrameProtocol> _frameSectionBuffer; // int = frame index, 
@@ -102,7 +102,7 @@ namespace StellaClient.Network
                 socket.EndConnect(ar);
 
                 Console.WriteLine("Connected with StellaServer");
-                _socketConnectionController = new SocketConnectionController(socket);
+                _socketConnectionController = new SocketConnectionController<MessageType>(socket);
                 _socketConnectionController.MessageReceived += OnMessageReceived;
                 _socketConnectionController.Disconnect += OnDisconnect;
                 _socketConnectionController.Start();
