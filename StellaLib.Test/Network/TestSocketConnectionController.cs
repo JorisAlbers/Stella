@@ -31,15 +31,15 @@ namespace StellaLib.Test.Network
                 It.IsAny<SocketFlags>(),
                 It.IsAny<AsyncCallback>(),
                 It.IsAny<object>()))
-                .Callback<byte[],int,int,SocketFlags,AsyncCallback,object>((data, offset ,size, socketFlags, asyncCallback, state) =>
-                {
-                    receivedMessage = data;
-                });
+                .Callback<byte[], int, int, SocketFlags, AsyncCallback, object>((data, offset, size, socketFlags, asyncCallback, state) =>
+                     {
+                         receivedMessage = data;
+                     });
 
             SocketConnectionController controller = new SocketConnectionController(mock.Object);
             controller.Start();
-            controller.Send(messageType,message);
-            Assert.AreEqual(expectedMessage,receivedMessage);
+            controller.Send(messageType, message);
+            Assert.AreEqual(expectedMessage, receivedMessage);
         }
 
         [Test]
@@ -100,25 +100,25 @@ namespace StellaLib.Test.Network
                     It.IsAny<SocketFlags>(),
                     It.IsAny<AsyncCallback>(),
                     It.IsAny<object>()))
-                .Callback<byte[], int, int, SocketFlags,  AsyncCallback, object>((data, offset, size, socketFlags, asyncCallback, state) =>
-                {
-                    if (!beginReceiveHasBeenInvoked)
-                    {
-                        beginReceiveHasBeenInvoked = true; // Prevent endless loop
+                .Callback<byte[], int, int, SocketFlags, AsyncCallback, object>((data, offset, size, socketFlags, asyncCallback, state) =>
+               {
+                   if (!beginReceiveHasBeenInvoked)
+                   {
+                       beginReceiveHasBeenInvoked = true; // Prevent endless loop
                         asyncCallback.Invoke(asyncStateMock.Object); // calls ReceiveCallBack
                     }
-                });
+               });
 
             bool endSendCalled = false;
-            mock.Setup(x => x.EndReceive(It.IsAny<IAsyncResult>())).Returns(dataToSend.Length).Callback(()=>endSendCalled = true);
-            
+            mock.Setup(x => x.EndReceive(It.IsAny<IAsyncResult>())).Returns(dataToSend.Length).Callback(() => endSendCalled = true);
+
             SocketConnectionController controller = new SocketConnectionController(mock.Object);
-            MessageReceivedEventArgs messageReceivedEventArgs = null;
+            MessageReceivedEventArgs<MessageType> messageReceivedEventArgs = null;
             controller.MessageReceived += (sender, args) => { messageReceivedEventArgs = args; };
             controller.Start();
             Assert.IsTrue(endSendCalled);
-            Assert.AreEqual(messageType,messageReceivedEventArgs.MessageType);
-            Assert.AreEqual(message,messageReceivedEventArgs.Message);
+            Assert.AreEqual(messageType, messageReceivedEventArgs.MessageType);
+            Assert.AreEqual(message, messageReceivedEventArgs.Message);
         }
     }
 }

@@ -111,7 +111,7 @@ namespace StellaServerLib.Network
             client.Start();
         }
 
-        private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
+        private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
             Client client = (Client)sender;
             switch(e.MessageType)

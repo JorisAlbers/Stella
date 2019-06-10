@@ -18,7 +18,7 @@ namespace StellaLib.Network
         private System.Timers.Timer _keepAliveTimer;
         private const int KEEP_ALIVE_TIMER_INTERVAL = 2000; // Send a keep alive message every x seconds
 
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        public event EventHandler<MessageReceivedEventArgs<MessageType>> MessageReceived;
         public event EventHandler<SocketException> Disconnect;
         
         public bool IsConnected {get; private set;}
@@ -171,10 +171,10 @@ namespace StellaLib.Network
                 Console.WriteLine($"[IN]  [{_socket.RemoteEndPoint as IPEndPoint}] [{type}] bytes received : {bytes.Length}");
             }
 
-            EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
+            EventHandler<MessageReceivedEventArgs<MessageType>> handler = MessageReceived;
             if (handler != null)
             {
-                handler(this, new MessageReceivedEventArgs()
+                handler(this, new MessageReceivedEventArgs<MessageType>()
                 {
                     MessageType = type,
                     Message = bytes

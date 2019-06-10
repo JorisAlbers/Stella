@@ -69,7 +69,7 @@ namespace StellaServerAPI
 
             // Create a new client.
             Client client = new Client(new SocketConnectionController(handler));
-            client.MessageReceived += Client_MessageReceived;
+            //client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 
             ConnectedClients.Add(client);
@@ -81,10 +81,10 @@ namespace StellaServerAPI
             throw new NotImplementedException();
         }
 
-        private void Client_MessageReceived(object sender, MessageReceivedEventArgs e)
+        /*private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MT e)
         {
             throw new NotImplementedException();
-        }
+        }*/
 
         public void Dispose()
         {
@@ -113,7 +113,7 @@ namespace StellaServerAPI
 
         private void DisposeClient(Client client)
         {
-            client.MessageReceived -= Client_MessageReceived;
+            //client.MessageReceived -= Client_MessageReceived;
             client.Disconnect -= Client_Disconnected;
             client.Dispose();
         }

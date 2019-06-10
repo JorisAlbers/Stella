@@ -139,7 +139,7 @@ namespace StellaClient.Network
             Connect();
         }
 
-        private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+        private void OnMessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
             switch(e.MessageType)
             {

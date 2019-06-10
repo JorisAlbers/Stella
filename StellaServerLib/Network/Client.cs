@@ -6,10 +6,10 @@ namespace StellaServerLib.Network
 {
     public class Client : IDisposable
     {
-        private SocketConnectionController SocketConnectionController {get;set;}
+        private SocketConnectionController SocketConnectionController { get; set; }
         public int ID { get; set; } = -1;
         public event EventHandler<SocketException> Disconnect;
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        public event EventHandler<MessageReceivedEventArgs<MessageType>> MessageReceived;
 
 
         public Client(SocketConnectionController socketConnectionController)
@@ -26,13 +26,13 @@ namespace StellaServerLib.Network
 
         public void Send(MessageType type, byte[] message)
         {
-            SocketConnectionController.Send(type,message);
+            SocketConnectionController.Send(type, message);
         }
 
-        protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs eventArgs)
+        protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs<MessageType> eventArgs)
         {
             // Bubble the event. Add reference to this object.
-            EventHandler<MessageReceivedEventArgs> handler = MessageReceived;
+            EventHandler<MessageReceivedEventArgs<MessageType>> handler = MessageReceived;
             if (handler != null)
             {
                 handler(this, eventArgs);

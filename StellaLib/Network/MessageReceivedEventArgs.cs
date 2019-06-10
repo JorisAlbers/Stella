@@ -1,12 +1,12 @@
 using System;
-using StellaLib.Network;
 
 namespace StellaLib.Network
 {
-    public class MessageReceivedEventArgs : EventArgs
+    /// <typeparam name="TMessageType">The messageType enum</typeparam>
+    public class MessageReceivedEventArgs<TMessageType> : EventArgs where TMessageType : System.Enum
     {
-        public MessageType MessageType {get;set;}
-        public byte[] Message {get;set;}
-        
+        public TMessageType MessageType { get; set; }
+        public byte[] Message { get; set; }
+
     }
 }
