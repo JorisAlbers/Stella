@@ -78,13 +78,16 @@ namespace StellaServerAPI
 
         private void Client_Disconnected(object sender, SocketException e)
         {
-            throw new NotImplementedException();
+            Client client = (Client)sender;
+            Console.WriteLine($"Client {client.ID} disconnected, {e.SocketErrorCode}"); // TODO add intended disconnect, not just on SocketException
+            ConnectedClients.Remove(client);
+            DisposeClient(client);
         }
 
-        /*private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MT e)
+        private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
             throw new NotImplementedException();
-        }*/
+        }
 
         public void Dispose()
         {
