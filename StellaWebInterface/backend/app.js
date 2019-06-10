@@ -10,8 +10,10 @@ const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 
 /** Relative imports **/
-const router = require('./router');
 const config = require('./config/config');
+const SocketClass = require('./routes/socket');
+const routes = require('./routes/routes');
+
 const port = normalizePort('3001');
 
 const init = () => {
@@ -19,7 +21,7 @@ const init = () => {
   app.use(logger('dev'));
   app.use(express.json());
   app.use(express.urlencoded({extended: false}));
-  router(app);
+  routes.setRoutes(app);
   app.use(express.static(path.join(__dirname, 'public')));
   app.set('port', port);
   app.use(cookieParser);
@@ -43,6 +45,9 @@ const init = () => {
     throw err;
   });
   const server = http.createServer(app);
+  const socket = new SocketClass(server);
+  routes.setIO(socket);
+
   server.listen(port);
   console.log(`Listening on port: ${port}`);
   server.on('error', onError);
