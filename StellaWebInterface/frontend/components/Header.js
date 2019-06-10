@@ -3,7 +3,6 @@ import AppBar from '@material-ui/core/AppBar/index';
 
 import Drawer from '@material-ui/core/Drawer/index';
 import Toolbar from '@material-ui/core/Toolbar/index';
-import Typography from '@material-ui/core/Typography/index';
 import Button from '@material-ui/core/Button/index';
 import IconButton from '@material-ui/core/IconButton/index';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -33,41 +32,28 @@ class Header extends React.Component {
     });
   };
 
-  conditRenderEssential = () => this.props.userid ? (
-    <Button color="inherit" align="right" onClick={this.props.startLogout}> Logout</Button>
-  ) : (
-    <React.Fragment>
-      <Button color="inherit" align="right"><Link to="/login">Login</Link></Button>
-      <Button color="inherit" align="right"><Link to="/register">Register</Link></Button>
-    </React.Fragment>
-  );
-
   render() {
     return (
       <div>
         <Drawer open={this.state.open} onClose={this.toggleDrawer(false)}>
           <div tabIndex={0} role="button">
             <div className="sidelistwrapper">
-              {!this.props.userid && (
-                <React.Fragment>
-                  <PublicNavList/>
-                  <ExpandNavList/>
-                </React.Fragment>)}
-              {this.props.userid && (
-                <React.Fragment>
-                  <PrivateNavList/>
-                </React.Fragment>
-              )}
+              <React.Fragment>
+                <PublicNavList/>
+                <ExpandNavList/>
+              </React.Fragment>
             </div>
           </div>
         </Drawer>
         <div className="appbarwrapper">
           <AppBar position="static">
             <Toolbar>
-              <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
+              <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu"
+                          onClick={this.onLeftIconButtonClick}>
                 <MenuIcon/>
               </IconButton>
-              {this.conditRenderEssential()}
+                <Button color="inherit" align="right"><Link to="/">Home</Link></Button>
+                <Button color="inherit" align="right"><Link to="/configurations">Configurations</Link></Button>
             </Toolbar>
           </AppBar>
         </div>
