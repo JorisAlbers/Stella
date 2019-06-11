@@ -3,13 +3,14 @@ const net = require("net");
 const PackageProtocol = require("../service/packageProtocol");
 
 function Socket(server) {
-  const serverSocket = net.createConnection({host: '192.168.2.6', port: 20060}, () => {
+  const serverSocket = net.createConnection({host: '192.168.2.78', port: 20060}, () => {
     console.log('Connection local address : ' + serverSocket.localAddress + ":" + serverSocket.localPort);
     console.log('Connection remote address : ' + serverSocket.remoteAddress + ":" + serverSocket.remotePort);
   });
   serverSocket.connected = false;
   serverSocket.setTimeout(1000);
   const clientSocket = require('socket.io')(server);
+  clientSocket.connectedClients = [];
   const packageProtocol = new PackageProtocol();
 
   packageProtocol.messageArrived = (messageType, data) => {
@@ -35,11 +36,21 @@ Socket.prototype.getAvailableStoryboards = (clientSocket, serverSocket, packageP
 Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProtocol) => {
   serverSocket.on('close', (hadError) => {
     serverSocket.connected = false;
+    clientSocket.emit('status', {
+      clientConnectedToBackend: true,
+      backendConnectedToServer: serverSocket.connected,
+      connectedClients: clientSocket.connectedClients.length,
+    });
     console.log("Server connection close - hadError: ", hadError)
   });
 
   serverSocket.on('connect', () => {
     serverSocket.connected = true;
+    clientSocket.emit('status', {
+      clientConnectedToBackend: true,
+      backendConnectedToServer: serverSocket.connected,
+      connectedClients: clientSocket.connectedClients.length,
+    });
     console.log("Server connection connected");
   });
 
@@ -53,6 +64,11 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
 
   serverSocket.on('end', () => {
     serverSocket.connected = false;
+    clientSocket.emit('status', {
+      clientConnectedToBackend: true,
+      backendConnectedToServer: serverSocket.connected,
+      connectedClients: clientSocket.connectedClients.length,
+    });
     console.log("Server connection end");
   });
 
@@ -76,23 +92,23 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
 Socket.prototype._setClientListeners = (clientSocket, serverSocket, packageProtocol) => {
   let clients = [];
   clientSocket.on('connection', (socket) => {
-    clients.push(socket.id);
+    clientSocket.connectedClients.push(socket.id);
     console.log("Client connection connected");
 
-    socket.on('storyboards', () => {
-      socket.emit('storyboards', {})
+    socket.on('availableStoryboards', () => {
+      socket.emit('availableStoryboards', {})
     });
 
-    socket.on('getStatus', () => {
-      socket.emit('getStatus', {
+    socket.on('status', () => {
+      socket.emit('status', {
         clientConnectedToBackend: true,
         backendConnectedToServer: serverSocket.connected,
-        connectedClients: clients.length,
+        connectedClients: clientSocket.connectedClients.length,
       })
     });
 
     socket.on('disconnect', () => {
-      clients.splice(clients.indexOf(socket.id), 1);
+      clientSocket.connectedClients.splice(clientSocket.connectedClients.indexOf(socket.id), 1);
       console.log("Client connection disconnect");
     });
   });
