@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StellaServerAPI\StellaServerAPI.csproj" />
     <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj" />
   </ItemGroup>
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
@@ -11,7 +12,7 @@ namespace StellaServerConsole
     class Program
     {
         private static StellaServer _stellaServer;
-
+        private static APIServer _apiServer;
 
         static void Main(string[] args)
         {
@@ -22,6 +23,8 @@ namespace StellaServerConsole
             string storyboardDirPath = null;
             string ip = null;
             int port = 0;
+            string apiIp = null;
+            int apiPort= 0;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -45,13 +48,20 @@ namespace StellaServerConsole
                         case "-port":
                             port = int.Parse(args[++i]);
                             break;
+                        case "-api_ip":
+                            apiIp = args[++i];
+                            break;
+                        case "-api_port":
+                            apiPort = int.Parse(args[++i]);
+                            break;
+
                         default:
                             Console.Out.WriteLine($"Unknown flag {args[i]}");
                             return;
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, storyboardDirPath))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, storyboardDirPath, apiIp, apiPort))
             {
                 return;
             }
@@ -65,7 +75,7 @@ namespace StellaServerConsole
             }
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
             
-
+            // Start stellaServer
             _stellaServer = new StellaServer(mappingFilePath, ip, port);
 
             try
@@ -79,6 +89,22 @@ namespace StellaServerConsole
                 return;
             }
 
+            // Start serverAPI if requested
+            if (!string.IsNullOrWhiteSpace(apiIp))
+            {
+                try
+                {
+                    _apiServer = new APIServer(apiIp, apiPort);
+                    _apiServer.Start();
+                }
+                catch (Exception e)
+                {
+                    Console.Out.WriteLine("An exception occured when starting the APIServer.");
+                    OutputError(e);
+                    return;
+                }
+            }
+            
             while (true)
             {
                 OutputMenu(storyboardNames);
@@ -112,7 +138,7 @@ namespace StellaServerConsole
             Console.Out.WriteLine("End of StellaServer.");
         }
 
-        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, string storyboardDirPath)
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, string storyboardDirPath, string apiIp, int apiPort)
         {
             // TODO path and file exist validation
             if (mappingFilePath == null)
@@ -130,6 +156,18 @@ namespace StellaServerConsole
             if (ip == null)
             {
                 Console.Out.WriteLine("The ip must be set. Use -ip <ip value>");
+                return false;
+            }
+
+            if (apiPort == 0 && !string.IsNullOrWhiteSpace(apiIp))
+            {
+                Console.Out.WriteLine("The apiPort must be set. Use -api_port <port value>");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(apiIp) && apiPort != 0)
+            {
+                Console.Out.WriteLine("The apiIP must be set. Use -api_ip <ip value>");
                 return false;
             }
 

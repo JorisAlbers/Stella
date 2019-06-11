@@ -20,14 +20,14 @@ namespace StellaServerAPI
         private ISocketConnection _listenerSocket;
 
         public List<Client> ConnectedClients { get; set; }
-        
+
         public APIServer(string ip, int port)
         {
             _ip = ip;
             _port = port;
         }
 
-        
+
 
         public void Start()
         {
@@ -92,11 +92,16 @@ namespace StellaServerAPI
                 case MessageType.None:
                     break;
                 case MessageType.GetAvailableStoryboards:
+                    // TODO GetAvailableStoryboard protocol
+                    // TODO the code below is just to test StellaWebInterface
+                    ((Client)sender).Send(MessageType.GetAvailableStoryboards, BitConverter.GetBytes(666));
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
         }
+
 
         public void Dispose()
         {
