@@ -23,16 +23,16 @@ class HomePage extends React.Component {
   render() {
     const {status, storyboards} = this.state;
 
-    return <div >
-      <Grid container spacing={3} direction={'row'} >
-        <Grid xs={9} item >
+    return <div>
+      <Grid container spacing={3} direction={'row'}>
+        <Grid xs={9} item>
           <h2>Available storyboards</h2>
           {storyboards &&
           <React.Fragment>
 
           </React.Fragment>}
         </Grid>
-        <Grid xs={3} item >
+        <Grid xs={3} item>
           <h2>Application status</h2>
           {status &&
           <React.Fragment>

@@ -25,7 +25,7 @@ const init = () => {
   app.use(express.static(path.join(__dirname, 'public')));
   app.set('port', port);
   app.use(cookieParser);
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({extended: true}));
   app.use(expressSession({secret: config.express.sessionSecret, resave: true, saveUninitialized: true}));
 
   // catch 404 and forward to error handler

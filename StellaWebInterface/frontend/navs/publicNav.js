@@ -3,10 +3,8 @@ import List from '@material-ui/core/List/index';
 import ListItem from '@material-ui/core/ListItem/index';
 import ListItemIcon from '@material-ui/core/ListItemIcon/index';
 import ListItemText from '@material-ui/core/ListItemText/index';
-import PropTypes from "prop-types";
 import HomeIcon from '@material-ui/icons/Home';
 import QuestionAnswer from '@material-ui/icons/QuestionAnswer';
-
 /* import your desired icon from material-ui icons library */
 import {NavLink} from 'react-router-dom';
 

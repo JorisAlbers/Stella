@@ -1,10 +1,8 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Switch} from 'react-router-dom';
 import PublicRoute from './PublicRouter';
-
 //Public
 import HomePage from '../components/HomePage';
-import NotFoundPage from '../components/NotFoundPage';
 import HowDoesItWorkPage from "../components/HowDoesItWorkPage";
 import Login from '../components/Login';
 import Register from '../components/Register';

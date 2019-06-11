@@ -13,12 +13,11 @@ function Socket(server) {
   const packageProtocol = new PackageProtocol();
 
   packageProtocol.messageArrived = (messageType, data) => {
-    console.log("message protol says it has a package ", messageType);
+    console.log("message protocol says it has a package ", messageType);
     switch (messageType) {
       case 0:
         console.log('messageType received none');
         return null;
-        break;
       case 1:
         console.log('messageType received GetAvailableStoryboards');
         break;
@@ -58,7 +57,6 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
   });
 
   serverSocket.on('error', (error) => {
-    serverSocket.connected = false;
     console.log("Server connection error - error: ", error);
   });
 
@@ -70,7 +68,7 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
     console.log("Server connection ready");
   });
 
-  serverSocket.on('timeout', (data) => {
+  serverSocket.on('timeout', () => {
     console.log("Server connection timeout");
   });
 };
