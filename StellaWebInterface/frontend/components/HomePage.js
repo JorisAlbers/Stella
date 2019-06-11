@@ -1,24 +1,57 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid/index';
+import {socketConnect} from 'socket.io-react';
 
-const HomePage = () => (
-  <div className="landingPagebodyComponent">
-    <Grid container spacing={24}>
-      <Grid item xs={12} md={12}>
+class HomePage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {
+      status: null,
+      storyboards: null
+    };
 
+    this.props.socket.on('getStatus', (status) => this.setState({status}));
+    this.props.socket.on('storyboards', (storyboards) => this.setState({storyboards}));
+  }
+
+  componentDidMount() {
+    this.props.socket.emit('getStatus');
+    this.props.socket.emit('getAvailableStoryboards');
+  }
+
+  render() {
+    const {status, storyboards} = this.state;
+
+    return <div >
+      <Grid container spacing={3} direction={'row'} >
+        <Grid xs={9} item >
+          <h2>Available storyboards</h2>
+          {storyboards &&
+          <React.Fragment>
+
+          </React.Fragment>}
+        </Grid>
+        <Grid xs={3} item >
+          <h2>Application status</h2>
+          {status &&
+          <React.Fragment>
+            <p>status.clientConnectedToBackend: {status.clientConnectedToBackend ? 'true' : 'false'}</p>
+            <p>status.backendConnectedToServer: {status.backendConnectedToServer ? 'true' : 'false'}</p>
+            <p>status.connectedClients: {status.connectedClients}</p>
+          </React.Fragment>
+          }
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
 
+      <Grid container>
+        <Grid item xs>
+
+        </Grid>
       </Grid>
-    </Grid>
 
-    <Grid container spacing={24}>
-      <Grid item xs={12} md={12}>
+    </div>;
+  }
+}
 
-      </Grid>
-    </Grid>
-
-  </div>
-);
-
-export default HomePage;
+export default socketConnect(HomePage);

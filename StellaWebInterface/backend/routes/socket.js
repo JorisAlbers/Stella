@@ -7,6 +7,7 @@ function Socket(server) {
     console.log('Connection local address : ' + serverSocket.localAddress + ":" + serverSocket.localPort);
     console.log('Connection remote address : ' + serverSocket.remoteAddress + ":" + serverSocket.remotePort);
   });
+  serverSocket.connected = false;
   serverSocket.setTimeout(1000);
   const clientSocket = require('socket.io')(server);
   const packageProtocol = new PackageProtocol();
@@ -24,21 +25,23 @@ function Socket(server) {
     }
   };
 
-  this._setServerListeners(serverSocket, packageProtocol);
-  this._setClientListeners(clientSocket);
+  this._setServerListeners(clientSocket, serverSocket, packageProtocol);
+  this._setClientListeners(clientSocket, serverSocket, packageProtocol);
 }
 
-Socket.prototype.getAvailableStoryboards = (serverSocket, packageProtocol) => {
+Socket.prototype.getAvailableStoryboards = (clientSocket, serverSocket, packageProtocol) => {
   serverSocket.write(packageProtocol.wrapGetAvailableStoryboardsMessage());
 };
 
-Socket.prototype._setServerListeners = (serverSocket, packageProtocol) => {
+Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProtocol) => {
   serverSocket.on('close', (hadError) => {
+    serverSocket.connected = false;
     console.log("Server connection close - hadError: ", hadError)
   });
 
   serverSocket.on('connect', () => {
-    console.log("Server connection connected")
+    serverSocket.connected = true;
+    console.log("Server connection connected");
   });
 
   serverSocket.on('data', (data) => {
@@ -46,19 +49,21 @@ Socket.prototype._setServerListeners = (serverSocket, packageProtocol) => {
   });
 
   serverSocket.on('drain', () => {
-    console.log("Server connection drain")
+    console.log("Server connection drain");
   });
 
   serverSocket.on('end', () => {
-    console.log("Server connection end")
+    serverSocket.connected = false;
+    console.log("Server connection end");
   });
 
   serverSocket.on('error', (error) => {
-    console.log("Server connection error - error: ", error)
+    serverSocket.connected = false;
+    console.log("Server connection error - error: ", error);
   });
 
   serverSocket.on('lookup', (err, address, family, host) => {
-    console.log("Server connection lookup - lookup: ", err, " - address: ", address, " - family: ", family, " - host: ", host)
+    console.log("Server connection lookup - lookup: ", err, " - address: ", address, " - family: ", family, " - host: ", host);
   });
 
   serverSocket.on('ready', () => {
@@ -66,15 +71,30 @@ Socket.prototype._setServerListeners = (serverSocket, packageProtocol) => {
   });
 
   serverSocket.on('timeout', (data) => {
-    console.log("Server connection timeout")
+    console.log("Server connection timeout");
   });
 };
 
-Socket.prototype._setClientListeners = (clientSocket) => {
+Socket.prototype._setClientListeners = (clientSocket, serverSocket, packageProtocol) => {
+  let clients = [];
   clientSocket.on('connection', (socket) => {
+    clients.push(socket.id);
     console.log("Client connection connected");
 
+    socket.on('storyboards', () => {
+      socket.emit('storyboards', {})
+    });
+
+    socket.on('getStatus', () => {
+      socket.emit('getStatus', {
+        clientConnectedToBackend: true,
+        backendConnectedToServer: serverSocket.connected,
+        connectedClients: clients.length,
+      })
+    });
+
     socket.on('disconnect', () => {
+      clients.splice(clients.indexOf(socket.id), 1);
       console.log("Client connection disconnect");
     });
   });

@@ -9,7 +9,6 @@ import AppRouter from './routers/AppRouter';
 import {theme} from './theme/theme';
 
 const socket = io.connect('http://localhost:3001');
-socket.on('connect', msg => console.log(msg));
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
