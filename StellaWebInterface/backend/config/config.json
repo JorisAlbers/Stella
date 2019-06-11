@@ -1,5 +1,9 @@
 {
   "express": {
     "sessionSecret": "cogito-session-secret-try-out"
+  },
+  "stellaServerConsole": {
+    "ip": "192.168.2.78",
+    "port": 20060
   }
 }

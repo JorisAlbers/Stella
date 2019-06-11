@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid/index';
 import Paper from '@material-ui/core/Paper/index';
 import Typography from '@material-ui/core/Typography/index';
 
-const DashboardPage = () => (
+const ConfigurationPage = () => (
   <React.Fragment>
     <Grid container spacing={24}>
       <Grid item xs={12} style={{marginTop: 10}}>
@@ -22,4 +22,4 @@ const DashboardPage = () => (
   </React.Fragment>
 );
 
-export default DashboardPage;
+export default ConfigurationPage;

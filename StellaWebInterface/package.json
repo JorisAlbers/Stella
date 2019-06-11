@@ -14,7 +14,6 @@
   "dependencies": {
     "@material-ui/core": "^4.1.0",
     "@material-ui/icons": "^4.1.0",
-    "material-ui-image": "^3.2.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -24,7 +23,9 @@
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "fusioncharts": "^3.12.2",
+    "material-ui-image": "^3.2.0",
     "react": "^16.3.2",
+    "react-ace": "^7.0.2",
     "react-dom": "^16.3.2",
     "react-fusioncharts": "^1.0.5",
     "react-popper": "^0.10.4",

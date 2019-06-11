@@ -1,9 +1,10 @@
 const net = require("net");
 
+const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 
 function Socket(server) {
-  const serverSocket = net.createConnection({host: '192.168.2.78', port: 20060}, () => {
+  const serverSocket = net.createConnection({host: config.stellaServerConsole.ip, port: config.stellaServerConsole.port}, () => {
     console.log('Connection local address : ' + serverSocket.localAddress + ":" + serverSocket.localPort);
     console.log('Connection remote address : ' + serverSocket.remoteAddress + ":" + serverSocket.remotePort);
   });
@@ -41,7 +42,11 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
       backendConnectedToServer: serverSocket.connected,
       connectedClients: clientSocket.connectedClients.length,
     });
-    console.log("Server connection close - hadError: ", hadError)
+    console.log("Server connection close - hadError: ", hadError);
+    setTimeout(()=> {
+      console.log("Server connection reconnecting");
+      serverSocket.connect({host: config.stellaServerConsole.ip, port: config.stellaServerConsole.port})
+    }, 1000);
   });
 
   serverSocket.on('connect', () => {
@@ -90,7 +95,6 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
 };
 
 Socket.prototype._setClientListeners = (clientSocket, serverSocket, packageProtocol) => {
-  let clients = [];
   clientSocket.on('connection', (socket) => {
     clientSocket.connectedClients.push(socket.id);
     console.log("Client connection connected");
