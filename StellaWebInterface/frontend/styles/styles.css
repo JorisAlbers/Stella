@@ -11,6 +11,11 @@ p {
     margin: 2px 0;
 }
 
+#ace-code-editor-stella {
+    width: 100%;
+    height: 100%;
+}
+
 .iconbuttonsyle {
     margin-left: -12px;
     margin-right: 20px
