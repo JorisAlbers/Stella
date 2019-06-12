@@ -9,8 +9,8 @@ class PackageProtocol {
     this.BUFFER_SIZE = 1024;
   }
 
-  static wrapGetAvailableStoryboardsMessage() {
-    new Buffer([5, 0, 0, 0, 1, 0, 0, 0, 1])
+  wrapGetAvailableStoryboardsMessage() {
+    return new Buffer([5, 0, 0, 0, 1, 0, 0, 0, 1])
   };
 
   dataReceived(data) {
@@ -27,8 +27,8 @@ class PackageProtocol {
         let bytesRequested = this.dataBuffer.length - this.bytesReceived;
 
         // Copy the incoming bytes into the buffer
-        let bytesTransferred = Math.Min(bytesRequested, bytesAvailable);
-        data.copy(this.dataBuffer, this.bytesReceived, i, bytesTransferred);
+        let bytesTransferred = Math.min(bytesRequested, bytesAvailable);
+        data.copy(this.dataBuffer, this.bytesReceived, i, i + bytesTransferred);
         // Array.Copy(data, i, this.dataBuffer, this.bytesReceived, bytesTransferred);
         i += bytesTransferred;
 
@@ -39,8 +39,8 @@ class PackageProtocol {
         let bytesRequested = this.messageTypeBuffer.length - this.bytesReceived;
 
         // Copy the incoming bytes into the buffer
-        let bytesTransferred = Math.Min(bytesRequested, bytesAvailable);
-        data.copy(this.messageTypeBuffer, this.bytesReceived, i, bytesTransferred);
+        let bytesTransferred = Math.min(bytesRequested, bytesAvailable);
+        data.copy(this.messageTypeBuffer, this.bytesReceived, i, i + bytesTransferred);
         // Array.Copy(data, i, this.messageTypeBuffer, this.bytesReceived, bytesTransferred);
         i += bytesTransferred;
 
@@ -51,7 +51,7 @@ class PackageProtocol {
         let bytesRequested = this.lengthBuffer.length - this.bytesReceived;
         // Copy the incoming bytes into the buffer
         let bytesTransferred = Math.min(bytesRequested, bytesAvailable);
-        data.copy(this.lengthBuffer, this.bytesReceived, i, bytesTransferred);
+        data.copy(this.lengthBuffer, this.bytesReceived, i, i + bytesTransferred);
         // Array.Copy(data, i, this.lengthBuffer, this.bytesReceived, bytesTransferred);
         i += bytesTransferred;
 
