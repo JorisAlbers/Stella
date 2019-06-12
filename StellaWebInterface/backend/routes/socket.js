@@ -4,8 +4,11 @@ const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 
 function Socket(server) {
-  const serverSocket = net.createConnection({host: config.stellaServerConsole.ip, port: config.stellaServerConsole.port}, () => {
-    console.log('Connection local address : ' + serverSocket.localAddress + ":" + serverSocket.localPort);
+  const serverSocket = net.createConnection({
+    host: config.stellaServerConsole.ip,
+    port: config.stellaServerConsole.port
+  }, () => {
+    console.log('Connection local  address : ' + serverSocket.localAddress + ":" + serverSocket.localPort);
     console.log('Connection remote address : ' + serverSocket.remoteAddress + ":" + serverSocket.remotePort);
   });
   serverSocket.connected = false;
@@ -31,7 +34,7 @@ function Socket(server) {
 }
 
 Socket.prototype.getAvailableStoryboards = (clientSocket, serverSocket, packageProtocol) => {
-  serverSocket.write(packageProtocol.wrapGetAvailableStoryboardsMessage());
+  serverSocket.write(PackageProtocol.wrapGetAvailableStoryboardsMessage());
 };
 
 Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProtocol) => {
@@ -43,7 +46,7 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
       connectedClients: clientSocket.connectedClients.length,
     });
     console.log("Server connection close - hadError: ", hadError);
-    setTimeout(()=> {
+    setTimeout(() => {
       console.log("Server connection reconnecting");
       serverSocket.connect({host: config.stellaServerConsole.ip, port: config.stellaServerConsole.port})
     }, 1000);
@@ -60,7 +63,8 @@ Socket.prototype._setServerListeners = (clientSocket, serverSocket, packageProto
   });
 
   serverSocket.on('data', (data) => {
-    console.log("Server connection data - data: ", data);
+    packageProtocol.dataReceived(data);
+    // console.log("Server connection data - data: ", data);
   });
 
   serverSocket.on('drain', () => {
