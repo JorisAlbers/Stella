@@ -24,7 +24,7 @@ class HomePage extends React.Component {
     const {status, storyboards} = this.state;
 
     return <div>
-      <Grid container spacing={3} direction={'row'}>
+      <Grid container direction={'row'}>
         <Grid xs={9} item>
           <h2>Available storyboards</h2>
           {storyboards &&

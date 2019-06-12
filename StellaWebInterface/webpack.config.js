@@ -36,5 +36,8 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     historyApiFallback: true // this prevents the default browser full page refresh on form submission and link change
+  },
+  node: {
+    fs: "empty"
   }
 };
