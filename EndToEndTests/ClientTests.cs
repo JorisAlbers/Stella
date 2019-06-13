@@ -76,7 +76,7 @@ namespace EndToEndTests
             StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, id, new LinuxTimeSetter());
             stellaServer.Start();
 
-            RpiController controller = new RpiController(stellaServer, ledController);
+            /*RpiController controller = new RpiController(stellaServer, ledController); TODO BufferlessLedController*/
 
             string input;
             Console.Out.WriteLine($"Running StellaClient instance with id {id}");
