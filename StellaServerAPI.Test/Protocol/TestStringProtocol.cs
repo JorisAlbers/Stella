@@ -60,7 +60,45 @@ namespace StellaServerAPI.Test.Protocol
             messageBuffer = new byte[expectedStringData2.Length];
             Array.Copy(package, 4, messageBuffer, 0, expectedStringData2.Length);
             Assert.AreEqual(expectedStringData2, messageBuffer);
+        }
 
+        [Test]
+        public void Deserialize_SinglePackage_ReturnsCorrectString()
+        {
+            string expectedMessage = "ThisIsAMessage";
+            byte[] stringAsBytes = Encoding.ASCII.GetBytes(expectedMessage); // 49 bytes
+            byte[] package = new byte[stringAsBytes.Length + 4];
+            BitConverter.GetBytes(1).CopyTo(package,0);
+            Array.Copy(stringAsBytes,0,package,4, stringAsBytes.Length);
+
+            StringProtocol stringProtocol = new StringProtocol();
+            bool completed = stringProtocol.TryDeserialize(package, out string message);
+            Assert.IsTrue(completed);
+            Assert.AreEqual(expectedMessage,message);
+        }
+
+        [Test]
+        public void Deserialize_TwoPackages_ReturnsCorrectString()
+        {
+            string expectedMessage = "ThisIsALargeMessageThatDoesNotFitInASinglePackage";
+            byte[] expectedBytes = Encoding.ASCII.GetBytes(expectedMessage); // 49 bytes
+            // Package 1
+            byte[] package1 = new byte[40]; // 36 (data) + 4 (header of the package)
+            BitConverter.GetBytes(2).CopyTo(package1,0); // Number of frames
+            Array.Copy(expectedBytes, 0, package1, 4, 36);
+
+            // Package 2
+            byte[] package2 = new byte[17]; //  13 (data) + 4 (header of the package)
+            BitConverter.GetBytes(1).CopyTo(package2, 0); // Frame index
+            Array.Copy(expectedBytes, 36, package2, 4, 13);
+
+            StringProtocol stringProtocol = new StringProtocol();
+            bool completed = stringProtocol.TryDeserialize(package1, out string message);
+            Assert.IsFalse(completed);
+            Assert.IsNull(message);
+            completed = stringProtocol.TryDeserialize(package2, out message);
+            Assert.IsTrue(completed);
+            Assert.AreEqual(expectedMessage, message);
         }
     }
 }
