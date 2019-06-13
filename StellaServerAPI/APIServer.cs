@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using StellaLib.Network;
+using StellaLib.Network.Protocol;
+using StellaServerAPI.Protocol;
 
 namespace StellaServerAPI
 {
@@ -94,8 +96,11 @@ namespace StellaServerAPI
                 case MessageType.GetAvailableStoryboards:
                     // TODO GetAvailableStoryboard protocol
                     // TODO the code below is just to test StellaWebInterface
-                    ((Client)sender).Send(MessageType.GetAvailableStoryboards, BitConverter.GetBytes(666));
-
+                    byte[][] data = StringProtocol.Serialize("TestMessage", PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
+                    foreach (var package in data)
+                    {
+                        ((Client)sender).Send(MessageType.GetAvailableStoryboards, package);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
