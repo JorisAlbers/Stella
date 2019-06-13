@@ -9,6 +9,5 @@ namespace StellaServerLib.Network
         int[] ConnectedClients{get;}
         int NewConnectionsCount{get;}
         void SendMessageToClient(int clientID, MessageType messageType, byte[] message);
-        event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
@@ -9,84 +11,107 @@ using StellaServerLib.Network;
 
 namespace StellaServerLib
 {
-    public class ClientController
+    public class ClientController : IDisposable
     {
         private readonly IServer _server;
         private IAnimator _animator;
         private object _frameSetLock = new object();
+        private bool _isDisposed;
+
+        private FrameSetMetadata _frameSetMetadata;
 
         private List<Frame[]> _framesPerPi;
 
         public ClientController(IServer server)
         {
             _server = server;
-            _server.AnimationRequestReceived += Server_OnAnimationRequestReceived;
         }
-        
-        public void StartAnimation(IAnimator animator)
+
+        public async void Run()
+        {
+            await new TaskFactory().StartNew(MainLoop);
+        }
+
+        private void MainLoop()
+        {
+            Frame[] frames = null;
+            long renderNextFrameAt = 0;
+
+            while (!_isDisposed)
+            {
+                IAnimator animator = _animator;
+                if (animator == null)
+                {
+                    // No animation on display.
+                    renderNextFrameAt = 0;
+                    continue;
+                }
+
+                // Prepare if the animation is about to start
+                if (renderNextFrameAt == 0)
+                {
+                    frames = _animator.GetNextFramePerPi();
+                    renderNextFrameAt = _frameSetMetadata.TimeStamp.Ticks + frames.First(x => x != null).TimeStampRelative * TimeSpan.TicksPerMillisecond;
+                    SendPrepareFrame(frames);
+                }
+
+                long now = DateTime.Now.Ticks;
+
+                if (now < renderNextFrameAt)
+                {
+                    // render will happen in other loop
+                    continue;
+                }
+
+                // Render
+                SendRenderFrame(frames);
+
+                // Prepare
+                frames = animator.GetNextFramePerPi();
+                renderNextFrameAt = _frameSetMetadata.TimeStamp.Ticks + frames.First(x => x != null).TimeStampRelative * TimeSpan.TicksPerMillisecond;
+                SendPrepareFrame(frames);
+            }
+        }
+
+        private void SendPrepareFrame(Frame[] frames)
+        {
+            for (int i = 0; i < frames.Length; i++)
+            {
+                if (frames[i] != null)
+                {
+                    byte[][] packages = FrameProtocol.SerializeFrame(frames[i], PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
+                    for (int j = 0; j < packages.Length; j++)
+                    {
+                        _server.SendMessageToClient(i,MessageType.Animation_PrepareFrame,packages[j]);
+                    }
+                }
+            }
+        }
+
+        private void SendRenderFrame(Frame[] frames)
+        {
+            for (int i = 0; i < frames.Length; i++)
+            {
+                if (frames[i] != null)
+                {
+                    _server.SendMessageToClient(i,MessageType.Animation_RenderFrame,new byte[0]);
+                }
+            }
+        }
+
+
+        public void StartAnimation(IAnimator animator, DateTime at)
         {
             lock(_frameSetLock)
             {
                 _animator = animator;
-
-                // Create a buffer of frames per pi
-                _framesPerPi = new List<Frame[]>();
-                _framesPerPi.Add(_animator.GetNextFramePerPi());
-
-                // Send the ANIMATION_START message to all clients.
-                // When the client has received the message and has prepared the animation buffer,
-                // The client will request the first frames to fill it's buffer.
-                FrameSetMetadata frameSetMetadata = _animator.GetFrameSetMetadata();
-                foreach(int clientID in _server.ConnectedClients)
-                {
-                    byte[] message = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
-                    _server.SendMessageToClient(clientID,MessageType.Animation_RenderFrame,message);
-                }
+                _frameSetMetadata = new FrameSetMetadata(at);
             }
-            
         }
-
-        private void Server_OnAnimationRequestReceived(object sender, AnimationRequestEventArgs e)
+        
+        public void Dispose()
         {
-            lock(_frameSetLock)
-            {
-                // Get the frames requested
-                if(_animator == null)
-                {
-                    Console.WriteLine($"Not sending frames to client {e.ClientID} as there is no animation playing.");
-                    return;
-                }
-
-                // TODO remove buffer from pis and implement Real Time protocol.
-                // TODO then this ClientController can decide when to send a new frame instead of the pis requesting new frames.
-                int lastFrameIndex = _framesPerPi[_framesPerPi.Count-1][0].Index;
-                int framesMissing = e.StartIndex + e.Count - lastFrameIndex;
-                if (framesMissing > 0)
-                {
-                    // Generate new frames
-                    for (int i = 0; i < framesMissing + 50; i++)
-                    {
-                        _framesPerPi.Add(_animator.GetNextFramePerPi());
-                    }
-                    // TODO remove frames to prevent memory overflow
-                }
-
-                List<Frame> frames = new List<Frame>();
-                for (int i = 0; i < e.Count; i++)
-                {
-                    frames.Add(_framesPerPi[i + e.StartIndex][e.ClientID]);
-                }
-                   
-
-                Console.Out.WriteLine($"Sending {frames.Count} frames to client {e.ClientID}");
-                // Send the frames
-                List<byte[]> packages = AnimationRequestProtocol.CreateResponse(frames);
-
-                foreach(byte[] packet in packages)
-                {
-                    _server.SendMessageToClient(e.ClientID,MessageType.Animation_PrepareFrame,packet);
-                }
-            }
+            _isDisposed = true;
         }
     }
 }

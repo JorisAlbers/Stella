@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Animation;
@@ -24,8 +25,9 @@ namespace StellaServerLib.Test
             FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);
 
             var animatorMock = new Mock<IAnimator>();
-            animatorMock.Setup(x => x.GetFrameSetMetadata()).Returns(frameSetMetadata);
-
+            animatorMock.Setup(x => x.GetNextFramePerPi())
+                .Returns(new Frame[] {new Frame(0, 0) {new PixelInstruction(1, 2, 3, 4)}});
+            
             byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
@@ -44,70 +46,15 @@ namespace StellaServerLib.Test
 
             //EXECUTE
             ClientController controller = new ClientController(mock.Object);
-            controller.StartAnimation(animatorMock.Object);
+            controller.Run();
+            controller.StartAnimation(animatorMock.Object, DateTime.Now);
+
+            Thread.Sleep(1000); // async hack
 
             //ASSERT
             Assert.AreEqual(expectedID,id);
             Assert.AreEqual(expectedMessageType,messageType);
             Assert.AreEqual(expectedBytes,bytes);
-        }
-
-        [Test]
-        public void AnimationRequestReceived_TwoFramesRequested_SendsTheFrames()
-        {
-            //SETUP
-            int expectedID = 0;
-            MessageType expectedMessageType = MessageType.Animation_PrepareFrame;
-            
-            Frame frame1 = new Frame(0,100){new PixelInstruction(10,1,2,3)};
-            Frame frame2 = new Frame(1,200){new PixelInstruction(20,4,5,6)};
-            Frame frame3 = new Frame(2,200){new PixelInstruction(30,7,8,9)};
-
-            Frame[] framesPerPi1 = new Frame[]{frame1,null,null};
-            Frame[] framesPerPi2 = new Frame[]{frame2,null,null};
-            Frame[] framesPerPi3 = new Frame[]{frame3,null,null};
-
-            
-            var animatorMock = new Mock<IAnimator>();
-            animatorMock.Setup(x => x.GetFrameSetMetadata()).Returns(new FrameSetMetadata(DateTime.Now));
-            animatorMock.SetupSequence(x => x.GetNextFramePerPi()).Returns(framesPerPi1).Returns(framesPerPi2).Returns(framesPerPi3);
-
-            byte[] expectedBytes1 = FrameProtocol.SerializeFrame(frame1,PacketProtocol<MessageType>.MAX_MESSAGE_SIZE)[0];
-            byte[] expectedBytes2 = FrameProtocol.SerializeFrame(frame2,PacketProtocol<MessageType>.MAX_MESSAGE_SIZE)[0];
-            var mock = new Mock<IServer>();
-            mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
-
-            byte[] bytes1 = null, bytes2 = null;
-            int callCount = 0;
-
-            mock.Setup(x=> x.SendMessageToClient(0,
-                                                 MessageType.Animation_PrepareFrame,
-                                                 It.IsAny<byte[]>()))
-                                                 .Callback<int,MessageType,byte[]>((i,t,b) =>
-            {
-                if(callCount++ == 0)
-                {
-                    bytes1 = b;
-                }
-                else
-                {
-                    bytes2 = b;
-                }
-                
-            });
-
-            //EXECUTE
-            ClientController controller = new ClientController(mock.Object);
-            controller.StartAnimation(animatorMock.Object);
-
-            mock.Raise(m => m.AnimationRequestReceived += null, new AnimationRequestEventArgs(expectedID,0,2));
-
-            //ASSERT
-            Assert.AreEqual(2, callCount);
-            // Frame1
-            Assert.AreEqual(expectedBytes1,bytes1);
-            // Frame 2            
-            Assert.AreEqual(expectedBytes2,bytes2);
         }
     }
 }

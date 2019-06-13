@@ -11,7 +11,6 @@ namespace StellaServerLib.Animation
     {
         private readonly IEnumerator<Frame> _drawerEnumerator;
         private readonly List<PiMaskItem> _mask;
-        private readonly DateTime _startAt;
         private readonly int _numberOfPis;
         
         /// <summary>
@@ -20,11 +19,10 @@ namespace StellaServerLib.Animation
         /// <param name="drawer">The drawer to get frames from.</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
         /// <param name="startAt">The time to start the animation</param>
-        public Animator(IDrawer drawer, List<PiMaskItem> mask, DateTime startAt)
+        public Animator(IDrawer drawer, List<PiMaskItem> mask)
         {
             _drawerEnumerator = drawer.GetEnumerator();
             _mask = mask;
-            _startAt = startAt;
             _numberOfPis = mask.Select(x => x.PiIndex).Distinct().Count();
         }
 
@@ -53,12 +51,6 @@ namespace StellaServerLib.Animation
             }
 
             return framePerPi;
-        }
-
-        /// <inheritdoc />
-        public FrameSetMetadata GetFrameSetMetadata()
-        {
-            return new FrameSetMetadata(_startAt);
         }
     }
 }

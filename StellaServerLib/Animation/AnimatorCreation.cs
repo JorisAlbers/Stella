@@ -14,10 +14,10 @@ namespace StellaServerLib.Animation
     public static class AnimatorCreation
     {
 
-        public static Animator Create(Storyboard storyboard, List<PiMaskItem> mask, DateTime startAt)
+        public static Animator Create(Storyboard storyboard, List<PiMaskItem> mask)
         {
             IDrawer drawer = CreateDrawer(storyboard.AnimationSettings);
-            return new Animator(drawer,mask, startAt);
+            return new Animator(drawer,mask);
         }
 
         private static IDrawer CreateDrawer(IAnimationSettings[] storyboardAnimationSettings)

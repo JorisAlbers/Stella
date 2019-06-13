@@ -43,14 +43,14 @@ namespace StellaServerLib
             IAnimator animator;
             try
             {
-                animator = AnimatorCreation.Create(storyboard, _mask, DateTime.Now);
+                animator = AnimatorCreation.Create(storyboard, _mask);
             }
             catch (Exception e)
             {
                 throw new Exception("Failed to create new animator.",e);
             }
 
-            _clientController.StartAnimation(animator);
+            _clientController.StartAnimation(animator, DateTime.Now + TimeSpan.FromMilliseconds(200)); // TODO variable startAT
 
         }
 
@@ -92,6 +92,7 @@ namespace StellaServerLib
             try
             {
                 ClientController clientController = new ClientController(server);
+                clientController.Run();
                 return clientController;
             }
             catch (Exception e)

@@ -37,7 +37,7 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex , expectedPixelIndex)
             };
 
-            Animator animator = new Animator(drawerMock.Object, mask, DateTime.Now);
+            Animator animator = new Animator(drawerMock.Object, mask);
             Frame[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(1, framePerPi.Length);
@@ -88,7 +88,7 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
 
-            Animator animator = new Animator(drawerMock.Object,mask,DateTime.Now);
+            Animator animator = new Animator(drawerMock.Object,mask);
             Frame[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(3,framePerPi.Length);
@@ -152,7 +152,7 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
 
-            Animator animator = new Animator(drawerMock.Object, mask, DateTime.Now);
+            Animator animator = new Animator(drawerMock.Object, mask);
             // Flush first two frames
             animator.GetNextFramePerPi();
             animator.GetNextFramePerPi();

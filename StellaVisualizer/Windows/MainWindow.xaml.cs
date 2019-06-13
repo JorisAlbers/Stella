@@ -121,7 +121,7 @@ namespace StellaVisualizer.Windows
                 RpiViewModels[i].Clear();
             }
 
-            _startAt = Animator.GetFrameSetMetadata().TimeStamp.Ticks;
+            _startAt = 0;
             _nextFramePerLedStripViewModel = Animator.GetNextFramePerPi();
         }
 

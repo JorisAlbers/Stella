@@ -110,13 +110,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer,mask,DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, mask), DateTime.Now);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternDrawer, mask, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(slidingPatternDrawer, mask), DateTime.Now);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternDrawer, mask, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(movingPatternDrawer, mask), DateTime.Now);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");

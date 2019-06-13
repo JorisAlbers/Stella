@@ -19,9 +19,7 @@ namespace StellaServerLib.Network
         private object _isShuttingDownLock = new object();
 
         private ISocketConnection _listenerSocket;
-
-        public event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
-
+        
         public Server(string ip, int port)
         {
             _ip = IPAddress.Parse(ip);
@@ -124,10 +122,6 @@ namespace StellaServerLib.Network
                     // The client wants to sync the time
                     ParseTimeSyncMessage(client, e.Message);
                     break;
-                case MessageType.Animation_PrepareFrame:
-                    // The client request the next n frames
-                    OnAnimationRequestReceived(client.ID,e.Message);
-                    break;
                 default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
                     break;
@@ -185,19 +179,6 @@ namespace StellaServerLib.Network
         {
             Console.WriteLine($"Synchronizing time with client {client.ID} ");
             client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(DateTime.Now,message));
-        }
-
-        private void OnAnimationRequestReceived(int clientID, byte[] message)
-        {
-            int startIndex, count;
-            AnimationRequestProtocol.ParseRequest(message,out startIndex,out count);
-
-            Console.WriteLine($"Client {clientID} has requested {count} frames starting from index {startIndex}");
-            EventHandler<AnimationRequestEventArgs> eventHandler = AnimationRequestReceived;
-            if (eventHandler != null)
-            {
-                eventHandler(this,new AnimationRequestEventArgs(clientID,startIndex,count));
-            }
         }
 
         public void Dispose()
