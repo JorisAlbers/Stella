@@ -9,7 +9,7 @@ namespace StellaServerAPI.Test.Protocol
     public class TestStringProtocol
     {
         [Test]
-        public void Deserialize_SmallString_ReturnsASinglePackage()
+        public void Serialize_SmallString_ReturnsASinglePackage()
         {
             int maxPackageSize = 300;
             string message = "ThisIsAMessage";
@@ -28,7 +28,7 @@ namespace StellaServerAPI.Test.Protocol
         }
 
         [Test]
-        public void Deserialize_LargeString_ReturnsTwoPackages()
+        public void Serialize_LargeString_ReturnsTwoPackages()
         {
             int maxPackageSize = 40;
             string message = "ThisIsALargeMessageThatDoesNotFitInASinglePackage";
