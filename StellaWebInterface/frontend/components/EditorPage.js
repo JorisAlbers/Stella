@@ -8,6 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import {socketConnect} from 'socket.io-react';
 import AceEditor from 'react-ace';
+// import * as rapydscript from 'rapydscript-ng';
 // Import tools
 import "brace/ext/language_tools";
 // Import the theme
@@ -26,8 +27,8 @@ class EditorPage extends React.Component {
       modus: 'javascript'
     };
     this.code = {
-      javascript: `// Javascript sample code \nreturn {a: "foo", b: {c:"bar", d:"buzz"}};`,
-      python: `# Python sample code \nreturn {a: "foo", b: {c:"bar", d:"buzz"}};`
+      javascript: `// Javascript sample code \nreturn {a: "foo", b: {c:"bar", d:"brazzers"}};`,
+      python: `# Python sample code \nprint('hello world')`
     };
   }
 
@@ -53,6 +54,15 @@ class EditorPage extends React.Component {
         }
         break;
       case "python":
+        // try {
+        // const compiler = rapydscript.create_compiler();
+        // this.setState({
+        //   error: null,
+        //   finalObject: eval(compiler.compile(this.code[this.state.modus], {'omit_baselib': false}))
+        // });
+        // } catch (e) {
+        //   this.setState({error: e.message, finalObject: null})
+        // }
         this.setState({error: null, finalObject: "Python doesn't have a compiler yet"});
         break;
       case "draw":
@@ -92,10 +102,9 @@ class EditorPage extends React.Component {
   render() {
     const {error, finalObject, modus} = this.state;
 
-    console.log(modus);
     return <div>
       <Grid container spacing={0} direction={'column'}>
-        <Grid xs={1} item>
+        <Grid xs item>
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-age-simple">
               Modus:
@@ -103,7 +112,7 @@ class EditorPage extends React.Component {
             <Select
               value={modus}
               onChange={(e) => this.setState({modus: e.target.value})}
-              input={<OutlinedInput labelWidth={120} name="age" id="outlined-age-simple"/>}
+              input={<OutlinedInput labelWidth={55} name="age" id="outlined-age-simple"/>}
             >
               <MenuItem value={"javascript"}>Javascript</MenuItem>
               <MenuItem value={"python"}>Python</MenuItem>
@@ -111,44 +120,38 @@ class EditorPage extends React.Component {
             </Select>
           </FormControl>
         </Grid>
-        <Grid xs={11} item>
+        <Grid container direction={'row'}>
           {(modus === "javascript" || modus === 'python') &&
-          <Grid container spacing={0} direction={'row'}>
-            <Grid xs={11} item>
-              <AceEditor
-                placeholder="Placeholder Text"
-                mode={modus}
-                theme="monokai"
-                name="ace-code-editor-stella"
-                onChange={(e) => this.code[this.state.modus] = e}
-                fontSize={14}
-                style={{width: '100%', padding: '1px'}}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                value={this.code[this.state.modus]}
-                setOptions={{
-                  enableBasicAutocompletion: true,
-                  enableLiveAutocompletion: true,
-                  enableSnippets: false,
-                  showLineNumbers: true,
-                  tabSize: 2,
-                }}/>
-            </Grid>
-            <Grid xs item>
-              <Grid container spacing={3} direction={'column'}>
-                <Grid xs item>
-                  <Button disabled color="inherit" align="left" onClick={() => {
-                  }}>Test</Button>
-                  <Button color="inherit" align="left" onClick={() => this.runCode()}>Run</Button>
-                  {/*<Button disabled color="inherit" align="left" onClick={() => {}}>Upload</Button>*/}
-                </Grid>
-              </Grid>
-            </Grid>
+          <Grid xs={11} className={'ide-editor'} item>
+            <AceEditor
+              placeholder="Placeholder Text"
+              mode={modus}
+              theme="monokai"
+              name="ace-code-editor-stella"
+              onChange={(e) => this.code[this.state.modus] = e}
+              fontSize={14}
+              style={{width: '100%', padding: '1px'}}
+              showPrintMargin={true}
+              showGutter={true}
+              highlightActiveLine={true}
+              value={this.code[this.state.modus]}
+              setOptions={{
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
+                enableSnippets: false,
+                showLineNumbers: true,
+                tabSize: 2,
+              }}/>
           </Grid>
           }
+          <Grid xs item>
+            <Button disabled color="inherit" align="left" onClick={() => {
+            }}>Test</Button>
+            <Button color="inherit" align="left" onClick={() => this.runCode()}>Run</Button>
+            {/*<Button disabled color="inherit" align="left" onClick={() => {}}>Upload</Button>*/}
+          </Grid>
         </Grid>
-        <Grid xs={2} item>
+        <Grid xs item>
           {error &&
           <React.Fragment>
             <h2>Error: </h2>
