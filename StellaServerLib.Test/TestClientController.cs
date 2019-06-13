@@ -18,7 +18,7 @@ namespace StellaServerLib.Test
         {
             //SETUP
             int expectedID = 0;
-            MessageType expectedMessageType = MessageType.Animation_Start;
+            MessageType expectedMessageType = MessageType.Animation_RenderFrame;
             var mock = new Mock<IServer>();
 
             FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);
@@ -57,7 +57,7 @@ namespace StellaServerLib.Test
         {
             //SETUP
             int expectedID = 0;
-            MessageType expectedMessageType = MessageType.Animation_Request;
+            MessageType expectedMessageType = MessageType.Animation_PrepareFrame;
             
             Frame frame1 = new Frame(0,100){new PixelInstruction(10,1,2,3)};
             Frame frame2 = new Frame(1,200){new PixelInstruction(20,4,5,6)};
@@ -81,7 +81,7 @@ namespace StellaServerLib.Test
             int callCount = 0;
 
             mock.Setup(x=> x.SendMessageToClient(0,
-                                                 MessageType.Animation_Request,
+                                                 MessageType.Animation_PrepareFrame,
                                                  It.IsAny<byte[]>()))
                                                  .Callback<int,MessageType,byte[]>((i,t,b) =>
             {

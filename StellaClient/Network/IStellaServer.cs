@@ -8,10 +8,10 @@ namespace StellaClient.Network
     {
         void Dispose();
         void Send(MessageType type, byte[] message);
-        void SendFrameRequest(int lastFrameIndex, int count);
         void Start();
-        event EventHandler<FrameSetMetadata> AnimationStartReceived;
         event EventHandler<Frame> FrameReceived;
+        event EventHandler RenderFrameReceived;
+
 
     }
 }

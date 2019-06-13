@@ -124,7 +124,7 @@ namespace StellaServerLib.Network
                     // The client wants to sync the time
                     ParseTimeSyncMessage(client, e.Message);
                     break;
-                case MessageType.Animation_Request:
+                case MessageType.Animation_PrepareFrame:
                     // The client request the next n frames
                     OnAnimationRequestReceived(client.ID,e.Message);
                     break;

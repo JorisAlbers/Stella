@@ -30,7 +30,7 @@ namespace StellaClient.Network
 
         private Dictionary<int, FrameProtocol> _frameSectionBuffer; // int = frame index, 
 
-        public event EventHandler<FrameSetMetadata> AnimationStartReceived;
+        public event EventHandler RenderFrameReceived;
         public event EventHandler<Frame> FrameReceived;
 
 
@@ -70,12 +70,6 @@ namespace StellaClient.Network
             {
                 Console.Out.WriteLine($"Failed to send message of type {type}. {exception}"); // TODO keep buffer of message to send on reconnect
             }
-        }
-
-        public void SendFrameRequest(int lastFrameIndex, int count)
-        {
-            Console.Out.WriteLine($"StellaServer requesting {count} frames from index {lastFrameIndex}");
-            Send(MessageType.Animation_Request, AnimationRequestProtocol.CreateRequest(lastFrameIndex, count));
         }
 
         private void SendInit()
@@ -149,10 +143,10 @@ namespace StellaClient.Network
                 case MessageType.TimeSync: // Server sends back a timesync message
                     ParseTimeSyncData(e.Message);
                     break;
-                case MessageType.Animation_Start: // Server wants us to start a new animation
-                    OnAnimationStartReceived(e.Message);
+                case MessageType.Animation_RenderFrame: // Server wants us to render the prepared frame
+                    OnAnimationStartReceived();
                     break;
-                case MessageType.Animation_Request: // Server sends us frames
+                case MessageType.Animation_PrepareFrame: // Server sends us frames
                     OnAnimationRequestReceived(e.Message);
                     break;
                 default:
@@ -193,17 +187,12 @@ namespace StellaClient.Network
            }
         }
 
-        private void OnAnimationStartReceived(byte[] message)
+        private void OnAnimationStartReceived()
         {
-            FrameSetMetadata metadata = FrameSetMetadataProtocol.Deserialize(message);
-            lock (_resourceLock)
-            {
-                _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
-            }
-            EventHandler<FrameSetMetadata> handler = AnimationStartReceived;
+            EventHandler handler = RenderFrameReceived;
             if (handler != null)
             {
-                handler(this, metadata);
+                handler(this,new EventArgs());
             }
         }
 
@@ -216,6 +205,11 @@ namespace StellaClient.Network
             Frame frame = null;
             lock (_resourceLock)
             {
+                if (_frameSectionBuffer == null)
+                {
+                    _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
+                }
+
                 if (!_frameSectionBuffer.ContainsKey(frameIndex))
                 {
                     _frameSectionBuffer.Add(frameIndex, new FrameProtocol());

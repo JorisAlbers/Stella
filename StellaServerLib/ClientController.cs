@@ -40,7 +40,7 @@ namespace StellaServerLib
                 foreach(int clientID in _server.ConnectedClients)
                 {
                     byte[] message = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
-                    _server.SendMessageToClient(clientID,MessageType.Animation_Start,message);
+                    _server.SendMessageToClient(clientID,MessageType.Animation_RenderFrame,message);
                 }
             }
             
@@ -84,7 +84,7 @@ namespace StellaServerLib
 
                 foreach(byte[] packet in packages)
                 {
-                    _server.SendMessageToClient(e.ClientID,MessageType.Animation_Request,packet);
+                    _server.SendMessageToClient(e.ClientID,MessageType.Animation_PrepareFrame,packet);
                 }
             }
         }

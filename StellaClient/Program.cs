@@ -90,7 +90,8 @@ namespace StellaClient
             {
                 IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port);
                 _stellaServer = new StellaServer(localEndPoint, _configuration.Id, new LinuxTimeSetter());
-                _stellaServer.FrameReceived += Server_OnFrameReceived;
+                _stellaServer.FrameReceived += (sender, frame) => _ledController.PrepareFrame(frame);
+                _stellaServer.RenderFrameReceived += (sender, eventArgs) => _ledController.Render();
                 
                 _stellaServer.Start();
             }
@@ -116,12 +117,7 @@ namespace StellaClient
             _stellaServer.Dispose();
             
         }
-
-        private static void Server_OnFrameReceived(object sender, Frame frame)
-        {
-            _ledController.PrepareFrame(frame);
-        }
-
+      
         static void OutputHelp()
         {
             Console.Out.WriteLine("Stella Client");
