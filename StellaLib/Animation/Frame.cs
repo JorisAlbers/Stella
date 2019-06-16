@@ -60,7 +60,7 @@ namespace StellaLib.Animation
     /// 
     /// </summary>
     [DebuggerDisplay("Index = {Index}, TSR = {TimeStampRelative}, Count = {Count}")]
-    public class FrameWithoutDelta : List<PixelInstructionWithoutDelta>, IEquatable<Frame>
+    public class FrameWithoutDelta : List<PixelInstructionWithoutDelta>, IEquatable<FrameWithoutDelta>
     {
         /// <summary>
         /// The index of the Frame in the frameSet.
@@ -81,7 +81,7 @@ namespace StellaLib.Animation
             TimeStampRelative = timeStampRelative;
         }
 
-        public bool Equals(Frame other)
+        public bool Equals(FrameWithoutDelta other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
