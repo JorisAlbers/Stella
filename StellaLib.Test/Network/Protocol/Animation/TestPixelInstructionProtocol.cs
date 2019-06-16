@@ -45,4 +45,40 @@ namespace StellaLib.Test.Network.Protocol.Animation
         }
         
     }
+
+    [TestFixture]
+    public class TestPixelInstructionWithoutDeltaProtocol
+    {
+        [Test]
+        public void Serialize_PixelInStructionWithoutDelta_CorrectlyConvertedToByteArray()
+        {
+            PixelInstructionWithoutDelta pi = new PixelInstructionWithoutDelta();
+            pi.Color = Color.FromArgb(1, 2, 3);
+
+            byte[] expectedBytes = new byte[1 + 1 + 1]; // Red, green , blue 
+            expectedBytes[0] = (byte)pi.Color.R;
+            expectedBytes[1] = (byte)pi.Color.G;
+            expectedBytes[2] = (byte)pi.Color.B;
+
+            byte[] buffer = new byte[PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED];
+            PixelInstructionWithoutDeltaProtocol.Serialize(pi, buffer, 0);
+            Assert.AreEqual(expectedBytes, buffer);
+        }
+
+        [Test]
+        public void Deserialize_BytesArray_CorrectlyDeserializesByteArray()
+        {
+            PixelInstructionWithoutDelta expectedPixelInstruction = new PixelInstructionWithoutDelta();
+            expectedPixelInstruction.Color = Color.FromArgb(1, 2, 3);
+
+            byte[] bytes = new byte[1 + 1 + 1]; // Red, green , blue 
+            bytes[0] = (byte)expectedPixelInstruction.Color.R;
+            bytes[1] = (byte)expectedPixelInstruction.Color.G;
+            bytes[2] = (byte)expectedPixelInstruction.Color.B;
+
+            PixelInstructionWithoutDelta pi = PixelInstructionWithoutDeltaProtocol.Deserialize(bytes, 0);
+            Assert.AreEqual(expectedPixelInstruction, pi);
+        }
+
+    }
 }
