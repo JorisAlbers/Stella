@@ -33,6 +33,8 @@ namespace StellaLib.Network.Protocol.Animation
     ///     300 pixels * 3 + 8 = 908  (1 strip)
     ///     600 pixels * 3 + 8 = 1812 (2 strips)
     ///     900 pixels * 3 + 8 = 2716 (3 strips)
+    ///
+    ///     1200 pixels * 3 + 8 = 3606
     ///  
     /// </summary>
     public class FrameProtocol
