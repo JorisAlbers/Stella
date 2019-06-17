@@ -32,5 +32,17 @@ namespace StellaLib.Network.Protocol
             }
             return packages;
         }
+
+        public static List<byte[]> CreateResponse(IEnumerable<FrameWithoutDelta> frames)
+        {
+            List<byte[]> packages = new List<byte[]>();
+            foreach (FrameWithoutDelta frame in frames)
+            {
+                packages.AddRange(FrameWithoutDeltaProtocol.SerializeFrame(frame, PacketProtocol<MessageType>.MAX_MESSAGE_SIZE));
+            }
+            return packages;
+        }
+
+
     }
 }
