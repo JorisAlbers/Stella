@@ -14,7 +14,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <ListBox ItemsSource="{Binding LedStripViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="LightBlue" BorderThickness="1"
+    <ListBox ItemsSource="{Binding LedStripViewModels}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" BorderThickness="1"
              VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
              ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
 
