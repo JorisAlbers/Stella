@@ -134,7 +134,16 @@ namespace StellaVisualizer.ViewModels
                         Console.Out.WriteLine($"The image at {ImagePath} does not exist.");
                         return;
                     }
-                    drawer = new BitmapDrawer(0,StripLength, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer11 = new BitmapDrawer(0, LengthPerSection, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer22 = new BitmapDrawer(LengthPerSection * 1, LengthPerSection, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer33 = new BitmapDrawer(LengthPerSection * 2, LengthPerSection, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer44 = new BitmapDrawer(LengthPerSection * 3, LengthPerSection, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer55 = new BitmapDrawer(LengthPerSection * 4, LengthPerSection, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer66 = new BitmapDrawer(LengthPerSection * 5, LengthPerSection, WaitMS, new Bitmap(Image.FromFile(ImagePath)));
+
+                    //drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 1000, 2000, 3000, 4000, 5000 });
+                    drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 2000, 1000, 0, 0, 1000, 2000 });
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
