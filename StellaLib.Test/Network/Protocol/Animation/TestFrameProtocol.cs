@@ -229,12 +229,11 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
-            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS,3)
-            {
-                new PixelInstructionWithoutDelta{Color = Color.FromArgb(1,2,3)},
-                new PixelInstructionWithoutDelta{Color = Color.FromArgb(4,5,6)},
-                new PixelInstructionWithoutDelta{Color = Color.FromArgb(7,8,9)}
-            };
+            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS, 3);
+            frame[0] = new PixelInstructionWithoutDelta{Color = Color.FromArgb(1,2,3)};
+            frame[1] = new PixelInstructionWithoutDelta{Color = Color.FromArgb(4, 5, 6)};
+            frame[2] = new PixelInstructionWithoutDelta{Color = Color.FromArgb(7, 8, 9)};
+
             byte[] expectedBytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + 3 + 3 + 3];
             int startIndex = 0;
             BitConverter.GetBytes(frameIndex).CopyTo(expectedBytes, startIndex); // Frame index
@@ -266,10 +265,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
-            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS,300);
+            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                frame.Add(new PixelInstructionWithoutDelta(1, 2, 3));
+                frame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
             }
 
             // RUN
@@ -289,7 +288,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             // Assert
             Assert.AreEqual(3, packages.Length);
             Assert.IsNotNull(deserializedFrame);
-            CollectionAssert.AreEqual(frame, deserializedFrame);
+            CollectionAssert.AreEqual(frame.Items, deserializedFrame.Items);
 
         }
 
@@ -297,12 +296,11 @@ namespace StellaLib.Test.Network.Protocol.Animation
         public void TryDeserialize_frameWithNoFrameSets_DeserializesCorrectly()
         {
             int frameWaitMS = 100;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(1, frameWaitMS,3)
-            {
-                new PixelInstructionWithoutDelta{Color = Color.FromArgb(1,2,3)},
-                new PixelInstructionWithoutDelta{Color = Color.FromArgb(4,5,6)},
-                new PixelInstructionWithoutDelta{Color = Color.FromArgb(7,8,9)}
-            };
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(1, frameWaitMS, 3);
+            expectedFrame[0] = new PixelInstructionWithoutDelta { Color = Color.FromArgb(1, 2, 3) };
+            expectedFrame[1] = new PixelInstructionWithoutDelta { Color = Color.FromArgb(4, 5, 6) };
+            expectedFrame[2] = new PixelInstructionWithoutDelta { Color = Color.FromArgb(7, 8, 9) };
+
             byte[] bytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED * 3];
             int startIndex = 0;
             BitConverter.GetBytes(1).CopyTo(bytes, startIndex); // Frame index
@@ -329,7 +327,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(expectedFrame.Index, frame.Index);
             Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
-            CollectionAssert.AreEqual(expectedFrame, frame);
+            CollectionAssert.AreEqual(expectedFrame.Items, frame.Items);
         }
 
         [Test]
@@ -338,10 +336,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,300);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                expectedFrame.Add(new PixelInstructionWithoutDelta(1, 2, 3));
+                expectedFrame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
             }
 
             // RUN
@@ -358,7 +356,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(expectedFrame.Index, frame.Index);
             Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
-            CollectionAssert.AreEqual(expectedFrame, frame);
+            CollectionAssert.AreEqual(expectedFrame.Items, frame.Items);
         }
 
         [Test]
@@ -367,10 +365,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,300);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                expectedFrame.Add(new PixelInstructionWithoutDelta(1, 2, 3));
+                expectedFrame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
             }
 
             // RUN
@@ -387,7 +385,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(expectedFrame.Index, frame.Index);
             Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
-            CollectionAssert.AreEquivalent(expectedFrame, frame);
+            CollectionAssert.AreEquivalent(expectedFrame.Items, frame.Items);
         }
 
         [Test]
@@ -397,10 +395,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int maxPackageSize = 1016;
             int frameWaitMS = 100;
             int frameIndex = 9;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,300);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                expectedFrame.Add(new PixelInstructionWithoutDelta(1, 2, 3));
+                expectedFrame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
             }
 
             // RUN

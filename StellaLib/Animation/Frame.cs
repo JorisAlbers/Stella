@@ -59,8 +59,8 @@ namespace StellaLib.Animation
     ///     2. The display time 
     /// 
     /// </summary>
-    [DebuggerDisplay("Index = {Index}, TSR = {TimeStampRelative}, Count = {Count}")]
-    public class FrameWithoutDelta : List<PixelInstructionWithoutDelta>, IEquatable<FrameWithoutDelta>
+    [DebuggerDisplay("Index = {Index}, TSR = {TimeStampRelative}, Count = {Items.Length}")]
+    public class FrameWithoutDelta : IEquatable<FrameWithoutDelta>
     {
         /// <summary>
         /// The index of the Frame in the frameSet.
@@ -73,12 +73,29 @@ namespace StellaLib.Animation
         /// <value></value>
         public int TimeStampRelative { get; set; }
 
+        /// <summary>
+        /// The pixelInstructions in this list.
+        /// </summary>
+        public PixelInstructionWithoutDelta[] Items { get; }
+
+        /// <summary>
+        /// The number of pixelInstructions in this list
+        /// </summary>
+        public int Count => Items.Length;
+
+        public PixelInstructionWithoutDelta this[int index]
+        {
+            get => Items[index];
+            set => Items[index] = value;
+        }
+
 
         [DebuggerStepThrough]
-        public FrameWithoutDelta(int index, int timeStampRelative, int capacity) : base(capacity)
+        public FrameWithoutDelta(int index, int timeStampRelative, int capacity)
         {
             Index = index;
             TimeStampRelative = timeStampRelative;
+            Items = new PixelInstructionWithoutDelta[capacity];
         }
 
         public bool Equals(FrameWithoutDelta other)
@@ -87,10 +104,10 @@ namespace StellaLib.Animation
             if (ReferenceEquals(this, other)) return true;
             if (Index != other.Index) return false;
             if (TimeStampRelative != other.TimeStampRelative) return false;
-            if (Count != other.Count) return false;
-            for (int i = 0; i < Count; i++)
+            if (Items.Length != other.Items.Length) return false;
+            for (int i = 0; i < Items.Length; i++)
             {
-                if (!this[i].Equals(other[i]))
+                if (!this.Items[i].Equals(other.Items[i]))
                 {
                     return false;
                 }

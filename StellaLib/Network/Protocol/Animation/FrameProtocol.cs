@@ -210,7 +210,7 @@ namespace StellaLib.Network.Protocol.Animation
 
         public static byte[][] SerializeFrame(FrameWithoutDelta frame, int maxSizePerPackage)
         {
-            int bytesNeeded = HEADER_BYTES_NEEDED + frame.Count * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
+            int bytesNeeded = HEADER_BYTES_NEEDED + frame.Items.Length * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
             byte[][] packages;
 
             if (bytesNeeded <= maxSizePerPackage) 
@@ -290,9 +290,11 @@ namespace StellaLib.Network.Protocol.Animation
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        private FrameWithoutDelta _frame;
-        private int _numberOfFrameSections;
+        private FrameSectionPackageWithoutDelta[] _frameSectionPackages;
         private bool[] _frameSectionsReceived;
+        private int _frameIndex = -1;
+        private int _timeStampRelative = -1;
+
 
 
         /// <summary>
@@ -303,40 +305,35 @@ namespace StellaLib.Network.Protocol.Animation
         public bool TryDeserialize(byte[] bytes, out FrameWithoutDelta frame)
         {
             frame = null;
-            if (_frame == null)
+            if (_frameSectionPackages == null)
             {
                 // First package.
                 // Read Frame header
                 int startIndex = 0;
-                int indexOfFrame = BitConverter.ToInt32(bytes, startIndex);
-                int timeStampRelative = BitConverter.ToInt32(bytes, startIndex += 4);
+                _frameIndex = BitConverter.ToInt32(bytes, startIndex);
+                _timeStampRelative = BitConverter.ToInt32(bytes, startIndex += 4);
                 int itemCount = BitConverter.ToInt32(bytes, startIndex += 4);
                 bool hasFrameSections = BitConverter.ToBoolean(bytes, startIndex += 4);
                 startIndex += 1;
-                _frame = new FrameWithoutDelta(indexOfFrame, timeStampRelative,itemCount);
 
                 if (hasFrameSections)
                 {
-                    _numberOfFrameSections = itemCount;
+                    _frameSectionPackages = new FrameSectionPackageWithoutDelta[itemCount];
                     _frameSectionsReceived = new bool[itemCount];
                     _frameSectionsReceived[0] = true;
                     // The rest of the package is a FrameSection
-                    FrameSectionPackageWithoutDelta package = FrameSectionWithoutDeltaProtocol.Deserialize(bytes, startIndex);
-                    foreach (PixelInstructionWithoutDelta instruction in package.pixelInstructions)
-                    {
-                        _frame.Add(instruction);
-                    }
+                    _frameSectionPackages[0] = FrameSectionWithoutDeltaProtocol.Deserialize(bytes, startIndex);
                     return false;
                 }
                 else
                 {
+                    frame = new FrameWithoutDelta(_frameIndex, _timeStampRelative, itemCount);
                     // The rest of the package contains PixelInstructions
                     for (int i = 0; i < itemCount; i++)
                     {
                         int instructionStartIndex = startIndex + i * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
-                        _frame.Add(PixelInstructionWithoutDeltaProtocol.Deserialize(bytes, instructionStartIndex));
+                        frame[i] = PixelInstructionWithoutDeltaProtocol.Deserialize(bytes, instructionStartIndex);
                     }
-                    frame = _frame;
                     return true;
                 }
             }
@@ -344,23 +341,29 @@ namespace StellaLib.Network.Protocol.Animation
             {
                 // Subsequent package. Always starts with a FrameSection.
                 FrameSectionPackageWithoutDelta package = FrameSectionWithoutDeltaProtocol.Deserialize(bytes, 0);
-                if (package.FrameSequenceIndex != _frame.Index)
+                if (package.FrameSequenceIndex != _frameIndex)
                 {
                     throw new System.Net.ProtocolViolationException(
-                        $"The frameIndex of the frameSection does not match with the Frame's index. Expected :{frame.Index}, Received: {package.FrameSequenceIndex}");
+                        $"The frameIndex of the frameSection does not match with the Frame's index. Expected :{_frameIndex}, Received: {package.FrameSequenceIndex}");
                 }
 
+                _frameSectionPackages[package.Index] = package;
                 _frameSectionsReceived[package.Index] = true;
-
-                // The order of the pixelinstructions in the frame does not matter as they contain their index.
-                foreach (PixelInstructionWithoutDelta instruction in package.pixelInstructions)
-                {
-                    _frame.Add(instruction);
-                }
 
                 if (_frameSectionsReceived.All(x => x))
                 {
-                    frame = _frame;
+                    // TODO add totalNumberOfPixelInstructions to frame header
+                    int totalPixelInstructions = _frameSectionPackages.Sum(x => x.NumberOfPixelInstructions);
+                    frame = new FrameWithoutDelta(_frameIndex, _timeStampRelative, totalPixelInstructions);
+                    int index = 0;
+                    for (int i = 0; i < _frameSectionPackages.Length; i++)
+                    {
+                        for (int j = 0; j < _frameSectionPackages[i].NumberOfPixelInstructions; j++)
+                        {
+                            frame[index++] = _frameSectionPackages[i].pixelInstructions[j];
+                        }
+                    }
+
                     return true;
                 }
 
