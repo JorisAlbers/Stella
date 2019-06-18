@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing
@@ -73,6 +74,83 @@ namespace StellaServerLib.Animation.Drawing
                     }
 
                     yield return frame;
+                    timestampRelative += _frameWaitMS;
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
+    /// <summary>
+    /// Moves a pattern over the led strip from the start of the led strip till the end.
+    /// </summary>
+    public class MovingPatternDrawerWithoutDelta : IDrawerWithoutDelta
+    {
+        private Color[] _pattern;
+        private int _stripLength;
+        private int _frameWaitMS;
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="startIndex">The start index on the led strip</param>
+        /// <param name="stripLength">The length of the section to draw</param>
+        /// <param name="frameWaitMS">The frame duration</param>
+        /// <param name="pattern">The pattern to move</param>
+        public MovingPatternDrawerWithoutDelta(int stripLength, int frameWaitMS, Color[] pattern)
+        {
+            _stripLength = stripLength;
+            _frameWaitMS = frameWaitMS;
+            _pattern = pattern;
+        }
+
+
+        /// <inheritdoc />
+        public IEnumerator<FrameWithoutDelta> GetEnumerator()
+        {
+            int timestampRelative = 0;
+            int frameIndex = 0;
+            PixelInstructionWithoutDelta[] currentFrame = new PixelInstructionWithoutDelta[_stripLength];
+
+            while (true)
+            {
+                // Slide into view
+                for (int i = 0; i < _pattern.Length - 1; i++)
+                {
+                    for (int j = 0; j < i + 1; j++)
+                    {
+                        currentFrame[j] = new PixelInstructionWithoutDelta(_pattern[_pattern.Length - 1 - i + j]);
+                    }
+                    
+                    yield return new FrameWithoutDelta(frameIndex++, timestampRelative, currentFrame.ToArray());
+                    timestampRelative += _frameWaitMS;
+                }
+
+                // Normal
+                for (int i = 0; i < _stripLength - _pattern.Length + 1; i++)
+                {
+                    for (int j = 0; j < _pattern.Length; j++)
+                    {
+                        currentFrame[i + j] = new PixelInstructionWithoutDelta(_pattern[j]);
+                    }
+
+                    yield return new FrameWithoutDelta(frameIndex++, timestampRelative, currentFrame.ToArray());
+                    timestampRelative += _frameWaitMS;
+                }
+
+                // Slide out of view
+                for (int i = 0; i < _pattern.Length - 1; i++)
+                {
+                    for (int j = 0; j < _pattern.Length - 1 - i; j++)
+                    {
+                        currentFrame[_stripLength - (_pattern.Length - 1 - j - i)] = new PixelInstructionWithoutDelta(_pattern[j]);
+                    }
+
+                    yield return new FrameWithoutDelta(frameIndex++, timestampRelative, currentFrame.ToArray());
                     timestampRelative += _frameWaitMS;
                 }
             }
