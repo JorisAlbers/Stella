@@ -98,6 +98,7 @@ namespace StellaLib.Animation
             Items = new PixelInstructionWithoutDelta[capacity];
         }
 
+        [DebuggerStepThrough]
         public FrameWithoutDelta(int index, int timeStampRelative, PixelInstructionWithoutDelta[] items)
         {
             Index = index;
