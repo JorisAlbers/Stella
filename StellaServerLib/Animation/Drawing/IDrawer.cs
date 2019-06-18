@@ -9,4 +9,8 @@ namespace StellaServerLib.Animation.Drawing
     public interface IDrawer : IEnumerable<Frame>
     {
     }
+
+    public interface IDrawerWithoutDelta : IEnumerable<FrameWithoutDelta>
+    {
+    }
 }

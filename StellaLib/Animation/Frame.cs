@@ -98,6 +98,13 @@ namespace StellaLib.Animation
             Items = new PixelInstructionWithoutDelta[capacity];
         }
 
+        public FrameWithoutDelta(int index, int timeStampRelative, PixelInstructionWithoutDelta[] items)
+        {
+            Index = index;
+            TimeStampRelative = timeStampRelative;
+            Items = items;
+        }
+
         public bool Equals(FrameWithoutDelta other)
         {
             if (ReferenceEquals(null, other)) return false;
