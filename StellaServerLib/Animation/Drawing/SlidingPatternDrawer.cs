@@ -50,4 +50,48 @@ namespace StellaServerLib.Animation.Drawing
             return GetEnumerator();
         }
     }
+
+    /// <summary>
+    /// Repeats a pattern over the ledstrip and moves the start point of the pattern each
+    /// frame by +1.
+    /// </summary>
+    public class SlidingPatternDrawerWithoutDelta : IDrawerWithoutDelta
+    {
+        private Color[] _pattern;
+        private int _stripLength;
+        private int _frameWaitMS;
+
+        public SlidingPatternDrawerWithoutDelta(int stripLength, int frameWaitMS, Color[] pattern)
+        {
+            _stripLength = stripLength;
+            _frameWaitMS = frameWaitMS;
+            _pattern = pattern;
+        }
+
+        public IEnumerator<FrameWithoutDelta> GetEnumerator()
+        {
+            int timestampRelative = 0;
+            int frameIndex = 0;
+            while (true)
+            {
+                for (int i = 0; i < _pattern.Length; i++)
+                {
+                    FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex++, timestampRelative, _stripLength);
+                    int patternStart = i;
+                    for (int j = 0; j < _stripLength; j++)
+                    {
+                        frame[j] = new PixelInstructionWithoutDelta(_pattern[(j + patternStart) % (_pattern.Length)]);
+                    }
+
+                    yield return frame;
+                    timestampRelative += _frameWaitMS;
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
 }
