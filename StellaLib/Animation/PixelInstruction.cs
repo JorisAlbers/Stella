@@ -32,4 +32,26 @@ namespace StellaLib.Animation
             Color = Color.FromArgb(red,green,blue);
         }
     }
+
+    public struct PixelInstructionWithoutDelta
+    {
+        /// <summary>
+        /// The color to set the pixel to
+        /// </summary>
+        public Color Color;
+
+        [DebuggerStepThrough]
+        public PixelInstructionWithoutDelta(Color color)
+        {
+            Color = color;
+        }
+
+        [DebuggerStepThrough]
+        public PixelInstructionWithoutDelta(byte red, byte green, byte blue)
+        {
+            Color = Color.FromArgb(red, green, blue);
+        }
+    }
+
+
 }
