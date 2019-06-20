@@ -18,4 +18,18 @@ namespace StellaServerLib.Animation
         FrameSetMetadata GetFrameSetMetadata();
 
     }
+
+    public interface IAnimatorWithoutDelta
+    {
+        /// <summary> Get the next frame, split over the pis</summary>
+        /// <returns>A frame for each pi.</returns>
+        FrameWithoutDelta[] GetNextFramePerPi();
+
+        /// <summary>
+        /// Get the frame set metadata
+        /// </summary>
+        /// <returns></returns>
+        FrameSetMetadata GetFrameSetMetadata();
+
+    }
 }
