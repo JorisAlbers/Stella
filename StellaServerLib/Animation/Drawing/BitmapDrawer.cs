@@ -84,6 +84,13 @@ namespace StellaServerLib.Animation.Drawing
                     frame[j] = new PixelInstructionWithoutDelta(color);
                 }
 
+                // Add empty pixels when the frame is too long
+                Color emptyColor = Color.Empty;
+                for (int j = width; j < stripLength; j++)
+                {
+                    frame[j] = new PixelInstructionWithoutDelta(emptyColor);
+                }
+
                 _frames[i] = frame;
             }
         }
