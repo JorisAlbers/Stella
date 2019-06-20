@@ -68,7 +68,7 @@ namespace StellaVisualizer.Windows
         }
 
         // TODO race condition
-        private Frame[] _nextFramePerLedStripViewModel = null;
+        private FrameWithoutDelta[] _nextFramePerLedStripViewModel = null;
         private long _startAt;
 
         private void IncrementTime()

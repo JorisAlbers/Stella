@@ -9,13 +9,6 @@ namespace StellaServerLib.Animation
     {
         /// <summary> Get the next frame, split over the pis</summary>
         /// <returns>A frame for each pi.</returns>
-        Frame[] GetNextFramePerPi();
-    }
-
-    public interface IAnimatorWithoutDelta
-    {
-        /// <summary> Get the next frame, split over the pis</summary>
-        /// <returns>A frame for each pi.</returns>
         FrameWithoutDelta[] GetNextFramePerPi();
     }
 }

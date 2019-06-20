@@ -23,12 +23,13 @@ namespace StellaServerLib.Test
             var mock = new Mock<IServer>();
 
             FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);
+            Assert.Fail("TODO: Fix this test.");
 
-            var animatorMock = new Mock<IAnimator>();
+            /*var animatorMock = new Mock<IAnimator>();
             animatorMock.Setup(x => x.GetNextFramePerPi())
-                .Returns(new Frame[] {new Frame(0, 0) {new PixelInstruction(1, 2, 3, 4)}});
+                .Returns(new FrameWithoutDelta[] {new FrameWithoutDelta(0, 0),  {new PixelInstruction(1, 2, 3, 4)}});*/
             
-            byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
+            /*byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
             int id = -1;
@@ -54,7 +55,7 @@ namespace StellaServerLib.Test
             //ASSERT
             Assert.AreEqual(expectedID,id);
             Assert.AreEqual(expectedMessageType,messageType);
-            Assert.AreEqual(expectedBytes,bytes);
+            Assert.AreEqual(expectedBytes,bytes);*/
         }
     }
 }
