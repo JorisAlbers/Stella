@@ -28,10 +28,10 @@ namespace StellaClient.Network
         private SocketConnectionController<MessageType> _socketConnectionController;
         private object _resourceLock = new object();
 
-        private Dictionary<int, FrameProtocol> _frameSectionBuffer; // int = frame index, 
+        private Dictionary<int, FrameWithoutDeltaProtocol> _frameSectionBuffer; // int = frame index, 
 
         public event EventHandler RenderFrameReceived;
-        public event EventHandler<Frame> FrameReceived;
+        public event EventHandler<FrameWithoutDelta> FrameReceived;
 
 
         public StellaServer(IPEndPoint serverAdress, int ID, ISystemTimeSetter systemTimeSetter)
@@ -44,7 +44,7 @@ namespace StellaClient.Network
                 _timeSetter = new TimeSetter(systemTimeSetter, 9);
             }
 
-            _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
+            _frameSectionBuffer = new Dictionary<int, FrameWithoutDeltaProtocol>();
         }
 
         public void Start()
@@ -201,18 +201,18 @@ namespace StellaClient.Network
             // The frame might be split up into multiple packages. 
             // We keep a buffer (FrameProtocol for each frame) to wait for all packages.
             // When the frame is complete, we call FrameReceived.
-            int frameIndex = FrameProtocol.GetFrameIndex(message);
-            Frame frame = null;
+            int frameIndex = FrameWithoutDeltaProtocol.GetFrameIndex(message);
+            FrameWithoutDelta frame = null;
             lock (_resourceLock)
             {
                 if (_frameSectionBuffer == null)
                 {
-                    _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
+                    _frameSectionBuffer = new Dictionary<int, FrameWithoutDeltaProtocol>();
                 }
 
                 if (!_frameSectionBuffer.ContainsKey(frameIndex))
                 {
-                    _frameSectionBuffer.Add(frameIndex, new FrameProtocol());
+                    _frameSectionBuffer.Add(frameIndex, new FrameWithoutDeltaProtocol());
                 }
 
                 if (_frameSectionBuffer[frameIndex].TryDeserialize(message, out frame))
@@ -227,9 +227,9 @@ namespace StellaClient.Network
             }
         }
 
-        private void OnFrameReceived(Frame frame)
+        private void OnFrameReceived(FrameWithoutDelta frame)
         {
-            EventHandler<Frame> handler = FrameReceived;
+            EventHandler<FrameWithoutDelta> handler = FrameReceived;
             if (handler != null)
             {
                 handler(this, frame);

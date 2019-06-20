@@ -18,7 +18,9 @@ namespace StellaClient.Test.Light
         [Test]
         public void PrepareFrame_Frame_FrameGetsDrawnToStrip()
         {
-            Frame frame = new Frame(0, 100) { new PixelInstruction { Index = 20, Color = Color.FromArgb(10, 20, 30) } };
+            FrameWithoutDelta frame = new FrameWithoutDelta(0,100,1);
+            frame[0] = new PixelInstructionWithoutDelta(Color.FromArgb(10, 20, 30));
+
             var mock = new Mock<ILEDStrip>();
 
             int index = -1;
@@ -31,14 +33,15 @@ namespace StellaClient.Test.Light
 
             BufferlessLedController controller = new BufferlessLedController(mock.Object);
             controller.PrepareFrame(frame);
-            Assert.AreEqual(20, index);
+            Assert.AreEqual(0, index);
             Assert.AreEqual(Color.FromArgb(10, 20, 30), color);
         }
 
         [Test]
         public void Render__LedStripRenderGetsCalled()
         {
-            Frame frame = new Frame(0, 100) { new PixelInstruction { Index = 20, Color = Color.FromArgb(10, 20, 30) } };
+            FrameWithoutDelta frame = new FrameWithoutDelta(0, 100, 1);
+            frame[0] = new PixelInstructionWithoutDelta(Color.FromArgb(10, 20, 30));
             var mock = new Mock<ILEDStrip>();
             mock.Setup(x => x.Render());
 

@@ -18,12 +18,11 @@ namespace StellaClient.Light
             _ledStrip = ledStrip;
         }
 
-        public void PrepareFrame(Frame frame)
+        public void PrepareFrame(FrameWithoutDelta frame)
         {
             for (int i = 0; i < frame.Count; i++)
             {
-                PixelInstruction instruction = frame[i];
-                _ledStrip.SetLEDColor(0, instruction.Index, instruction.Color);
+                _ledStrip.SetLEDColor(0, i, frame[i].Color);
             }
         }
 
