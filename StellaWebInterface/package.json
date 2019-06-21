@@ -31,6 +31,7 @@
     "react-fusioncharts": "^1.0.5",
     "react-popper": "^0.10.4",
     "react-redux": "^5.1.1",
+    "react-rnd-rotate": "^0.0.19",
     "react-router-dom": "^4.2.2",
     "react-scripts": "^2.1.8",
     "redux": "^4.0.1",

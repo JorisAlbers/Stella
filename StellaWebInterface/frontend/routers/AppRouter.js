@@ -12,7 +12,7 @@ const AppRouter = () => (
       <Switch>
         <PublicRoute path="/" component={HomePage} exact={true}/>
         <PublicRoute path="/editor" component={EditorPage}/>
-        <PublicRoute path="/configuration" component={ConfigurationPage}/>
+        <PublicRoute path="/configurations" component={ConfigurationPage}/>
         {/*<PublicRoute path="/register" component={Register}/>*/}
 
         {/*<Route component={NotFoundPage}/>*/}

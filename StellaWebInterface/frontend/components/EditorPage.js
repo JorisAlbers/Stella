@@ -24,7 +24,28 @@ class EditorPage extends React.Component {
     this.state = {
       error: null,
       finalObject: null,
-      modus: 'javascript'
+      currentMode: 'javascript',
+      modeOptions: [{
+        name: 'Javascript',
+        machineName: 'javascript',
+        enabled: true
+      }, {
+        name: 'Python',
+        machineName: 'python',
+        enabled: true
+      }, {
+        name: 'Draw',
+        machineName: 'draw',
+        enabled: false
+      }, {
+        name: 'Youtube',
+        machineName: 'youtube',
+        enabled: true
+      }, {
+        name: 'Vimeo',
+        machineName: 'vimeo',
+        enabled: true
+      }]
     };
     this.code = {
       javascript: `// Javascript sample code \nreturn {a: "foo", b: {c:"bar", d:"brazzers"}};`,
@@ -45,10 +66,10 @@ class EditorPage extends React.Component {
      * few devices and a local server that only serves to devices inside the network. This way it could never cause any
      * harm to the client/server and it couldn't do a XSS attack.
      */
-    switch (this.state.modus) {
+    switch (this.state.currentMode) {
       case "javascript":
         try {
-          this.setState({error: null, finalObject: new Function(this.code[this.state.modus])()});
+          this.setState({error: null, finalObject: new Function(this.code[this.state.currentMode])()});
         } catch (e) {
           this.setState({error: e.message, finalObject: null})
         }
@@ -58,7 +79,7 @@ class EditorPage extends React.Component {
         // const compiler = rapydscript.create_compiler();
         // this.setState({
         //   error: null,
-        //   finalObject: eval(compiler.compile(this.code[this.state.modus], {'omit_baselib': false}))
+        //   finalObject: eval(compiler.compile(this.code[this.state.currentMode], {'omit_baselib': false}))
         // });
         // } catch (e) {
         //   this.setState({error: e.message, finalObject: null})
@@ -100,41 +121,41 @@ class EditorPage extends React.Component {
   }
 
   render() {
-    const {error, finalObject, modus} = this.state;
+    const {error, finalObject, currentMode, modeOptions} = this.state;
 
     return <div>
       <Grid container spacing={0} direction={'column'}>
         <Grid xs item>
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-age-simple">
-              Modus:
+              currentMode:
             </InputLabel>
             <Select
-              value={modus}
-              onChange={(e) => this.setState({modus: e.target.value})}
+              value={currentMode}
+              onChange={(e) => this.setState({currentMode: e.target.value})}
               input={<OutlinedInput labelWidth={55} name="age" id="outlined-age-simple"/>}
             >
-              <MenuItem value={"javascript"}>Javascript</MenuItem>
-              <MenuItem value={"python"}>Python</MenuItem>
-              <MenuItem value={"draw"}>Draw</MenuItem>
+              {modeOptions.map((option) => {
+                return <MenuItem disabled={!option.enabled} value={option.machineName}>{option.name}</MenuItem>
+              })}
             </Select>
           </FormControl>
         </Grid>
         <Grid container direction={'row'}>
-          {(modus === "javascript" || modus === 'python') &&
+          {(currentMode === "javascript" || currentMode === 'python') &&
           <Grid xs={11} className={'ide-editor'} item>
             <AceEditor
               placeholder="Placeholder Text"
-              mode={modus}
+              mode={currentMode}
               theme="monokai"
               name="ace-code-editor-stella"
-              onChange={(e) => this.code[this.state.modus] = e}
+              onChange={(e) => this.code[currentMode] = e}
               fontSize={14}
               style={{width: '100%', padding: '1px'}}
               showPrintMargin={true}
               showGutter={true}
               highlightActiveLine={true}
-              value={this.code[this.state.modus]}
+              value={this.code[currentMode]}
               setOptions={{
                 enableBasicAutocompletion: true,
                 enableLiveAutocompletion: true,
@@ -145,8 +166,7 @@ class EditorPage extends React.Component {
           </Grid>
           }
           <Grid xs item>
-            <Button disabled color="inherit" align="left" onClick={() => {
-            }}>Test</Button>
+            <Button disabled color="inherit" align="left" onClick={() => {}}>Test</Button>
             <Button color="inherit" align="left" onClick={() => this.runCode()}>Run</Button>
             {/*<Button disabled color="inherit" align="left" onClick={() => {}}>Upload</Button>*/}
           </Grid>
