@@ -34,7 +34,7 @@ namespace StellaServerLib
 
         private void MainLoop()
         {
-            Frame[] frames = null;
+            FrameWithoutDelta[] frames = null;
             long renderNextFrameAt = 0;
 
             while (!_isDisposed)
@@ -73,13 +73,13 @@ namespace StellaServerLib
             }
         }
 
-        private void SendPrepareFrame(Frame[] frames)
+        private void SendPrepareFrame(FrameWithoutDelta[] frames)
         {
             for (int i = 0; i < frames.Length; i++)
             {
                 if (frames[i] != null)
                 {
-                    byte[][] packages = FrameProtocol.SerializeFrame(frames[i], PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
+                    byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frames[i], PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
                     for (int j = 0; j < packages.Length; j++)
                     {
                         _server.SendMessageToClient(i,MessageType.Animation_PrepareFrame,packages[j]);
@@ -88,7 +88,7 @@ namespace StellaServerLib
             }
         }
 
-        private void SendRenderFrame(Frame[] frames)
+        private void SendRenderFrame(FrameWithoutDelta[] frames)
         {
             for (int i = 0; i < frames.Length; i++)
             {

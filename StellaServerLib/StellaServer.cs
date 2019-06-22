@@ -15,6 +15,7 @@ namespace StellaServerLib
         private readonly int _port;
 
         private List<PiMaskItem> _mask;
+        private int[] _stripLengthPerPi;
         private Server _server;
         private ClientController _clientController;
 
@@ -43,7 +44,7 @@ namespace StellaServerLib
             IAnimator animator;
             try
             {
-                animator = AnimatorCreation.Create(storyboard, _mask);
+                animator = AnimatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
             }
             catch (Exception e)
             {
@@ -64,7 +65,7 @@ namespace StellaServerLib
 
                 // Convert them to a mask
                 PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
-                return piMaskCalculator.Calculate();
+                return piMaskCalculator.Calculate(out _stripLengthPerPi);
             }
             catch (Exception e)
             {

@@ -68,16 +68,15 @@ namespace EndToEndTests
             Settings settings = Settings.CreateDefaultSettings();
             settings.Channels[0] = new Channel(ledCount, 18, 255, false, StripType.WS2812_STRIP);
             WS281x ledstrip = new WS281x(settings);
-            LedController ledController = new LedController(ledstrip);
-            ledController.Run();
+            BufferlessLedController ledController = new BufferlessLedController(ledstrip);
 
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
             StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, id, new LinuxTimeSetter());
+            stellaServer.FrameReceived += (sender, frame) => ledController.PrepareFrame(frame);
+            stellaServer.RenderFrameReceived += (sender, frame) => ledController.Render();
             stellaServer.Start();
-
-            /*RpiController controller = new RpiController(stellaServer, ledController); TODO BufferlessLedController*/
-
+            
             string input;
             Console.Out.WriteLine($"Running StellaClient instance with id {id}");
             while ((input = Console.ReadLine()) != "q")
@@ -92,7 +91,6 @@ namespace EndToEndTests
                 }
             }
             stellaServer.Dispose();
-            ledController.Dispose();
 
         }
 

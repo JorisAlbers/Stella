@@ -58,7 +58,7 @@ namespace EndToEndTests
                 piMappings.Add(new PiMapping(i,lengthPerPi,0,new int[]{lengthPerPi/2},false));
             }
             PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
-            List<PiMaskItem> mask = piMaskCalculator.Calculate();
+            List<PiMaskItem> mask = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Color[] pattern = new Color[]
             {
@@ -95,7 +95,6 @@ namespace EndToEndTests
             SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(0,300,100, pattern);
             MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(0,300,30,pattern);
 
-
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
             Console.Out.WriteLine("a - Start new animation");
@@ -107,16 +106,17 @@ namespace EndToEndTests
                 Console.Out.WriteLine("m - Start MovingPattern    animation");
                 Console.Out.WriteLine("q - quit");
 
+
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, mask), DateTime.Now);
+                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, stripLengthPerPi, mask), DateTime.Now);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternDrawer, mask), DateTime.Now);
+                        clientController.StartAnimation(new Animator(slidingPatternDrawer, stripLengthPerPi, mask), DateTime.Now);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternDrawer, mask), DateTime.Now);
+                        clientController.StartAnimation(new Animator(movingPatternDrawer, stripLengthPerPi, mask), DateTime.Now);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");
