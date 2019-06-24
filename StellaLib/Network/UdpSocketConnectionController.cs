@@ -7,7 +7,7 @@ using StellaLib.Network.Protocol;
 
 namespace StellaLib.Network
 {
-    public class UdpSocketConnectionController<TMessageType> where TMessageType : System.Enum, IDisposable
+    public class UdpSocketConnectionController<TMessageType> : IDisposable where TMessageType : System.Enum
     {
         private ISocketConnection _socketConnection;
         private readonly IPEndPoint _targetEndPoint;
