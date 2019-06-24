@@ -56,14 +56,11 @@ namespace StellaLib.Network
 
         private void ReceiveCallback(IAsyncResult ar)
         {
-            // this is what had been passed into BeginReceive as the second parameter:
-            byte[] receivedBuffer = ar.AsyncState as byte[];
-            // points towards whoever had sent the message:
             EndPoint source = new IPEndPoint(0, 0);
-            // get the actual message and fill out the source:
-            int bytesRead = _socket.EndReceiveFrom(ar, ref source);
 
-            if (bytesRead > 0)
+            int bytesRead = _socket.EndReceiveFrom(ar, ref source);
+            // Parse the message
+            if (source.Equals(_targetEndPoint) && bytesRead > 0)
             {
                 try
                 {
@@ -79,9 +76,7 @@ namespace StellaLib.Network
                 }
             }
 
-            // do what you'd like with `message` here:
-            // OnMessageReceived(); TODO
-            // schedule the next receive operation once reading is done:
+            // Start receiving more data
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
             _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref source, ReceiveCallback, buffer);
         }
