@@ -9,13 +9,13 @@ namespace StellaLib.Network
 {
     public class UdpSocketConnectionController<TMessageType> : IDisposable where TMessageType : System.Enum
     {
-        private ISocketConnection _socketConnection;
+        private readonly ISocketConnection _socket;
         private readonly IPEndPoint _targetEndPoint;
         private bool _isDisposed;
         
         public UdpSocketConnectionController(ISocketConnection socket, IPEndPoint targetEndPoint)
         {
-            _socketConnection = socket;
+            _socket = socket;
             _targetEndPoint = targetEndPoint;
         }
 
@@ -23,7 +23,7 @@ namespace StellaLib.Network
         {
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
-            _socketConnection.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
+            _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
         }
 
         public void Send(TMessageType messageType, byte[] message)
@@ -38,7 +38,7 @@ namespace StellaLib.Network
             // Begin sending the data to the remote device.  
             try
             {
-                _socketConnection.SendTo(data, 0, data.Length, 0, _targetEndPoint);
+                _socket.SendTo(data, 0, data.Length, 0, _targetEndPoint);
             }
             catch (SocketException e)
             {
@@ -53,21 +53,21 @@ namespace StellaLib.Network
             // points towards whoever had sent the message:
             EndPoint source = new IPEndPoint(0, 0);
             // get the actual message and fill out the source:
-            int received = _socketConnection.EndReceiveFrom(ar, ref source);
+            int received = _socket.EndReceiveFrom(ar, ref source);
 
             // do what you'd like with `message` here:
             // OnMessageReceived(); TODO
             // schedule the next receive operation once reading is done:
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
-            _socketConnection.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref source, ReceiveCallback, buffer);
+            _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref source, ReceiveCallback, buffer);
         }
 
         public void Dispose()
         {
             _isDisposed = true;
-            _socketConnection.Disconnect(false);
-            _socketConnection.Dispose();
-            _socketConnection.Close();
+            _socket.Disconnect(false);
+            _socket.Dispose();
+            _socket.Close();
         }
 
         public static ISocketConnection CreateSocket(IPEndPoint localEndPoint)
