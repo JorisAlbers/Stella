@@ -9,14 +9,6 @@ import Rnd from "react-rnd-rotate";
 
 import '../styles/configurationPage.css'
 
-const ledstripsStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  border: 'solid 1px #ddd',
-  background: '#f0f0f0',
-  zIndex: 10
-};
 const none = {
   display: 'none'
 };
@@ -24,8 +16,8 @@ const handleRotateStyles = {
   position: 'absolute',
   width: '10px',
   height: '10px',
-  left: 0,
-  marginLeft: 0,
+  left: '-5px',
+  marginLeft: '50%',
   backgroundImage: 'none',
   marginTop: '-10px',
   top: '-10px',
@@ -40,16 +32,11 @@ class ConfigurationPage extends React.Component {
     this.state = {
       currentTab: 'pixelMapping',
       data: {
-        ledstrips: {
-          amount: 10,
-          items: []
-        },
-        room: {
-          x: 10,
-          y: 10
-        }
+        ledstrips: {amount: 1, items: []},
+        room: {y: 2, x: 2}
       },
-      parentRoomDiv: null
+      parentRoomDiv: null,
+      rndRoomDiv: null
     };
   }
 
@@ -59,14 +46,11 @@ class ConfigurationPage extends React.Component {
       data.ledstrips.items.push({
         id: i,
         position: {
-          x: i * 10,
-          y: i * 10,
-          degree: 100,
+          x: i * 0.25 * (this.parentRoom.clientWidth / this.state.data.room.x),
+          y: 0,
+          degree: 90,
         },
-        size: {
-          x: 15,
-          y: 100
-        }
+        size: {x: 10, y: 10}
       })
     }
 
@@ -74,8 +58,59 @@ class ConfigurationPage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.parentRoomDiv !== this.parentRoom) {
+    // Update the div where the draggable content is on.
+    if (prevState.rndRoomDiv !== this.rnd) {
+      this.setState({rndRoomDiv: this.rnd});
+    }
+
+    // Update the amount of ledstrips
+    if (prevState.data.ledstrips.amount !== this.state.data.ledstrips.amount) {
+      let data = {...this.state.data};
+      // If the new amount is more
+      if (prevState.data.ledstrips.amount < this.state.data.ledstrips.amount) {
+        for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
+          if (data.ledstrips.items[i]) continue;
+
+          data.ledstrips.items.push({
+            id: i,
+            position: {
+              x: i * (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 0.1,
+              y: 0,
+              degree: 0,
+            },
+            size: {x: 10, y: 10}
+          })
+        }
+      }
+      // If the new amount is less
+      if (prevState.data.ledstrips.amount > this.state.data.ledstrips.amount) {
+        data.ledstrips.items = data.ledstrips.items.splice(0, this.state.data.ledstrips.amount)
+      }
+      this.setState(data);
+    }
+
+    // Update the room that defines the sizes of everything on the initial load.
+    if (prevState.parentRoomDiv !== this.parentRoom ||
+      prevState.data.ledstrips.amount !== this.state.data.ledstrips.amount) {
       this.setState({parentRoomDiv: this.parentRoom});
+      let data = {...this.state.data};
+      for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
+        data.ledstrips.items[i].size.x = (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 0.1;
+        data.ledstrips.items[i].size.y = (this.parentRoom.childNodes[0].clientHeight) / this.state.data.room.y * 2
+      }
+      this.setState(data);
+    }
+
+    // Update the sizes of everything when the room ratio/size changes.
+    if (prevState.data.room.x !== this.state.data.room.x ||
+      prevState.data.room.y !== this.state.data.room.y ||
+      prevState.data.ledstrips.amount !== this.state.data.ledstrips.amount) {
+      let data = {...this.state.data};
+      for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
+        data.ledstrips.items[i].size.x = (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 0.1;
+        data.ledstrips.items[i].size.y = (this.parentRoom.childNodes[0].clientHeight) / this.state.data.room.y * 2
+      }
+      this.setState(data);
     }
   }
 
@@ -100,7 +135,11 @@ class ConfigurationPage extends React.Component {
       {this.state.data.ledstrips.items.map((item, i) => {
         return <Rnd
           ref={(c) => this.rnd = c}
-          style={ledstripsStyle}
+          style={{
+            // TODO @martijn: Try to make it so that the square has the correct bounds when rotated
+            // marginTop: `${(this.state.data.ledstrips.items[i].size.y / 2) * Math.abs(Math.cos(this.state.data.ledstrips.items[i].position.degree  * Math.PI / 180)) - this.state.data.ledstrips.items[i].size.y / 2}px`,
+            // marginLeft: `${(this.state.data.ledstrips.items[i].size.y / 2) * Math.sin(this.state.data.ledstrips.items[i].position.degree  * Math.PI / 180)}px`
+          }}
           className={'rnd-resizable1'}
           resizeHandleClasses={{
             rotate: 'resize-handle-base-class'
@@ -125,21 +164,20 @@ class ConfigurationPage extends React.Component {
           position={{
             x: this.state.data.ledstrips.items[i].position.x,
             y: this.state.data.ledstrips.items[i].position.y,
-            degree: this.state.data.ledstrips.items[i].position.degree
           }}
           size={{
             width: this.state.data.ledstrips.items[i].size.x,
-            height: this.state.data.ledstrips.items[i].size.y
+            height: this.state.data.ledstrips.items[i].size.y,
+            degree: this.state.data.ledstrips.items[i].position.degree
           }}
-
           onDragStop={(e, d) => {
-            let data = this.state.data;
+            let data = {...this.state.data};
             data.ledstrips.items[i].position.x = d.x;
             data.ledstrips.items[i].position.y = d.y;
             this.setState({data})
           }}
           onResizeStop={(e, direction, resizable, delta, position) => {
-            let data = this.state.data;
+            let data = {...this.state.data};
             data.ledstrips.items[i].position.degree = delta.degree;
             this.setState({data});
           }}
@@ -152,8 +190,6 @@ class ConfigurationPage extends React.Component {
   }
 
   render() {
-    const {currentTab} = this.state;
-
     return <div>
       <Grid container spacing={0} direction={'column'}>
         <Grid xs item>
@@ -162,24 +198,30 @@ class ConfigurationPage extends React.Component {
             strips</Button>
         </Grid>
         <Grid container direction={'row'}>
-          {currentTab === 'general' &&
+          {this.state === 'general' &&
           <React.Fragment>
 
           </React.Fragment>
           }
-          {currentTab === 'pixelMapping' &&
+          {this.state === 'pixelMapping' &&
           <React.Fragment>
             <Grid xs item>
               <TextField
                 margin={'dense'}
                 id="outlined-simple-start-adornment"
                 variant="outlined"
+                type={'Number'}
+                min={1}
+                max={100}
                 label="Amount of LED-strips"
                 defaultValue={this.state.data.ledstrips.amount}
                 onChange={(e) => {
-                  let data = {...this.state.data};
-                  data.ledstrips.amount = e.target.value;
-                  return this.setState({data});
+                  this.setState({
+                    data: {
+                      ...this.state.data,
+                      ledstrips: {...this.state.data.ledstrips, amount: parseInt(e.target.value)}
+                    }
+                  });
                 }}
                 InputProps={{endAdornment: <InputAdornment position="end">units</InputAdornment>}}
               />
@@ -188,12 +230,18 @@ class ConfigurationPage extends React.Component {
                 margin={'dense'}
                 id="outlined-simple-start-adornment"
                 variant="outlined"
+                type={'Number'}
+                min={2}
+                max={100}
                 label="Depth of the room"
                 defaultValue={this.state.data.room.y}
                 onChange={(e) => {
-                  let data = {...this.state.data};
-                  data.room.y = e.target.value;
-                  return this.setState({data});
+                  this.setState({
+                    data: {
+                      ...this.state.data,
+                      room: {...this.state.data.room, y: parseInt(e.target.value)}
+                    }
+                  });
                 }}
                 InputProps={{endAdornment: <InputAdornment position="end">meter</InputAdornment>}}
               />
@@ -201,12 +249,18 @@ class ConfigurationPage extends React.Component {
                 margin={'dense'}
                 id="outlined-simple-start-adornment"
                 variant="outlined"
+                type={'Number'}
+                min={1}
+                max={100}
                 label="Width of the room"
                 defaultValue={this.state.data.room.x}
                 onChange={(e) => {
-                  let data = {...this.state.data};
-                  data.room.x = e.target.value;
-                  return this.setState({data});
+                  this.setState({
+                    data: {
+                      ...this.state.data,
+                      room: {...this.state.data.room, x: parseInt(e.target.value)}
+                    }
+                  });
                 }}
                 InputProps={{endAdornment: <InputAdornment position="end">meter</InputAdornment>,}}
               />
