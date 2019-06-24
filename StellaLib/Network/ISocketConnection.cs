@@ -19,9 +19,12 @@ namespace StellaLib.Network
         IAsyncResult BeginReceive(byte[] buffer, int offset, int bufferSize, SocketFlags socketFlags,
             AsyncCallback callback, object state);
 
-        IAsyncResult BeginReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP, AsyncCallback callback, object state)
+        IAsyncResult BeginReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags,
+            ref EndPoint remoteEP, AsyncCallback callback, object state);
 
         int EndReceive(IAsyncResult asyncResult);
+
+        int EndReceiveFrom(IAsyncResult asyncResult, ref EndPoint endPoint);
 
         IAsyncResult BeginSend(byte[] buffer, int offset, int bufferSize, SocketFlags socketFlags, AsyncCallback callback, object state);
 

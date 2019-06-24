@@ -49,6 +49,11 @@ namespace StellaLib.Network
             return _socket.EndReceive(asyncResult);
         }
 
+        public int EndReceiveFrom(IAsyncResult asyncResult, ref EndPoint endPoint)
+        {
+            return _socket.EndReceiveFrom(asyncResult, ref endPoint);
+        }
+
         public IAsyncResult BeginSend(byte[] buffer, int offset, int bufferSize, SocketFlags socketFlags, AsyncCallback callback,
             object state)
         {
