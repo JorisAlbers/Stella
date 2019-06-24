@@ -30,6 +30,8 @@ namespace StellaLib.Network
 
         int EndSend(IAsyncResult asyncResult);
 
+        int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP);
+
         void Bind(EndPoint endPoint);
 
         void Listen(int backlog);
