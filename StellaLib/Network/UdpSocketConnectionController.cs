@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -12,7 +13,11 @@ namespace StellaLib.Network
         private readonly ISocketConnection _socket;
         private readonly IPEndPoint _targetEndPoint;
         private bool _isDisposed;
-        
+        private PacketProtocol<TMessageType> _packetProtocol;
+
+        public event EventHandler<MessageReceivedEventArgs<TMessageType>> MessageReceived;
+
+
         public UdpSocketConnectionController(ISocketConnection socket, IPEndPoint targetEndPoint)
         {
             _socket = socket;
@@ -21,6 +26,9 @@ namespace StellaLib.Network
 
         public void Start()
         {
+            _packetProtocol = new PacketProtocol<TMessageType>();
+            _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
+            
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
             _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
@@ -53,13 +61,42 @@ namespace StellaLib.Network
             // points towards whoever had sent the message:
             EndPoint source = new IPEndPoint(0, 0);
             // get the actual message and fill out the source:
-            int received = _socket.EndReceiveFrom(ar, ref source);
+            int bytesRead = _socket.EndReceiveFrom(ar, ref source);
+
+            if (bytesRead > 0)
+            {
+                try
+                {
+                    byte[] b = (byte[])ar.AsyncState;
+                    _packetProtocol.DataReceived(b.Take(bytesRead).ToArray()); // TODO send length and let the PackageProtocol slice
+                }
+                catch (ProtocolViolationException e)
+                {
+                    Console.WriteLine("Failed to receive data. Package protocol violation. \n" + e.ToString());
+                    _packetProtocol.MessageArrived = null;
+                    _packetProtocol = new PacketProtocol<TMessageType>();
+                    _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
+                }
+            }
 
             // do what you'd like with `message` here:
             // OnMessageReceived(); TODO
             // schedule the next receive operation once reading is done:
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
             _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref source, ReceiveCallback, buffer);
+        }
+
+        protected virtual void OnMessageReceived(TMessageType type, byte[] bytes)
+        {
+            EventHandler<MessageReceivedEventArgs<TMessageType>> handler = MessageReceived;
+            if (handler != null)
+            {
+                handler(this, new MessageReceivedEventArgs<TMessageType>()
+                {
+                    MessageType = type,
+                    Message = bytes
+                });
+            }
         }
 
         public void Dispose()
