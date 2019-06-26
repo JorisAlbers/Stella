@@ -95,8 +95,16 @@ namespace StellaClient.Network
             // Create a TCP/IP socket.  
             ISocketConnection socket = new SocketConnection(_serverAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject
 
-            // Connect to the remote endpoint.  
-            socket.BeginConnect(_serverAdress, new AsyncCallback(ConnectCallback), socket);  
+            // Connect to the remote endpoint.
+            try
+            {
+                socket.BeginConnect(_serverAdress, new AsyncCallback(ConnectCallback), socket);
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine($"Failed to open connection with StellaServer.{e.SocketErrorCode}.");
+                Reconnect();
+            }
         }
 
         private void ConnectCallback(IAsyncResult ar)
