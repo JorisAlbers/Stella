@@ -13,6 +13,7 @@ namespace StellaServerLib
         private readonly string _mappingFilePath;
         private readonly string _ip;
         private readonly int _port;
+        private readonly int _udpPort;
 
         private List<PiMaskItem> _mask;
         private int[] _stripLengthPerPi;
@@ -20,11 +21,12 @@ namespace StellaServerLib
         private ClientController _clientController;
 
 
-        public StellaServer(string mappingFilePath, string ip, int port)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
+            _udpPort = udpPort;
         }
 
         public void Start()
@@ -32,7 +34,7 @@ namespace StellaServerLib
             // Read mapping
             _mask = LoadMask(_mappingFilePath);
             // Start Server
-            _server = StartServer(_ip, _port);
+            _server = StartServer(_ip, _port, _udpPort);
             // Start ClientController
             _clientController = StartClientController(_server);
         }
@@ -73,12 +75,12 @@ namespace StellaServerLib
             }
         }
 
-        private Server StartServer(string ip, int port)
+        private Server StartServer(string ip, int port, int udpPort)
         {
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
-                Server server = new Server(ip, port);
+                Server server = new Server(ip, port, udpPort);
                 server.Start();
                 return server;
             }

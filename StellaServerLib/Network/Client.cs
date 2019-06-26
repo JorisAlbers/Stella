@@ -6,27 +6,43 @@ namespace StellaServerLib.Network
 {
     public class Client : IDisposable
     {
-        private SocketConnectionController<MessageType> SocketConnectionController { get; set; }
+        private readonly SocketConnectionController<MessageType> _socketConnectionController;
+        private readonly UdpSocketConnectionController<MessageType> _udpSocketConnectionController;
         public int ID { get; set; } = -1;
         public event EventHandler<SocketException> Disconnect;
         public event EventHandler<MessageReceivedEventArgs<MessageType>> MessageReceived;
 
 
-        public Client(SocketConnectionController<MessageType> socketConnectionController)
+        public Client(SocketConnectionController<MessageType> socketConnectionController, UdpSocketConnectionController<MessageType> udpSocketConnectionController)
         {
-            SocketConnectionController = socketConnectionController;
-            SocketConnectionController.Disconnect += OnDisconnect;
-            SocketConnectionController.MessageReceived += OnMessageReceived;
+            // TCP socketConnectionController
+            _socketConnectionController = socketConnectionController;
+            _udpSocketConnectionController = udpSocketConnectionController;
+            _socketConnectionController.Disconnect += OnDisconnect;
+            _socketConnectionController.MessageReceived += OnMessageReceived;
+
+            // UDP socketConnectionController
+            _udpSocketConnectionController = udpSocketConnectionController;
+            _udpSocketConnectionController.MessageReceived += OnMessageReceived;
         }
 
         public void Start()
         {
-            SocketConnectionController.Start();
+            _socketConnectionController.Start();
+            _udpSocketConnectionController.Start();
         }
 
         public void Send(MessageType type, byte[] message)
         {
-            SocketConnectionController.Send(type, message);
+            if (type == MessageType.Animation_PrepareFrame || type == MessageType.Animation_RenderFrame)
+            {
+                // Send via UDP
+                _udpSocketConnectionController.Send(type,message);
+                return;
+            }
+
+            // Send via TCP
+            _socketConnectionController.Send(type, message);
         }
 
         protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs<MessageType> eventArgs)
@@ -51,9 +67,9 @@ namespace StellaServerLib.Network
 
         public void Dispose()
         {
-            SocketConnectionController.MessageReceived -= OnMessageReceived;
-            SocketConnectionController.Disconnect -= OnDisconnect;
-            SocketConnectionController.Dispose();
+            _socketConnectionController.MessageReceived -= OnMessageReceived;
+            _socketConnectionController.Disconnect -= OnDisconnect;
+            _socketConnectionController.Dispose();
         }
     }
 }

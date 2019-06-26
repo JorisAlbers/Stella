@@ -76,7 +76,8 @@ namespace StellaServerConsole
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
             
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port);
+            int udpPort = 20056; // TODO UDP send via config or arg
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort);
 
             try
             {

@@ -13,31 +13,37 @@ namespace StellaServerLib.Network
         private List<Client> _newConnections;
         private Dictionary<int,Client> _clients;
 
-        private int _port;
-        private IPAddress _ip;
+        private IPEndPoint _tcpLocalEndpoint;
+        private readonly IPEndPoint _udpLocalEndpoint;
+
+        private readonly int _port;
+        private readonly int _udpPort;
         private bool _isShuttingDown = false;
-        private object _isShuttingDownLock = new object();
+        private readonly object _isShuttingDownLock = new object();
 
         private ISocketConnection _listenerSocket;
         
-        public Server(string ip, int port)
+        public Server(string ip, int port, int udpPort)
         {
-            _ip = IPAddress.Parse(ip);
+            IPAddress ipAddress = IPAddress.Parse(ip);
+            _tcpLocalEndpoint = new IPEndPoint(ipAddress, port);
+            _udpLocalEndpoint = new IPEndPoint(ipAddress, udpPort);
             _port = port;
+            _udpPort = udpPort;
             _newConnections =  new List<Client>();
             _clients = new Dictionary<int, Client>();
         }
 
         public void Start()
         {
-            IPEndPoint localEndPoint = new IPEndPoint(_ip, _port);
+            
 
             Console.Out.WriteLine($"Starting server on {_port}");
             // Create a TCP/IP socket.  
-            _listenerSocket = new SocketConnection(_ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
+            _listenerSocket = new SocketConnection(_tcpLocalEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
             // Bind the socket to the local endpoint and listen for incoming connections.  
 
-            _listenerSocket.Bind(localEndPoint);  
+            _listenerSocket.Bind(_tcpLocalEndpoint);  
             _listenerSocket.Listen(100);  
         
             // Start an asynchronous socket to listen for connections.  
@@ -94,9 +100,16 @@ namespace StellaServerLib.Network
 
             // Handle the new connection
             ISocketConnection handler = listener.EndAccept(ar);
-            
+
             // Create a new client.
-            Client client = new Client(new SocketConnectionController<MessageType>(handler));
+            // For this, we need a TCP and an UDP connection.
+            // Create TCP connection
+            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler);
+            //  Create UDP connection
+            IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address,_udpPort);
+            ISocketConnection connection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpLocalEndpoint);
+            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(connection, udpRemoteEndPoint);
+            Client client = new Client(socketConnectionController, udpSocketConnectionController);
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 

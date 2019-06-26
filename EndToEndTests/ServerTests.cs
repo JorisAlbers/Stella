@@ -46,8 +46,9 @@ namespace EndToEndTests
             int numberOfPis = 2;
             int lengthPerPi = 1200;
             int port = 20055;
+            int udpPort = 20056;
             Console.Out.WriteLine("Starting StellaServer instance");
-            Server server = new Server(Program.SERVER_IP,port);
+            Server server = new Server(Program.SERVER_IP,port, udpPort);
             server.Start();
             ClientController clientController = new ClientController(server);
 
@@ -129,7 +130,7 @@ namespace EndToEndTests
 
         private static void StartServerInstance()
         {
-            Server server = new Server(Program.SERVER_IP,20055);
+            Server server = new Server(Program.SERVER_IP,20055, 20056);
             Console.WriteLine("Starting server instance, press enter to quit");
             server.Start();
             Console.ReadLine();

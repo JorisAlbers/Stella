@@ -31,7 +31,7 @@ namespace StellaLib.Network
             
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
-            _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
+            _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
         }
 
         public void Send(TMessageType messageType, byte[] message)
@@ -69,7 +69,6 @@ namespace StellaLib.Network
                 }
                 catch (ProtocolViolationException e)
                 {
-                    Console.WriteLine("Failed to receive data. Package protocol violation. \n" + e.ToString());
                     _packetProtocol.MessageArrived = null;
                     _packetProtocol = new PacketProtocol<TMessageType>();
                     _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
@@ -78,7 +77,8 @@ namespace StellaLib.Network
 
             // Start receiving more data
             byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
-            _socket.BeginReceiveFrom(buffer, 0, 100, SocketFlags.None, ref source, ReceiveCallback, buffer);
+            _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref source, ReceiveCallback, buffer);
+            
         }
 
         protected virtual void OnMessageReceived(TMessageType type, byte[] bytes)
@@ -105,6 +105,7 @@ namespace StellaLib.Network
         public static ISocketConnection CreateSocket(IPEndPoint localEndPoint)
         {
             SocketConnection socket = new SocketConnection(localEndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            socket.EnableBroadcast = false;
             socket.Bind(localEndPoint);
             return socket;
         }

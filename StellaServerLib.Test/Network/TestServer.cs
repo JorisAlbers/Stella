@@ -18,7 +18,7 @@ namespace StellaServerLib.Test.Network
         [Test]
         public void SendDataToClient_DefaultMessage_MessageSent()
         {
-            Server server = new Server("localhost", 20055);
+            Server server = new Server("localhost", 20055, 20056);
             server.Start();
 
             // Establish the local endpoint for the socket.  
@@ -56,7 +56,7 @@ namespace StellaServerLib.Test.Network
         [Test]
         public void InitMessageSent_ExistingClient_ClientReplaced()
         {
-            Server server = new Server("localhost", 20055);
+            Server server = new Server("localhost", 20055, 20056);
             server.Start();
 
             // Establish the local endpoint for the socket.  
@@ -107,7 +107,7 @@ namespace StellaServerLib.Test.Network
         [Test]
         public void InitMessageSent_NewClient_ClientGetsMovedToListOfClients()
         {
-            Server server = new Server("localhost",20055);
+            Server server = new Server("localhost",20055, 20056);
             server.Start();
 
             // Establish the local endpoint for the socket.  
@@ -144,7 +144,7 @@ namespace StellaServerLib.Test.Network
 
         public void Dispose_ServerHasClient_ClientCantSendMessage()
         {
-            Server server = new Server("localhost",20055);
+            Server server = new Server("localhost",20055, 20056);
             server.Start();
 
             // Establish the local endpoint for the socket.  
@@ -176,7 +176,7 @@ namespace StellaServerLib.Test.Network
 
         public void Dispose_NewClientBeforeAndNewClientAfterDispose_NewClientAfterDisposeCantConnect()
         {
-            Server server = new Server("localhost",20055);
+            Server server = new Server("localhost",20055, 20056);
             server.Start();
 
             // Establish the local endpoint for the socket.  
