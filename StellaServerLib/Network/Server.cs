@@ -22,7 +22,8 @@ namespace StellaServerLib.Network
         private readonly object _isShuttingDownLock = new object();
 
         private ISocketConnection _listenerSocket;
-        
+        private ISocketConnection _udpSocketConnection;
+
         public Server(string ip, int port, int udpPort)
         {
             IPAddress ipAddress = IPAddress.Parse(ip);
@@ -36,16 +37,17 @@ namespace StellaServerLib.Network
 
         public void Start()
         {
-            
-
             Console.Out.WriteLine($"Starting server on {_port}");
             // Create a TCP/IP socket.  
             _listenerSocket = new SocketConnection(_tcpLocalEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
             // Bind the socket to the local endpoint and listen for incoming connections.  
 
             _listenerSocket.Bind(_tcpLocalEndpoint);  
-            _listenerSocket.Listen(100);  
-        
+            _listenerSocket.Listen(100);
+
+            // Create an UDP socket.
+            _udpSocketConnection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpLocalEndpoint);
+
             // Start an asynchronous socket to listen for connections.  
             _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket );  
         }
@@ -107,8 +109,8 @@ namespace StellaServerLib.Network
             SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler);
             //  Create UDP connection
             IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address,_udpPort);
-            ISocketConnection connection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpLocalEndpoint);
-            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(connection, udpRemoteEndPoint);
+
+            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, udpRemoteEndPoint);
             Client client = new Client(socketConnectionController, udpSocketConnectionController);
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
