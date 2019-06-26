@@ -53,5 +53,7 @@ namespace StellaLib.Network
         void Dispose();
 
         void Close();
+
+        bool EnableBroadcast { get; set; }
     }
 }

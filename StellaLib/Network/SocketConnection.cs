@@ -125,5 +125,11 @@ namespace StellaLib.Network
         {
             _socket.Close();
         }
+
+        public bool EnableBroadcast
+        {
+            get => _socket.EnableBroadcast;
+            set => _socket.EnableBroadcast = value;
+        }
     }
 }
