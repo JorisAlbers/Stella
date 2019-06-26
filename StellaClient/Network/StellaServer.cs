@@ -52,6 +52,15 @@ namespace StellaClient.Network
 
         public void Start()
         {
+            // Start UDP connection
+            IPEndPoint udpRemoteEndpoint = new IPEndPoint(_serverAdress.Address, _udpPort);
+            IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, _udpPort); // TODO inject the local endpoint?
+
+            ISocketConnection udpSocket = UdpSocketConnectionController<MessageType>.CreateSocket(udpLocalEndPoint);
+            _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint);
+            _udpSocketConnectionController.MessageReceived += OnMessageReceived;
+            _udpSocketConnectionController.Start();
+
             Connect();
         }
 
@@ -85,7 +94,7 @@ namespace StellaClient.Network
             Console.Out.WriteLine($"Trying to connect with server on ip {_serverAdress.Address}:{_serverAdress.Port}");
             // Create a TCP/IP socket.  
             ISocketConnection socket = new SocketConnection(_serverAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject
-  
+
             // Connect to the remote endpoint.  
             socket.BeginConnect(_serverAdress, new AsyncCallback(ConnectCallback), socket);  
         }
@@ -103,16 +112,7 @@ namespace StellaClient.Network
                 _socketConnectionController.MessageReceived += OnMessageReceived;
                 _socketConnectionController.Disconnect += OnDisconnect;
                 _socketConnectionController.Start();
-
-                // Start UDP connection
-                IPEndPoint udpRemoteEndpoint = new IPEndPoint(_serverAdress.Address, _udpPort);
-                IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, _udpPort); // TODO inject the local endpoint?
-
-                ISocketConnection udpSocket = UdpSocketConnectionController<MessageType>.CreateSocket(udpLocalEndPoint);
-                _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint);
-                _udpSocketConnectionController.MessageReceived += OnMessageReceived;
-                _udpSocketConnectionController.Start();
-
+                
                 // Send init
                 SendInit();
 
