@@ -23,9 +23,11 @@ namespace StellaClient.Network
 
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
+        private readonly int _udpPort;
         private int _id;
         private TimeSetter _timeSetter; // null if the time is NTP synched or when the time has already been synced
         private SocketConnectionController<MessageType> _socketConnectionController;
+        private UdpSocketConnectionController<MessageType> _udpSocketConnectionController;
         private object _resourceLock = new object();
 
         private Dictionary<int, FrameWithoutDeltaProtocol> _frameSectionBuffer; // int = frame index, 
@@ -34,9 +36,10 @@ namespace StellaClient.Network
         public event EventHandler<FrameWithoutDelta> FrameReceived;
 
 
-        public StellaServer(IPEndPoint serverAdress, int ID, ISystemTimeSetter systemTimeSetter)
+        public StellaServer(IPEndPoint serverAdress, int udpPort, int ID, ISystemTimeSetter systemTimeSetter)
         {
             _serverAdress = serverAdress;
+            _udpPort = udpPort;
             _id = ID;
             if (!systemTimeSetter.TimeIsNTPSynced())
             {
@@ -100,6 +103,15 @@ namespace StellaClient.Network
                 _socketConnectionController.MessageReceived += OnMessageReceived;
                 _socketConnectionController.Disconnect += OnDisconnect;
                 _socketConnectionController.Start();
+
+                // Start UDP connection
+                IPEndPoint udpRemoteEndpoint = new IPEndPoint(_serverAdress.Address, _udpPort);
+                IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, _udpPort); // TODO inject the local endpoint?
+
+                ISocketConnection udpSocket = UdpSocketConnectionController<MessageType>.CreateSocket(udpLocalEndPoint);
+                _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint);
+                _udpSocketConnectionController.MessageReceived += OnMessageReceived;
+                _udpSocketConnectionController.Start();
 
                 // Send init
                 SendInit();

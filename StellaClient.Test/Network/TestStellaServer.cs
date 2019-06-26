@@ -32,7 +32,7 @@ namespace StellaClient.Test.Network
             var mockSystemTimeSetter = new Mock<ISystemTimeSetter>();
             mockSystemTimeSetter.Setup(x=>x.TimeIsNTPSynced()).Returns(true);
             int clientId = 0;
-            StellaServer stellaServer = new StellaServer(localEndPoint, clientId , mockSystemTimeSetter.Object);
+            StellaServer stellaServer = new StellaServer(localEndPoint, 20056, clientId , mockSystemTimeSetter.Object);
             stellaServer.Start();
             
             Socket server_receiver = server.Accept();
