@@ -1,3 +1,4 @@
+const fs = require("fs");
 const net = require("net");
 
 const config = require('../../backend/config/config');
@@ -34,11 +35,11 @@ class Socket {
     this._setClientListeners();
   }
 
-  getAvailableStoryboards () {
+  getAvailableStoryboards() {
     this.serverSocket.write(this.packageProtocol.wrapGetAvailableStoryboardsMessage());
   };
 
-  _setServerListeners () {
+  _setServerListeners() {
     this.serverSocket.on('close', (hadError) => {
       this.serverSocket.connected = false;
       this.clientSocket.emit('status', {
@@ -102,17 +103,28 @@ class Socket {
   _setClientListeners() {
     this.clientSocket.on('connection', (socket) => {
       this.clientSocket.connectedClients.push(socket.id);
-      this.getAvailableStoryboards();
 
       console.log("Client connection connected");
 
-      socket.on('availableStoryboards', () => {
-        // socket.getAvailableStoryboards();
-        socket.emit('availableStoryboards', {})
+      socket.on('getSavedLedMapping', () => {
+        if (fs.existsSync('./savedData/savedLedMapping.json')) {
+          const savedLedMapping = fs.readFileSync('./savedData/savedLedMapping.json');
+          socket.emit('returnSavedLedMapping', JSON.parse(savedLedMapping))
+        }
       });
 
-      socket.on('status', () => {
-        socket.emit('status', {
+      socket.on('setSavedLedMapping', (data) => {
+        fs.writeFileSync('./savedData/savedLedMapping.json', JSON.stringify(data));
+      });
+
+      socket.on('getAvailableStoryboards', () => {
+        this.getAvailableStoryboards();
+
+        socket.emit('returnAvailableStoryboards', {})
+      });
+
+      socket.on('getStatus', () => {
+        socket.emit('returnStatus', {
           clientConnectedToBackend: true,
           backendConnectedToServer: this.serverSocket.connected,
           connectedClients: this.clientSocket.connectedClients.length,

@@ -31,29 +31,40 @@ class ConfigurationPage extends React.Component {
     this.rnd = null;
     this.state = {
       currentTab: 'pixelMapping',
+      dataIsAlreadySet: false,
       data: {
-        ledstrips: {amount: 1, items: []},
+        ledstrips: {amount: 10, items: []},
         room: {y: 2, x: 2}
       },
       parentRoomDiv: null,
       rndRoomDiv: null
     };
+
+    this.props.socket.emit('getSavedLedMapping');
+    // TODO make it so that that stupid buggy degree thing also works
+    this.props.socket.on('returnSavedLedMapping', (savedLedMapping) => {
+      return this.setState({
+        data: savedLedMapping,
+        dataIsAlreadySet: true
+      }, this.forceUpdate);
+    });
   }
 
   componentDidMount() {
     let data = {...this.state.data};
-    for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
-      data.ledstrips.items.push({
-        id: i,
-        position: {
-          x: i * 0.25 * (this.parentRoom.clientWidth / this.state.data.room.x),
-          y: 0,
-          degree: 90,
-        },
-        size: {x: 10, y: 10}
-      })
+    if (!this.state.dataIsAlreadySet) {
+      for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
+        data.ledstrips.items.push({
+          id: i,
+          position: {
+            x: i * (this.parentRoom.clientWidth) / this.state.data.room.x * 0.1,
+            y: 0,
+            degree: 0
+          },
+          size: {x: 10, y: 10}
+        })
+      }
     }
-
     this.setState({parentRoomDiv: this.parentRoom, data});
   }
 
@@ -70,7 +81,6 @@ class ConfigurationPage extends React.Component {
       if (prevState.data.ledstrips.amount < this.state.data.ledstrips.amount) {
         for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
           if (data.ledstrips.items[i]) continue;
-
           data.ledstrips.items.push({
             id: i,
             position: {
@@ -117,6 +127,7 @@ class ConfigurationPage extends React.Component {
   drawRoom() {
     const totalAvailableWidth = this.state.parentRoomDiv.clientWidth - 20;
     const max = Math.max(this.state.data.room.y, this.state.data.room.x);
+    const items = this.state.data.ledstrips.items;
 
     return <div
       style={{
@@ -132,7 +143,7 @@ class ConfigurationPage extends React.Component {
         backgroundPositionY: '6px',
       }}
     >
-      {this.state.data.ledstrips.items.map((item, i) => {
+      {items.map((item, i) => {
         return <Rnd
           ref={(c) => this.rnd = c}
           style={{
@@ -190,20 +201,24 @@ class ConfigurationPage extends React.Component {
   }
 
   render() {
+    const {currentTab} = this.state;
+
     return <div>
       <Grid container spacing={0} direction={'column'}>
         <Grid xs item>
-          <Button color="inherit" align="left" onClick={() => this.setState({currentTab: 'general'})}>General</Button>
-          <Button color="inherit" align="left" onClick={() => this.setState({currentTab: 'pixelMapping'})}>Map the LED
+          <Button variant={'outlined'} color="inherit" align="left"
+                  onClick={() => this.setState({currentTab: 'general'})}>General</Button>
+          <Button variant={'outlined'} color="inherit" align="left"
+                  onClick={() => this.setState({currentTab: 'pixelMapping'})}>Map the LED
             strips</Button>
         </Grid>
         <Grid container direction={'row'}>
-          {this.state === 'general' &&
+          {currentTab === 'general' &&
           <React.Fragment>
 
           </React.Fragment>
           }
-          {this.state === 'pixelMapping' &&
+          {currentTab === 'pixelMapping' &&
           <React.Fragment>
             <Grid xs item>
               <TextField
@@ -264,6 +279,10 @@ class ConfigurationPage extends React.Component {
                 }}
                 InputProps={{endAdornment: <InputAdornment position="end">meter</InputAdornment>,}}
               />
+              <Divider variant="middle"/>
+              <Button variant={'outlined'} color="inherit" align="left" onClick={() => {
+                this.props.socket.emit('setSavedLedMapping', this.state.data)
+              }}>Save</Button>
             </Grid>
             <Grid xs={10} item
                   ref={(parentRoom) => this.parentRoom = parentRoom}

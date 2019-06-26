@@ -11,13 +11,13 @@ class HomePage extends React.Component {
       storyboards: null
     };
 
-    this.props.socket.on('status', (status) => this.setState({status}));
-    this.props.socket.on('availableStoryboards', (storyboards) => this.setState({storyboards}));
+    this.props.socket.on('returnStatus', (status) => this.setState({status}));
+    this.props.socket.on('returnAvailableStoryboards', (storyboards) => this.setState({storyboards}));
   }
 
   componentDidMount() {
-    this.props.socket.emit('status');
-    this.props.socket.emit('availableStoryboards');
+    this.props.socket.emit('getStatus');
+    this.props.socket.emit('getAvailableStoryboards');
   }
 
   render() {
