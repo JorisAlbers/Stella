@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
+using StellaLib.Network.Protocol.Animation;
 
 namespace StellaServerLib.Network
 {
@@ -74,11 +76,25 @@ namespace StellaServerLib.Network
             }
         }
 
-        public void SendMessageToClient(int clientID, MessageType messageType, byte[] message)
+        public void SendToClient(int clientId, MessageType messageType)
         {
-            lock(_clients)
+            SendToClient(clientId,messageType,new byte[0]);
+        }
+
+        public void SendToClient(int clientId, FrameWithoutDelta frame)
+        {
+            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
+            for (int i = 0; i < packages.Length; i++)
             {
-                _clients[clientID].Send(messageType,message);
+                SendToClient(i, MessageType.Animation_PrepareFrame, packages[i]);
+            }
+        }
+
+        private void SendToClient(int clientId, MessageType messageType, byte[] data)
+        {
+            lock (_clients)
+            {
+                _clients[clientId].Send(messageType,data);
             }
         }
 

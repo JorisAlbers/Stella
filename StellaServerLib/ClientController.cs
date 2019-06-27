@@ -79,11 +79,7 @@ namespace StellaServerLib
             {
                 if (frames[i] != null)
                 {
-                    byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frames[i], PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
-                    for (int j = 0; j < packages.Length; j++)
-                    {
-                        _server.SendMessageToClient(i,MessageType.Animation_PrepareFrame,packages[j]);
-                    }
+                    _server.SendToClient(i,frames[i]);
                 }
             }
         }
@@ -94,7 +90,7 @@ namespace StellaServerLib
             {
                 if (frames[i] != null)
                 {
-                    _server.SendMessageToClient(i,MessageType.Animation_RenderFrame,new byte[0]);
+                    _server.SendToClient(i,MessageType.Animation_RenderFrame);
                 }
             }
         }

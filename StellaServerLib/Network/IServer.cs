@@ -1,4 +1,5 @@
 using System;
+using StellaLib.Animation;
 using StellaLib.Network;
 
 namespace StellaServerLib.Network
@@ -8,6 +9,12 @@ namespace StellaServerLib.Network
         void Start();
         int[] ConnectedClients{get;}
         int NewConnectionsCount{get;}
-        void SendMessageToClient(int clientID, MessageType messageType, byte[] message);
+
+        /// <summary> Sends a simple message to a client with only a message type </summary>
+        void SendToClient(int clientId, MessageType messageType);
+
+        /// <summary> Sends a frame to a client </summary>
+        void SendToClient(int clientId, FrameWithoutDelta frame);
+
     }
 }
