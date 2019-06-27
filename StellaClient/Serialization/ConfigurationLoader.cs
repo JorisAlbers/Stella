@@ -23,7 +23,7 @@ namespace StellaClient.Serialization
                 throw new FormatException($"Failed to load the configuration. Errors that occured:\n {String.Join("\n", errors)}");
             }
 
-            return new Configuration(configuration.Id, configuration.Ip, configuration.Port,
+            return new Configuration(configuration.Id, configuration.Ip, configuration.Port, configuration.UdpPort, 
                 configuration.LedCount, configuration.PwmPin, configuration.DmaChannel);
         }
 
@@ -58,6 +58,9 @@ namespace StellaClient.Serialization
 
             /// <summary> The port of StellaServer.</summary>
             public int Port { get; set; }
+
+            /// <summary> The UDP port of StellaServer </summary>
+            public int UdpPort { get; set; }
 
             /// <summary> The number of leds available.</summary>
             public int LedCount { get; set; }

@@ -17,6 +17,7 @@ namespace StellaClient.Test.Serialization
             int expectedId = 1;
             string expectedIp = "192.168.1.11";
             int expectedPort = 20060;
+            int expectedUdpPort = 20065;
             int expectedLedCount = 1200;
             int expectedPwmPin = 18;
             int expectedDmaChannel = 10;
@@ -26,6 +27,7 @@ namespace StellaClient.Test.Serialization
             stringBuilder.AppendLine($"Id: {expectedId}");
             stringBuilder.AppendLine($"Ip: {expectedIp}");
             stringBuilder.AppendLine($"Port: {expectedPort}");
+            stringBuilder.AppendLine($"UdpPort: {expectedUdpPort}");
             stringBuilder.AppendLine($"LedCount: {expectedLedCount}");
             stringBuilder.AppendLine($"PwmPin: {expectedPwmPin}");
             stringBuilder.AppendLine($"DmaChannel: {expectedDmaChannel}");

@@ -2,6 +2,7 @@
 Id: 0
 Ip: 192.168.1.110
 Port: 20055
+UdpPort:20056
 LedCount: 120
 PwmPin: 18
 DmaChannel: 10

@@ -88,9 +88,8 @@ namespace StellaClient
             // Start the StellaServer connection
             try
             {
-                int udpPort = 20056; // TODO move to config
                 IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port);
-                _stellaServer = new StellaServer(localEndPoint, udpPort, _configuration.Id, new LinuxTimeSetter());
+                _stellaServer = new StellaServer(localEndPoint, _configuration.UdpPort, _configuration.Id, new LinuxTimeSetter());
                 _stellaServer.FrameReceived += (sender, frame) => _ledController.PrepareFrame(frame);
                 _stellaServer.RenderFrameReceived += (sender, eventArgs) => _ledController.Render();
                 
