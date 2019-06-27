@@ -22,7 +22,7 @@ namespace StellaServerConsole
             string mappingFilePath = null;
             string storyboardDirPath = null;
             string ip = null;
-            int port = 0;
+            int port = 0, udpPort = 0;
             string apiIp = null;
             int apiPort= 0;
 
@@ -48,6 +48,9 @@ namespace StellaServerConsole
                         case "-port":
                             port = int.Parse(args[++i]);
                             break;
+                        case "-udp_port":
+                            udpPort = int.Parse(args[++i]);
+                            break;
                         case "-api_ip":
                             apiIp = args[++i];
                             break;
@@ -61,7 +64,7 @@ namespace StellaServerConsole
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, storyboardDirPath, apiIp, apiPort))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort))
             {
                 return;
             }
@@ -76,7 +79,6 @@ namespace StellaServerConsole
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
             
             // Start stellaServer
-            int udpPort = 20056; // TODO UDP send via config or arg
             _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort);
 
             try
@@ -139,7 +141,7 @@ namespace StellaServerConsole
             Console.Out.WriteLine("End of StellaServer.");
         }
 
-        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, string storyboardDirPath, string apiIp, int apiPort)
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort)
         {
             // TODO path and file exist validation
             if (mappingFilePath == null)
@@ -151,6 +153,16 @@ namespace StellaServerConsole
             if (port == 0)
             {
                 Console.Out.WriteLine("The port must be set. Use -port <port value>");
+                return false;
+            }
+            if (udpPort == 0)
+            {
+                Console.Out.WriteLine("The udp_port must be set. Use -udp_port <port value>");
+                return false;
+            }
+            if (port == udpPort)
+            {
+                Console.Out.WriteLine("The port and the udp_port can't be identical.");
                 return false;
             }
 
