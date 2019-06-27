@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using NUnit.Framework;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
@@ -19,7 +20,7 @@ namespace StellaLib.Test.Network.Protocol
             MessageType receivedMessageType = MessageType.Unknown;
             byte[] receivedBytes = null;
 
-            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>();
+            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(100);
             packetProtocol.MessageArrived += (type, bytes) =>
             {
                 receivedMessageType = type;
@@ -59,7 +60,7 @@ namespace StellaLib.Test.Network.Protocol
             MessageType receivedMessageType = MessageType.Unknown;
             byte[] receivedBytes = null;
 
-            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>();
+            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(100);
             packetProtocol.MessageArrived += (type, bytes) =>
             {
                 receivedMessageType = type;
@@ -92,7 +93,7 @@ namespace StellaLib.Test.Network.Protocol
             MessageType receivedMessageType = MessageType.Unknown;
             byte[] receivedBytes = null;
 
-            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>();
+            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(100);
             packetProtocol.MessageArrived += (type, bytes) =>
             {
                 receivedMessageType = type;
@@ -102,6 +103,20 @@ namespace StellaLib.Test.Network.Protocol
             packetProtocol.DataReceived(tooLongMessage, message.Length);
             Assert.AreEqual(expectedMessageType, receivedMessageType);
             Assert.AreEqual(expectedBytes, receivedBytes);
+        }
+
+        [Test]
+        public void DataReceived_PackageTooLong_ThrowsProtocolViolationException()
+        {
+            MessageType expectedMessageType = MessageType.Init;
+            byte[] expectedBytes = new byte[] { 1, 2, 3, 4 };
+
+            byte[] message = PacketProtocol<MessageType>.WrapMessage(expectedMessageType, expectedBytes);
+            // Add bytes the package protocol should not read.
+
+            PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(10);
+            Assert.Throws<ProtocolViolationException>(() => packetProtocol.DataReceived(message, message.Length));
+
         }
 
     }

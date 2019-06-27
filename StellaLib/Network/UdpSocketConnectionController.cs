@@ -12,24 +12,26 @@ namespace StellaLib.Network
     {
         private readonly ISocketConnection _socket;
         private readonly IPEndPoint _targetEndPoint;
+        private readonly int _bufferSize;
         private bool _isDisposed;
         private PacketProtocol<TMessageType> _packetProtocol;
 
         public event EventHandler<MessageReceivedEventArgs<TMessageType>> MessageReceived;
 
 
-        public UdpSocketConnectionController(ISocketConnection socket, IPEndPoint targetEndPoint)
+        public UdpSocketConnectionController(ISocketConnection socket, IPEndPoint targetEndPoint, int bufferSize)
         {
             _socket = socket;
             _targetEndPoint = targetEndPoint;
+            _bufferSize = bufferSize;
         }
 
         public void Start()
         {
-            _packetProtocol = new PacketProtocol<TMessageType>();
+            _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
             _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
             
-            byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
+            byte[] buffer = new byte[_bufferSize];
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
             _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
         }
@@ -70,13 +72,13 @@ namespace StellaLib.Network
                 catch (ProtocolViolationException e)
                 {
                     _packetProtocol.MessageArrived = null;
-                    _packetProtocol = new PacketProtocol<TMessageType>();
+                    _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
                     _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
                 }
             }
 
             // Start receiving more data
-            byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
+            byte[] buffer = new byte[_bufferSize];
             _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref source, ReceiveCallback, buffer);
             
         }

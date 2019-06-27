@@ -23,22 +23,22 @@ namespace StellaLib.Network.Protocol
             count = BitConverter.ToInt32(bytes,sizeof(int));
         }
 
-        public static List<byte[]> CreateResponse(IEnumerable<Frame> frames)
+        public static List<byte[]> CreateResponse(IEnumerable<Frame> frames, int maxMessageSize)
         {
             List<byte[]> packages = new List<byte[]>();
             foreach (Frame frame in frames)
             {
-                packages.AddRange(FrameProtocol.SerializeFrame(frame, PacketProtocol<MessageType>.MAX_MESSAGE_SIZE));
+                packages.AddRange(FrameProtocol.SerializeFrame(frame, maxMessageSize));
             }
             return packages;
         }
 
-        public static List<byte[]> CreateResponse(IEnumerable<FrameWithoutDelta> frames)
+        public static List<byte[]> CreateResponse(IEnumerable<FrameWithoutDelta> frames, int maxMessageSize)
         {
             List<byte[]> packages = new List<byte[]>();
             foreach (FrameWithoutDelta frame in frames)
             {
-                packages.AddRange(FrameWithoutDeltaProtocol.SerializeFrame(frame, PacketProtocol<MessageType>.MAX_MESSAGE_SIZE));
+                packages.AddRange(FrameWithoutDeltaProtocol.SerializeFrame(frame, maxMessageSize));
             }
             return packages;
         }

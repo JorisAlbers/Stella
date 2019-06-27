@@ -12,6 +12,11 @@ namespace StellaServerLib.Network
 {
     public class Server : IServer, IDisposable
     {
+        /// <summary> The size of the package protocol TCP buffer </summary>
+        private const int TCP_BUFFER_SIZE = 1024;
+        /// <summary> The size of the package protocol UDP buffer </summary>
+        private const int UDP_BUFFER_SIZE = 1024;
+
         private List<Client> _newConnections;
         private Dictionary<int,Client> _clients;
 
@@ -83,7 +88,7 @@ namespace StellaServerLib.Network
 
         public void SendToClient(int clientId, FrameWithoutDelta frame)
         {
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
+            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE); // TODO move the switch between UDP and TCP send from Client to here.
             for (int i = 0; i < packages.Length; i++)
             {
                 SendToClient(i, MessageType.Animation_PrepareFrame, packages[i]);
@@ -122,11 +127,11 @@ namespace StellaServerLib.Network
             // Create a new client.
             // For this, we need a TCP and an UDP connection.
             // Create TCP connection
-            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler);
+            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler, TCP_BUFFER_SIZE);
             //  Create UDP connection
             IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address,_udpPort);
 
-            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, udpRemoteEndPoint);
+            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, udpRemoteEndPoint, UDP_BUFFER_SIZE);
             Client client = new Client(socketConnectionController, udpSocketConnectionController);
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;

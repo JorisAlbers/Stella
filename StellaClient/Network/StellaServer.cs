@@ -19,6 +19,10 @@ namespace StellaClient.Network
     public class StellaServer :  IStellaServer, IDisposable
     {
         private const int RECONNECT_COOLDOWN_SECONDS = 5;
+        /// <summary> The size of the package protocol TCP buffer </summary>
+        private const int TCP_BUFFER_SIZE = 1024;
+        /// <summary> The size of the package protocol UDP buffer </summary>
+        private const int UDP_BUFFER_SIZE = 1024;
 
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
@@ -49,7 +53,7 @@ namespace StellaClient.Network
             IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, _udpPort); // TODO inject the local endpoint?
 
             ISocketConnection udpSocket = UdpSocketConnectionController<MessageType>.CreateSocket(udpLocalEndPoint);
-            _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint);
+            _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint, UDP_BUFFER_SIZE);
             _udpSocketConnectionController.MessageReceived += OnMessageReceived;
             _udpSocketConnectionController.Start();
 
@@ -108,7 +112,7 @@ namespace StellaClient.Network
                 socket.EndConnect(ar);
 
                 Console.WriteLine("Connected with StellaServer");
-                _socketConnectionController = new SocketConnectionController<MessageType>(socket);
+                _socketConnectionController = new SocketConnectionController<MessageType>(socket, TCP_BUFFER_SIZE);
                 _socketConnectionController.MessageReceived += OnMessageReceived;
                 _socketConnectionController.Disconnect += OnDisconnect;
                 _socketConnectionController.Start();

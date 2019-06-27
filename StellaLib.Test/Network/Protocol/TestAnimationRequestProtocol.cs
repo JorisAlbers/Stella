@@ -46,7 +46,7 @@ namespace StellaLib.Test.Network.Protocol
             Frame frame = new Frame(9,100){new PixelInstruction(10,1,2,3)};
             byte[][] expectedBytes = FrameProtocol.SerializeFrame(frame,1016);
             
-            List<byte[]> bytes = AnimationRequestProtocol.CreateResponse(new Frame[]{frame});
+            List<byte[]> bytes = AnimationRequestProtocol.CreateResponse(new Frame[]{frame}, 1024);
 
             Assert.AreEqual(expectedBytes.Length,bytes.Count);
             Assert.AreEqual(expectedBytes[0],bytes[0]);
