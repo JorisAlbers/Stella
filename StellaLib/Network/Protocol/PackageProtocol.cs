@@ -109,7 +109,7 @@ public class PacketProtocol<TMessageType> where TMessageType : System.Enum
     /// </remarks>
     /// <param name="data">The data received from the stream. Cannot be null.</param>
     /// <exception cref="System.Net.ProtocolViolationException">If the data received is not a properly-formed message.</exception>
-    public void DataReceived(byte[] data)
+    public void DataReceived(byte[] data, int length)
     {
         // Process the incoming data in chunks, as the ReadCompleted requests it
   
@@ -117,7 +117,7 @@ public class PacketProtocol<TMessageType> where TMessageType : System.Enum
         //  incoming buffer looking for messages.
   
         int i = 0;
-        while (i != data.Length)
+        while (i != length)
         {
             // Determine how many bytes we want to transfer to the buffer and transfer them
             int bytesAvailable = data.Length - i;

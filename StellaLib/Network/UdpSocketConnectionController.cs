@@ -65,7 +65,7 @@ namespace StellaLib.Network
                 try
                 {
                     byte[] b = (byte[])ar.AsyncState;
-                    _packetProtocol.DataReceived(b.Take(bytesRead).ToArray()); // TODO send length and let the PackageProtocol slice
+                    _packetProtocol.DataReceived(b, bytesRead);
                 }
                 catch (ProtocolViolationException e)
                 {

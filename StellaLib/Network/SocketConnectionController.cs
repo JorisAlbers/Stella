@@ -146,7 +146,7 @@ namespace StellaLib.Network
                     try
                     {
                         byte[] b = (byte[]) ar.AsyncState;
-                        _packetProtocol.DataReceived(b.Take(bytesRead).ToArray());
+                        _packetProtocol.DataReceived(b, bytesRead);
                     }
                     catch(ProtocolViolationException e)
                     {
