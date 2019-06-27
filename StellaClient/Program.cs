@@ -6,7 +6,6 @@ using rpi_ws281x;
 using StellaClient.Light;
 using StellaClient.Network;
 using StellaClient.Serialization;
-using StellaClient.Time;
 using StellaLib.Animation;
 
 namespace StellaClient
@@ -89,7 +88,7 @@ namespace StellaClient
             try
             {
                 IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port);
-                _stellaServer = new StellaServer(localEndPoint, _configuration.UdpPort, _configuration.Id, new LinuxTimeSetter());
+                _stellaServer = new StellaServer(localEndPoint, _configuration.UdpPort, _configuration.Id);
                 _stellaServer.FrameReceived += (sender, frame) => _ledController.PrepareFrame(frame);
                 _stellaServer.RenderFrameReceived += (sender, eventArgs) => _ledController.Render();
                 

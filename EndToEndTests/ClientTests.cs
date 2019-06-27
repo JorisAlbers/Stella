@@ -1,16 +1,12 @@
 using rpi_ws281x;
 using StellaClient.Light;
-using StellaClient.Network;
-using StellaClient.Time;
 using StellaLib.Animation;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using StellaClient;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Drawing.Fade;
 
@@ -28,7 +24,6 @@ namespace EndToEndTests
                 Console.WriteLine("i1 - Run a StellaClient instance with ID 1");
                 Console.WriteLine("c - Run a StellaServer class instance");
                 Console.WriteLine("l - Ledcontroller tests");
-                Console.WriteLine("t - Time related test");
                 Console.WriteLine("q - back");
 
                 string input = Console.ReadLine();
@@ -43,10 +38,6 @@ namespace EndToEndTests
                     case "l":
                         LedControllerTests();
                         break;                  
-                    case "t":
-                        TimeTests timeTests = new TimeTests();
-                        timeTests.Start();
-                        break;
                     case "i0":
                         CreateStellaClientInstance(0);
                         break;
@@ -72,7 +63,7 @@ namespace EndToEndTests
 
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint,20056, id, new LinuxTimeSetter());
+            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint,20056, id);
             stellaServer.FrameReceived += (sender, frame) => ledController.PrepareFrame(frame);
             stellaServer.RenderFrameReceived += (sender, frame) => ledController.Render();
             stellaServer.Start();
@@ -433,7 +424,7 @@ namespace EndToEndTests
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);
 
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, 20056, 0, new LinuxTimeSetter());
+            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, 20056, 0);
             Console.WriteLine("Starting Client, press enter to quit");
             stellaServer.Start();
             Console.ReadLine();

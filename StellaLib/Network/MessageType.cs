@@ -5,7 +5,6 @@ namespace StellaLib.Network
         Unknown,
         Init,
         Standard,
-        TimeSync,
         Animation_RenderFrame,
         Animation_PrepareFrame,
     }

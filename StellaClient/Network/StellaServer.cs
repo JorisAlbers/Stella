@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using StellaClient.Time;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Packages;
@@ -25,7 +24,6 @@ namespace StellaClient.Network
         private IPEndPoint _serverAdress;
         private readonly int _udpPort;
         private int _id;
-        private TimeSetter _timeSetter; // null if the time is NTP synched or when the time has already been synced
         private SocketConnectionController<MessageType> _socketConnectionController;
         private UdpSocketConnectionController<MessageType> _udpSocketConnectionController;
         private object _resourceLock = new object();
@@ -36,17 +34,11 @@ namespace StellaClient.Network
         public event EventHandler<FrameWithoutDelta> FrameReceived;
 
 
-        public StellaServer(IPEndPoint serverAdress, int udpPort, int ID, ISystemTimeSetter systemTimeSetter)
+        public StellaServer(IPEndPoint serverAdress, int udpPort, int ID)
         {
             _serverAdress = serverAdress;
             _udpPort = udpPort;
             _id = ID;
-            if (!systemTimeSetter.TimeIsNTPSynced())
-            {
-                // We want to sync the time with the server
-                _timeSetter = new TimeSetter(systemTimeSetter, 9);
-            }
-
             _frameSectionBuffer = new Dictionary<int, FrameWithoutDeltaProtocol>();
         }
 
@@ -123,12 +115,6 @@ namespace StellaClient.Network
                 
                 // Send init
                 SendInit();
-
-                // Make sure the time of the server is synced with our time
-                if(_timeSetter != null)
-                {
-                    Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage(DateTime.Now));
-                }
             } 
             catch (SocketException e) 
             {  
@@ -160,9 +146,6 @@ namespace StellaClient.Network
                 case MessageType.Init: // Server wants us to send our init values
                     SendInit();
                     break;
-                case MessageType.TimeSync: // Server sends back a timesync message
-                    ParseTimeSyncData(e.Message);
-                    break;
                 case MessageType.Animation_RenderFrame: // Server wants us to render the prepared frame
                     OnAnimationStartReceived();
                     break;
@@ -174,39 +157,7 @@ namespace StellaClient.Network
                     break;
             }
         }
-
-        private void ParseTimeSyncData(byte[] data)
-        {
-           if(_timeSetter == null)
-           {
-               Console.WriteLine("TimeSync message from server ignored as the time setter is null");
-               return;
-           }
-
-           long[] measurements;
-           try
-           {
-               measurements = TimeSyncProtocol.ParseMessage(data);
-           }
-           catch(Exception e)
-           {
-               Console.WriteLine($"Failed to parse TimeSync message from server.");
-               return;
-           }
-           
-           _timeSetter.AddMeasurements(measurements[0],measurements[1],DateTime.Now.Ticks);
-           if(_timeSetter.NeedsMoreData)
-           {
-               // Start the next timeSync measurement
-               Send(MessageType.TimeSync, TimeSyncProtocol.CreateMessage(DateTime.Now));
-           }
-           else
-           {
-               Console.WriteLine("TimeSync completed.");
-               _timeSetter = null;
-           }
-        }
-
+        
         private void OnAnimationStartReceived()
         {
             EventHandler handler = RenderFrameReceived;

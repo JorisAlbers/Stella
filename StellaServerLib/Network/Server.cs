@@ -149,10 +149,6 @@ namespace StellaServerLib.Network
                     // The client sends its ID
                     ParseInitMessage(client, e.Message);
                     break;
-                case MessageType.TimeSync:
-                    // The client wants to sync the time
-                    ParseTimeSyncMessage(client, e.Message);
-                    break;
                 default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
                     break;
@@ -204,12 +200,6 @@ namespace StellaServerLib.Network
             {
                 _newConnections.Remove(client);
             }
-        }
-
-        private void ParseTimeSyncMessage(Client client, byte[] message)
-        {
-            Console.WriteLine($"Synchronizing time with client {client.ID} ");
-            client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(DateTime.Now,message));
         }
 
         public void Dispose()

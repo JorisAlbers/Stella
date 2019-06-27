@@ -30,11 +30,7 @@ namespace EndToEndTests
                         break;
                     case "s":
                         ServerTests.Start();
-                        break;
-                    case "t":
-                        TimeTests timeTests = new TimeTests();
-                        timeTests.Start();
-                        break;          
+                        break;  
                     default:
                         Console.WriteLine($"Unknown command {input}");
                         break;
