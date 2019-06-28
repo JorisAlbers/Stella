@@ -68,7 +68,7 @@ namespace StellaVisualizer.Windows
         }
 
         // TODO race condition
-        private Frame[] _nextFramePerLedStripViewModel = null;
+        private FrameWithoutDelta[] _nextFramePerLedStripViewModel = null;
         private long _startAt;
 
         private void IncrementTime()
@@ -121,7 +121,7 @@ namespace StellaVisualizer.Windows
                 RpiViewModels[i].Clear();
             }
 
-            _startAt = Animator.GetFrameSetMetadata().TimeStamp.Ticks;
+            _startAt = 0;
             _nextFramePerLedStripViewModel = Animator.GetNextFramePerPi();
         }
 

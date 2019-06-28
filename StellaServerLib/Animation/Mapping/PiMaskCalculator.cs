@@ -19,15 +19,27 @@ namespace StellaServerLib.Animation.Mapping
             _piMappings = piMappings;
         }
 
-        public List<PiMaskItem> Calculate()
+        public List<PiMaskItem> Calculate(out int[] stripLengthPerPi)
         {
             List<PiMaskItem> mask = new List<PiMaskItem>();
+            
+            List<int> stripLengthPerPiList = new List<int>();
+
 
             foreach (PiMapping piMapping in _piMappings)
             {
                 AppendPiMapping(piMapping, mask);
+                
+                // Add the length to the strip lengths
+                while (stripLengthPerPiList.Count < piMapping.PiIndex +1)
+                {
+                    stripLengthPerPiList.Add(0);
+                }
+                
+                stripLengthPerPiList[piMapping.PiIndex] += piMapping.Length;
             }
 
+            stripLengthPerPi = stripLengthPerPiList.ToArray();
             return mask;
         }
 

@@ -25,4 +25,24 @@ namespace StellaLib.Network.Protocol.Animation
             return pixelInstruction;
         }
     }
+
+    public class PixelInstructionWithoutDeltaProtocol
+    {
+        public const int BYTES_NEEDED = 3; // Red, Green, Blue
+
+        public static byte[] Serialize(PixelInstructionWithoutDelta instruction, byte[] buffer, int startIndex)
+        {
+            buffer[startIndex] = instruction.Color.R;
+            buffer[startIndex + 1] = instruction.Color.G;
+            buffer[startIndex + 2] = instruction.Color.B;
+            return buffer;
+        }
+
+        public static PixelInstructionWithoutDelta Deserialize(byte[] bytes, int startIndex)
+        {
+            PixelInstructionWithoutDelta pixelInstruction = new PixelInstructionWithoutDelta();
+            pixelInstruction.Color = Color.FromArgb(bytes[startIndex], bytes[startIndex + 1], bytes[startIndex + 2]);
+            return pixelInstruction;
+        }
+    }
 }

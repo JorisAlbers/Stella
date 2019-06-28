@@ -28,7 +28,7 @@ namespace StellaLib.Test.Network.Protocol
             SocketConnection socket = new SocketConnection(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); 
             socket.Connect(localEndPoint);
 
-            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(socket);
+            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(socket,1024);
             socketConnectionController.Start();
             
             Socket server_receiver = server.Accept();

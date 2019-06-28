@@ -13,17 +13,20 @@ namespace StellaServerLib
         private readonly string _mappingFilePath;
         private readonly string _ip;
         private readonly int _port;
+        private readonly int _udpPort;
 
         private List<PiMaskItem> _mask;
+        private int[] _stripLengthPerPi;
         private Server _server;
         private ClientController _clientController;
 
 
-        public StellaServer(string mappingFilePath, string ip, int port)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
+            _udpPort = udpPort;
         }
 
         public void Start()
@@ -31,7 +34,7 @@ namespace StellaServerLib
             // Read mapping
             _mask = LoadMask(_mappingFilePath);
             // Start Server
-            _server = StartServer(_ip, _port);
+            _server = StartServer(_ip, _port, _udpPort);
             // Start ClientController
             _clientController = StartClientController(_server);
         }
@@ -43,14 +46,14 @@ namespace StellaServerLib
             IAnimator animator;
             try
             {
-                animator = AnimatorCreation.Create(storyboard, _mask, DateTime.Now);
+                animator = AnimatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
             }
             catch (Exception e)
             {
                 throw new Exception("Failed to create new animator.",e);
             }
 
-            _clientController.StartAnimation(animator);
+            _clientController.StartAnimation(animator, DateTime.Now + TimeSpan.FromMilliseconds(200)); // TODO variable startAT
 
         }
 
@@ -64,7 +67,7 @@ namespace StellaServerLib
 
                 // Convert them to a mask
                 PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
-                return piMaskCalculator.Calculate();
+                return piMaskCalculator.Calculate(out _stripLengthPerPi);
             }
             catch (Exception e)
             {
@@ -72,12 +75,12 @@ namespace StellaServerLib
             }
         }
 
-        private Server StartServer(string ip, int port)
+        private Server StartServer(string ip, int port, int udpPort)
         {
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
-                Server server = new Server(ip, port);
+                Server server = new Server(ip, port, udpPort);
                 server.Start();
                 return server;
             }
@@ -92,6 +95,7 @@ namespace StellaServerLib
             try
             {
                 ClientController clientController = new ClientController(server);
+                clientController.Run();
                 return clientController;
             }
             catch (Exception e)

@@ -3,45 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
+using StellaLib.Network.Protocol.Animation;
 
 namespace StellaServerLib.Network
 {
     public class Server : IServer, IDisposable
     {
+        /// <summary> The size of the package protocol TCP buffer </summary>
+        private const int TCP_BUFFER_SIZE = 1024;
+        /// <summary> The size of the package protocol UDP buffer </summary>
+        private const int UDP_BUFFER_SIZE = 1024;
+
         private List<Client> _newConnections;
         private Dictionary<int,Client> _clients;
 
-        private int _port;
-        private IPAddress _ip;
+        private IPEndPoint _tcpLocalEndpoint;
+        private readonly IPEndPoint _udpLocalEndpoint;
+
+        private readonly int _port;
+        private readonly int _udpPort;
         private bool _isShuttingDown = false;
-        private object _isShuttingDownLock = new object();
+        private readonly object _isShuttingDownLock = new object();
 
         private ISocketConnection _listenerSocket;
+        private ISocketConnection _udpSocketConnection;
 
-        public event EventHandler<AnimationRequestEventArgs> AnimationRequestReceived;
-
-        public Server(string ip, int port)
+        public Server(string ip, int port, int udpPort)
         {
-            _ip = IPAddress.Parse(ip);
+            IPAddress ipAddress = IPAddress.Parse(ip);
+            _tcpLocalEndpoint = new IPEndPoint(ipAddress, port);
+            _udpLocalEndpoint = new IPEndPoint(ipAddress, udpPort);
             _port = port;
+            _udpPort = udpPort;
             _newConnections =  new List<Client>();
             _clients = new Dictionary<int, Client>();
         }
 
         public void Start()
         {
-            IPEndPoint localEndPoint = new IPEndPoint(_ip, _port);
-
             Console.Out.WriteLine($"Starting server on {_port}");
             // Create a TCP/IP socket.  
-            _listenerSocket = new SocketConnection(_ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
+            _listenerSocket = new SocketConnection(_tcpLocalEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
             // Bind the socket to the local endpoint and listen for incoming connections.  
 
-            _listenerSocket.Bind(localEndPoint);  
-            _listenerSocket.Listen(100);  
-        
+            _listenerSocket.Bind(_tcpLocalEndpoint);  
+            _listenerSocket.Listen(100);
+
+            // Create an UDP socket.
+            _udpSocketConnection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpLocalEndpoint);
+
             // Start an asynchronous socket to listen for connections.  
             _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket );  
         }
@@ -68,11 +81,25 @@ namespace StellaServerLib.Network
             }
         }
 
-        public void SendMessageToClient(int clientID, MessageType messageType, byte[] message)
+        public void SendToClient(int clientId, MessageType messageType)
         {
-            lock(_clients)
+            SendToClient(clientId,messageType,new byte[0]);
+        }
+
+        public void SendToClient(int clientId, FrameWithoutDelta frame)
+        {
+            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE); // TODO move the switch between UDP and TCP send from Client to here.
+            for (int i = 0; i < packages.Length; i++)
             {
-                _clients[clientID].Send(messageType,message);
+                SendToClient(clientId, MessageType.Animation_PrepareFrame, packages[i]);
+            }
+        }
+
+        private void SendToClient(int clientId, MessageType messageType, byte[] data)
+        {
+            lock (_clients)
+            {
+                _clients[clientId].Send(messageType,data);
             }
         }
 
@@ -96,9 +123,16 @@ namespace StellaServerLib.Network
 
             // Handle the new connection
             ISocketConnection handler = listener.EndAccept(ar);
-            
+
             // Create a new client.
-            Client client = new Client(new SocketConnectionController<MessageType>(handler));
+            // For this, we need a TCP and an UDP connection.
+            // Create TCP connection
+            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler, TCP_BUFFER_SIZE);
+            //  Create UDP connection
+            IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address,_udpPort);
+
+            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, udpRemoteEndPoint, UDP_BUFFER_SIZE);
+            Client client = new Client(socketConnectionController, udpSocketConnectionController);
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 
@@ -119,14 +153,6 @@ namespace StellaServerLib.Network
                 case MessageType.Init:
                     // The client sends its ID
                     ParseInitMessage(client, e.Message);
-                    break;
-                case MessageType.TimeSync:
-                    // The client wants to sync the time
-                    ParseTimeSyncMessage(client, e.Message);
-                    break;
-                case MessageType.Animation_Request:
-                    // The client request the next n frames
-                    OnAnimationRequestReceived(client.ID,e.Message);
                     break;
                 default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
@@ -178,25 +204,6 @@ namespace StellaServerLib.Network
             lock(_newConnections)
             {
                 _newConnections.Remove(client);
-            }
-        }
-
-        private void ParseTimeSyncMessage(Client client, byte[] message)
-        {
-            Console.WriteLine($"Synchronizing time with client {client.ID} ");
-            client.Send(MessageType.TimeSync,TimeSyncProtocol.CreateMessage(DateTime.Now,message));
-        }
-
-        private void OnAnimationRequestReceived(int clientID, byte[] message)
-        {
-            int startIndex, count;
-            AnimationRequestProtocol.ParseRequest(message,out startIndex,out count);
-
-            Console.WriteLine($"Client {clientID} has requested {count} frames starting from index {startIndex}");
-            EventHandler<AnimationRequestEventArgs> eventHandler = AnimationRequestReceived;
-            if (eventHandler != null)
-            {
-                eventHandler(this,new AnimationRequestEventArgs(clientID,startIndex,count));
             }
         }
 

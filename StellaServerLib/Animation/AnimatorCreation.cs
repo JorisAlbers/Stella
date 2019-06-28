@@ -9,36 +9,36 @@ using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Animation
-{
-    // Creates an Animator
+{// Creates an Animator
     public static class AnimatorCreation
     {
-
-        public static Animator Create(Storyboard storyboard, List<PiMaskItem> mask, DateTime startAt)
+        public static Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
-            IDrawer drawer = CreateDrawer(storyboard.AnimationSettings);
-            return new Animator(drawer,mask, startAt);
-        }
+            IDrawer drawer;
 
-        private static IDrawer CreateDrawer(IAnimationSettings[] storyboardAnimationSettings)
-        {
-            if (storyboardAnimationSettings.Length == 1)
+            if (storyboard.AnimationSettings.Length == 1)
             {
                 // Use a normal drawer
-                return CreateDrawer(storyboardAnimationSettings[0]);
+                drawer = CreateDrawer(storyboard.AnimationSettings[0]);
             }
             else
             {
                 // Use a SectionDrawer to combine multiple drawers
                 // First, get the drawers
-                IDrawer[] drawers = storyboardAnimationSettings.Select(CreateDrawer).ToArray();
+                IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
+                int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
 
-                // Then, get the relative starts
-                int[] relativeTimeStamps = storyboardAnimationSettings.Select(x => x.RelativeStart).ToArray();
+                for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
+                {
+                    drawers[i] = CreateDrawer(storyboard.AnimationSettings[i]);
+                    relativeTimeStamps[i] = storyboard.AnimationSettings[i].RelativeStart;
+                }
 
                 // Then, combine them in a single drawer by using the SectionDrawer
-                return new SectionDrawer(drawers, relativeTimeStamps);
+                drawer = new SectionDrawer(drawers, relativeTimeStamps);
             }
+
+            return new Animator(drawer, stripLengthPerPi, mask);
         }
 
         private static IDrawer CreateDrawer(IAnimationSettings animationSetting)
@@ -68,8 +68,10 @@ namespace StellaServerLib.Animation
                 Bitmap bitmap = new Bitmap(Image.FromFile(bitmapSetting.ImagePath));
                 return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, bitmapSetting.FrameWaitMs, bitmap);
             }
-            
+
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");
         }
     }
+
+
 }

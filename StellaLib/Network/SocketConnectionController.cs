@@ -14,6 +14,7 @@ namespace StellaLib.Network
         private PacketProtocol<TMessageType> _packetProtocol;
         private bool _isDisposed = false;
         private ISocketConnection _socket;
+        private readonly int _bufferSize;
         private readonly object _parsingMessageLock = new object(); // Lock used by each message parsing thread
         private System.Timers.Timer _keepAliveTimer;
         private const int KEEP_ALIVE_TIMER_INTERVAL = 2000; // Send a keep alive message every x seconds
@@ -23,9 +24,10 @@ namespace StellaLib.Network
         
         public bool IsConnected {get; private set;}
 
-        public SocketConnectionController(ISocketConnection socket)
+        public SocketConnectionController(ISocketConnection socket, int bufferSize)
         {
             _socket = socket;
+            _bufferSize = bufferSize;
         }
 
         public void Start()
@@ -35,11 +37,11 @@ namespace StellaLib.Network
                 throw new Exception("The socket must be connected before starting the SocketConnectionController");
             }
 
-            _packetProtocol = new PacketProtocol<TMessageType>();
+            _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
             _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
             IsConnected = true;
-            byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
-            _socket.BeginReceive(buffer, 0, PacketProtocol<TMessageType>.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);
+            byte[] buffer = new byte[_bufferSize];
+            _socket.BeginReceive(buffer, 0, _bufferSize, 0, new AsyncCallback(ReceiveCallback), buffer);
 
             // Start sending KeepAlive packages to check if the connection is still open
             _keepAliveTimer = new System.Timers.Timer();
@@ -146,20 +148,20 @@ namespace StellaLib.Network
                     try
                     {
                         byte[] b = (byte[]) ar.AsyncState;
-                        _packetProtocol.DataReceived(b.Take(bytesRead).ToArray());
+                        _packetProtocol.DataReceived(b, bytesRead);
                     }
                     catch(ProtocolViolationException e)
                     {
                         Console.WriteLine("Failed to receive data. Package protocol violation. \n"+e.ToString());
                         _packetProtocol.MessageArrived = null;
                         _packetProtocol.KeepAliveArrived = null;
-                        _packetProtocol = new PacketProtocol<TMessageType>();
+                        _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
                         _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
                     }
                 }
                 // Start receiving more data
-                byte[] buffer = new byte[PacketProtocol<TMessageType>.BUFFER_SIZE];
-                _socket.BeginReceive(buffer, 0, PacketProtocol<TMessageType>.BUFFER_SIZE, 0, new AsyncCallback(ReceiveCallback), buffer);
+                byte[] buffer = new byte[_bufferSize];
+                _socket.BeginReceive(buffer, 0, _bufferSize, 0, new AsyncCallback(ReceiveCallback), buffer);
             }  
         }
 

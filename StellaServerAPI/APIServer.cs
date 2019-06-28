@@ -14,6 +14,9 @@ namespace StellaServerAPI
     /// </summary>
     public class APIServer
     {
+        /// <summary> The size of the package protocol TCP buffer </summary>
+        private const int BUFFER_SIZE = 1024;
+
         private readonly string _ip;
         private readonly int _port;
         private bool _isShuttingDown = false;
@@ -70,7 +73,7 @@ namespace StellaServerAPI
             ISocketConnection handler = listener.EndAccept(ar);
 
             // Create a new client.
-            Client client = new Client(new SocketConnectionController<MessageType>(handler));
+            Client client = new Client(new SocketConnectionController<MessageType>(handler, BUFFER_SIZE));
             client.MessageReceived += Client_MessageReceived;
             client.Disconnect += Client_Disconnected;
 
@@ -96,7 +99,7 @@ namespace StellaServerAPI
                 case MessageType.GetAvailableStoryboards:
                     // TODO GetAvailableStoryboard protocol
                     // TODO the code below is just to test StellaWebInterface
-                    byte[][] data = StringProtocol.Serialize("TestMessage", PacketProtocol<MessageType>.MAX_MESSAGE_SIZE);
+                    byte[][] data = StringProtocol.Serialize("TestMessage", 1024);
                     foreach (var package in data)
                     {
                         ((Client)sender).Send(MessageType.GetAvailableStoryboards, package);

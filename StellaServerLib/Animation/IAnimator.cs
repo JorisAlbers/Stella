@@ -9,13 +9,6 @@ namespace StellaServerLib.Animation
     {
         /// <summary> Get the next frame, split over the pis</summary>
         /// <returns>A frame for each pi.</returns>
-        Frame[] GetNextFramePerPi();
-
-        /// <summary>
-        /// Get the frame set metadata
-        /// </summary>
-        /// <returns></returns>
-        FrameSetMetadata GetFrameSetMetadata();
-
+        FrameWithoutDelta[] GetNextFramePerPi();
     }
 }

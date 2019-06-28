@@ -7,7 +7,6 @@ using StellaClient.Network;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
 using Moq;
-using StellaClient.Time;
 using System.Text;
 
 namespace StellaClient.Test.Network
@@ -29,10 +28,8 @@ namespace StellaClient.Test.Network
             server.Listen(2);
 
             // Create a SocketConnectionController
-            var mockSystemTimeSetter = new Mock<ISystemTimeSetter>();
-            mockSystemTimeSetter.Setup(x=>x.TimeIsNTPSynced()).Returns(true);
             int clientId = 0;
-            StellaServer stellaServer = new StellaServer(localEndPoint, clientId , mockSystemTimeSetter.Object);
+            StellaServer stellaServer = new StellaServer(localEndPoint, 20056, clientId);
             stellaServer.Start();
             
             Socket server_receiver = server.Accept();

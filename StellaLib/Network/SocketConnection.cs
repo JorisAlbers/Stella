@@ -39,15 +39,30 @@ namespace StellaLib.Network
             return _socket.BeginReceive(buffer, offset, bufferSize, socketFlags, callback, state);
         }
 
+        public IAsyncResult BeginReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP, AsyncCallback callback, object state)
+        {
+            return _socket.BeginReceiveFrom(buffer, offset, size, socketFlags, ref remoteEP, callback, state);
+        }
+
         public int EndReceive(IAsyncResult asyncResult)
         {
             return _socket.EndReceive(asyncResult);
+        }
+
+        public int EndReceiveFrom(IAsyncResult asyncResult, ref EndPoint endPoint)
+        {
+            return _socket.EndReceiveFrom(asyncResult, ref endPoint);
         }
 
         public IAsyncResult BeginSend(byte[] buffer, int offset, int bufferSize, SocketFlags socketFlags, AsyncCallback callback,
             object state)
         {
             return _socket.BeginSend(buffer, offset, bufferSize, socketFlags, callback, state);
+        }
+
+        public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags,EndPoint remoteEP )
+        {
+           return  _socket.SendTo(buffer, offset, size, socketFlags, remoteEP);
         }
 
         public int EndSend(IAsyncResult asyncResult)
@@ -109,6 +124,12 @@ namespace StellaLib.Network
         public void Close()
         {
             _socket.Close();
+        }
+
+        public bool EnableBroadcast
+        {
+            get => _socket.EnableBroadcast;
+            set => _socket.EnableBroadcast = value;
         }
     }
 }

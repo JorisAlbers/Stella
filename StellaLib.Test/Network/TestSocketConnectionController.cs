@@ -36,7 +36,7 @@ namespace StellaLib.Test.Network
                          receivedMessage = data;
                      });
 
-            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object);
+            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object, 1024);
             controller.Start();
             controller.Send(messageType, message);
             Assert.AreEqual(expectedMessage, receivedMessage);
@@ -68,7 +68,7 @@ namespace StellaLib.Test.Network
             mock.Setup(x => x.EndSend(It.IsAny<IAsyncResult>())).Throws<SocketException>();
             // Listen to the Disconnect event
             bool disconnectInvoked = false;
-            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object);
+            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object, 1024);
             controller.Disconnect += (sender, args) => disconnectInvoked = true;
 
             // Run
@@ -112,7 +112,7 @@ namespace StellaLib.Test.Network
             bool endSendCalled = false;
             mock.Setup(x => x.EndReceive(It.IsAny<IAsyncResult>())).Returns(dataToSend.Length).Callback(() => endSendCalled = true);
 
-            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object);
+            SocketConnectionController<MessageType> controller = new SocketConnectionController<MessageType>(mock.Object, 1024);
             MessageReceivedEventArgs<MessageType> messageReceivedEventArgs = null;
             controller.MessageReceived += (sender, args) => { messageReceivedEventArgs = args; };
             controller.Start();

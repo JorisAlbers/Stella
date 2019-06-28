@@ -46,8 +46,9 @@ namespace EndToEndTests
             int numberOfPis = 2;
             int lengthPerPi = 1200;
             int port = 20055;
+            int udpPort = 20056;
             Console.Out.WriteLine("Starting StellaServer instance");
-            Server server = new Server(Program.SERVER_IP,port);
+            Server server = new Server(Program.SERVER_IP,port, udpPort);
             server.Start();
             ClientController clientController = new ClientController(server);
 
@@ -58,7 +59,7 @@ namespace EndToEndTests
                 piMappings.Add(new PiMapping(i,lengthPerPi,0,new int[]{lengthPerPi/2},false));
             }
             PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
-            List<PiMaskItem> mask = piMaskCalculator.Calculate();
+            List<PiMaskItem> mask = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Color[] pattern = new Color[]
             {
@@ -95,7 +96,6 @@ namespace EndToEndTests
             SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(0,300,100, pattern);
             MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(0,300,30,pattern);
 
-
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
             Console.Out.WriteLine("a - Start new animation");
@@ -107,16 +107,17 @@ namespace EndToEndTests
                 Console.Out.WriteLine("m - Start MovingPattern    animation");
                 Console.Out.WriteLine("q - quit");
 
+
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer,mask,DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, stripLengthPerPi, mask), DateTime.Now);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternDrawer, mask, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(slidingPatternDrawer, stripLengthPerPi, mask), DateTime.Now);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternDrawer, mask, DateTime.Now + TimeSpan.FromSeconds(1)));
+                        clientController.StartAnimation(new Animator(movingPatternDrawer, stripLengthPerPi, mask), DateTime.Now);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");
@@ -129,7 +130,7 @@ namespace EndToEndTests
 
         private static void StartServerInstance()
         {
-            Server server = new Server(Program.SERVER_IP,20055);
+            Server server = new Server(Program.SERVER_IP,20055, 20056);
             Console.WriteLine("Starting server instance, press enter to quit");
             server.Start();
             Console.ReadLine();

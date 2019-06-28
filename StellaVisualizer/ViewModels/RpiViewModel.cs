@@ -25,7 +25,7 @@ namespace StellaVisualizer.ViewModels
             }
         }
 
-        public void DrawFrame(Frame frame)
+        public void DrawFrame(FrameWithoutDelta frame)
         {
             // Split the frame per section
             List<PixelInstruction>[] instructionsPerSection = new List<PixelInstruction>[_sections];
@@ -34,10 +34,10 @@ namespace StellaVisualizer.ViewModels
                 instructionsPerSection[i] = new List<PixelInstruction>();
             }
 
-            foreach (PixelInstruction pixelInstruction in frame)
+            for (int i = 0; i < frame.Items.Length; i++)
             {
-                int sectionIndex = (int) (pixelInstruction.Index / _lengthPerSection);
-                instructionsPerSection[sectionIndex].Add(new PixelInstruction(pixelInstruction.Index % _lengthPerSection,  pixelInstruction.Color));
+                int sectionIndex = i / _lengthPerSection;
+                instructionsPerSection[sectionIndex].Add(new PixelInstruction(i % _lengthPerSection, frame.Items[i].Color));
             }
 
             // send the buffers

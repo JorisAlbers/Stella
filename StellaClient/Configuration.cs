@@ -9,6 +9,7 @@ namespace StellaClient
     /// </summary>
     public class Configuration
     {
+
         /// <summary> The ID of this StellaClient. </summary>
         public int Id { get; }
 
@@ -17,6 +18,9 @@ namespace StellaClient
 
         /// <summary> The port of StellaServer.</summary>
         public int Port { get; }
+
+        /// <summary> The UDP port of StellaServer </summary>
+        public int UdpPort { get; }
 
         /// <summary> The number of leds available.</summary>
         public int LedCount { get; }
@@ -27,11 +31,13 @@ namespace StellaClient
         /// <summary> The dma channel used to generate the pwm signal.</summary>
         public int DmaChannel { get; }
 
-        public Configuration(int id, string ip, int port, int ledCount, int pwmPin, int dmaChannel)
+
+        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel)
         {
             Id = id;
             Ip = ip;
             Port = port;
+            UdpPort = udpPort;
             LedCount = ledCount;
             PwmPin = pwmPin;
             DmaChannel = dmaChannel;

@@ -155,7 +155,9 @@ namespace StellaVisualizer.ViewModels
                 new PiMapping(1,StripLength,0,new int[0], false),
                 new PiMapping(2,StripLength,0,new int[0], false),
             });
-            IAnimator animator = new Animator(drawer, piMaskCalculator.Calculate(),new DateTime(0));
+            List<PiMaskItem> piMaskItems = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
+
+            IAnimator animator = new Animator(drawer, stripLengthPerPi, piMaskItems);
             OnAnimationCreated(animator);
         }
         

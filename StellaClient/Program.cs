@@ -6,16 +6,15 @@ using rpi_ws281x;
 using StellaClient.Light;
 using StellaClient.Network;
 using StellaClient.Serialization;
-using StellaClient.Time;
+using StellaLib.Animation;
 
 namespace StellaClient
 {
     class Program
     {
         private static Configuration _configuration;
-        private static LedController _ledController;
+        private static BufferlessLedController _ledController;
         private static StellaServer _stellaServer;
-        private static RpiController _rpiController;
 
 
         static void Main(string[] args)
@@ -76,8 +75,7 @@ namespace StellaClient
                 Settings settings = new Settings(800000, _configuration.DmaChannel);
                 settings.Channels[0] = new Channel(_configuration.LedCount, _configuration.PwmPin, 255, false,
                     StripType.WS2812_STRIP);
-                _ledController = new LedController(new WS281x(settings));
-                _ledController.Run();
+                _ledController = new BufferlessLedController(new WS281x(settings));
             }
             catch (Exception e)
             {
@@ -86,13 +84,14 @@ namespace StellaClient
                 return;
             }
 
-            // Start the StellaServer connection & The RpiController
+            // Start the StellaServer connection
             try
             {
                 IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port);
-                _stellaServer = new StellaServer(localEndPoint, _configuration.Id, new LinuxTimeSetter());
+                _stellaServer = new StellaServer(localEndPoint, _configuration.UdpPort, _configuration.Id);
+                _stellaServer.FrameReceived += (sender, frame) => _ledController.PrepareFrame(frame);
+                _stellaServer.RenderFrameReceived += (sender, eventArgs) => _ledController.Render();
                 
-                _rpiController = new RpiController(_stellaServer, _ledController);
                 _stellaServer.Start();
             }
             catch (Exception e)
@@ -115,10 +114,9 @@ namespace StellaClient
             autoResetEvent.WaitOne();
             Console.WriteLine("Manual shutdown.");
             _stellaServer.Dispose();
-            _ledController.Dispose();
             
         }
-
+      
         static void OutputHelp()
         {
             Console.Out.WriteLine("Stella Client");

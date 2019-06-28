@@ -10,7 +10,7 @@ namespace StellaServerLib.Test.Animation.Mapping
         [Test]
         public void Calculate_SingleMappingWithoutSections_CorrectlyCreatesMask()
         {
-            int expectedPiIndex = 9;
+            int expectedPiIndex = 0;
             int expectedLength = 5;
             int expectedStartIndexOnPi = 500;
 
@@ -20,9 +20,11 @@ namespace StellaServerLib.Test.Animation.Mapping
             };
             
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
-            List<PiMaskItem> piMaskItems = maskCalculator.Calculate();
+            List<PiMaskItem> piMaskItems = maskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Assert.AreEqual(expectedLength, piMaskItems.Count);
+            Assert.AreEqual(1,stripLengthPerPi.Length);
+            Assert.AreEqual(expectedLength,stripLengthPerPi[0]);
 
             // Item 1
             PiMaskItem item1 = piMaskItems[0];
@@ -49,7 +51,7 @@ namespace StellaServerLib.Test.Animation.Mapping
         [Test]
         public void Calculate_SingleReversedMappingWithoutSections_CorrectlyCreatesMask()
         {
-            int expectedPiIndex = 9;
+            int expectedPiIndex = 0;
             int expectedLength = 5;
             int expectedStartIndexOnPi = 500;
 
@@ -59,7 +61,9 @@ namespace StellaServerLib.Test.Animation.Mapping
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
-            List<PiMaskItem> piMaskItems = maskCalculator.Calculate();
+            List<PiMaskItem> piMaskItems = maskCalculator.Calculate(out int[] stripLengthPerPi);
+            Assert.AreEqual(1, stripLengthPerPi.Length);
+            Assert.AreEqual(expectedLength, stripLengthPerPi[0]);
 
             Assert.AreEqual(expectedLength, piMaskItems.Count);
 
@@ -88,7 +92,7 @@ namespace StellaServerLib.Test.Animation.Mapping
         [Test]
         public void Calculate_TwoForwardMappingsWithoutSections_CorrectlyCreatesMask()
         {
-            int expectedPiIndex1 = 9;
+            int expectedPiIndex1 = 0;
             int expectedPiIndex2 = 1;
             int expectedLength = 2;
             int expectedStartIndexOnPi1 = 500;
@@ -101,9 +105,12 @@ namespace StellaServerLib.Test.Animation.Mapping
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
-            List<PiMaskItem> piMaskItems = maskCalculator.Calculate();
+            List<PiMaskItem> piMaskItems = maskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Assert.AreEqual(4, piMaskItems.Count);
+            Assert.AreEqual(2, stripLengthPerPi.Length);
+            Assert.AreEqual(expectedLength, stripLengthPerPi[0]);
+            Assert.AreEqual(expectedLength, stripLengthPerPi[0]);
 
             // Mapping 1
             // Item 1
@@ -128,7 +135,7 @@ namespace StellaServerLib.Test.Animation.Mapping
         [Test]
         public void Calculate_SingleMappingWithTwoSectionsFirstSectionInverted_CorrectlyCreatesMask()
         {
-            int expectedPiIndex = 9;
+            int expectedPiIndex = 0;
             int expectedLength = 5;
             int expectedStartIndexOnPi = 500;
 
@@ -140,9 +147,11 @@ namespace StellaServerLib.Test.Animation.Mapping
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
-            List<PiMaskItem> piMaskItems = maskCalculator.Calculate();
+            List<PiMaskItem> piMaskItems = maskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Assert.AreEqual(expectedLength, piMaskItems.Count);
+            Assert.AreEqual(1, stripLengthPerPi.Length);
+            Assert.AreEqual(expectedLength, stripLengthPerPi[0]);
 
             // Item 1
             PiMaskItem item1 = piMaskItems[0];
@@ -169,7 +178,7 @@ namespace StellaServerLib.Test.Animation.Mapping
         [Test]
         public void Calculate_SingleMappingWithThreeSectionsFirstSectionInverted_CorrectlyCreatesMask()
         {
-            int expectedPiIndex = 9;
+            int expectedPiIndex = 0;
             int expectedLength = 6;
             int expectedStartIndexOnPi = 500;
 
@@ -181,9 +190,11 @@ namespace StellaServerLib.Test.Animation.Mapping
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
-            List<PiMaskItem> piMaskItems = maskCalculator.Calculate();
+            List<PiMaskItem> piMaskItems = maskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Assert.AreEqual(expectedLength, piMaskItems.Count);
+            Assert.AreEqual(1, stripLengthPerPi.Length);
+            Assert.AreEqual(expectedLength, stripLengthPerPi[0]);
 
             // Item 1
             PiMaskItem item1 = piMaskItems[0];
@@ -214,7 +225,7 @@ namespace StellaServerLib.Test.Animation.Mapping
         [Test]
         public void Calculate_SingleMappingWithThreeSectionsFirstSectionNotInverted_CorrectlyCreatesMask()
         {
-            int expectedPiIndex = 9;
+            int expectedPiIndex = 0;
             int expectedLength = 6;
             int expectedStartIndexOnPi = 500;
 
@@ -226,9 +237,11 @@ namespace StellaServerLib.Test.Animation.Mapping
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
-            List<PiMaskItem> piMaskItems = maskCalculator.Calculate();
+            List<PiMaskItem> piMaskItems = maskCalculator.Calculate(out int[] stripLengthPerPi);
 
             Assert.AreEqual(expectedLength, piMaskItems.Count);
+            Assert.AreEqual(1, stripLengthPerPi.Length);
+            Assert.AreEqual(expectedLength, stripLengthPerPi[0]);
 
             // Item 1
             PiMaskItem item1 = piMaskItems[0];
