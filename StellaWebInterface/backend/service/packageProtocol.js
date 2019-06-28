@@ -7,6 +7,7 @@ class PackageProtocol {
     this.bytesReceived = 0;
 
     this.BUFFER_SIZE = 1024;
+    this.MAX_MESSAGE_SIZE = this.BUFFER_SIZE - 8;
   }
 
   wrapGetAvailableStoryboardsMessage() {
@@ -80,7 +81,7 @@ class PackageProtocol {
         // Zero-length packets are allowed as keepalives
         if (length === 0) {
           this.bytesReceived = 0;
-          console.log("Server connection keep alive received")
+          // console.log("Server connection keep alive received")
         } else {
           // Create the message type buffer and start reading into it
           this.messageTypeBuffer = new Buffer.alloc(4);

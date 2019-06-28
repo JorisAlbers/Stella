@@ -1,7 +1,9 @@
+const fs = require("fs");
 const net = require("net");
 
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
+const StringProtocol = require("../service/stringProtocol");
 
 class Socket {
   constructor(server) {
@@ -17,6 +19,7 @@ class Socket {
     this.clientSocket = require('socket.io')(server);
     this.clientSocket.connectedClients = [];
     this.packageProtocol = new PackageProtocol();
+    this.stringProtocol = new StringProtocol();
 
     this.packageProtocol.messageArrived = (messageType, data) => {
       console.log("message protocol says it has a package - messageType: ", messageType, ", data: ", data.readUInt32LE());
@@ -25,6 +28,11 @@ class Socket {
           console.log('messageType received none');
           return null;
         case 1:
+          this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
+
+          if (this.stringProtocol.message !== null) {
+            this.stringProtocol = new StringProtocol();
+          }
           console.log('messageType received GetAvailableStoryboards');
           break;
       }
@@ -34,11 +42,11 @@ class Socket {
     this._setClientListeners();
   }
 
-  getAvailableStoryboards () {
+  getAvailableStoryboards() {
     this.serverSocket.write(this.packageProtocol.wrapGetAvailableStoryboardsMessage());
   };
 
-  _setServerListeners () {
+  _setServerListeners() {
     this.serverSocket.on('close', (hadError) => {
       this.serverSocket.connected = false;
       this.clientSocket.emit('status', {
@@ -65,7 +73,6 @@ class Socket {
 
     this.serverSocket.on('data', (data) => {
       this.packageProtocol.dataReceived(data);
-      // console.log("Server connection data - data: ", data);
     });
 
     this.serverSocket.on('drain', () => {
@@ -102,17 +109,28 @@ class Socket {
   _setClientListeners() {
     this.clientSocket.on('connection', (socket) => {
       this.clientSocket.connectedClients.push(socket.id);
-      this.getAvailableStoryboards();
 
       console.log("Client connection connected");
 
-      socket.on('availableStoryboards', () => {
-        // socket.getAvailableStoryboards();
-        socket.emit('availableStoryboards', {})
+      socket.on('getSavedLedMapping', () => {
+        if (fs.existsSync('./savedData/savedLedMapping.json')) {
+          const savedLedMapping = fs.readFileSync('./savedData/savedLedMapping.json');
+          socket.emit('returnSavedLedMapping', JSON.parse(savedLedMapping))
+        }
       });
 
-      socket.on('status', () => {
-        socket.emit('status', {
+      socket.on('setSavedLedMapping', (data) => {
+        fs.writeFileSync('./savedData/savedLedMapping.json', JSON.stringify(data));
+      });
+
+      socket.on('getAvailableStoryboards', () => {
+        this.getAvailableStoryboards();
+
+        socket.emit('returnAvailableStoryboards', {})
+      });
+
+      socket.on('getStatus', () => {
+        socket.emit('returnStatus', {
           clientConnectedToBackend: true,
           backendConnectedToServer: this.serverSocket.connected,
           connectedClients: this.clientSocket.connectedClients.length,
