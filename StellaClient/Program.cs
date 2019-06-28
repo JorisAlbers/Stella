@@ -13,7 +13,7 @@ namespace StellaClient
     class Program
     {
         private static Configuration _configuration;
-        private static BufferlessLedController _ledController;
+        private static LedController _ledController;
         private static StellaServer _stellaServer;
 
 
@@ -75,7 +75,7 @@ namespace StellaClient
                 Settings settings = new Settings(800000, _configuration.DmaChannel);
                 settings.Channels[0] = new Channel(_configuration.LedCount, _configuration.PwmPin, 255, false,
                     StripType.WS2812_STRIP);
-                _ledController = new BufferlessLedController(new WS281x(settings));
+                _ledController = new LedController(new WS281x(settings));
             }
             catch (Exception e)
             {
