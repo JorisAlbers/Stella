@@ -203,6 +203,7 @@ namespace StellaClient.Network
         {
             _isDisposed = true;
             _socketConnectionController.Dispose();
+            _udpSocketConnectionController.Dispose();
         }
     }
 }

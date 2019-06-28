@@ -70,6 +70,8 @@ namespace StellaServerLib.Network
             _socketConnectionController.MessageReceived -= OnMessageReceived;
             _socketConnectionController.Disconnect -= OnDisconnect;
             _socketConnectionController.Dispose();
+            _udpSocketConnectionController.MessageReceived -= MessageReceived;
+            _udpSocketConnectionController.Dispose();
         }
     }
 }

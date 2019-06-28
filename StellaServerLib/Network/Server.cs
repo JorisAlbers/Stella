@@ -227,14 +227,20 @@ namespace StellaServerLib.Network
             try
             {
                 _listenerSocket.Shutdown(SocketShutdown.Receive);
+                _listenerSocket.Dispose();
+                _listenerSocket.Close();
 
             }
-            catch(SocketException e)
+            catch (SocketException) { }
+            try
             {
-                Console.WriteLine("Listening socket was already disconnected.");
+                _udpSocketConnection.Shutdown(SocketShutdown.Receive);
+                _udpSocketConnection.Dispose();
+                _udpSocketConnection.Close();
+
             }
-            _listenerSocket.Dispose();
-            _listenerSocket.Close();
+            catch (SocketException){}
+
         }
 
         private void DisposeClient(Client client)
