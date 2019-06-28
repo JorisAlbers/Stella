@@ -91,7 +91,7 @@ namespace StellaServerLib.Network
             byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE); // TODO move the switch between UDP and TCP send from Client to here.
             for (int i = 0; i < packages.Length; i++)
             {
-                SendToClient(i, MessageType.Animation_PrepareFrame, packages[i]);
+                SendToClient(clientId, MessageType.Animation_PrepareFrame, packages[i]);
             }
         }
 
