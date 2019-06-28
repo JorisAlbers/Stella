@@ -11,6 +11,10 @@
   </ItemGroup>
 
     <ItemGroup>
+    <None Update="Resources\Configuration\TwoTubesTwoPi.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
     <None Update="Resources\Configuration\OneTubeTwoPisConfiguration.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -22,6 +26,10 @@
     <None Update="Resources\Configuration\MappingExample.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Update="Resources\Storyboards\TwoTubesTwoPis.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
     <None Update="Resources\Storyboards\OneTubeTwoPis.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
