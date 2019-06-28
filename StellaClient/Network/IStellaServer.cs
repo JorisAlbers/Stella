@@ -9,8 +9,7 @@ namespace StellaClient.Network
         void Dispose();
         void Send(MessageType type, byte[] message);
         void Start();
-        event EventHandler<FrameWithoutDelta> FrameReceived;
-        event EventHandler RenderFrameReceived;
+        event EventHandler<FrameWithoutDelta> RenderFrameReceived;
 
 
     }

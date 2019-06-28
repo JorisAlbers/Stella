@@ -64,8 +64,7 @@ namespace EndToEndTests
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
             StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint,20056, id);
-            stellaServer.FrameReceived += (sender, frame) => ledController.PrepareFrame(frame);
-            stellaServer.RenderFrameReceived += (sender, frame) => ledController.Render();
+            stellaServer.RenderFrameReceived += (sender, frame) => ledController.RenderFrame(frame);
             stellaServer.Start();
             
             string input;

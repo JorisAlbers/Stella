@@ -19,7 +19,7 @@ namespace StellaServerLib.Test
         {
             //SETUP
             int expectedID = 0;
-            MessageType expectedMessageType = MessageType.Animation_RenderFrame;
+            MessageType expectedMessageType = MessageType.AnimationRenderFrame;
             var mock = new Mock<IServer>();
 
             FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);

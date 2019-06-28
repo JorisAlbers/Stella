@@ -18,16 +18,12 @@ namespace StellaClient.Light
             _ledStrip = ledStrip;
         }
 
-        public void PrepareFrame(FrameWithoutDelta frame)
+        public void RenderFrame(FrameWithoutDelta frame)
         {
             for (int i = 0; i < frame.Count; i++)
             {
                 _ledStrip.SetLEDColor(0, i, frame[i].Color);
             }
-        }
-
-        public void Render()
-        {
             _ledStrip.Render();
         }
     }

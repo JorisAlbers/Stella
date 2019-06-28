@@ -34,7 +34,7 @@ namespace StellaServerLib.Network
 
         public void Send(MessageType type, byte[] message)
         {
-            if (type == MessageType.Animation_PrepareFrame || type == MessageType.Animation_RenderFrame)
+            if (type == MessageType.AnimationRenderFrame)
             {
                 // Send via UDP
                 _udpSocketConnectionController.Send(type,message);

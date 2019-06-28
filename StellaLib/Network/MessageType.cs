@@ -5,7 +5,6 @@ namespace StellaLib.Network
         Unknown,
         Init,
         Standard,
-        Animation_RenderFrame,
-        Animation_PrepareFrame,
+        AnimationRenderFrame,
     }
 }

@@ -52,7 +52,6 @@ namespace StellaServerLib
                 {
                     frames = _animator.GetNextFramePerPi();
                     renderNextFrameAt = _frameSetMetadata.TimeStamp.Ticks + frames.First(x => x != null).TimeStampRelative * TimeSpan.TicksPerMillisecond;
-                    SendPrepareFrame(frames);
                 }
 
                 long now = DateTime.Now.Ticks;
@@ -69,18 +68,6 @@ namespace StellaServerLib
                 // Prepare
                 frames = animator.GetNextFramePerPi();
                 renderNextFrameAt = _frameSetMetadata.TimeStamp.Ticks + frames.First(x => x != null).TimeStampRelative * TimeSpan.TicksPerMillisecond;
-                SendPrepareFrame(frames);
-            }
-        }
-
-        private void SendPrepareFrame(FrameWithoutDelta[] frames)
-        {
-            for (int i = 0; i < frames.Length; i++)
-            {
-                if (frames[i] != null)
-                {
-                    _server.SendToClient(i,frames[i]);
-                }
             }
         }
 
@@ -90,11 +77,10 @@ namespace StellaServerLib
             {
                 if (frames[i] != null)
                 {
-                    _server.SendToClient(i,MessageType.Animation_RenderFrame);
+                    _server.SendToClient(i,frames[i]);
                 }
             }
         }
-
 
         public void StartAnimation(IAnimator animator, DateTime at)
         {

@@ -32,7 +32,7 @@ namespace StellaClient.Test.Light
             });
 
             BufferlessLedController controller = new BufferlessLedController(mock.Object);
-            controller.PrepareFrame(frame);
+            controller.RenderFrame(frame);
             Assert.AreEqual(0, index);
             Assert.AreEqual(Color.FromArgb(10, 20, 30), color);
         }
@@ -46,8 +46,7 @@ namespace StellaClient.Test.Light
             mock.Setup(x => x.Render());
 
             BufferlessLedController controller = new BufferlessLedController(mock.Object);
-            controller.PrepareFrame(frame);
-            controller.Render();
+            controller.RenderFrame(frame);
 
             mock.Verify(x=>x.Render(),Times.Once);
         }

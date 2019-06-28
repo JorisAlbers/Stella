@@ -34,8 +34,7 @@ namespace StellaClient.Network
 
         private Dictionary<int, FrameWithoutDeltaProtocol> _frameSectionBuffer; // int = frame index, 
 
-        public event EventHandler RenderFrameReceived;
-        public event EventHandler<FrameWithoutDelta> FrameReceived;
+        public event EventHandler<FrameWithoutDelta> RenderFrameReceived;
 
 
         public StellaServer(IPEndPoint serverAdress, int udpPort, int ID)
@@ -150,24 +149,12 @@ namespace StellaClient.Network
                 case MessageType.Init: // Server wants us to send our init values
                     SendInit();
                     break;
-                case MessageType.Animation_RenderFrame: // Server wants us to render the prepared frame
-                    OnAnimationStartReceived();
-                    break;
-                case MessageType.Animation_PrepareFrame: // Server sends us frames
+                case MessageType.AnimationRenderFrame: // Server wants us to render a frame
                     OnAnimationRequestReceived(e.Message);
                     break;
                 default:
                     Console.WriteLine($"MessageType {e.MessageType} is not used by StellaClient.");
                     break;
-            }
-        }
-        
-        private void OnAnimationStartReceived()
-        {
-            EventHandler handler = RenderFrameReceived;
-            if (handler != null)
-            {
-                handler(this,new EventArgs());
             }
         }
 
@@ -204,7 +191,7 @@ namespace StellaClient.Network
 
         private void OnFrameReceived(FrameWithoutDelta frame)
         {
-            EventHandler<FrameWithoutDelta> handler = FrameReceived;
+            EventHandler<FrameWithoutDelta> handler = RenderFrameReceived;
             if (handler != null)
             {
                 handler(this, frame);
