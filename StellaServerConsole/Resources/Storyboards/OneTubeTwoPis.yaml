@@ -1,0 +1,14 @@
+﻿!Storyboard
+Name: One tube two pis
+Animations:
+ - !Bitmap
+   StartIndex:  0
+   StripLength: 120
+   FrameWaitMs: 10
+   ImagePath: C:\Users\jorisPrive\Desktop\vet\test-04-circle08.png
+ - !Bitmap	
+   StartIndex:  120
+   StripLength: 120
+   FrameWaitMs: 10
+   RelativeStart: 100
+   ImagePath: C:\Users\jorisPrive\Desktop\vet\test-04-circle08.png
