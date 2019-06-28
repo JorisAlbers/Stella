@@ -3,6 +3,7 @@ const net = require("net");
 
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
+const StringProtocol = require("../service/stringProtocol");
 
 class Socket {
   constructor(server) {
@@ -18,6 +19,7 @@ class Socket {
     this.clientSocket = require('socket.io')(server);
     this.clientSocket.connectedClients = [];
     this.packageProtocol = new PackageProtocol();
+    this.stringProtocol = new StringProtocol();
 
     this.packageProtocol.messageArrived = (messageType, data) => {
       console.log("message protocol says it has a package - messageType: ", messageType, ", data: ", data.readUInt32LE());
@@ -26,6 +28,11 @@ class Socket {
           console.log('messageType received none');
           return null;
         case 1:
+          this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
+
+          if (this.stringProtocol.message !== null) {
+            this.stringProtocol = new StringProtocol();
+          }
           console.log('messageType received GetAvailableStoryboards');
           break;
       }
@@ -66,7 +73,6 @@ class Socket {
 
     this.serverSocket.on('data', (data) => {
       this.packageProtocol.dataReceived(data);
-      // console.log("Server connection data - data: ", data);
     });
 
     this.serverSocket.on('drain', () => {
