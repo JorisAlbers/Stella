@@ -40,6 +40,20 @@ class ConfigurationPage extends React.Component {
       rndRoomDiv: null
     };
 
+    if (!this.state.dataIsAlreadySet) {
+      for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
+        this.state.data.ledstrips.items.push({
+          id: i,
+          position: {
+            x: i  * 10,
+            y: 0,
+            degree: 0
+          },
+          size: {x: 10, y: 10}
+        })
+      }
+    }
+
     this.props.socket.emit('getSavedLedMapping');
     // TODO make it so that that stupid buggy degree thing also works
     this.props.socket.on('returnSavedLedMapping', (savedLedMapping) => {
@@ -51,21 +65,9 @@ class ConfigurationPage extends React.Component {
   }
 
   componentDidMount() {
-    let data = {...this.state.data};
-    if (!this.state.dataIsAlreadySet) {
-      for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
-        data.ledstrips.items.push({
-          id: i,
-          position: {
-            x: i * (this.parentRoom.clientWidth) / this.state.data.room.x * 0.1,
-            y: 0,
-            degree: 0
-          },
-          size: {x: 10, y: 10}
-        })
-      }
-    }
-    this.setState({parentRoomDiv: this.parentRoom, data});
+    this.setState({
+      parentRoomDiv: this.parentRoom,
+    });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -124,17 +126,17 @@ class ConfigurationPage extends React.Component {
     }
   }
 
-  drawRoom() {
+  drawRoom(data) {
     const totalAvailableWidth = this.state.parentRoomDiv.clientWidth - 20;
-    const max = Math.max(this.state.data.room.y, this.state.data.room.x);
-    const items = this.state.data.ledstrips.items;
+    const max = Math.max(data.room.y, data.room.x);
+    const items = data.ledstrips.items;
 
     return <div
       style={{
         border: "1px solid red",
         position: 'relative',
-        width: max === this.state.data.room.x ? '100%' : totalAvailableWidth / (this.state.data.room.y / this.state.data.room.x),
-        height: max === this.state.data.room.y ? '100%' : totalAvailableWidth / (this.state.data.room.x / this.state.data.room.y),
+        width: max === data.room.x ? '100%' : totalAvailableWidth / (data.room.y / data.room.x),
+        height: max === data.room.y ? '100%' : totalAvailableWidth / (data.room.x / data.room.y),
 
         backgroundColor: "transparent",
         backgroundImage: 'linear-gradient(0deg, transparent 9%, rgba(255, 255, 255, .2) 10%, rgba(255, 255, 255, .2) 12%, transparent 13%, transparent 29%, rgba(255, 255, 255, .1) 30%, rgba(255, 255, 255, .1) 31%, transparent 32%, transparent 49%,rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, .1) 51%, transparent 52%, transparent 69%, rgba(255, 255, 255, .1) 70%, rgba(255, 255, 255, .1) 71%, transparent 72%, transparent 89%,rgba(255, 255, 255, .1) 90%, rgba(255, 255, 255, .1) 91%, transparent 92%, transparent),linear-gradient(90deg, transparent 9%,rgba(255, 255, 255, .2) 10%, rgba(255, 255, 255, .2) 12%, transparent 13%, transparent 29%,rgba(255, 255, 255, .1) 30%, rgba(255, 255, 255, .1) 31%, transparent 32%, transparent 49%,rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, .1) 51%, transparent 52%, transparent 69%,rgba(255, 255, 255, .1) 70%, rgba(255, 255, 255, .1) 71%, transparent 72%, transparent 89%,rgba(255, 255, 255, .1) 90%, rgba(255, 255, 255, .1) 91%, transparent 92%, transparent)',
@@ -148,8 +150,8 @@ class ConfigurationPage extends React.Component {
           ref={(c) => this.rnd = c}
           style={{
             // TODO @martijn: Try to make it so that the square has the correct bounds when rotated
-            // marginTop: `${(this.state.data.ledstrips.items[i].size.y / 2) * Math.abs(Math.cos(this.state.data.ledstrips.items[i].position.degree  * Math.PI / 180)) - this.state.data.ledstrips.items[i].size.y / 2}px`,
-            // marginLeft: `${(this.state.data.ledstrips.items[i].size.y / 2) * Math.sin(this.state.data.ledstrips.items[i].position.degree  * Math.PI / 180)}px`
+            // marginTop: `${(data.ledstrips.items[i].size.y / 2) * Math.abs(Math.cos(data.ledstrips.items[i].position.degree  * Math.PI / 180)) - ledstrips.items[i].size.y / 2}px`,
+            // marginLeft: `${(data.ledstrips.items[i].size.y / 2) * Math.sin(data.ledstrips.items[i].position.degree  * Math.PI / 180)}px`
           }}
           className={'rnd-resizable1'}
           resizeHandleClasses={{
@@ -173,22 +175,20 @@ class ConfigurationPage extends React.Component {
           key={i}
           bounds={'parent'}
           position={{
-            x: this.state.data.ledstrips.items[i].position.x,
-            y: this.state.data.ledstrips.items[i].position.y,
+            x: data.ledstrips.items[i].position.x,
+            y: data.ledstrips.items[i].position.y,
           }}
           size={{
-            width: this.state.data.ledstrips.items[i].size.x,
-            height: this.state.data.ledstrips.items[i].size.y,
-            degree: this.state.data.ledstrips.items[i].position.degree
+            width: data.ledstrips.items[i].size.x,
+            height: data.ledstrips.items[i].size.y,
+            degree: data.ledstrips.items[i].position.degree
           }}
           onDragStop={(e, d) => {
-            let data = {...this.state.data};
             data.ledstrips.items[i].position.x = d.x;
             data.ledstrips.items[i].position.y = d.y;
             this.setState({data})
           }}
           onResizeStop={(e, direction, resizable, delta, position) => {
-            let data = {...this.state.data};
             data.ledstrips.items[i].position.degree = delta.degree;
             this.setState({data});
           }}
@@ -201,7 +201,8 @@ class ConfigurationPage extends React.Component {
   }
 
   render() {
-    const {currentTab} = this.state;
+    const {currentTab, data} = this.state;
+    console.log(data);
 
     return <div>
       <Grid container spacing={0} direction={'column'}>
@@ -229,7 +230,7 @@ class ConfigurationPage extends React.Component {
                 min={1}
                 max={100}
                 label="Amount of LED-strips"
-                defaultValue={this.state.data.ledstrips.amount}
+                defaultValue={data.ledstrips.amount}
                 onChange={(e) => {
                   this.setState({
                     data: {
@@ -249,7 +250,7 @@ class ConfigurationPage extends React.Component {
                 min={2}
                 max={100}
                 label="Depth of the room"
-                defaultValue={this.state.data.room.y}
+                defaultValue={data.room.y}
                 onChange={(e) => {
                   this.setState({
                     data: {
@@ -268,7 +269,7 @@ class ConfigurationPage extends React.Component {
                 min={1}
                 max={100}
                 label="Width of the room"
-                defaultValue={this.state.data.room.x}
+                defaultValue={data.room.x}
                 onChange={(e) => {
                   this.setState({
                     data: {
@@ -291,7 +292,7 @@ class ConfigurationPage extends React.Component {
                     backgroundColor: '#434343',
                     backgroundImage: 'linear-gradient(#5480D3, #3256A7)',
                   }}>
-              {this.state.parentRoomDiv !== null && this.drawRoom()}
+              {this.state.parentRoomDiv !== null && this.drawRoom(data)}
             </Grid>
           </React.Fragment>
           }

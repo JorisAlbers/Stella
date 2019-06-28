@@ -6,6 +6,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {socketConnect} from 'socket.io-react';
 import AceEditor from 'react-ace';
 // import * as rapydscript from 'rapydscript-ng';
@@ -24,7 +25,7 @@ class EditorPage extends React.Component {
     this.state = {
       error: null,
       finalObject: null,
-      currentMode: 'javascript',
+      currentMode: 'image',
       modeOptions: [{
         name: 'Javascript',
         machineName: 'javascript',
@@ -45,11 +46,16 @@ class EditorPage extends React.Component {
         name: 'Vimeo',
         machineName: 'vimeo',
         enabled: true
-      }]
+      }, {
+        name: 'Image',
+        machineName: 'image',
+        enabled: true
+      }],
+      imageFile: null
     };
     this.code = {
       javascript: `// Javascript sample code \nreturn {a: "foo", b: {c:"bar", d:"brazzers"}};`,
-      python: `# Python sample code \nprint('hello world')`
+      python: `# Python sample code \nprint('hello world')`,
     };
   }
 
@@ -133,15 +139,42 @@ class EditorPage extends React.Component {
             <Select
               value={currentMode}
               onChange={(e) => this.setState({currentMode: e.target.value})}
-              input={<OutlinedInput labelWidth={55} name="age" id="outlined-age-simple"/>}
+              input={<OutlinedInput labelWidth={100} name="age" id="outlined-age-simple"/>}
             >
               {modeOptions.map((option) => {
-                return <MenuItem disabled={!option.enabled} value={option.machineName}>{option.name}</MenuItem>
+                return <MenuItem disabled={!option.enabled} key={option.machineName}
+                                 value={option.machineName}>{option.name}</MenuItem>
               })}
             </Select>
           </FormControl>
         </Grid>
         <Grid container direction={'row'}>
+          {(currentMode === "image") &&
+          <Grid xs={11} item>
+            <input
+              accept="image/*"
+              style={{display: 'none'}}
+              id="contained-button-file"
+              multiple
+              type="file"
+              onChange={(e) => {
+                console.log('this.code.image', e.target);
+                console.log('this.code.image', e.target.result);
+                this.setState({imageFile: e.target})
+              }}
+            />
+            <label htmlFor="contained-button-file">
+              <Button variant="contained" component="span">Select file
+                <CloudUploadIcon/>
+              </Button>
+            </label>
+            <Button color="inherit" align="left" disabled={!this.state.imageFile}
+                    onClick={() => new Buffer(this.state.imageFile).toString('base64')}>Upload</Button>
+            {this.state.imageFile &&
+            <img src={this.state.imageFile.result}/>
+            }
+          </Grid>
+          }
           {(currentMode === "javascript" || currentMode === 'python') &&
           <Grid xs={11} className={'ide-editor'} item>
             <AceEditor
@@ -166,7 +199,7 @@ class EditorPage extends React.Component {
           </Grid>
           }
           <Grid xs item>
-            <Button disabled color="inherit" align="left" onClick={() => {}}>Test</Button>
+            <Button disabled color="inherit" align="left">Test</Button>
             <Button color="inherit" align="left" onClick={() => this.runCode()}>Run</Button>
             {/*<Button disabled color="inherit" align="left" onClick={() => {}}>Upload</Button>*/}
           </Grid>
