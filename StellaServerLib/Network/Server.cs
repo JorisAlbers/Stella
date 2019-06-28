@@ -97,9 +97,19 @@ namespace StellaServerLib.Network
 
         private void SendToClient(int clientId, MessageType messageType, byte[] data)
         {
-            lock (_clients)
+            if (messageType == MessageType.AnimationRenderFrame)
             {
-                _clients[clientId].Send(messageType,data);
+                lock (_clients)
+                {
+                    _clients[clientId].SendUdp(messageType, data);
+                }
+            }
+            else
+            {
+                lock (_clients)
+                {
+                    _clients[clientId].SendTcp(messageType, data);
+                }
             }
         }
 

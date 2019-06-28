@@ -32,16 +32,13 @@ namespace StellaServerLib.Network
             _udpSocketConnectionController.Start();
         }
 
-        public void Send(MessageType type, byte[] message)
+        public void SendUdp(MessageType type, byte[] message)
         {
-            if (type == MessageType.AnimationRenderFrame)
-            {
-                // Send via UDP
-                _udpSocketConnectionController.Send(type,message);
-                return;
-            }
+            _udpSocketConnectionController.Send(type, message);
+        }
 
-            // Send via TCP
+        public void SendTcp(MessageType type, byte[] message)
+        {
             _socketConnectionController.Send(type, message);
         }
 
