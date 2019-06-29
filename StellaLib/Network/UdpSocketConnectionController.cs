@@ -16,7 +16,10 @@ namespace StellaLib.Network
         private bool _isDisposed;
         private PacketProtocol<TMessageType> _packetProtocol;
 
+        public bool IsConnected { get; private set; }
         public event EventHandler<MessageReceivedEventArgs<TMessageType>> MessageReceived;
+        public event EventHandler<SocketException> Disconnect;
+
 
 
         public UdpSocketConnectionController(ISocketConnection socket, IPEndPoint targetEndPoint, int bufferSize)
@@ -30,10 +33,9 @@ namespace StellaLib.Network
         {
             _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
             _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
-            
-            byte[] buffer = new byte[_bufferSize];
-            EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
-            _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
+            IsConnected = true;
+           
+            StartReceive();
         }
 
         public void Send(TMessageType messageType, byte[] message)
@@ -56,11 +58,34 @@ namespace StellaLib.Network
             }
         }
 
+        private void StartReceive()
+        {
+            byte[] buffer = new byte[_bufferSize];
+            EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
+            try
+            {
+                _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
+            }
+            catch (SocketException e)
+            {
+                OnDisconnect(e);
+            }
+        }
+
         private void ReceiveCallback(IAsyncResult ar)
         {
             EndPoint source = new IPEndPoint(0, 0);
+            int bytesRead = 0;
+            try
+            {
+                bytesRead = _socket.EndReceiveFrom(ar, ref source);
+            }
+            catch (SocketException e)
+            {
+                OnDisconnect(e);
+                return;
+            }
 
-            int bytesRead = _socket.EndReceiveFrom(ar, ref source);
             // Parse the message
             if (source.Equals(_targetEndPoint) && bytesRead > 0)
             {
@@ -78,9 +103,7 @@ namespace StellaLib.Network
             }
 
             // Start receiving more data
-            byte[] buffer = new byte[_bufferSize];
-            _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref source, ReceiveCallback, buffer);
-            
+            StartReceive();
         }
 
         protected virtual void OnMessageReceived(TMessageType type, byte[] bytes)
@@ -96,12 +119,24 @@ namespace StellaLib.Network
             }
         }
 
+        protected virtual void OnDisconnect(SocketException exception)
+        {
+            // The disconnect event can be called only once.
+            if (IsConnected)
+            {
+                IsConnected = false;
+                EventHandler<SocketException> handler = Disconnect;
+                if (handler != null)
+                {
+                    handler(this, exception);
+                }
+            }
+        }
+
         public void Dispose()
         {
             _isDisposed = true;
-            _socket.Disconnect(false);
-            _socket.Dispose();
-            _socket.Close();
+            IsConnected = false;
         }
 
         public static ISocketConnection CreateSocket(IPEndPoint localEndPoint)

@@ -97,19 +97,32 @@ namespace StellaServerLib.Network
 
         private void SendToClient(int clientId, MessageType messageType, byte[] data)
         {
-            if (messageType == MessageType.AnimationRenderFrame)
+            try
             {
-                lock (_clients)
+                if (messageType == MessageType.AnimationRenderFrame)
                 {
-                    _clients[clientId].SendUdp(messageType, data);
+                    lock (_clients)
+                    {
+                        if (_clients.TryGetValue(clientId, out Client client))
+                        {
+                            client.SendUdp(messageType, data);
+                        }
+                    }
+                }
+                else
+                {
+                    lock (_clients)
+                    {
+                        if (_clients.TryGetValue(clientId, out Client client))
+                        {
+                            client.SendTcp(messageType, data);
+                        }
+                    }
                 }
             }
-            else
+            catch (SocketException e)
             {
-                lock (_clients)
-                {
-                    _clients[clientId].SendTcp(messageType, data);
-                }
+                Console.Out.WriteLine($"Failed to send message to client, {e.SocketErrorCode}");
             }
         }
 
@@ -258,6 +271,10 @@ namespace StellaServerLib.Network
             client.MessageReceived -= Client_MessageReceived;
             client.Disconnect -= Client_Disconnected;
             client.Dispose();
+            lock (_clients)
+            {
+                _clients.Remove(client.ID);
+            }
         }
     }
 }
