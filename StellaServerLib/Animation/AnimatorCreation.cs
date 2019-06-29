@@ -64,7 +64,7 @@ namespace StellaServerLib.Animation
             }
             if (animationSetting is RandomFadeAnimationSettings randomFadeSetting)
             {
-                return new RandomFadeDrawer(randomFadeSetting.StartIndex, randomFadeSetting.StripLength, randomFadeSetting.FrameWaitMs, randomFadeSetting.Pattern, randomFadeSetting.FadeSteps);
+                return new RandomFadeDrawer(randomFadeSetting.StartIndex, randomFadeSetting.StripLength, animationTransformation, randomFadeSetting.Pattern, randomFadeSetting.FadeSteps);
             }
             if (animationSetting is FadingPulseAnimationSettings fadingPulseSetting)
             {

@@ -131,7 +131,7 @@ namespace StellaVisualizer.ViewModels
 
                     break;
                 case DrawMethod.RandomFade:
-                    drawer = new RandomFadeDrawer(0,StripLength, WaitMS, pattern, 5);
+                    drawer = new RandomFadeDrawer(0,StripLength, new AnimationTransformation(WaitMS), pattern, 5);
                     animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.FadingPulse:

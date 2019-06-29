@@ -12,15 +12,15 @@ namespace StellaServerLib.Animation.Drawing.Fade
         private readonly Color[][] _fadePatterns;
         private readonly int _startIndex;
         private readonly int _stripLength;
-        private readonly int _frameWaitMS;
+        private readonly AnimationTransformation _animationTransformation;
         private readonly int _fadeSteps;
 
 
-        public RandomFadeDrawer(int startIndex, int stripLength, int frameWaitMS, Color[] pattern, int fadeSteps)
+        public RandomFadeDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern, int fadeSteps)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _frameWaitMS = frameWaitMS;
+            _animationTransformation = animationTransformation;
             _pattern = pattern;
             _fadeSteps = fadeSteps;
 
@@ -43,7 +43,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                 }
 
                 // draw existing FadePoints
-                Frame frame = new Frame(frameIndex++, timestampRelative += _frameWaitMS);
+                Frame frame = new Frame(frameIndex++, timestampRelative += _animationTransformation.FrameWaitMs);
                 DrawFadePoints(fadePointsPerFadeStep, frame);
 
                 // remove FadePoints that have elapsed
