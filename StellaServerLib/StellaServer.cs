@@ -20,6 +20,7 @@ namespace StellaServerLib
         private Server _server;
         private ClientController _clientController;
 
+        public IAnimator Animator { get; private set; }
 
         public StellaServer(string mappingFilePath, string ip, int port, int udpPort)
         {
@@ -43,17 +44,16 @@ namespace StellaServerLib
         {
             Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
 
-            IAnimator animator;
             try
             {
-                animator = AnimatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
+                Animator = AnimatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
             }
             catch (Exception e)
             {
                 throw new Exception("Failed to create new animator.",e);
             }
 
-            _clientController.StartAnimation(animator, DateTime.Now + TimeSpan.FromMilliseconds(200)); // TODO variable startAT
+            _clientController.StartAnimation(Animator, DateTime.Now + TimeSpan.FromMilliseconds(200)); // TODO variable startAT
 
         }
 
