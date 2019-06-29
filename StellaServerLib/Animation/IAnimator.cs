@@ -10,5 +10,15 @@ namespace StellaServerLib.Animation
         /// <summary> Get the next frame, split over the pis</summary>
         /// <returns>A frame for each pi.</returns>
         FrameWithoutDelta[] GetNextFramePerPi();
+
+        /// <summary>
+        /// Set the frame wait time for all animations.
+        /// </summary>
+        void SetFrameWaitMs(int frameWaitMs);
+
+        /// <summary>
+        /// Set the frame wait time for a specific animation
+        /// </summary>
+        void SetFrameWaitMs(int frameWaitMs, int animationIndex);
     }
 }

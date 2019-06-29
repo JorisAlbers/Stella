@@ -99,6 +99,7 @@ namespace StellaVisualizer.ViewModels
             // Get Drawer
             IDrawer drawer = null;
             DrawMethod method = (DrawMethod)Enum.Parse(typeof(DrawMethod), SelectedDrawMethod);
+            AnimationTransformation[] animationTransformations = null;
             switch (method)
             {
                 case DrawMethod.Unknown:
@@ -106,6 +107,7 @@ namespace StellaVisualizer.ViewModels
                     return;
                 case DrawMethod.SlidingPattern:
                     drawer = new SlidingPatternDrawer(0,StripLength, WaitMS, pattern);
+                    animationTransformations = new AnimationTransformation[]{new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.RepeatingPattern:
                     break;
@@ -119,14 +121,22 @@ namespace StellaVisualizer.ViewModels
                     IDrawer drawer3 = new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection /2, LengthPerSection * 5, WaitMS, new Color[] { Color.Blue });
 
                     drawer = new SectionDrawer(new IDrawer[]{drawer1,drawer2,drawer3}, new int[]{0,0,0} );
-                    
+                    animationTransformations = new AnimationTransformation[]
+                    {
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                    };
+
 
                     break;
                 case DrawMethod.RandomFade:
                     drawer = new RandomFadeDrawer(0,StripLength, WaitMS, pattern, 5);
+                    animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.FadingPulse:
                     drawer = new FadingPulseDrawer(0,StripLength, WaitMS, pattern[0], 30);
+                    animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.Bitmap:
                     if (!File.Exists(ImagePath))
@@ -143,7 +153,15 @@ namespace StellaVisualizer.ViewModels
 
                     //drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 1000, 2000, 3000, 4000, 5000 });
                     drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 2000, 1000, 0, 0, 1000, 2000 });
-
+                    animationTransformations = new AnimationTransformation[]
+                    {
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                    };
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -157,7 +175,7 @@ namespace StellaVisualizer.ViewModels
             });
             List<PiMaskItem> piMaskItems = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
 
-            IAnimator animator = new Animator(drawer, stripLengthPerPi, piMaskItems);
+            IAnimator animator = new Animator(drawer, stripLengthPerPi, piMaskItems,animationTransformations);
             OnAnimationCreated(animator);
         }
         

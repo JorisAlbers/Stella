@@ -95,6 +95,7 @@ namespace EndToEndTests
 
             SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(0,300,100, pattern);
             MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(0,300,30,pattern);
+            AnimationTransformation[] animationTransformations = new AnimationTransformation[]{new AnimationTransformation(0), };
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
@@ -111,13 +112,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, stripLengthPerPi, mask), DateTime.Now);
+                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternDrawer, stripLengthPerPi, mask), DateTime.Now);
+                        clientController.StartAnimation(new Animator(slidingPatternDrawer, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternDrawer, stripLengthPerPi, mask), DateTime.Now);
+                        clientController.StartAnimation(new Animator(movingPatternDrawer, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");

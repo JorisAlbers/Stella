@@ -15,11 +15,13 @@ namespace StellaServerLib.Animation
         public static Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IDrawer drawer;
+            AnimationTransformation[] animationTransformations = new AnimationTransformation[storyboard.AnimationSettings.Length];
 
             if (storyboard.AnimationSettings.Length == 1)
             {
                 // Use a normal drawer
                 drawer = CreateDrawer(storyboard.AnimationSettings[0]);
+                animationTransformations[0] = new AnimationTransformation(storyboard.AnimationSettings[0].FrameWaitMs);
             }
             else
             {
@@ -30,15 +32,18 @@ namespace StellaServerLib.Animation
 
                 for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
                 {
-                    drawers[i] = CreateDrawer(storyboard.AnimationSettings[i]);
-                    relativeTimeStamps[i] = storyboard.AnimationSettings[i].RelativeStart;
+                    IAnimationSettings settings = storyboard.AnimationSettings[i];
+
+                    drawers[i] = CreateDrawer(settings);
+                    relativeTimeStamps[i] = settings.RelativeStart;
+                    animationTransformations[i] = new AnimationTransformation(settings.FrameWaitMs);
                 }
 
                 // Then, combine them in a single drawer by using the SectionDrawer
                 drawer = new SectionDrawer(drawers, relativeTimeStamps);
             }
 
-            return new Animator(drawer, stripLengthPerPi, mask);
+            return new Animator(drawer, stripLengthPerPi, mask, animationTransformations);
         }
 
         private static IDrawer CreateDrawer(IAnimationSettings animationSetting)

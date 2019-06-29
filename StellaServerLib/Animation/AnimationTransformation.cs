@@ -5,7 +5,7 @@ using System.Text;
 namespace StellaServerLib.Animation
 {
     // Used to change animation characteristics during animation
-    class AnimationTransformation
+    public class AnimationTransformation
     {
         public int FrameWaitMs { get; set; }
 
