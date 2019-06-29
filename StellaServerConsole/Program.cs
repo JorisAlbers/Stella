@@ -118,6 +118,19 @@ namespace StellaServerConsole
                     break;
                 }
 
+                if (input == "o")
+                {
+                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
+                    _stellaServer.Animator.SetFrameWaitMs(currentWaitms + 5);
+                }
+
+                if (input == "p")
+                {
+                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
+                    _stellaServer.Animator.SetFrameWaitMs(Math.Max(10,currentWaitms - 5));
+                }
+
+
                 if (int.TryParse(input, out int storyboardToPlay))
                 {
                     if (storyboardToPlay < 0 || storyboardToPlay > storyboards.Count -1)
@@ -209,6 +222,8 @@ namespace StellaServerConsole
         static void OutputMenu(string[] storyboardNames)
         {
             Console.Out.WriteLine("Exit program = q");
+            Console.Out.WriteLine("Decrease speed = o");
+            Console.Out.WriteLine("Increase speed = p");
             Console.Out.WriteLine("Start animation:");
             for (int i = 0; i < storyboardNames.Length; i++)
             {
