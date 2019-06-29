@@ -20,8 +20,8 @@ namespace StellaServerLib.Animation
             if (storyboard.AnimationSettings.Length == 1)
             {
                 // Use a normal drawer
-                drawer = CreateDrawer(storyboard.AnimationSettings[0]);
-                animationTransformations[0] = new AnimationTransformation(storyboard.AnimationSettings[0].FrameWaitMs);
+                drawer = CreateDrawer(storyboard.AnimationSettings[0], out AnimationTransformation animationTransformation);
+                animationTransformations[0] = animationTransformation;
             }
             else
             {
@@ -34,9 +34,9 @@ namespace StellaServerLib.Animation
                 {
                     IAnimationSettings settings = storyboard.AnimationSettings[i];
 
-                    drawers[i] = CreateDrawer(settings);
+                    drawers[i] = CreateDrawer(settings, out AnimationTransformation animationTransformation);
+                    animationTransformations[i] = animationTransformation;
                     relativeTimeStamps[i] = settings.RelativeStart;
-                    animationTransformations[i] = new AnimationTransformation(settings.FrameWaitMs);
                 }
 
                 // Then, combine them in a single drawer by using the SectionDrawer
@@ -46,8 +46,10 @@ namespace StellaServerLib.Animation
             return new Animator(drawer, stripLengthPerPi, mask, animationTransformations);
         }
 
-        private static IDrawer CreateDrawer(IAnimationSettings animationSetting)
+        private static IDrawer CreateDrawer(IAnimationSettings animationSetting, out AnimationTransformation animationTransformation)
         {
+            animationTransformation = new AnimationTransformation(animationSetting.FrameWaitMs);
+
             if (animationSetting is MovingPatternAnimationSettings movingPatternSetting)
             {
                 return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, movingPatternSetting.FrameWaitMs, movingPatternSetting.Pattern);
@@ -71,7 +73,7 @@ namespace StellaServerLib.Animation
             if (animationSetting is BitmapAnimationSettings bitmapSetting)
             {
                 Bitmap bitmap = new Bitmap(Image.FromFile(bitmapSetting.ImagePath));
-                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, bitmapSetting.FrameWaitMs, bitmapSetting.Wraps, bitmap);
+                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, animationTransformation, bitmapSetting.Wraps, bitmap);
             }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");
