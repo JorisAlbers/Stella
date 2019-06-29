@@ -13,6 +13,7 @@ namespace StellaServerLib.Animation
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
+        private readonly AnimationTransformation[] _animationTransformations;
 
         /// <summary>
         /// CTOR
@@ -20,12 +21,52 @@ namespace StellaServerLib.Animation
         /// <param name="drawer">The drawer to get frames from.</param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
-        public Animator(IDrawer drawer, int[] stripLengthPerPi, List<PiMaskItem> mask)
+        /// <param name="animationTransformations">Used by the drawers as input to draw frames with</param>
+        public Animator(IDrawer drawer, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformation[] animationTransformations)
         {
             _drawerEnumerator = drawer.GetEnumerator();
             _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
+            _animationTransformations = animationTransformations;
             _numberOfPis = _stripLengthPerPi.Length;
+        }
+
+        public void SetFrameWaitMs(int frameWaitMs)
+        {
+            if (frameWaitMs < 10)
+            {
+                throw new ArgumentException($"The frameWaitMs must be at least 10 ms.");
+            }
+            
+            for (int i = 0; i < _animationTransformations.Length; i++)
+            {
+                _animationTransformations[i].FrameWaitMs = frameWaitMs;
+            }
+        }
+
+        public void SetFrameWaitMs(int frameWaitMs, int animationIndex)
+        {
+            if (frameWaitMs < 10)
+            {
+                throw new ArgumentException($"The frameWaitMs must be at least 10 ms.");
+            }
+
+            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
+            {
+                throw new ArgumentException($"There is no animation at index {animationIndex}");
+            }
+
+            _animationTransformations[animationIndex].FrameWaitMs = frameWaitMs;
+        }
+
+        public int GetFrameWaitMs(int animationIndex)
+        {
+            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
+            {
+                throw new ArgumentException($"There is no animation at index {animationIndex}");
+            }
+
+            return _animationTransformations[animationIndex].FrameWaitMs;
         }
 
         /// <inheritdoc />

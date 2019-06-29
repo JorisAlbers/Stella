@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
+using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
 namespace StellaServerLib.Test.Animation.Drawing
@@ -21,7 +22,7 @@ namespace StellaServerLib.Test.Animation.Drawing
                  };
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,frameWaitMS,new Color[][]{pattern});
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,new AnimationTransformation(frameWaitMS), new Color[][]{pattern});
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -54,7 +55,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int startIndex = 100;
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip, frameWaitMS, new Color[][] { pattern });
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip, new AnimationTransformation(frameWaitMS), new Color[][] { pattern });
 
             // Expected
             int expectedIndex1 = 100;
@@ -92,7 +93,7 @@ namespace StellaServerLib.Test.Animation.Drawing
 
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,frameWaitMS, patterns);
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,new AnimationTransformation(frameWaitMS), patterns);
 
             // Expected
             Color expectedColor1 =  Color.FromArgb(1,2,3);

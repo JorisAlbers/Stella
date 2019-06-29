@@ -99,13 +99,15 @@ namespace StellaVisualizer.ViewModels
             // Get Drawer
             IDrawer drawer = null;
             DrawMethod method = (DrawMethod)Enum.Parse(typeof(DrawMethod), SelectedDrawMethod);
+            AnimationTransformation[] animationTransformations = null;
             switch (method)
             {
                 case DrawMethod.Unknown:
                     Console.Out.WriteLine($"Method can't be set to unknown");
                     return;
                 case DrawMethod.SlidingPattern:
-                    drawer = new SlidingPatternDrawer(0,StripLength, WaitMS, pattern);
+                    drawer = new SlidingPatternDrawer(0,StripLength, new AnimationTransformation(WaitMS), pattern);
+                    animationTransformations = new AnimationTransformation[]{new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.RepeatingPattern:
                     break;
@@ -114,19 +116,27 @@ namespace StellaVisualizer.ViewModels
                     
 
 
-                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, WaitMS, new Color[]{Color.Red});
-                    IDrawer drawer2 = new MovingPatternDrawer(LengthPerSection,LengthPerSection*2, WaitMS, new Color[] { Color.Green });
-                    IDrawer drawer3 = new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection /2, LengthPerSection * 5, WaitMS, new Color[] { Color.Blue });
+                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, new AnimationTransformation(WaitMS), new Color[]{Color.Red});
+                    IDrawer drawer2 = new MovingPatternDrawer(LengthPerSection,LengthPerSection*2, new AnimationTransformation(WaitMS), new Color[] { Color.Green });
+                    IDrawer drawer3 = new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection /2, LengthPerSection * 5, new AnimationTransformation(WaitMS), new Color[] { Color.Blue });
 
                     drawer = new SectionDrawer(new IDrawer[]{drawer1,drawer2,drawer3}, new int[]{0,0,0} );
-                    
+                    animationTransformations = new AnimationTransformation[]
+                    {
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                    };
+
 
                     break;
                 case DrawMethod.RandomFade:
-                    drawer = new RandomFadeDrawer(0,StripLength, WaitMS, pattern, 5);
+                    drawer = new RandomFadeDrawer(0,StripLength, new AnimationTransformation(WaitMS), pattern, 5);
+                    animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.FadingPulse:
-                    drawer = new FadingPulseDrawer(0,StripLength, WaitMS, pattern[0], 30);
+                    drawer = new FadingPulseDrawer(0,StripLength, new AnimationTransformation(WaitMS), pattern[0], 30);
+                    animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.Bitmap:
                     if (!File.Exists(ImagePath))
@@ -134,16 +144,24 @@ namespace StellaVisualizer.ViewModels
                         Console.Out.WriteLine($"The image at {ImagePath} does not exist.");
                         return;
                     }
-                    IDrawer drawer11 = new BitmapDrawer(0, LengthPerSection, WaitMS, false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer22 = new BitmapDrawer(LengthPerSection * 1, LengthPerSection, WaitMS, false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer33 = new BitmapDrawer(LengthPerSection * 2, LengthPerSection, WaitMS, false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer44 = new BitmapDrawer(LengthPerSection * 3, LengthPerSection, WaitMS, false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer55 = new BitmapDrawer(LengthPerSection * 4, LengthPerSection, WaitMS, false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer66 = new BitmapDrawer(LengthPerSection * 5, LengthPerSection, WaitMS, false, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer11 = new BitmapDrawer(0, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer22 = new BitmapDrawer(LengthPerSection * 1, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer33 = new BitmapDrawer(LengthPerSection * 2, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer44 = new BitmapDrawer(LengthPerSection * 3, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer55 = new BitmapDrawer(LengthPerSection * 4, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
+                    IDrawer drawer66 = new BitmapDrawer(LengthPerSection * 5, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
 
                     //drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 1000, 2000, 3000, 4000, 5000 });
                     drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 2000, 1000, 0, 0, 1000, 2000 });
-
+                    animationTransformations = new AnimationTransformation[]
+                    {
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                        new AnimationTransformation(WaitMS),
+                    };
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -157,7 +175,7 @@ namespace StellaVisualizer.ViewModels
             });
             List<PiMaskItem> piMaskItems = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
 
-            IAnimator animator = new Animator(drawer, stripLengthPerPi, piMaskItems);
+            IAnimator animator = new Animator(drawer, stripLengthPerPi, piMaskItems,animationTransformations);
             OnAnimationCreated(animator);
         }
         

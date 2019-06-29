@@ -14,13 +14,13 @@ namespace StellaServerLib.Animation.Drawing
         private Color[] _pattern;
         private readonly int _startIndex;
         private int _stripLength;
-        private int _frameWaitMS;
+        private readonly AnimationTransformation _animationTransformation;
 
-        public SlidingPatternDrawer(int startIndex, int stripLength, int frameWaitMS, Color[] pattern)
+        public SlidingPatternDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _frameWaitMS = frameWaitMS;
+            _animationTransformation = animationTransformation;
             _pattern = pattern;
         }
 
@@ -40,7 +40,7 @@ namespace StellaServerLib.Animation.Drawing
                     }
 
                     yield return frame;
-                    timestampRelative += _frameWaitMS;
+                    timestampRelative += _animationTransformation.FrameWaitMs;
                 }
             }
         }

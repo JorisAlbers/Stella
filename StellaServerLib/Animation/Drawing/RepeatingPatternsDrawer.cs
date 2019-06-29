@@ -13,7 +13,7 @@ namespace StellaServerLib.Animation.Drawing
     {
         private readonly int _startIndex;
         private int _lengthStrip;
-        private int _frameWaitMS;
+        private readonly AnimationTransformation _animationTransformation;
         private Color[][] _patterns;
 
         /// <summary>
@@ -21,12 +21,12 @@ namespace StellaServerLib.Animation.Drawing
         /// Each frame is the next pattern, repeated.
         /// </summary>
         /// <param name="patterns"></param>
-        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, int frameWaitMS, Color[][] patterns)
+        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, AnimationTransformation animationTransformation, Color[][] patterns)
         {
             _startIndex = startIndex;
             _lengthStrip = lengthStrip;
+            _animationTransformation = animationTransformation;
             _patterns = patterns;
-            _frameWaitMS = frameWaitMS;
         }
 
         /// <inheritdoc />
@@ -68,7 +68,7 @@ namespace StellaServerLib.Animation.Drawing
                     }
 
                     yield return frame;
-                    relativeTimeStamp += _frameWaitMS;
+                    relativeTimeStamp += _animationTransformation.FrameWaitMs;
                 }
             }
         }

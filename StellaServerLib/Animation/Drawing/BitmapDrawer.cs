@@ -14,17 +14,13 @@ namespace StellaServerLib.Animation.Drawing
     /// </summary>
     public class BitmapDrawer : IDrawer
     {
-        private readonly int _frameWaitMs;
+        private readonly AnimationTransformation _animationTransformation;
         private readonly bool _wrap;
         private readonly List<PixelInstruction>[] _frames;
 
 
-        /// <param name="startIndex"></param>
-        /// <param name="stripLength"></param>
-        /// <param name="frameWaitMS"></param>
         /// <param name="wrap">If the bitmap drawer should draw the first line after the last line</param>
-        /// <param name="bitmap"></param>
-        public BitmapDrawer(int startIndex, int stripLength, int frameWaitMS, bool wrap, Bitmap bitmap)
+        public BitmapDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, bool wrap, Bitmap bitmap)
         {
             // Convert the bitmap to frames
             int width = Math.Min(bitmap.Width, stripLength);
@@ -41,7 +37,7 @@ namespace StellaServerLib.Animation.Drawing
                 _frames[i] = frame;
             }
 
-            _frameWaitMs = frameWaitMS;
+            _animationTransformation = animationTransformation;
             _wrap = wrap;
         }
 
@@ -59,7 +55,7 @@ namespace StellaServerLib.Animation.Drawing
                     yield return frame;
 
                     frameIndex++;
-                    relativeTimestamp += _frameWaitMs;
+                    relativeTimestamp += _animationTransformation.FrameWaitMs;
                 }
 
                 if (_wrap)
@@ -72,7 +68,7 @@ namespace StellaServerLib.Animation.Drawing
                         yield return frame;
 
                         frameIndex++;
-                        relativeTimestamp += _frameWaitMs;
+                        relativeTimestamp += _animationTransformation.FrameWaitMs;
                     }
                 }
             }
