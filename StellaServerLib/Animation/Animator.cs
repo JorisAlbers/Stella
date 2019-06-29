@@ -13,7 +13,7 @@ namespace StellaServerLib.Animation
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
-        private AnimationTransformation[] _animationTransformations;
+        private readonly AnimationTransformation[] _animationTransformations;
 
         /// <summary>
         /// CTOR
@@ -51,12 +51,22 @@ namespace StellaServerLib.Animation
                 throw new ArgumentException($"The frameWaitMs must be at least 10 ms.");
             }
 
-            if (animationIndex < 1 || animationIndex >= _animationTransformations.Length)
+            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
             {
                 throw new ArgumentException($"There is no animation at index {animationIndex}");
             }
 
             _animationTransformations[animationIndex].FrameWaitMs = frameWaitMs;
+        }
+
+        public int GetFrameWaitMs(int animationIndex)
+        {
+            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
+            {
+                throw new ArgumentException($"There is no animation at index {animationIndex}");
+            }
+
+            return _animationTransformations[animationIndex].FrameWaitMs;
         }
 
         /// <inheritdoc />

@@ -20,5 +20,11 @@ namespace StellaServerLib.Animation
         /// Set the frame wait time for a specific animation
         /// </summary>
         void SetFrameWaitMs(int frameWaitMs, int animationIndex);
+
+        /// <summary>
+        /// Gets the current frameWaitMs of the animation at the specified index.
+        /// </summary>
+        int GetFrameWaitMs(int animationIndex);
+
     }
 }
