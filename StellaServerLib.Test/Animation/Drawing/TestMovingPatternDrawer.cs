@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
+using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
 namespace StellaServerLib.Test.Animation.Drawing
@@ -27,7 +28,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int lengthStrip = 4;
             int frameWaitMS = 100;
             int framesToTake = 6;
-            MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, frameWaitMS, pattern);
+            MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, new AnimationTransformation(frameWaitMS), pattern);
             List<Frame> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
@@ -100,7 +101,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int lengthStrip = 4;
             int frameWaitMS = 100;
             int framesToTake = 6;
-            MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip, frameWaitMS, pattern);
+            MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip, new AnimationTransformation(frameWaitMS), pattern);
             List<Frame> frames = drawer.Take(framesToTake).ToList();
 
             //Assert

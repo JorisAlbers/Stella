@@ -116,9 +116,9 @@ namespace StellaVisualizer.ViewModels
                     
 
 
-                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, WaitMS, new Color[]{Color.Red});
-                    IDrawer drawer2 = new MovingPatternDrawer(LengthPerSection,LengthPerSection*2, WaitMS, new Color[] { Color.Green });
-                    IDrawer drawer3 = new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection /2, LengthPerSection * 5, WaitMS, new Color[] { Color.Blue });
+                    IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, new AnimationTransformation(WaitMS), new Color[]{Color.Red});
+                    IDrawer drawer2 = new MovingPatternDrawer(LengthPerSection,LengthPerSection*2, new AnimationTransformation(WaitMS), new Color[] { Color.Green });
+                    IDrawer drawer3 = new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection /2, LengthPerSection * 5, new AnimationTransformation(WaitMS), new Color[] { Color.Blue });
 
                     drawer = new SectionDrawer(new IDrawer[]{drawer1,drawer2,drawer3}, new int[]{0,0,0} );
                     animationTransformations = new AnimationTransformation[]

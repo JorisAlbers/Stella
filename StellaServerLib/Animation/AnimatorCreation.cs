@@ -52,7 +52,7 @@ namespace StellaServerLib.Animation
 
             if (animationSetting is MovingPatternAnimationSettings movingPatternSetting)
             {
-                return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, movingPatternSetting.FrameWaitMs, movingPatternSetting.Pattern);
+                return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, animationTransformation, movingPatternSetting.Pattern);
             }
             if (animationSetting is SlidingPatternAnimationSettings slidingPatternSetting)
             {

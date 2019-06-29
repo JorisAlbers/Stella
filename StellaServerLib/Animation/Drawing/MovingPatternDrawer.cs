@@ -13,7 +13,7 @@ namespace StellaServerLib.Animation.Drawing
         private Color[] _pattern;
         private readonly int _startIndex;
         private int _stripLength;
-        private int _frameWaitMS;
+        private readonly AnimationTransformation _animationTransformation;
 
         /// <summary>
         /// Ctor
@@ -22,11 +22,11 @@ namespace StellaServerLib.Animation.Drawing
         /// <param name="stripLength">The length of the section to draw</param>
         /// <param name="frameWaitMS">The frame duration</param>
         /// <param name="pattern">The pattern to move</param>
-        public MovingPatternDrawer(int startIndex, int stripLength, int frameWaitMS, Color[] pattern)
+        public MovingPatternDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _frameWaitMS = frameWaitMS;
+            _animationTransformation = animationTransformation;
             _pattern = pattern;
         }
 
@@ -47,7 +47,7 @@ namespace StellaServerLib.Animation.Drawing
                         frame.Add(new PixelInstruction(_startIndex + j, _pattern[_pattern.Length - 1 - i + j]));
                     }
                     yield return frame;
-                    timestampRelative += _frameWaitMS;
+                    timestampRelative += _animationTransformation.FrameWaitMs;
                 }
 
                 // Normal
@@ -60,7 +60,7 @@ namespace StellaServerLib.Animation.Drawing
                     }
 
                     yield return frame;
-                    timestampRelative += _frameWaitMS;
+                    timestampRelative += _animationTransformation.FrameWaitMs;
                 }
 
                 // Slide out of view
@@ -73,7 +73,7 @@ namespace StellaServerLib.Animation.Drawing
                     }
 
                     yield return frame;
-                    timestampRelative += _frameWaitMS;
+                    timestampRelative += _animationTransformation.FrameWaitMs;
                 }
             }
         }
