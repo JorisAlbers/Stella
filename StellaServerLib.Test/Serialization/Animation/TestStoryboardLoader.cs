@@ -246,6 +246,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             int expectedStripLength = 20;
             int expectedFrameWaitMs = 30;
             int expectedRelativeStart = 99;
+            bool expectedWraps = true;
             string expectedImagePath = Path.Combine(TestContext.CurrentContext.TestDirectory,"TestData","TestStoryBoardLoader","fakeImage.png"); 
 
 
@@ -259,6 +260,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    FrameWaitMs:  {expectedFrameWaitMs}");
             stringBuilder.AppendLine($"    RelativeStart:  {expectedRelativeStart}");
             stringBuilder.AppendLine($"    ImagePath:  {expectedImagePath}");
+            stringBuilder.AppendLine($"    Wraps:  {expectedWraps}");
 
             StoryboardLoader loader = new StoryboardLoader();
 
@@ -270,6 +272,7 @@ namespace StellaServerLib.Test.Serialization.Animation
             BitmapAnimationSettings settings = (BitmapAnimationSettings)storyboard.AnimationSettings[0];
             Assert.AreEqual(expectedStartIndex, settings.StartIndex);
             Assert.AreEqual(expectedImagePath, settings.ImagePath);
+            Assert.AreEqual(expectedWraps, settings.Wraps);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
             Assert.AreEqual(expectedFrameWaitMs, settings.FrameWaitMs);

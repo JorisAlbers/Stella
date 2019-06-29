@@ -66,7 +66,7 @@ namespace StellaServerLib.Animation
             if (animationSetting is BitmapAnimationSettings bitmapSetting)
             {
                 Bitmap bitmap = new Bitmap(Image.FromFile(bitmapSetting.ImagePath));
-                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, bitmapSetting.FrameWaitMs, bitmap);
+                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, bitmapSetting.FrameWaitMs, bitmapSetting.Wraps, bitmap);
             }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");

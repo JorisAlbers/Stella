@@ -11,5 +11,6 @@ namespace StellaServerLib.Serialization.Animation
         public int FrameWaitMs { get; set; }
         public int RelativeStart { get; set; }
         public string ImagePath { get; set; }
+        public bool Wraps { get; set; }
     }
 }

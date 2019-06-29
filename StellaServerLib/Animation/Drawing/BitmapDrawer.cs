@@ -9,13 +9,22 @@ namespace StellaServerLib.Animation.Drawing
     /// <summary>
     /// Reads a bitmap.
     /// Each row in the bitmap is a frame.
+    ///
+    /// The bitmap drawer loops top->bottom , bottom->top
     /// </summary>
     public class BitmapDrawer : IDrawer
     {
         private readonly int _frameWaitMs;
+        private readonly bool _wrap;
         private readonly List<PixelInstruction>[] _frames;
 
-        public BitmapDrawer(int startIndex, int stripLength, int frameWaitMS, Bitmap bitmap)
+
+        /// <param name="startIndex"></param>
+        /// <param name="stripLength"></param>
+        /// <param name="frameWaitMS"></param>
+        /// <param name="wrap">If the bitmap drawer should draw the first line after the last line</param>
+        /// <param name="bitmap"></param>
+        public BitmapDrawer(int startIndex, int stripLength, int frameWaitMS, bool wrap, Bitmap bitmap)
         {
             // Convert the bitmap to frames
             int width = Math.Min(bitmap.Width, stripLength);
@@ -33,6 +42,7 @@ namespace StellaServerLib.Animation.Drawing
             }
 
             _frameWaitMs = frameWaitMS;
+            _wrap = wrap;
         }
 
         public IEnumerator<Frame> GetEnumerator()
@@ -41,6 +51,7 @@ namespace StellaServerLib.Animation.Drawing
             int relativeTimestamp = 0;
             while (true)
             {
+                // Top to bottom
                 for (int i = 0; i < _frames.Length; i++)
                 {
                     Frame frame = new Frame(frameIndex, relativeTimestamp);
@@ -49,6 +60,20 @@ namespace StellaServerLib.Animation.Drawing
 
                     frameIndex++;
                     relativeTimestamp += _frameWaitMs;
+                }
+
+                if (_wrap)
+                {
+                    // Bottom to top
+                    for (int i = _frames.Length - 1; i >= 0; i--)
+                    {
+                        Frame frame = new Frame(frameIndex, relativeTimestamp);
+                        frame.AddRange(_frames[i]);
+                        yield return frame;
+
+                        frameIndex++;
+                        relativeTimestamp += _frameWaitMs;
+                    }
                 }
             }
         }
