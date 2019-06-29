@@ -54,7 +54,7 @@ namespace StellaLib.Network
             }
             catch (SocketException e)
             {
-                Console.WriteLine($"Failed to send data over UDP, {e.Message}");
+                OnDisconnect(e);
             }
         }
 
