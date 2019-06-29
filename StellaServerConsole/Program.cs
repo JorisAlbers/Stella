@@ -97,7 +97,7 @@ namespace StellaServerConsole
             {
                 try
                 {
-                    _apiServer = new APIServer(apiIp, apiPort);
+                    _apiServer = new APIServer(apiIp, apiPort, storyboards);
                     _apiServer.Start();
                 }
                 catch (Exception e)

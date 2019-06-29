@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
 using StellaServerAPI.Protocol;
+using StellaServerLib.Animation;
 
 namespace StellaServerAPI
 {
@@ -19,6 +21,7 @@ namespace StellaServerAPI
 
         private readonly string _ip;
         private readonly int _port;
+        private readonly List<Storyboard> _storyboards;
         private bool _isShuttingDown = false;
         private object _isShuttingDownLock = new object();
 
@@ -26,10 +29,11 @@ namespace StellaServerAPI
 
         public List<Client> ConnectedClients { get; set; }
 
-        public APIServer(string ip, int port)
+        public APIServer(string ip, int port, List<Storyboard> storyboards)
         {
             _ip = ip;
             _port = port;
+            _storyboards = storyboards;
         }
 
 
@@ -97,9 +101,7 @@ namespace StellaServerAPI
                 case MessageType.None:
                     break;
                 case MessageType.GetAvailableStoryboards:
-                    // TODO GetAvailableStoryboard protocol
-                    // TODO the code below is just to test StellaWebInterface
-                    byte[][] data = StringProtocol.Serialize("TestMessage", 1024);
+                    byte[][] data = StringProtocol.Serialize(String.Join(';',_storyboards.Select(x=>x.Name)), 1024);
                     foreach (var package in data)
                     {
                         ((Client)sender).Send(MessageType.GetAvailableStoryboards, package);

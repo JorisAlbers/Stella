@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StellaLib\StellaLib.csproj" />
+    <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj" />
   </ItemGroup>
 
 </Project>
