@@ -60,6 +60,12 @@ namespace StellaLib.Network
             return _socket.BeginSend(buffer, offset, bufferSize, socketFlags, callback, state);
         }
 
+        public IAsyncResult BeginSendTo(byte[] buffer, int offset, int bufferSize, SocketFlags socketFlags, EndPoint remoteEndPoint, AsyncCallback callback,
+            object state)
+        {
+            return _socket.BeginSendTo(buffer, offset, bufferSize, socketFlags, remoteEndPoint, callback, state);
+        }
+
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags,EndPoint remoteEP )
         {
            return  _socket.SendTo(buffer, offset, size, socketFlags, remoteEP);

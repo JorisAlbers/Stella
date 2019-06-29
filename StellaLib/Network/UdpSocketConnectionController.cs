@@ -50,13 +50,31 @@ namespace StellaLib.Network
             // Begin sending the data to the remote device.  
             try
             {
-                _socket.SendTo(data, 0, data.Length, 0, _targetEndPoint);
+                _socket.BeginSendTo(data, 0, data.Length, 0, _targetEndPoint, SendCallback,data);
             }
             catch (SocketException e)
             {
                 OnDisconnect(e);
             }
         }
+
+        private void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Complete sending the data to the remote device.  
+                int bytesSent = _socket.EndSend(ar);
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("Failed to send data as socket was disposed.");
+            }
+            catch (SocketException e)
+            {
+                OnDisconnect(e);
+            }
+        }
+
 
         private void StartReceive()
         {

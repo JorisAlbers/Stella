@@ -7,8 +7,6 @@ namespace StellaServerLib.Network
     public interface IServer
     {
         void Start();
-        int[] ConnectedClients{get;}
-        int NewConnectionsCount{get;}
 
         /// <summary> Sends a simple message to a client with only a message type </summary>
         void SendToClient(int clientId, MessageType messageType);

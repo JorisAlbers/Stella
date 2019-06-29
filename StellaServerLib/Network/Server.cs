@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -18,7 +19,7 @@ namespace StellaServerLib.Network
         private const int UDP_BUFFER_SIZE = 60_000; // The maximum UDP package size is 65,507 bytes.
 
         private List<Client> _newConnections;
-        private Dictionary<int,Client> _clients;
+        private ConcurrentDictionary<int,Client> _clients;
 
         private IPEndPoint _tcpLocalEndpoint;
         private readonly IPEndPoint _udpLocalEndpoint;
@@ -39,7 +40,7 @@ namespace StellaServerLib.Network
             _port = port;
             _udpPort = udpPort;
             _newConnections =  new List<Client>();
-            _clients = new Dictionary<int, Client>();
+            _clients = new ConcurrentDictionary<int, Client>();
         }
 
         public void Start()
@@ -57,28 +58,6 @@ namespace StellaServerLib.Network
 
             // Start an asynchronous socket to listen for connections.  
             _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket );  
-        }
-
-        public int[] ConnectedClients
-        {
-            get
-            {
-                lock(_clients)
-                {
-                    return _clients.Keys.ToArray();
-                }
-            }
-        }
-
-        public int NewConnectionsCount
-        {
-            get
-            {
-                lock(_newConnections)
-                {
-                    return _newConnections.Count;
-                }
-            }
         }
 
         public void SendToClient(int clientId, MessageType messageType)
@@ -99,24 +78,15 @@ namespace StellaServerLib.Network
         {
             try
             {
-                if (messageType == MessageType.AnimationRenderFrame)
+                if (_clients.TryGetValue(clientId, out Client client))
                 {
-                    lock (_clients)
+                    if (messageType == MessageType.AnimationRenderFrame)
                     {
-                        if (_clients.TryGetValue(clientId, out Client client))
-                        {
-                            client.SendUdp(messageType, data);
-                        }
+                        client.SendUdp(messageType, data);
                     }
-                }
-                else
-                {
-                    lock (_clients)
+                    else
                     {
-                        if (_clients.TryGetValue(clientId, out Client client))
-                        {
-                            client.SendTcp(messageType, data);
-                        }
+                        client.SendTcp(messageType, data);
                     }
                 }
             }
@@ -201,29 +171,25 @@ namespace StellaServerLib.Network
         private void ParseInitMessage(Client client, byte[] message)
         {
             int id = BitConverter.ToInt32(message,0);
-            
-            lock(_clients)
-            {
-                if(client.ID != -1)
-                {
-                    Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {id}, but he already has an ID.");
-                    return;
-                }
 
-                client.ID = id;
-                if(_clients.ContainsKey(id))
-                {
-                    Console.WriteLine($"A client with ID {id} already exists. Replacing the existing one.");
-                    DisposeClient(_clients[id]);
-                    _clients[id] = client;
-                }
-                else
-                {
-                    Console.WriteLine($"Client has initialized itself with id {id}");
-                    _clients.Add(id,client);
-                }
+            if(client.ID != -1)
+            {
+                Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {id}, but he already has an ID.");
+                return;
             }
-           
+
+            client.ID = id;
+            string logMessage = $"Client has initialized itself with id {id}";
+
+            _clients.AddOrUpdate(id, client, (key, oldValue) =>
+            {
+                logMessage = $"A client with ID {id} already exists. Replacing the existing one.";
+                DisposeClient(_clients[id]);
+                return client;
+            });
+
+            Console.Out.WriteLine(logMessage);
+
             lock(_newConnections)
             {
                 _newConnections.Remove(client);
@@ -268,13 +234,10 @@ namespace StellaServerLib.Network
 
         private void DisposeClient(Client client)
         {
+            _clients.TryRemove(client.ID, out _);
             client.MessageReceived -= Client_MessageReceived;
             client.Disconnect -= Client_Disconnected;
             client.Dispose();
-            lock (_clients)
-            {
-                _clients.Remove(client.ID);
-            }
         }
     }
 }
