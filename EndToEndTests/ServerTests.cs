@@ -93,7 +93,7 @@ namespace EndToEndTests
 
             });
 
-            SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(0,300,100, pattern);
+            SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(0,300,new AnimationTransformation(100), pattern);
             MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(0,300, new AnimationTransformation(30), pattern);
             AnimationTransformation[] animationTransformations = new AnimationTransformation[]{new AnimationTransformation(0), };
 
