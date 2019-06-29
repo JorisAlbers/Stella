@@ -18,9 +18,7 @@ namespace StellaLib.Network
 
         public bool IsConnected { get; private set; }
         public event EventHandler<MessageReceivedEventArgs<TMessageType>> MessageReceived;
-        public event EventHandler<SocketException> Disconnect;
-
-
+        
 
         public UdpSocketConnectionController(ISocketConnection socket, IPEndPoint targetEndPoint, int bufferSize)
         {
@@ -54,7 +52,6 @@ namespace StellaLib.Network
             }
             catch (SocketException e)
             {
-                OnDisconnect(e);
             }
         }
 
@@ -71,7 +68,6 @@ namespace StellaLib.Network
             }
             catch (SocketException e)
             {
-                OnDisconnect(e);
             }
         }
 
@@ -82,11 +78,11 @@ namespace StellaLib.Network
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
             try
             {
-                _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, ReceiveCallback, buffer);
+                _socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref tempRemoteEP, ReceiveCallback,
+                    buffer);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                OnDisconnect(e);
             }
         }
 
@@ -98,9 +94,8 @@ namespace StellaLib.Network
             {
                 bytesRead = _socket.EndReceiveFrom(ar, ref source);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                OnDisconnect(e);
                 return;
             }
 
@@ -134,20 +129,6 @@ namespace StellaLib.Network
                     MessageType = type,
                     Message = bytes
                 });
-            }
-        }
-
-        protected virtual void OnDisconnect(SocketException exception)
-        {
-            // The disconnect event can be called only once.
-            if (IsConnected)
-            {
-                IsConnected = false;
-                EventHandler<SocketException> handler = Disconnect;
-                if (handler != null)
-                {
-                    handler(this, exception);
-                }
             }
         }
 
