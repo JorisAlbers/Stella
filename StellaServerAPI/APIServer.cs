@@ -26,14 +26,19 @@ namespace StellaServerAPI
         private object _isShuttingDownLock = new object();
 
         private ISocketConnection _listenerSocket;
+        private StringProtocol _stringProtocol;
 
         public List<Client> ConnectedClients { get; set; }
+
+        public EventHandler<Storyboard> StartStoryboard;
+
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
         {
             _ip = ip;
             _port = port;
             _storyboards = storyboards;
+            _stringProtocol = new StringProtocol();
         }
 
 
@@ -107,8 +112,35 @@ namespace StellaServerAPI
                         ((Client)sender).Send(MessageType.GetAvailableStoryboards, package);
                     }
                     break;
+                case MessageType.StartStoryboard:
+                    ParseStartStoryboardMessage(e.Message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
+            }
+        }
+
+        private void ParseStartStoryboardMessage(byte[] data)
+        {
+            if (_stringProtocol.TryDeserialize(data, out string storyboardName))
+            {
+                // Reset StringProtocol
+                _stringProtocol = new StringProtocol();
+
+                // Get the storyboard
+                Storyboard storyboard = _storyboards.FirstOrDefault(x => x.Name == storyboardName);
+                if (storyboard == null)
+                {
+                    Console.Out.WriteLine($"API: failed to start storyboard. Storyboard {storyboardName} does not exist");
+                    return;
+                }
+
+                // Bubble up
+                EventHandler <Storyboard> handler = StartStoryboard;
+                if (handler != null)
+                {
+                    handler.Invoke(this,storyboard);
+                }
             }
         }
 

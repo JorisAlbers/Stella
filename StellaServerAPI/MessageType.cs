@@ -8,6 +8,8 @@ namespace StellaServerAPI
     {
         None,
         /// <summary> Get the names of the preloaded storyboard </summary>
-        GetAvailableStoryboards
+        GetAvailableStoryboards,
+        /// <summary> Start a storyboard </summary>
+        StartStoryboard
     }
 }
