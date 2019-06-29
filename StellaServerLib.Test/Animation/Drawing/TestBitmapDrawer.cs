@@ -156,7 +156,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             Assert.AreEqual(expectedColor3, frames[2][0].Color);
             // Row 4 
             Assert.AreEqual(1, frames[3].Count);
-            Assert.AreEqual(expectedColor2, frames[3][0].Color);
+            Assert.AreEqual(expectedColor3, frames[3][0].Color);
 
         }
 
