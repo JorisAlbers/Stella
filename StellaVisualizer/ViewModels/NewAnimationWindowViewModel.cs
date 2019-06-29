@@ -135,7 +135,7 @@ namespace StellaVisualizer.ViewModels
                     animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.FadingPulse:
-                    drawer = new FadingPulseDrawer(0,StripLength, WaitMS, pattern[0], 30);
+                    drawer = new FadingPulseDrawer(0,StripLength, new AnimationTransformation(WaitMS), pattern[0], 30);
                     animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.Bitmap:
