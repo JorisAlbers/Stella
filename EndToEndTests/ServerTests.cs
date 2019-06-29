@@ -76,7 +76,7 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 250),
             };
 
-            RepeatingPatternsDrawer repeatingPatternsDrawer = new RepeatingPatternsDrawer(0,300, 100, new Color[][]
+            RepeatingPatternsDrawer repeatingPatternsDrawer = new RepeatingPatternsDrawer(0,300, new AnimationTransformation(100), new Color[][]
             {
                 new Color[2]
                 {
