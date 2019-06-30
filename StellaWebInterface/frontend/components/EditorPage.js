@@ -155,12 +155,31 @@ class EditorPage extends React.Component {
               accept="image/*"
               style={{display: 'none'}}
               id="contained-button-file"
-              multiple
               type="file"
               onChange={(e) => {
-                console.log('this.code.image', e.target);
-                console.log('this.code.image', e.target.result);
-                this.setState({imageFile: e.target})
+                const fileReaderBase64 = new FileReader();
+                fileReaderBase64.readAsDataURL(e.target.files[0]);
+                fileReaderBase64.onload = (result) => {
+                  this.setState({imageFileBase64: result});
+                  const c = document.getElementById("canvas-class-name");
+                  const ctx = c.getContext("2d");
+                  const myImage = new Image();
+                  myImage.onload = () => {
+                    c.width = myImage.width;
+                    c.height = myImage.height;
+                    ctx.drawImage(myImage, 0, 0, myImage.width, myImage.height, 0, 0, c.width, c.height);
+                    const data = ctx.getImageData(0, 0, c.width, c.height);
+
+                    result = new Uint8ClampedArray(data.data.length * 0.75);
+                    for (let newIndex = 0, oldIndex = 0; oldIndex < data.data.length; oldIndex++) {
+                      if (oldIndex % 4 === 3) continue;
+                      result[newIndex++] = data.data[oldIndex]
+                    }
+
+                    this.setState({imageFile: {data: result, width: data.width, height: data.height}})
+                  };
+                  myImage.src = result.target.result;
+                };
               }}
             />
             <label htmlFor="contained-button-file">
@@ -169,10 +188,10 @@ class EditorPage extends React.Component {
               </Button>
             </label>
             <Button color="inherit" align="left" disabled={!this.state.imageFile}
-                    onClick={() => new Buffer(this.state.imageFile).toString('base64')}>Upload</Button>
-            {this.state.imageFile &&
-            <img src={this.state.imageFile.result}/>
-            }
+                    onClick={() => {
+                      this.props.socket.emit('sendSingleFrame', this.state.imageFile);
+                    }}>Upload</Button>
+            <canvas id={'canvas-class-name'} style={{width: '100%'}}/>
           </Grid>
           }
           {(currentMode === "javascript" || currentMode === 'python') &&
