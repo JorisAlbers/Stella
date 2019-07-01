@@ -108,7 +108,8 @@ namespace StellaServerConsole
                     return;
                 }
             }
-            
+
+            float brightnessCorrection = 0;
             while (true)
             {
                 OutputMenu(storyboardNames);
@@ -129,6 +130,16 @@ namespace StellaServerConsole
                 {
                     int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
                     _stellaServer.Animator.SetFrameWaitMs(Math.Max(10,currentWaitms - 5));
+                }
+
+                if (input == "b")
+                {
+                    brightnessCorrection += 0.10f;
+                    if (brightnessCorrection > 1)
+                    {
+                        brightnessCorrection = -1;
+                    }
+                    _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
                 }
 
 
@@ -225,6 +236,7 @@ namespace StellaServerConsole
             Console.Out.WriteLine("Exit program = q");
             Console.Out.WriteLine("Decrease speed = o");
             Console.Out.WriteLine("Increase speed = p");
+            Console.Out.WriteLine("Increase brightness by 0.10 = b");
             Console.Out.WriteLine("Start animation:");
             for (int i = 0; i < storyboardNames.Length; i++)
             {
