@@ -13,7 +13,7 @@ namespace StellaServerLib.Animation
         /// <summary>
         /// The brightness to correct each pixel to. Must be between -1 (black) and 1 (white).
         /// </summary>
-        public int BrightnessCorrection { get; set; }
+        public float BrightnessCorrection { get; set; }
 
 
         public AnimationTransformation(int initialFrameWaitMs)
@@ -33,7 +33,7 @@ namespace StellaServerLib.Animation
             float green = (float)color.G;
             float blue = (float)color.B;
 
-            int correctionFactor = BrightnessCorrection;
+            float correctionFactor = BrightnessCorrection;
 
             if (correctionFactor < 0)
             {
