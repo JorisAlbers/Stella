@@ -50,12 +50,7 @@ namespace StellaServerLib.Animation.Drawing
                 // Top to bottom
                 for (int i = 0; i < _frames.Length; i++)
                 {
-                    Frame frame = new Frame(frameIndex, relativeTimestamp);
-                    frame.AddRange(_frames[i]);
-                    yield return frame;
-
-                    frameIndex++;
-                    relativeTimestamp += _animationTransformation.FrameWaitMs;
+                    yield return CreateFrame(_frames[i], ref frameIndex, ref relativeTimestamp);
                 }
 
                 if (_wrap)
@@ -63,15 +58,25 @@ namespace StellaServerLib.Animation.Drawing
                     // Bottom to top
                     for (int i = _frames.Length - 1; i >= 0; i--)
                     {
-                        Frame frame = new Frame(frameIndex, relativeTimestamp);
-                        frame.AddRange(_frames[i]);
-                        yield return frame;
-
-                        frameIndex++;
-                        relativeTimestamp += _animationTransformation.FrameWaitMs;
+                        yield return CreateFrame(_frames[i], ref frameIndex, ref relativeTimestamp);
                     }
                 }
             }
+        }
+
+        private Frame CreateFrame(List<PixelInstruction> instructions, ref int frameIndex, ref int relativeTimestamp)
+        {
+            Frame frame = new Frame(frameIndex, relativeTimestamp);
+            for (int i = 0; i < instructions.Count; i++)
+            {
+                PixelInstruction instruction = instructions[i];
+                instruction.Color = _animationTransformation.AdjustColor(instruction.Color);
+                frame.Add(instruction);
+            }
+
+            frameIndex++;
+            relativeTimestamp += _animationTransformation.FrameWaitMs;
+            return frame;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
