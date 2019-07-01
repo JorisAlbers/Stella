@@ -69,6 +69,19 @@ namespace StellaServerLib.Animation
             return _animationTransformations[animationIndex].FrameWaitMs;
         }
 
+        public void SetBrightnessCorrection(float brightnessCorrection)
+        {
+            if (brightnessCorrection < -1 || brightnessCorrection > 1)
+            {
+                throw new ArgumentException("The brightness correction must be between -1 and 1");
+            }
+
+            for (int i = 0; i < _animationTransformations.Length; i++)
+            {
+                _animationTransformations[i].BrightnessCorrection = brightnessCorrection;
+            }
+        }
+
         /// <inheritdoc />
         public FrameWithoutDelta[] GetNextFramePerPi()
         {

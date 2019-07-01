@@ -26,5 +26,9 @@ namespace StellaServerLib.Animation
         /// </summary>
         int GetFrameWaitMs(int animationIndex);
 
+        /// <summary> Change the brightness of all leds by setting the brightness correction </summary>
+        /// <param name="brightnessCorrection"></param>
+        void SetBrightnessCorrection(float brightnessCorrection);
+
     }
 }
