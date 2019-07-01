@@ -1,9 +1,37 @@
+/**
+ *
+ * Server listeners
+ *  Incoming messages:
+ *    * name = getAvailableStoryboards  = 1,  datatype = string (separated by ';')
+ *
+ *  Outgoing message:
+ *    * name = getAvailableStoryboards  = 1
+ *    * name = startStoryboard          = 2,  datatype = string (name of the storyboard)
+ *    * name = startAnimation           = 3,  datatype = string (name of the animation)
+ *    * name = startTempStoryboard      = 4,  datatype = string (jsonnated data see: './StellaServerConsole/Resources/Storyboards/StoryboardExample.yaml')
+ *
+ *  Client listeners
+ *    Incoming messages
+ *
+ *    Outgoing messages
+ *
+ */
+
 const fs = require("fs");
 const net = require("net");
 
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 const StringProtocol = require("../service/stringProtocol");
+
+function getPx(imageData, x, y) {
+  return {
+    r: imageData.data[(y * imageData.width + x) * 4],
+    g: imageData.data[(y * imageData.width + x) * 4 + 1],
+    b: imageData.data[(y * imageData.width + x) * 4 + 2],
+    a: imageData.data[(y * imageData.width + x) * 4 + 3],
+  };
+}
 
 class Socket {
   constructor(server) {
@@ -30,6 +58,7 @@ class Socket {
         case 1:
           this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
 
+          // Todo: Send result back to all clients listening to event 'returnAvailableStoryboards'
           if (this.stringProtocol.message !== null) {
             this.stringProtocol = new StringProtocol();
           }
@@ -102,7 +131,7 @@ class Socket {
     });
 
     this.serverSocket.on('timeout', () => {
-      console.log("Server connection timeout");
+      // console.log("Server connection timeout");
     });
   };
 
@@ -125,8 +154,12 @@ class Socket {
 
       socket.on('getAvailableStoryboards', () => {
         this.getAvailableStoryboards();
-
         socket.emit('returnAvailableStoryboards', {})
+      });
+
+      socket.on('sendSingleFrame', (data) => {
+        const px = getPx(data, 0, 0);
+        console.log(px)
       });
 
       socket.on('getStatus', () => {
