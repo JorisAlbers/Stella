@@ -25,6 +25,7 @@ namespace StellaServerConsole
             int port = 0, udpPort = 0;
             string apiIp = null;
             int apiPort= 0;
+            string bitmapDirectory = null;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -57,6 +58,9 @@ namespace StellaServerConsole
                         case "-api_port":
                             apiPort = int.Parse(args[++i]);
                             break;
+                        case "-b":
+                            bitmapDirectory = args[++i];
+                            break;
 
                         default:
                             Console.Out.WriteLine($"Unknown flag {args[i]}");
@@ -64,7 +68,7 @@ namespace StellaServerConsole
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort, bitmapDirectory))
             {
                 return;
             }
@@ -76,6 +80,13 @@ namespace StellaServerConsole
                 Console.Out.WriteLine("No storyboards found!");
                 return;
             }
+            // Add animations on the images in the bitmap directory
+            if (bitmapDirectory != null)
+            {
+                AddBitmapAnimations(storyboards, bitmapDirectory);
+            }
+
+
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
             
             // Start stellaServer
@@ -109,7 +120,6 @@ namespace StellaServerConsole
                 }
             }
 
-            float brightnessCorrection = 0;
             while (true)
             {
                 OutputMenu(storyboardNames);
@@ -120,26 +130,10 @@ namespace StellaServerConsole
                     break;
                 }
 
-                if (input == "o")
+                if (input == "t")
                 {
-                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
-                    _stellaServer.Animator.SetFrameWaitMs(currentWaitms + 5);
-                }
-
-                if (input == "p")
-                {
-                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
-                    _stellaServer.Animator.SetFrameWaitMs(Math.Max(10,currentWaitms - 5));
-                }
-
-                if (input == "b")
-                {
-                    brightnessCorrection += 0.10f;
-                    if (brightnessCorrection > 1)
-                    {
-                        brightnessCorrection = -1;
-                    }
-                    _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                    GetTransformationInput();
+                    continue;
                 }
 
 
@@ -166,7 +160,92 @@ namespace StellaServerConsole
             Console.Out.WriteLine("End of StellaServer.");
         }
 
-        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort)
+        private static void GetTransformationInput()
+        {
+            Console.Out.WriteLine("TRANSFORMATION MODE, q to quit");
+            Console.Out.WriteLine("s           = speed");
+            Console.Out.WriteLine("b           = brightness");
+            Console.Out.WriteLine("shift + key = lower");
+
+            float brightnessCorrection = 0;
+
+            ConsoleKeyInfo key;
+            while ((key = Console.ReadKey(true)).Key != ConsoleKey.Q)
+            {
+                // Animation speed
+                if (key.KeyChar == 's' || key.KeyChar == 'S')
+                {
+                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
+                    if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
+                    {
+                        // lower
+                        _stellaServer.Animator.SetFrameWaitMs(currentWaitms + 5);
+                    }
+                    else
+                    {
+                        // raise
+                        _stellaServer.Animator.SetFrameWaitMs(Math.Max(10, currentWaitms - 5));
+                    }
+                }
+
+                // Brightness
+                if (key.KeyChar == 'b' || key.KeyChar == 'B')
+                {
+                    Console.Beep();
+                    if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
+                    {
+                        // lower
+                        brightnessCorrection -= 0.10f;
+                        if (brightnessCorrection < -1)
+                            brightnessCorrection = -1;
+                    }
+                    else
+                    {
+                        // raise
+                        brightnessCorrection += 0.10f;
+                        if (brightnessCorrection > 1)
+                            brightnessCorrection = 1;
+                    }
+                    _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                }
+                
+            }
+        }
+
+        private static void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)
+        {
+            DirectoryInfo directory = new DirectoryInfo(bitmapDirectory);
+            foreach (FileInfo fileInfo in directory.GetFiles())
+            {
+                if (fileInfo.Extension == ".png")
+                {
+                    Storyboard sb = new Storyboard();
+                    sb.Name = fileInfo.Name;
+                    // Assume we have 2 pi's, each with 1 line of 240 pixels
+                    sb.AnimationSettings = new IAnimationSettings[]
+                    {
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImagePath = fileInfo.FullName,
+                            StripLength = 240,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImagePath = fileInfo.FullName,
+                            StripLength = 240,
+                            StartIndex = 240,
+                            Wraps = true
+                        },
+                    };
+                    storyboards.Add(sb);
+                }
+            }
+        }
+
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory)
         {
             // TODO path and file exist validation
             if (mappingFilePath == null)
@@ -221,6 +300,12 @@ namespace StellaServerConsole
                 return false;
             }
 
+            if (!Directory.Exists(bitmapDirectory))
+            {
+                Console.Out.WriteLine("The bitmap directory path does not point to an existing directory");
+                return false;
+            }
+
             return true;
         }
 
@@ -228,15 +313,16 @@ namespace StellaServerConsole
         {
             Console.Out.WriteLine("StellaServer");
             Console.Out.WriteLine("To run: StellaServer -m <mapping_filepath>");
+            Console.Out.WriteLine("Optional:");
+            Console.Out.WriteLine("-b <bitmap_directory_path> : creates animations with bitmap drawers ");
+            Console.Out.WriteLine("                             for each image in the dir.");
             Console.Out.WriteLine();
         }
 
         static void OutputMenu(string[] storyboardNames)
         {
             Console.Out.WriteLine("Exit program = q");
-            Console.Out.WriteLine("Decrease speed = o");
-            Console.Out.WriteLine("Increase speed = p");
-            Console.Out.WriteLine("Increase brightness by 0.10 = b");
+            Console.Out.WriteLine("Transformation mode = t");
             Console.Out.WriteLine("Start animation:");
             for (int i = 0; i < storyboardNames.Length; i++)
             {
