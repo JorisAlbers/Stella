@@ -82,6 +82,19 @@ namespace StellaServerLib.Animation
             }
         }
 
+        public void SetRgbFadeCorrection(float[] rgbFadeCorrection)
+        {
+            if (rgbFadeCorrection.Any(x => x > 0 || x < -1))
+            {
+                throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
+            }
+
+            for (int i = 0; i < _animationTransformations.Length; i++)
+            {
+                _animationTransformations[i].RgbFadeCorrection = rgbFadeCorrection;
+            }
+        }
+
         /// <inheritdoc />
         public FrameWithoutDelta[] GetNextFramePerPi()
         {

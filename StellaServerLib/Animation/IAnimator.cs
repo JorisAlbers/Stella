@@ -30,5 +30,12 @@ namespace StellaServerLib.Animation
         /// <param name="brightnessCorrection"></param>
         void SetBrightnessCorrection(float brightnessCorrection);
 
+        /// <summary>
+        /// Fade the color by setting the transformation factors.
+        /// index 0 = red, 1 = green, 2 = blue.
+        /// </summary>
+        /// <param name="transformationFactors"></param>
+        void SetRgbFadeCorrection(float[] transformationFactors);
+
     }
 }

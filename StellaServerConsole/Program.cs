@@ -135,7 +135,7 @@ namespace StellaServerConsole
                     GetTransformationInput();
                     continue;
                 }
-
+                
 
                 if (int.TryParse(input, out int storyboardToPlay))
                 {
@@ -164,10 +164,14 @@ namespace StellaServerConsole
         {
             Console.Out.WriteLine("TRANSFORMATION MODE, q to quit");
             Console.Out.WriteLine("s           = speed");
-            Console.Out.WriteLine("b           = brightness");
+            Console.Out.WriteLine("t           = brightness");
+            Console.Out.WriteLine("r           = red color");
+            Console.Out.WriteLine("g           = green color");
+            Console.Out.WriteLine("b           = blue color");
             Console.Out.WriteLine("shift + key = lower");
 
             float brightnessCorrection = 0;
+            float[] transformationFactor = new float[3]{0,0,0};
 
             ConsoleKeyInfo key;
             while ((key = Console.ReadKey(true)).Key != ConsoleKey.Q)
@@ -189,9 +193,8 @@ namespace StellaServerConsole
                 }
 
                 // Brightness
-                if (key.KeyChar == 'b' || key.KeyChar == 'B')
+                if (key.KeyChar == 't' || key.KeyChar == 'T')
                 {
-                    Console.Beep();
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
                         // lower
@@ -208,7 +211,57 @@ namespace StellaServerConsole
                     }
                     _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
                 }
-                
+
+                // Color
+                if (key.KeyChar == 'r' || key.KeyChar == 'R')
+                {
+                    if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
+                    {
+                        transformationFactor[0] -= 0.05f;
+                        if (transformationFactor[0] < -1)
+                            transformationFactor[0] = -1;
+                    }
+                    else
+                    {
+                        transformationFactor[0] += 0.05f;
+                        if (transformationFactor[0] > 0)
+                            transformationFactor[0] = 0;
+                    }
+                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                }
+                if (key.KeyChar == 'g' || key.KeyChar == 'G')
+                {
+                    if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
+                    {
+                        transformationFactor[1] -= 0.05f;
+                        if (transformationFactor[1] < -1)
+                            transformationFactor[1] = -1;
+                    }
+                    else
+                    {
+                        transformationFactor[1] += 0.05f;
+                        if (transformationFactor[1] > 0)
+                            transformationFactor[1] = 0;
+                    }
+                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                }
+                if (key.KeyChar == 'b' || key.KeyChar == 'B')
+                {
+                    if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
+                    {
+                        transformationFactor[2] -= 0.05f;
+                        if (transformationFactor[2] < -1)
+                            transformationFactor[2] = -1;
+                    }
+                    else
+                    {
+                        transformationFactor[2] += 0.05f;
+                        if (transformationFactor[2] > 0)
+                            transformationFactor[2] = 0;
+                    }
+                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                }
+               
             }
         }
 

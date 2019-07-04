@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
 
 namespace StellaServerLib.Animation
@@ -15,6 +16,11 @@ namespace StellaServerLib.Animation
         /// </summary>
         public float BrightnessCorrection { get; set; }
 
+        /// <summary>
+        /// The fade correction for each rgb channel. Must be between -1 (color removed) and 0 (color present);
+        /// </summary>
+        public float[] RgbFadeCorrection { get; set; } = new float[3];
+
 
         public AnimationTransformation(int initialFrameWaitMs)
         {
@@ -24,15 +30,36 @@ namespace StellaServerLib.Animation
 
         public Color AdjustColor(Color color)
         {
-            return AdjustBrightness(color);
+            // Red
+            float red = TransformChannel(color.R, RgbFadeCorrection[0]);
+            // Green
+            float green = TransformChannel(color.G, RgbFadeCorrection[1]);
+            // Blue
+            float blue = TransformChannel(color.B, RgbFadeCorrection[2]);
+
+            return AdjustBrightness(red, green, blue);
         }
 
-        private Color AdjustBrightness(Color color)
+        private float TransformChannel(byte channel, float correctionFactor)
         {
-            float red = (float)color.R;
-            float green = (float)color.G;
-            float blue = (float)color.B;
+            float channelAsFloat = (float) channel;
 
+            if (correctionFactor == 0)
+            {
+                return channelAsFloat;
+            }
+
+            correctionFactor = 1 + correctionFactor;
+            channelAsFloat *= correctionFactor;
+           
+            return channelAsFloat;
+        }
+
+        
+
+
+        private Color AdjustBrightness(float red, float green, float blue)
+        {
             float correctionFactor = BrightnessCorrection;
 
             if (correctionFactor < 0)
@@ -48,8 +75,8 @@ namespace StellaServerLib.Animation
                 green = (255 - green) * correctionFactor + green;
                 blue = (255 - blue) * correctionFactor + blue;
             }
-
-            return Color.FromArgb(color.A, (int)red, (int)green, (int)blue);
+            
+            return Color.FromArgb((int)red, (int)green, (int)blue);
         }
 
     }
