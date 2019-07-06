@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -9,6 +10,7 @@ using StellaLib.Network;
 using StellaLib.Network.Protocol;
 using StellaServerAPI.Protocol;
 using StellaServerLib.Animation;
+using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerAPI
 {
@@ -119,6 +121,9 @@ namespace StellaServerAPI
                 case MessageType.StartPreloadedStoryboard:
                     ParseStartPreloadedStoryboardMessage(e.Message);
                     break;
+                case MessageType.StartStoryboard:
+                    ParseStartStoryboardMessage(e.Message);
+                    break;
                case MessageType.StoreBitmap:
                     ParseStoreBitmapMessage(e.Message);
                     break;
@@ -126,7 +131,41 @@ namespace StellaServerAPI
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
         }
-        
+
+        private void ParseStartStoryboardMessage(byte[] data)
+        {
+            if (_stringProtocol.TryDeserialize(data, out string storyboardAsYaml))
+            {
+                // Reset StringProtocol
+                _stringProtocol = new StringProtocol();
+
+                StoryboardLoader storyboardLoader = new StoryboardLoader();
+                Storyboard storyboard = null;
+                try
+                {
+                    storyboard =
+                        storyboardLoader.Load(
+                            new StreamReader(
+                                new MemoryStream(
+                                    Encoding.ASCII.GetBytes(
+                                        storyboardAsYaml)))); // TODO te stringProtocol should should return the byte[] . Now we convert from bytes -> string -> bytes.
+                }
+                catch (Exception e)
+                {
+                    Console.Out.WriteLine("APIserver: Failed to start storyboard.");
+                    Console.Out.WriteLine(e);
+                    return;
+                }
+
+                // Bubble up
+                EventHandler<Storyboard> handler = StartStoryboard;
+                if (handler != null)
+                {
+                    handler.Invoke(this, storyboard);
+                }
+            }
+        }
+
         private void ParseStartPreloadedStoryboardMessage(byte[] data)
         {
             if (_stringProtocol.TryDeserialize(data, out string storyboardName))
