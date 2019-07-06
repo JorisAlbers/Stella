@@ -157,17 +157,9 @@ namespace StellaServerLib.Serialization.Animation
 
         private void ValidateBitmapAnimationSettings(BitmapAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
-            if (String.IsNullOrWhiteSpace(animationSetting.ImagePath))
+            if (String.IsNullOrWhiteSpace(animationSetting.ImageName))
             {
                 errors.Add($"FadingPulseAnimationSettings at index {animationIndex}: ImagePath must be set.");
-            }
-            else if(!animationSetting.ImagePath.EndsWith(".png"))
-            {
-                errors.Add($"FadingPulseAnimationSettings at index {animationIndex}: ImagePath file must be of extension .png");
-            }
-            else if (!File.Exists(animationSetting.ImagePath))
-            {
-                errors.Add($"FadingPulseAnimationSettings at index {animationIndex}: There is no file at ImagePath.");
             }
         }
 

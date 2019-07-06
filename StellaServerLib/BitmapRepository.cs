@@ -24,7 +24,10 @@ namespace StellaServerLib
 
         public bool BitmapExists(string name)
         {
-            return File.Exists(GetFullName(name));
+            string fullName = GetFullName(name);
+            string path = Path.Combine(_directoryPath, fullName);
+
+            return File.Exists(GetFullName(path));
         }
 
         public void Save(Bitmap bitmap, string name)
@@ -37,7 +40,7 @@ namespace StellaServerLib
                 throw new Exception($"There already is a bitmap present at path {fullName}");
             }
 
-            bitmap.Save(fullName, ImageFormat.Png);
+            bitmap.Save(path, ImageFormat.Png);
         }
 
         public Bitmap Load(string name)
@@ -50,12 +53,12 @@ namespace StellaServerLib
                 throw new Exception($"There is no bitmap present at path {fullName}");
             }
 
-            return new Bitmap(Image.FromFile(fullName));
+            return new Bitmap(Image.FromFile(path));
         }
 
         private string GetFullName(string name)
         {
-            return  $"{name}.png";
+            return $"{name}.png";
         }
     }
 }

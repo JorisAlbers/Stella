@@ -14,6 +14,7 @@ namespace StellaServerLib
         private readonly string _ip;
         private readonly int _port;
         private readonly int _udpPort;
+        private readonly AnimatorCreation _animatorCreation;
 
         private List<PiMaskItem> _mask;
         private int[] _stripLengthPerPi;
@@ -22,12 +23,13 @@ namespace StellaServerLib
 
         public IAnimator Animator { get; private set; }
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, AnimatorCreation animatorCreation)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
+            _animatorCreation = animatorCreation;
         }
 
         public void Start()
@@ -46,7 +48,7 @@ namespace StellaServerLib
 
             try
             {
-                Animator = AnimatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
+                Animator = _animatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
             }
             catch (Exception e)
             {

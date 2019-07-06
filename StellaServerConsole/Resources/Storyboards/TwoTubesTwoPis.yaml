@@ -5,10 +5,10 @@ Animations:
    StartIndex:  0
    StripLength: 240
    FrameWaitMs: 15
-   ImagePath: C:\Users\jorisPrive\Desktop\vet\test-04-circle08.png
+   ImageName: test-04-circle08
    Wraps: true
  - !Bitmap	
    StartIndex:  240
    StripLength: 240
    FrameWaitMs: 15
-   ImagePath: C:\Users\jorisPrive\Desktop\vet\test-04-circle08.png
+   ImageName: test-04-circle08

@@ -10,9 +10,16 @@ using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Animation
 {// Creates an Animator
-    public static class AnimatorCreation
+    public class AnimatorCreation
     {
-        public static Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
+        private readonly BitmapRepository _bitmapRepository;
+
+        public AnimatorCreation(BitmapRepository bitmapRepository)
+        {
+            _bitmapRepository = bitmapRepository;
+        }
+
+        public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IDrawer drawer;
             AnimationTransformation[] animationTransformations = new AnimationTransformation[storyboard.AnimationSettings.Length];
@@ -46,7 +53,7 @@ namespace StellaServerLib.Animation
             return new Animator(drawer, stripLengthPerPi, mask, animationTransformations);
         }
 
-        private static IDrawer CreateDrawer(IAnimationSettings animationSetting, out AnimationTransformation animationTransformation)
+        private IDrawer CreateDrawer(IAnimationSettings animationSetting, out AnimationTransformation animationTransformation)
         {
             animationTransformation = new AnimationTransformation(animationSetting.FrameWaitMs);
 
@@ -72,8 +79,7 @@ namespace StellaServerLib.Animation
             }
             if (animationSetting is BitmapAnimationSettings bitmapSetting)
             {
-                Bitmap bitmap = new Bitmap(Image.FromFile(bitmapSetting.ImagePath));
-                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, animationTransformation, bitmapSetting.Wraps, bitmap);
+                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, animationTransformation, bitmapSetting.Wraps, _bitmapRepository.Load(bitmapSetting.ImageName));
             }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");

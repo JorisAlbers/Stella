@@ -13,7 +13,8 @@ namespace StellaServerConsole
     {
         private static StellaServer _stellaServer;
         private static APIServer _apiServer;
-
+        private static BitmapRepository _bitmapRepository;
+        
         static void Main(string[] args)
         {
             Console.WriteLine("Starting StellaServer");
@@ -80,17 +81,17 @@ namespace StellaServerConsole
                 Console.Out.WriteLine("No storyboards found!");
                 return;
             }
-            // Add animations on the images in the bitmap directory
-            if (bitmapDirectory != null)
-            {
-                AddBitmapAnimations(storyboards, bitmapDirectory);
-            }
 
+            // Add animations on the images in the bitmap directory
+            AddBitmapAnimations(storyboards, bitmapDirectory);
 
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
             
+            // Start bitmapRepository
+            _bitmapRepository = new BitmapRepository(bitmapDirectory);
+
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort);
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new AnimatorCreation(_bitmapRepository));
 
             try
             {
@@ -273,21 +274,23 @@ namespace StellaServerConsole
                 if (fileInfo.Extension == ".png")
                 {
                     Storyboard sb = new Storyboard();
-                    sb.Name = fileInfo.Name;
+                    string name = Path.GetFileNameWithoutExtension(fileInfo.Name);
+
+                    sb.Name = name;
                     // Assume we have 2 pi's, each with 1 line of 240 pixels
                     sb.AnimationSettings = new IAnimationSettings[]
                     {
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
-                            ImagePath = fileInfo.FullName,
+                            ImageName = name,
                             StripLength = 240,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
-                            ImagePath = fileInfo.FullName,
+                            ImageName = name,
                             StripLength = 240,
                             StartIndex = 240,
                             Wraps = true
