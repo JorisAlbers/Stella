@@ -110,6 +110,7 @@ namespace StellaServerConsole
                 try
                 {
                     _apiServer = new APIServer(apiIp, apiPort, storyboards);
+                    _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
                     _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {
@@ -171,6 +172,11 @@ namespace StellaServerConsole
             }
 
             Console.Out.WriteLine("End of StellaServer.");
+        }
+
+        private static int ApiServerOnFrameWaitMsRequested(int animationIndex)
+        {
+            return _stellaServer.Animator.GetFrameWaitMs(animationIndex);
         }
 
         private static void GetTransformationInput()

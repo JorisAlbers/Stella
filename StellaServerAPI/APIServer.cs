@@ -36,7 +36,9 @@ namespace StellaServerAPI
 
         public EventHandler<Storyboard> StartStoryboard;
         public EventHandler<BitmapReceivedEventArgs> BitmapReceived;
-
+        
+        // Transform events
+        public event Func<int, int> FrameWaitMsRequested; 
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
         {
@@ -127,8 +129,33 @@ namespace StellaServerAPI
                case MessageType.StoreBitmap:
                     ParseStoreBitmapMessage(e.Message);
                     break;
+                case MessageType.GetFrameWaitMs:
+                    ParseGetFrameWaitMs(e.Message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
+            }
+        }
+
+        private void ParseGetFrameWaitMs(byte[] data)
+        {
+            try
+            {
+                int animationIndex = BitConverter.ToInt32(data);
+                if (FrameWaitMsRequested != null)
+                {
+                    int frameWaitMs = FrameWaitMsRequested(animationIndex);
+                    byte[] returnData = new byte[8];
+                    BitConverter.GetBytes(animationIndex).CopyTo(returnData,0);
+                    BitConverter.GetBytes(frameWaitMs).CopyTo(returnData,4);
+                    Send(MessageType.GetFrameWaitMs, returnData);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("Failed to parse GetFrameWaitMs message.");
+                Console.Out.WriteLine(e);
+                return;
             }
         }
 
@@ -205,6 +232,12 @@ namespace StellaServerAPI
                 }
 
             }
+        }
+
+        private void Send(MessageType type, byte[] data)
+        {
+            // Assume there is only one client.
+            ConnectedClients[0].Send(type,data);
         }
 
 
