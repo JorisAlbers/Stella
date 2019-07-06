@@ -111,6 +111,18 @@ namespace StellaServerConsole
                 {
                     _apiServer = new APIServer(apiIp, apiPort, storyboards);
                     _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
+                    _apiServer.BitmapReceived += (sender, eventArgs) =>
+                    {
+                        if (_bitmapRepository.BitmapExists(eventArgs.Name))
+                        {
+                            Console.Out.WriteLine(
+                                "Failed to store bitmap. A bitmap with the name {eventArgs.Name} already exists.");
+                            return;
+                        }
+
+                        _bitmapRepository.Save(eventArgs.Bitmap, eventArgs.Name);
+                    };
+
                     _apiServer.Start();
                 }
                 catch (Exception e)
