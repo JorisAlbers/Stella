@@ -17,7 +17,7 @@ namespace StellaServerLib.Animation
 
         /// <summary>
         /// CTOR
-        /// </summary>
+        /// </summary>s
         /// <param name="drawer">The drawer to get frames from.</param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
@@ -67,6 +67,16 @@ namespace StellaServerLib.Animation
             }
 
             return _animationTransformations[animationIndex].FrameWaitMs;
+        }
+
+        public float GetBrightnessCorrection(int animationIndex)
+        {
+            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
+            {
+                throw new ArgumentException($"There is no animation at index {animationIndex}");
+            }
+
+            return _animationTransformations[animationIndex].BrightnessCorrection;
         }
 
         public void SetBrightnessCorrection(float brightnessCorrection)

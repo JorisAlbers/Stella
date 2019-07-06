@@ -22,6 +22,8 @@ namespace StellaServerAPI
         /// <summary> Get the rgb fade of a certain animation </summary>
         GetRgbFade,
         /// <summary> Set the rgb fade of a certain animation </summary>
-        SetRgbFade
+        SetRgbFade,
+        /// <summary> Get the brightness correction of a certain animation. Between -1 and 1 </summary>
+        GetBrightnessCorrection
     }
 }
