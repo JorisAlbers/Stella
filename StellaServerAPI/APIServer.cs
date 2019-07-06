@@ -117,9 +117,9 @@ namespace StellaServerAPI
                     }
                     break;
                 case MessageType.StartPreloadedStoryboard:
-                    ParseStartStoryboardMessage(e.Message);
+                    ParseStartPreloadedStoryboardMessage(e.Message);
                     break;
-                case MessageType.StoreBitmap:
+               case MessageType.StoreBitmap:
                     ParseStoreBitmapMessage(e.Message);
                     break;
                 default:
@@ -127,7 +127,7 @@ namespace StellaServerAPI
             }
         }
         
-        private void ParseStartStoryboardMessage(byte[] data)
+        private void ParseStartPreloadedStoryboardMessage(byte[] data)
         {
             if (_stringProtocol.TryDeserialize(data, out string storyboardName))
             {
