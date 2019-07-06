@@ -39,7 +39,9 @@ namespace StellaServerAPI
         
         // Transform events
         public event Func<int, int> FrameWaitMsRequested; 
-        public event Action<int,int> FrameWaitMsSet; 
+        public event Action<int,int> FrameWaitMsSet;
+
+        public event Func<int, float[]> RgbFadeRequested;
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
         {
@@ -136,10 +138,15 @@ namespace StellaServerAPI
                 case MessageType.SetFrameWaitMs:
                     ParseSetFrameWaitMs(e.Message);
                     break;
+                case MessageType.GetRgbFade:
+                    ParseGetRgbFadeMessage(e.Message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
         }
+
+       
 
         private void ParseGetFrameWaitMs(byte[] data)
         {
@@ -177,6 +184,30 @@ namespace StellaServerAPI
             catch (Exception e)
             {
                 Console.Out.WriteLine("APIServer: Failed to set the FrameWaitMs.");
+                Console.Out.WriteLine(e);
+                return;
+            }
+        }
+
+        private void ParseGetRgbFadeMessage(byte[] data)
+        {
+            try
+            {
+                int animationIndex = BitConverter.ToInt32(data);
+                if (RgbFadeRequested != null)
+                {
+                    float[] rgbFade = RgbFadeRequested.Invoke(animationIndex);
+                    byte[] returnData = new byte[16];
+                    BitConverter.GetBytes(animationIndex).CopyTo(returnData, 0);
+                    BitConverter.GetBytes(rgbFade[0]).CopyTo(returnData,4);
+                    BitConverter.GetBytes(rgbFade[1]).CopyTo(returnData,8);
+                    BitConverter.GetBytes(rgbFade[2]).CopyTo(returnData,12);
+                    Send(MessageType.GetRgbFade, returnData);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("APIServer: Failed to retrieve the RgbFade.");
                 Console.Out.WriteLine(e);
                 return;
             }
