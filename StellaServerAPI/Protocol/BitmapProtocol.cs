@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Text;
 
 namespace StellaServerAPI.Protocol
 {
@@ -7,7 +8,10 @@ namespace StellaServerAPI.Protocol
     {
         private int _pixelsReceived;
         private int _rowsReceived;
+        private int _nameLength;
         private Bitmap _bitmap;
+        private string _name;
+
 
 
         public BitmapProtocol()
@@ -22,17 +26,26 @@ namespace StellaServerAPI.Protocol
         /// <param name="buffer"></param>
         /// <param name="bitmap"></param>
         /// <returns></returns>
-        public bool TryDeserialize(byte[] buffer, out Bitmap bitmap)
+        public bool TryDeserialize(byte[] buffer, out Bitmap bitmap, out string name)
         {
             int bufferStartIndex = 0;
             if (_bitmap == null)
             {
                 // This is the first package
-                int numberOfPixels = BitConverter.ToInt32(buffer, 0);
-                int numberOfRows = BitConverter.ToInt32(buffer, 4);
-                bufferStartIndex = 8;
+                _nameLength = BitConverter.ToInt32(buffer, 0);
+                int numberOfPixels = BitConverter.ToInt32(buffer, 4);
+                int numberOfRows = BitConverter.ToInt32(buffer, 8);
+                bufferStartIndex = 12;
 
                 _bitmap = new Bitmap(numberOfPixels, numberOfRows);
+            }
+
+            if (_name == null)
+            {
+                // We are receiving the name.
+                // Assumes the name fits in a single package
+                _name = Encoding.ASCII.GetString(buffer, bufferStartIndex, _nameLength);
+                bufferStartIndex += _nameLength;
             }
 
             // From this point on, the buffer contains rgb values for each pixel. 
@@ -51,12 +64,14 @@ namespace StellaServerAPI.Protocol
                     if (++_rowsReceived == _bitmap.Height)
                     {
                         bitmap = _bitmap;
+                        name = _name;
                         return true;
                     }
                 }
             }
 
             bitmap = null;
+            name = null;
             return false;
         }
 
