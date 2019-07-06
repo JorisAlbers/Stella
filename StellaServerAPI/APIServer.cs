@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -27,10 +28,12 @@ namespace StellaServerAPI
 
         private ISocketConnection _listenerSocket;
         private StringProtocol _stringProtocol;
+        private BitmapProtocol _bitmapProtocol;
 
         public List<Client> ConnectedClients { get; set; }
 
         public EventHandler<Storyboard> StartStoryboard;
+        public EventHandler<BitmapReceivedEventArgs> BitmapReceived;
 
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
@@ -39,6 +42,7 @@ namespace StellaServerAPI
             _port = port;
             _storyboards = storyboards;
             _stringProtocol = new StringProtocol();
+            _bitmapProtocol = new BitmapProtocol();
         }
 
 
@@ -115,11 +119,14 @@ namespace StellaServerAPI
                 case MessageType.StartStoryboard:
                     ParseStartStoryboardMessage(e.Message);
                     break;
+                case MessageType.StoreBitmap:
+                    ParseStoreBitmapMessage(e.Message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
         }
-
+        
         private void ParseStartStoryboardMessage(byte[] data)
         {
             if (_stringProtocol.TryDeserialize(data, out string storyboardName))
@@ -141,6 +148,23 @@ namespace StellaServerAPI
                 {
                     handler.Invoke(this,storyboard);
                 }
+            }
+        }
+
+        private void ParseStoreBitmapMessage(byte[] data)
+        {
+            if (_bitmapProtocol.TryDeserialize(data, out Bitmap bitmap, out string name))
+            {
+                // Reset the bitmap protocol
+                _bitmapProtocol = new BitmapProtocol();
+
+                // Bubble up
+                EventHandler<BitmapReceivedEventArgs> handler = BitmapReceived;
+                if (handler != null)
+                {
+                    handler.Invoke(this, new BitmapReceivedEventArgs{Bitmap = bitmap, Name = name});
+                }
+
             }
         }
 
