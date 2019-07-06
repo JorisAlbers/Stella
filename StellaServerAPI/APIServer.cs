@@ -45,6 +45,8 @@ namespace StellaServerAPI
         public event Action<int, float[]> RgbFadeSet;
 
         public event Func<int, float> BrightnessCorrectionRequested;
+        public event Action<int, float> BrightnessCorrectionSet;
+
 
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
@@ -150,6 +152,9 @@ namespace StellaServerAPI
                     break;
                 case MessageType.GetBrightnessCorrection:
                     ParseGetBrightnessCorrectionMessage(e.Message);
+                    break;
+                case MessageType.SetBrightnessCorrection:
+                    ParseSetBrightnessCorrectionMessage(e.Message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
@@ -262,6 +267,24 @@ namespace StellaServerAPI
             catch (Exception e)
             {
                 Console.Out.WriteLine("APIServer: Failed to retrieve the brightness correction.");
+                Console.Out.WriteLine(e);
+                return;
+            }
+        }
+        private void ParseSetBrightnessCorrectionMessage(byte[] data)
+        {
+            try
+            {
+                int animationIndex = BitConverter.ToInt32(data);
+                float brightnessCorrection = BitConverter.ToSingle(data, 4);
+                if (BrightnessCorrectionSet != null)
+                {
+                    BrightnessCorrectionSet(animationIndex, brightnessCorrection);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("APIServer: Failed to set the brightness correction.");
                 Console.Out.WriteLine(e);
                 return;
             }

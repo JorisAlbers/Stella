@@ -115,6 +115,7 @@ namespace StellaServerConsole
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
                     _apiServer.RgbFadeSet += (animationIndex, rgbFade) => _stellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
+                    _apiServer.BrightnessCorrectionSet += (animationIndex, brightnessCorrection) => _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
                     _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {

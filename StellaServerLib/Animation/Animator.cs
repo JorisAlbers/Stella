@@ -92,6 +92,21 @@ namespace StellaServerLib.Animation
             }
         }
 
+        public void SetBrightnessCorrection(int animationIndex, float brightnessCorrection)
+        {
+            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
+            {
+                throw new ArgumentException($"There is no animation at index {animationIndex}");
+            }
+
+            if (brightnessCorrection < -1 || brightnessCorrection > 1)
+            {
+                throw new ArgumentException("The brightness correction must be between -1 and 1");
+            }
+
+            _animationTransformations[animationIndex].BrightnessCorrection = brightnessCorrection;
+        }
+
         public float[] GetRgbFadeCorrection(int animationIndex)
         {
             if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)

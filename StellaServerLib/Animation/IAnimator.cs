@@ -31,8 +31,10 @@ namespace StellaServerLib.Animation
         float GetBrightnessCorrection(int animationIndex);
 
         /// <summary> Change the brightness of all leds by setting the brightness correction </summary>
-        /// <param name="brightnessCorrection"></param>
         void SetBrightnessCorrection(float brightnessCorrection);
+
+        /// <summary> Change the brightness of a certain animation by setting the brightness correction </summary>
+        void SetBrightnessCorrection(int animationIndex, float brightnessCorrection);
 
         /// <summary>
         /// Fade the color of all animations by setting the transformation factors.
