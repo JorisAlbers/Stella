@@ -39,6 +39,7 @@ namespace StellaServerAPI
         
         // Transform events
         public event Func<int, int> FrameWaitMsRequested; 
+        public event Action<int,int> FrameWaitMsSet; 
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
         {
@@ -132,6 +133,9 @@ namespace StellaServerAPI
                 case MessageType.GetFrameWaitMs:
                     ParseGetFrameWaitMs(e.Message);
                     break;
+                case MessageType.SetFrameWaitMs:
+                    ParseSetFrameWaitMs(e.Message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
@@ -153,7 +157,26 @@ namespace StellaServerAPI
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("Failed to parse GetFrameWaitMs message.");
+                Console.Out.WriteLine("APIServer: Failed to retrieve the FrameWaitMs.");
+                Console.Out.WriteLine(e);
+                return;
+            }
+        }
+
+        private void ParseSetFrameWaitMs(byte[] data)
+        {
+            try
+            {
+                int animationIndex = BitConverter.ToInt32(data,0);
+                int frameWaitMs    = BitConverter.ToInt32(data,4);
+                if (FrameWaitMsSet != null)
+                {
+                    FrameWaitMsSet.Invoke(animationIndex,frameWaitMs);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("APIServer: Failed to set the FrameWaitMs.");
                 Console.Out.WriteLine(e);
                 return;
             }

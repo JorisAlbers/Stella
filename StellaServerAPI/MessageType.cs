@@ -16,6 +16,8 @@ namespace StellaServerAPI
         /// <summary> Store a bitmap on StellaServer </summary>
         StoreBitmap,
         /// <summary> Get the frameWaitMs of a certain animation. </summary>
-        GetFrameWaitMs
+        GetFrameWaitMs,
+        /// <summary> Set the frameWaitMs of a certain animation. </summary>
+        SetFrameWaitMs
     }
 }
