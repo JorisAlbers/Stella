@@ -37,5 +37,11 @@ namespace StellaServerLib.Animation
         /// <param name="transformationFactors"></param>
         void SetRgbFadeCorrection(float[] transformationFactors);
 
+        /// <summary>
+        /// Get the RgbFadeCorrection of a certain animation
+        /// </summary>
+        /// <param name="animationIndex"></param>
+        float[] GetRgbFadeCorrection(int animationIndex);
+
     }
 }

@@ -112,6 +112,7 @@ namespace StellaServerConsole
                     _apiServer = new APIServer(apiIp, apiPort, storyboards);
                     _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
                     _apiServer.FrameWaitMsSet += (animationIndex, frameWaitMs) => _stellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
+                    _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
                     _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {
@@ -173,6 +174,11 @@ namespace StellaServerConsole
             }
 
             Console.Out.WriteLine("End of StellaServer.");
+        }
+
+        private static float[] ApiServerOnRgbFadeRequested(int animationIndex)
+        {
+            return _stellaServer.Animator.GetRgbFadeCorrection(animationIndex);
         }
 
         private static int ApiServerOnFrameWaitMsRequested(int animationIndex)
