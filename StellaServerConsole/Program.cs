@@ -113,6 +113,7 @@ namespace StellaServerConsole
                     _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
                     _apiServer.FrameWaitMsSet += (animationIndex, frameWaitMs) => _stellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
+                    _apiServer.RgbFadeSet += (animationIndex, rgbFade) => _stellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
                     _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {

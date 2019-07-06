@@ -42,6 +42,7 @@ namespace StellaServerAPI
         public event Action<int,int> FrameWaitMsSet;
 
         public event Func<int, float[]> RgbFadeRequested;
+        public event Action<int, float[]> RgbFadeSet;
 
         public APIServer(string ip, int port, List<Storyboard> storyboards)
         {
@@ -141,13 +142,14 @@ namespace StellaServerAPI
                 case MessageType.GetRgbFade:
                     ParseGetRgbFadeMessage(e.Message);
                     break;
+                case MessageType.SetRgbFade:
+                    ParseSetRgbFadeMessage(e.Message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
         }
-
-       
-
+        
         private void ParseGetFrameWaitMs(byte[] data)
         {
             try
@@ -208,6 +210,30 @@ namespace StellaServerAPI
             catch (Exception e)
             {
                 Console.Out.WriteLine("APIServer: Failed to retrieve the RgbFade.");
+                Console.Out.WriteLine(e);
+                return;
+            }
+        }
+
+        private void ParseSetRgbFadeMessage(byte[] data)
+        {
+            try
+            {
+                int animationIndex = BitConverter.ToInt32(data, 0);
+                float[] rgbFade = new float[]
+                {
+                    BitConverter.ToSingle(data,4),
+                    BitConverter.ToSingle(data,8),
+                    BitConverter.ToSingle(data,12)
+                };
+                if (RgbFadeSet != null)
+                {
+                    RgbFadeSet.Invoke(animationIndex, rgbFade);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("APIServer: Failed to set the RgbFade.");
                 Console.Out.WriteLine(e);
                 return;
             }

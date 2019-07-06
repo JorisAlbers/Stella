@@ -20,6 +20,8 @@ namespace StellaServerAPI
         /// <summary> Set the frameWaitMs of a certain animation. </summary>
         SetFrameWaitMs,
         /// <summary> Get the rgb fade of a certain animation </summary>
-        GetRgbFade
+        GetRgbFade,
+        /// <summary> Set the rgb fade of a certain animation </summary>
+        SetRgbFade
     }
 }
