@@ -10,7 +10,7 @@ namespace StellaServerAPI
         /// <summary> Get the names of the preloaded storyboard </summary>
         GetAvailableStoryboards,
         /// <summary> Start a storyboard </summary>
-        StartStoryboard,
+        StartPreloadedStoryboard,
         /// <summary> Store a bitmap on StellaServer </summary>
         StoreBitmap
     }

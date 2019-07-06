@@ -116,7 +116,7 @@ namespace StellaServerAPI
                         ((Client)sender).Send(MessageType.GetAvailableStoryboards, package);
                     }
                     break;
-                case MessageType.StartStoryboard:
+                case MessageType.StartPreloadedStoryboard:
                     ParseStartStoryboardMessage(e.Message);
                     break;
                 case MessageType.StoreBitmap:
