@@ -17,6 +17,8 @@ import 'brace/theme/monokai';
 // Import some languages so the user can choose some
 import 'brace/mode/javascript';
 import 'brace/mode/python';
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 class EditorPage extends React.Component {
   constructor(props) {
@@ -51,7 +53,8 @@ class EditorPage extends React.Component {
         machineName: 'image',
         enabled: true
       }],
-      imageFile: null
+      imageFile: null,
+      numberOfStripsPerRow: 2
     };
     this.code = {
       javascript: `// Javascript sample code \nreturn {a: "foo", b: {c:"bar", d:"brazzers"}};`,
@@ -151,6 +154,17 @@ class EditorPage extends React.Component {
         <Grid container direction={'row'}>
           {(currentMode === "image") &&
           <Grid xs={11} item>
+            <TextField
+              margin={'dense'}
+              variant="outlined"
+              type={'Number'}
+              min={1}
+              max={10}
+              label="Amount of ledstrips the holds each row."
+              defaultValue={this.state.numberOfStripsPerRow}
+              onChange={(e) => this.setState({numberOfStripsPerRow: e.target.value})}
+              InputProps={{endAdornment: <InputAdornment position="end">units</InputAdornment>}}
+            />
             <input
               accept="image/*"
               style={{display: 'none'}}
@@ -189,7 +203,7 @@ class EditorPage extends React.Component {
             </label>
             <Button color="inherit" align="left" disabled={!this.state.imageFile}
                     onClick={() => {
-                      this.props.socket.emit('sendSingleFrame', this.state.imageFile);
+                      this.props.socket.emit('sendSingleFrame', {numberOfStripsPerRow: this.state.numberOfStripsPerRow, imageFile: this.state.imageFile});
                     }}>Upload</Button>
             <canvas id={'canvas-class-name'} style={{width: '100%'}}/>
           </Grid>
@@ -200,6 +214,7 @@ class EditorPage extends React.Component {
               placeholder="Placeholder Text"
               mode={currentMode}
               theme="monokai"
+
               name="ace-code-editor-stella"
               onChange={(e) => this.code[currentMode] = e}
               fontSize={14}

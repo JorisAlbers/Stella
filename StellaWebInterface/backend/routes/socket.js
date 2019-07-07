@@ -23,15 +23,8 @@ const net = require("net");
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 const StringProtocol = require("../service/stringProtocol");
+const SimpleImageToAnimationHelper = require("../service/simpleImageToRowHelper");
 
-function getPx(imageData, x, y) {
-  return {
-    r: imageData.data[(y * imageData.width + x) * 4],
-    g: imageData.data[(y * imageData.width + x) * 4 + 1],
-    b: imageData.data[(y * imageData.width + x) * 4 + 2],
-    a: imageData.data[(y * imageData.width + x) * 4 + 3],
-  };
-}
 
 class Socket {
   constructor(server) {
@@ -158,8 +151,9 @@ class Socket {
       });
 
       socket.on('sendSingleFrame', (data) => {
-        const px = getPx(data, 0, 0);
-        console.log(px)
+        // todo: Send joris the animation
+        const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).getAnimation();
+        // fs.writeFileSync('./savedData/temp.json', JSON.stringify(animation));
       });
 
       socket.on('getStatus', () => {
