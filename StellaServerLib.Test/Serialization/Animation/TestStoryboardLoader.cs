@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using NUnit.Framework;
+using SharpYaml.Serialization;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
 
@@ -305,6 +306,58 @@ namespace StellaServerLib.Test.Serialization.Animation
             Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(2, storyboard.AnimationSettings.Length);
+        }
+
+        [Test]
+        public void Save_StoryBoardWithMultipleAnimations_SavesCorrectly()
+        {
+            string expectedName = "CoolName";
+            int expectedFadeSteps = 4;
+            int expectedFrameWaitMS = 30;
+
+
+            Storyboard storyboard = new Storyboard();
+            storyboard.Name = expectedName;
+            storyboard.AnimationSettings = new IAnimationSettings[]
+            {
+                new FadingPulseAnimationSettings
+                {
+                    StartIndex = 1,
+                    StripLength = 2,
+                    FrameWaitMs = 3,
+                    FadeSteps = 4,
+                    Color = Color.FromArgb(1,1,1)
+                },
+                new MovingPatternAnimationSettings
+                {
+                    StartIndex = 10,
+                    StripLength = 20,
+                    FrameWaitMs = 30,
+                    Pattern = new Color[]{
+                        Color.FromArgb(2,2,2)
+                    }
+                }
+            };
+
+            StoryboardSerializer serializer = new StoryboardSerializer();
+            MemoryStream memoryStream = new MemoryStream();
+            StreamWriter streamWriter = new StreamWriter(memoryStream);
+
+            serializer.Save(storyboard, streamWriter);
+            streamWriter.Flush();
+            string s = Encoding.UTF8.GetString(memoryStream.ToArray());
+
+            // Test by deserializing
+            SerializerSettings settings = new SerializerSettings();
+            settings.EmitDefaultValues = true;
+            settings.RegisterAssembly(typeof(Storyboard).Assembly);
+            Serializer yamlSerializer = new Serializer(settings);
+            Storyboard returnStoryboard = (Storyboard) yamlSerializer.Deserialize(s, typeof(Storyboard));
+
+            Assert.AreEqual(2, returnStoryboard.AnimationSettings.Length);
+            Assert.AreEqual(expectedName, returnStoryboard.Name);
+            Assert.AreEqual(expectedFadeSteps, ((FadingPulseAnimationSettings)returnStoryboard.AnimationSettings[0]).FadeSteps);
+            Assert.AreEqual(expectedFrameWaitMS, ((MovingPatternAnimationSettings)returnStoryboard.AnimationSettings[1]).FrameWaitMs);
         }
     }
 }
