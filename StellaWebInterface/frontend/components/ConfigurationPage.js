@@ -34,7 +34,7 @@ class ConfigurationPage extends React.Component {
       dataIsAlreadySet: false,
       data: {
         ledstrips: {amount: 10, items: []},
-        room: {y: 2, x: 2}
+        room: {y: 200, x: 200}
       },
       parentRoomDiv: null,
       rndRoomDiv: null
@@ -45,11 +45,11 @@ class ConfigurationPage extends React.Component {
         this.state.data.ledstrips.items.push({
           id: i,
           position: {
-            x: i  * 10,
+            x: i  * 20,
             y: 0,
             degree: 0
           },
-          size: {x: 10, y: 10}
+          size: {x: 100, y: 100}
         })
       }
     }
@@ -86,11 +86,11 @@ class ConfigurationPage extends React.Component {
           data.ledstrips.items.push({
             id: i,
             position: {
-              x: i * (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 0.1,
+              x: i  * 20,
               y: 0,
               degree: 0,
             },
-            size: {x: 10, y: 10}
+            size: {x: 100, y: 100}
           })
         }
       }
@@ -107,8 +107,8 @@ class ConfigurationPage extends React.Component {
       this.setState({parentRoomDiv: this.parentRoom});
       let data = {...this.state.data};
       for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
-        data.ledstrips.items[i].size.x = (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 0.1;
-        data.ledstrips.items[i].size.y = (this.parentRoom.childNodes[0].clientHeight) / this.state.data.room.y * 2
+        data.ledstrips.items[i].size.x = (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 10;
+        data.ledstrips.items[i].size.y = (this.parentRoom.childNodes[0].clientHeight) / this.state.data.room.y * 200
       }
       this.setState(data);
     }
@@ -119,8 +119,8 @@ class ConfigurationPage extends React.Component {
       prevState.data.ledstrips.amount !== this.state.data.ledstrips.amount) {
       let data = {...this.state.data};
       for (let i = 0; i < this.state.data.ledstrips.amount; i++) {
-        data.ledstrips.items[i].size.x = (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 0.1;
-        data.ledstrips.items[i].size.y = (this.parentRoom.childNodes[0].clientHeight) / this.state.data.room.y * 2
+        data.ledstrips.items[i].size.x = (this.parentRoom.childNodes[0].clientWidth) / this.state.data.room.x * 10;
+        data.ledstrips.items[i].size.y = (this.parentRoom.childNodes[0].clientHeight) / this.state.data.room.y * 200;
       }
       this.setState(data);
     }
@@ -259,7 +259,7 @@ class ConfigurationPage extends React.Component {
                     }
                   });
                 }}
-                InputProps={{endAdornment: <InputAdornment position="end">meter</InputAdornment>}}
+                InputProps={{endAdornment: <InputAdornment position="end">centimeter</InputAdornment>}}
               />
               <TextField
                 margin={'dense'}
@@ -278,7 +278,7 @@ class ConfigurationPage extends React.Component {
                     }
                   });
                 }}
-                InputProps={{endAdornment: <InputAdornment position="end">meter</InputAdornment>,}}
+                InputProps={{endAdornment: <InputAdornment position="end">centimeter</InputAdornment>,}}
               />
               <Divider variant="middle"/>
               <Button variant={'outlined'} color="inherit" align="left" onClick={() => {

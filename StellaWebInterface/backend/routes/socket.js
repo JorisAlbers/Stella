@@ -1,20 +1,34 @@
 /**
- *
  * Server listeners
  *  Incoming messages:
- *    * name = getAvailableStoryboards  = 1,  datatype = string (separated by ';')
+ *    * name = getAvailableStoryboards  = 1,  datatype = string ( All preloaded storyboards names separated by ';')
+ *    * name = getFrameWaitMs           = 5,  datatype = byte[] ( [int1,int2]                  int1 = animationIndex, int2 = frameWaitMs) frameWaitMs min value = 5
+ *    * name = getRgbFade               = 7,  datatype = byte[] ( [int,float1,float2,float3]   int  = animationIndex, float1 = r fade correction, float2 = g fade correction, float3 = b fade correction.) fade correction in the range of -1 to 0)
+ *    * name = getBrightnessCorrection  = 10, datatype = byte[] ( [int, float]                 int  = animationIndex, float = brightness correction.brigthness Correction in the range of -1 to 1
  *
  *  Outgoing message:
  *    * name = getAvailableStoryboards  = 1
- *    * name = startStoryboard          = 2,  datatype = string (name of the storyboard)
- *    * name = startAnimation           = 3,  datatype = string (name of the animation)
- *    * name = startTempStoryboard      = 4,  datatype = string (jsonnated data see: './StellaServerConsole/Resources/Storyboards/StoryboardExample.yaml')
+ *    * name = startPreloadedStoryboard = 2,  datatype = string (name of the storyboard)
+ *    * name = startStoryboard          = 3,  datatype = string (yaml, storyboard settings)
+ *    * name = storeBitmap              = 4,  datatype = byte[] ( [int1, int2, int3, ascii name, flattened rgb array] int1 = name length, int2 = width, int3 = height , ascii name = has length of int1, rgb array = byte for each channel (flattened, so [r,g,b,r,g,b,r,g,b]). The name has to fit in the first package!)
+ *    * name = getFrameWaitMs           = 5,  datatype = byte[] ( [int]                                               int  = animationIndex)
+ *    * name = setFrameWaitMs           = 6,  datatype = byte[] ( [int1, int2]                                        int1 = animationIndex, int2 = frameWaitMs)
+ *    * name = getRgbFade               = 7,  datatype = byte[] ( [int]                                               int  = animationIndex)
+ *    * name = setRgbFade               = 8,  datatype = byte[] ( [int,float1,float2,float3]                          int  = animationIndex, float1 = r fade correction, float2 = g fade correction, float3 = b fade correction.)
+ *    * name = getBrightnessCorrection  = 9,  datatype = byte[] ( [int]                                               int  = animationIndex
+ *    * name = setBrightnessCorrection  = 10, datatype = byte[] ( [int, float])                                       int  = animationIndex, float = brigthnessCorrection
  *
  *  Client listeners
- *    Incoming messages
+ *    Incoming messages:
+ *    * name = getSavedLedMapping          - Client asks for available save file of led mapping
+ *    * name = setSavedLedMapping          - Client set for available save file of led mapping
+ *    * name = sendSingleFrame             - Client sends a single frame that needs horizontal scanning
+ *    * name = getStatus                   - Client asks for the status data
  *
  *    Outgoing messages
- *
+ *    * name = returnSavedLedMapping       - Return available save file of led mapping
+ *    * name = returnAvailableStoryboards  - Return available storyboards
+ *    * name = returnStatus                - Return available status data
  */
 
 const fs = require("fs");
@@ -23,15 +37,9 @@ const net = require("net");
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 const StringProtocol = require("../service/stringProtocol");
+const yamlToString = require("../service/yamlConverter");
+const SimpleImageToAnimationHelper = require("../service/simpleImageToRowHelper");
 
-function getPx(imageData, x, y) {
-  return {
-    r: imageData.data[(y * imageData.width + x) * 4],
-    g: imageData.data[(y * imageData.width + x) * 4 + 1],
-    b: imageData.data[(y * imageData.width + x) * 4 + 2],
-    a: imageData.data[(y * imageData.width + x) * 4 + 3],
-  };
-}
 
 class Socket {
   constructor(server) {
@@ -57,9 +65,10 @@ class Socket {
           return null;
         case 1:
           this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
-
-          // Todo: Send result back to all clients listening to event 'returnAvailableStoryboards'
           if (this.stringProtocol.message !== null) {
+          // Todo: Send result back to all clients listening to event 'returnAvailableStoryboards'
+            this.clientSocket.emit('returnAvailableStoryboards', this.stringProtocol.message);
+            console.log(this.stringProtocol.message);
             this.stringProtocol = new StringProtocol();
           }
           console.log('messageType received GetAvailableStoryboards');
@@ -83,7 +92,8 @@ class Socket {
         backendConnectedToServer: this.serverSocket.connected,
         connectedClients: this.clientSocket.connectedClients.length,
       });
-      console.log("Server connection close - hadError: ", hadError);
+      console.log("Server connection close - hadError: ...");
+      // console.log("Server connection close - hadError: ", hadError);
       setTimeout(() => {
         console.log("Server connection reconnecting");
         this.serverSocket.connect({host: config.stellaServerConsole.ip, port: config.stellaServerConsole.port})
@@ -143,7 +153,7 @@ class Socket {
 
       socket.on('getSavedLedMapping', () => {
         if (fs.existsSync('./savedData/savedLedMapping.json')) {
-          const savedLedMapping = fs.readFileSync('./savedData/savedLedMapping.json');
+          const savedLedMapping = fs.readFileSync('./savedData/savedLedMapping.json', 'utf8');
           socket.emit('returnSavedLedMapping', JSON.parse(savedLedMapping))
         }
       });
@@ -153,13 +163,18 @@ class Socket {
       });
 
       socket.on('getAvailableStoryboards', () => {
-        this.getAvailableStoryboards();
-        socket.emit('returnAvailableStoryboards', {})
+        const yamlFile = fs.readFileSync('./../../StellaServerConsole/Resources/Storyboards/AllAnimations.yaml', 'utf8');
+        const yamlObject = yamlToString(yamlFile);
+        fs.writeFileSync('./savedData/temp.json', JSON.stringify(yamlObject));
+
+        // this.getAvailableStoryboards();
+        // socket.emit('returnAvailableStoryboards', {})
       });
 
       socket.on('sendSingleFrame', (data) => {
-        const px = getPx(data, 0, 0);
-        console.log(px)
+        // todo: Send joris the animation
+        const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).getAnimation();
+        fs.writeFileSync('./savedData/temp.json', JSON.stringify(animation));
       });
 
       socket.on('getStatus', () => {
