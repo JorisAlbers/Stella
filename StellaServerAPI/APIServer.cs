@@ -123,11 +123,7 @@ namespace StellaServerAPI
                 case MessageType.None:
                     break;
                 case MessageType.GetAvailableStoryboards:
-                    byte[][] data = StringProtocol.Serialize(String.Join(';',_storyboards.Select(x=>x.Name)), 1024);
-                    foreach (var package in data)
-                    {
-                        ((Client)sender).Send(MessageType.GetAvailableStoryboards, package);
-                    }
+                    ParseGetAvailableStoryboards();
                     break;
                 case MessageType.StartPreloadedStoryboard:
                     ParseStartPreloadedStoryboardMessage(e.Message);
@@ -160,7 +156,35 @@ namespace StellaServerAPI
                     throw new ArgumentOutOfRangeException($"Unknown message type {e}");
             }
         }
-        
+
+        private void ParseGetAvailableStoryboards()
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            StreamWriter streamWriter = new StreamWriter(memoryStream);
+            StoryboardSerializer serializer = new StoryboardSerializer();
+
+            // Convert to array to prevent race condition crash
+            Storyboard[] storyboards = _storyboards.ToArray();
+            for (int i = 0; i < storyboards.Length; i++)
+            {
+                // Add separator
+                if (i != 0)
+                {
+                    streamWriter.Write("\n");
+                }
+                // Serialize 
+                serializer.Save(storyboards[i], streamWriter);
+            }
+
+            // send
+            streamWriter.Flush();
+            byte[][] bytes = StringProtocol.Serialize(Encoding.ASCII.GetString(memoryStream.GetBuffer()), BUFFER_SIZE); // TODO Inefficient. Right now we are converting from string to byte to string to byte....
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                Send(MessageType.GetAvailableStoryboards, bytes[i]);
+            }
+        }
+
         private void ParseGetFrameWaitMs(byte[] data)
         {
             try
