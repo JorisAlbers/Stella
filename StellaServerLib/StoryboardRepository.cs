@@ -27,12 +27,12 @@ namespace StellaServerLib
             string path = Path.Combine(_directoryPath, $"{name}.yaml");
             if (File.Exists(path))
             {
-                StoryboardLoader storyboardLoader = new StoryboardLoader();
+                StoryboardSerializer storyboardSerializer = new StoryboardSerializer();
                 try
                 {
                     using (StreamReader reader = new StreamReader(path))
                     {
-                        storyboard = storyboardLoader.Load(reader);
+                        storyboard = storyboardSerializer.Load(reader);
                         return true;
                     }
                 }
@@ -51,7 +51,7 @@ namespace StellaServerLib
         public List<Storyboard> LoadStoryboards()
         {
             IEnumerable<FileInfo> files = new DirectoryInfo(_directoryPath).GetFiles().Where(x => x.Extension == ".yaml");
-            StoryboardLoader storyboardLoader = new StoryboardLoader();
+            StoryboardSerializer storyboardSerializer = new StoryboardSerializer();
             List<Storyboard> storyboards = new List<Storyboard>();
             foreach (FileInfo fileInfo in files)
             {
@@ -59,7 +59,7 @@ namespace StellaServerLib
                 {
                     using (StreamReader reader = new StreamReader(fileInfo.OpenRead()))
                     {
-                        storyboards.Add(storyboardLoader.Load(reader));
+                        storyboards.Add(storyboardSerializer.Load(reader));
                     }
                 }
                 catch (Exception e)

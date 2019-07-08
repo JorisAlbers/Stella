@@ -38,11 +38,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.Append    ($"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
             stringBuilder.AppendLine($"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(1, storyboard.AnimationSettings.Length);
             MovingPatternAnimationSettings settings = (MovingPatternAnimationSettings) storyboard.AnimationSettings[0];
@@ -81,11 +81,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.Append    ($"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
             stringBuilder.AppendLine($"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(1, storyboard.AnimationSettings.Length);
             SlidingPatternAnimationSettings settings = (SlidingPatternAnimationSettings)storyboard.AnimationSettings[0];
@@ -136,11 +136,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.Append(         $"[{expectedPatterns[1][1].R},{expectedPatterns[1][1].G},{expectedPatterns[1][1].B}]]]");
 
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(1, storyboard.AnimationSettings.Length);
             RepeatingPatternAnimationSettings settings = (RepeatingPatternAnimationSettings)storyboard.AnimationSettings[0];
@@ -181,11 +181,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.Append(    $"    Pattern: [[{expectedPattern[0].R},{expectedPattern[0].G},{expectedPattern[0].B}],");
             stringBuilder.AppendLine(    $"[{expectedPattern[1].R},{expectedPattern[1].G},{expectedPattern[1].B}]]");
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(1, storyboard.AnimationSettings.Length);
             RandomFadeAnimationSettings settings = (RandomFadeAnimationSettings)storyboard.AnimationSettings[0];
@@ -222,11 +222,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    FadeSteps:  {expectedFadeSteps}");
             stringBuilder.AppendLine($"    Color:  [{expectedColor.R},{expectedColor.G},{expectedColor.B}]");
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(1, storyboard.AnimationSettings.Length);
             FadingPulseAnimationSettings settings = (FadingPulseAnimationSettings)storyboard.AnimationSettings[0];
@@ -262,11 +262,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    ImageName:  {expectedImageName}");
             stringBuilder.AppendLine($"    Wraps:  {expectedWraps}");
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(1, storyboard.AnimationSettings.Length);
             BitmapAnimationSettings settings = (BitmapAnimationSettings)storyboard.AnimationSettings[0];
@@ -298,11 +298,11 @@ namespace StellaServerLib.Test.Serialization.Animation
             stringBuilder.AppendLine($"    FrameWaitMs:  2");
             stringBuilder.AppendLine($"    Pattern: [[2,2,2]]");
 
-            StoryboardLoader loader = new StoryboardLoader();
+            StoryboardSerializer serializer = new StoryboardSerializer();
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            Storyboard storyboard = loader.Load(mockStream);
+            Storyboard storyboard = serializer.Load(mockStream);
 
             Assert.AreEqual(2, storyboard.AnimationSettings.Length);
         }

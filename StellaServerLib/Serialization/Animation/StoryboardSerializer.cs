@@ -11,7 +11,7 @@ namespace StellaServerLib.Serialization.Animation
     /// <summary>
     /// Loads a storyboard
     /// </summary>
-    public class StoryboardLoader : ILoader<Storyboard>
+    public class StoryboardSerializer : ILoader<Storyboard>
     {
         public Storyboard Load(StreamReader streamReader)
         {

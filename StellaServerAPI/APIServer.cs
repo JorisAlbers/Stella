@@ -297,12 +297,12 @@ namespace StellaServerAPI
                 // Reset StringProtocol
                 _stringProtocol = new StringProtocol();
 
-                StoryboardLoader storyboardLoader = new StoryboardLoader();
+                StoryboardSerializer storyboardSerializer = new StoryboardSerializer();
                 Storyboard storyboard = null;
                 try
                 {
                     storyboard =
-                        storyboardLoader.Load(
+                        storyboardSerializer.Load(
                             new StreamReader(
                                 new MemoryStream(
                                     Encoding.ASCII.GetBytes(
