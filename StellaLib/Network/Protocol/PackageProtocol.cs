@@ -15,7 +15,7 @@ namespace StellaLib.Network.Protocol
     /// </remarks>
     public class PacketProtocol<TMessageType> where TMessageType : System.Enum
     {
-        private const int HEADER_SIZE = sizeof(int) + sizeof(int); //  - length , - messageType
+        public const int HEADER_SIZE = sizeof(int) + sizeof(int); //  - length , - messageType
 
         /// <summary>
         /// Wraps a message. The wrapped message is ready to send to a stream.
