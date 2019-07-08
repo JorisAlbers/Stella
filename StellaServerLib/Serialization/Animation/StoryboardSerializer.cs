@@ -19,6 +19,7 @@ namespace StellaServerLib.Serialization.Animation
         public StoryboardSerializer()
         {
             _settings = new SerializerSettings();
+            _settings.EmitDefaultValues = true;
             _settings.RegisterAssembly(typeof(Storyboard).Assembly);
             _serializer = new Serializer(_settings);
         }
@@ -49,7 +50,7 @@ namespace StellaServerLib.Serialization.Animation
         /// <param name="writer"></param>
         public void Save(Storyboard storyboard, StreamWriter writer)
         {
-            _serializer.Serialize(writer, storyboard);
+            _serializer.Serialize(writer, storyboard, typeof(Storyboard));
         }
         
         private bool AnimationsAreValid(IAnimationSettings[] storyboardAnimationSettings, out List<string> errors)
