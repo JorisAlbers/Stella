@@ -13,12 +13,19 @@ namespace StellaServerLib.Serialization.Animation
     /// </summary>
     public class StoryboardSerializer : ILoader<Storyboard>
     {
+        private readonly SerializerSettings _settings;
+        private readonly Serializer _serializer;
+
+        public StoryboardSerializer()
+        {
+            _settings = new SerializerSettings();
+            _settings.RegisterAssembly(typeof(Storyboard).Assembly);
+            _serializer = new Serializer(_settings);
+        }
+
         public Storyboard Load(StreamReader streamReader)
         {
-            var settings = new SerializerSettings();
-            settings.RegisterAssembly(typeof(Storyboard).Assembly);
-            var serializer = new Serializer(settings);
-            Storyboard storyboard = serializer.Deserialize<Storyboard>(streamReader);
+            Storyboard storyboard = _serializer.Deserialize<Storyboard>(streamReader);
 
             // Validate storyboard properties
             if (String.IsNullOrWhiteSpace(storyboard.Name))
@@ -35,6 +42,16 @@ namespace StellaServerLib.Serialization.Animation
             return storyboard;
         }
 
+        /// <summary>
+        /// Writes the storyboard as yaml to the writer
+        /// </summary>
+        /// <param name="storyboard"></param>
+        /// <param name="writer"></param>
+        public void Save(Storyboard storyboard, StreamWriter writer)
+        {
+            _serializer.Serialize(writer, storyboard);
+        }
+        
         private bool AnimationsAreValid(IAnimationSettings[] storyboardAnimationSettings, out List<string> errors)
         {
             errors = new List<string>();
