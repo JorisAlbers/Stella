@@ -163,7 +163,7 @@ class Socket {
       });
 
       socket.on('getAvailableStoryboards', () => {
-        const yamlFile = fs.readFileSync('./../../StellaServerConsole/Resources/Storyboards/SmallTest.yaml', 'utf8');
+        const yamlFile = fs.readFileSync('./../../StellaServerConsole/Resources/Storyboards/AllAnimations.yaml', 'utf8');
         const yamlObject = yamlToString(yamlFile);
         fs.writeFileSync('./savedData/temp.json', JSON.stringify(yamlObject));
 
