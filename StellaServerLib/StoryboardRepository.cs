@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
@@ -21,28 +22,54 @@ namespace StellaServerLib
             _directoryPath = directoryPath;
         }
 
-        public Storyboard Load(string name)
+        public bool TryGetStoryboard(string name, out Storyboard storyboard)
         {
-            StoryboardLoader loader = new StoryboardLoader();
-            return loader.Load(OpenStream(name));
-        }
-
-        private StreamReader OpenStream(string name)
-        {
-            string fullName = GetFullName(name);
-            string path = Path.Combine(_directoryPath, fullName);
-
-            if (!File.Exists(path))
+            string path = Path.Combine(_directoryPath, $"{name}.yaml");
+            if (File.Exists(path))
             {
-                throw new Exception($"There is no storyboard present at path {fullName}");
+                StoryboardLoader storyboardLoader = new StoryboardLoader();
+                try
+                {
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        storyboard = storyboardLoader.Load(reader);
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.Out.WriteLine($"Failed to load storyboard {name}");
+                    Console.Out.WriteLine(e.Message);
+                }
             }
 
-            return new StreamReader(name);
+            storyboard = null;
+            return false;
         }
 
-        private string GetFullName(string name)
+
+        public List<Storyboard> LoadStoryboards()
         {
-            return $"{name}.yaml";
+            IEnumerable<FileInfo> files = new DirectoryInfo(_directoryPath).GetFiles().Where(x => x.Extension == ".yaml");
+            StoryboardLoader storyboardLoader = new StoryboardLoader();
+            List<Storyboard> storyboards = new List<Storyboard>();
+            foreach (FileInfo fileInfo in files)
+            {
+                try
+                {
+                    using (StreamReader reader = new StreamReader(fileInfo.OpenRead()))
+                    {
+                        storyboards.Add(storyboardLoader.Load(reader));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.Out.WriteLine($"Failed to load storyboard {fileInfo.Name}");
+                    Console.Out.WriteLine(e.Message);
+                }
+            }
+
+            return storyboards;
         }
 
     }

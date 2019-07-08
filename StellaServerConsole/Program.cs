@@ -74,8 +74,12 @@ namespace StellaServerConsole
                 return;
             }
 
+            // Start Repositories
+            StoryboardRepository storyboardRepository = new StoryboardRepository(storyboardDirPath);
+            _bitmapRepository = new BitmapRepository(bitmapDirectory);
+
             // Load animations from disc
-            List<Storyboard> storyboards = LoadAnimations(storyboardDirPath);
+            List<Storyboard> storyboards = storyboardRepository.LoadStoryboards();
             if (storyboards.Count < 1)
             {
                 Console.Out.WriteLine("No storyboards found!");
@@ -86,9 +90,6 @@ namespace StellaServerConsole
             AddBitmapAnimations(storyboards, bitmapDirectory);
 
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
-            
-            // Start bitmapRepository
-            _bitmapRepository = new BitmapRepository(bitmapDirectory);
 
             // Start stellaServer
             _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new AnimatorCreation(_bitmapRepository));
@@ -429,30 +430,6 @@ namespace StellaServerConsole
                 Console.Out.WriteLine(e.InnerException.Message);
                 Console.Out.WriteLine(e.InnerException.StackTrace);
             }
-        }
-
-        private static List<Storyboard> LoadAnimations(string storyboardDirPath)
-        {
-            IEnumerable<FileInfo> files = new DirectoryInfo(storyboardDirPath).GetFiles().Where(x=>x.Extension == ".yaml");
-            StoryboardLoader storyboardLoader = new StoryboardLoader();
-            List<Storyboard> storyboards = new List<Storyboard>();
-            foreach (FileInfo fileInfo in files)
-            {
-                try
-                {
-                    using (StreamReader reader = new StreamReader(fileInfo.OpenRead()))
-                    {
-                        storyboards.Add(storyboardLoader.Load(reader));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.Out.WriteLine($"Failed to load storyboard {fileInfo.Name}");
-                    Console.Out.WriteLine(e.Message);
-                }
-            }
-
-            return storyboards;
         }
     }
 }
