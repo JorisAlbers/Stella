@@ -112,11 +112,11 @@ namespace StellaServerConsole
                 {
                     _apiServer = new APIServer(apiIp, apiPort, storyboards);
                     _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
-                    _apiServer.FrameWaitMsSet += (animationIndex, frameWaitMs) => _stellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
+                    _apiServer.FrameWaitMsSet += ApiServerOnFrameWaitMsSet;
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
-                    _apiServer.RgbFadeSet += (animationIndex, rgbFade) => _stellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
+                    _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
-                    _apiServer.BrightnessCorrectionSet += (animationIndex, brightnessCorrection) => _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+                    _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
                     _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {
@@ -178,6 +178,42 @@ namespace StellaServerConsole
             }
 
             Console.Out.WriteLine("End of StellaServer.");
+        }
+
+        private static void ApiServerOnBrightnessCorrectionSet(int animationIndex, float brightnessCorrection)
+        {
+            if (animationIndex == 1)
+            {
+                // Set for all
+                _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+                return;
+            }
+
+            _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+        }
+
+        private static void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
+        {
+            if (animationIndex == 1)
+            {
+                // Set for all
+                _stellaServer.Animator.SetRgbFadeCorrection(rgbFade);
+                return;
+            }
+
+            _stellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
+        }
+
+        private static void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
+        {
+            if (animationIndex == 1)
+            {
+                // Set for all
+                _stellaServer.Animator.SetFrameWaitMs(frameWaitMs);
+                return;
+            }
+
+            _stellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
         }
 
         private static float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
