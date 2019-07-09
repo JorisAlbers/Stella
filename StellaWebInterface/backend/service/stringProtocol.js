@@ -45,7 +45,8 @@ class StringProtocol {
       this._numberOfPackages = data.readUInt32LE();
     }
 
-    this._stringBuilder += data.toString('ascii');
+    this._stringBuilder += data.slice(4).toString();
+
     this._packagesReceived++;
 
     if (this._packagesReceived === this._numberOfPackages) {
