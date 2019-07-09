@@ -178,9 +178,11 @@ namespace StellaServerAPI
 
             // send
             streamWriter.Flush();
+            memoryStream.Flush();
             // TODO Inefficient. Right now we are converting from string to byte to string to byte....
             // TODO Encapsulate header size stuff
-            byte[][] bytes = StringProtocol.Serialize(Encoding.ASCII.GetString(memoryStream.GetBuffer()), BUFFER_SIZE - PacketProtocol<MessageType>.HEADER_SIZE);
+            string message = Encoding.ASCII.GetString(memoryStream.ToArray());
+            byte[][] bytes = StringProtocol.Serialize(message, BUFFER_SIZE - PacketProtocol<MessageType>.HEADER_SIZE);
             for (int i = 0; i < bytes.Length; i++)
             {
                 Send(MessageType.GetAvailableStoryboards, bytes[i]);
