@@ -24,7 +24,7 @@ namespace StellaServerAPI.Protocol
             
             byte[][] returnData = new byte[packagesNeeded][];
             // Create first package
-            returnData[0] = CreatePackage(data, 0, maxPackageSize, packagesNeeded);
+            returnData[0] = CreatePackage(data, 0, bytesAvailablePerPackage, packagesNeeded);
             for (int i = 1; i < packagesNeeded; i++)
             {
                 returnData[i] = CreatePackage(data, i * bytesAvailablePerPackage, maxPackageSize, i);
@@ -35,9 +35,10 @@ namespace StellaServerAPI.Protocol
         /// <summary>
         ///  Create a subsequent package with a normal package header
         /// </summary>
-        private static byte[] CreatePackage(byte[] data, int startIndex, int maxPackageSize, int headerCounter)
+        private static byte[] CreatePackage(byte[] data, int startIndex, int maxBodySize, int headerCounter)
         {
-            byte[] buffer = new byte[Math.Min(data.Length - startIndex + PACKAGE_HEADER_BYTES, maxPackageSize + PACKAGE_HEADER_BYTES)];
+            int packageSize = Math.Min(maxBodySize + PACKAGE_HEADER_BYTES, data.Length - startIndex + PACKAGE_HEADER_BYTES);
+            byte[] buffer = new byte[packageSize];
             BitConverter.GetBytes(headerCounter).CopyTo(buffer, 0);
             Array.Copy(data,startIndex,buffer,4,buffer.Length - 4);
             return buffer;

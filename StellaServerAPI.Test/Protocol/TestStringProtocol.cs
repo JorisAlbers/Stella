@@ -50,7 +50,7 @@ namespace StellaServerAPI.Test.Protocol
             Assert.AreEqual(expectedNumberOfPackages, BitConverter.ToInt32(package, 0));
 
             byte[] messageBuffer = new byte[expectedStringData1.Length];
-            Array.Copy(package, 4, messageBuffer, 0, expectedStringData1.Length);
+            Array.Copy(package, 4, messageBuffer, 0, package.Length - 4);
             Assert.AreEqual(expectedStringData1, messageBuffer);
 
             // Second package
@@ -58,8 +58,14 @@ namespace StellaServerAPI.Test.Protocol
             Assert.AreEqual(expectedPackageIndex, BitConverter.ToInt32(package, 0));
 
             messageBuffer = new byte[expectedStringData2.Length];
-            Array.Copy(package, 4, messageBuffer, 0, expectedStringData2.Length);
+            Array.Copy(package, 4, messageBuffer, 0, package.Length - 4);
             Assert.AreEqual(expectedStringData2, messageBuffer);
+
+            // Check the full message
+            messageBuffer = new byte[expectedStringData1.Length + expectedStringData2.Length];
+            Array.Copy(packages[0], 4, messageBuffer, 0, packages[0].Length - 4);
+            Array.Copy(packages[1], 4, messageBuffer, packages[0].Length - 4, packages[1].Length -4);
+            Assert.AreEqual(message, Encoding.ASCII.GetString(messageBuffer));
         }
 
         [Test]
