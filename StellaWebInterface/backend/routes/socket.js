@@ -66,9 +66,10 @@ class Socket {
         case 1:
           this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
           if (this.stringProtocol.message !== null) {
-          // Todo: Send result back to all clients listening to event 'returnAvailableStoryboards'
-            this.clientSocket.emit('returnAvailableStoryboards', this.stringProtocol.message);
-            console.log(this.stringProtocol.message);
+            fs.writeFileSync('./savedData/temp1.yaml', this.stringProtocol.message, {encoding: 'ascii'});
+            const yamlObject = yamlToString(this.stringProtocol.message);
+            fs.writeFileSync('./savedData/temp2.json', JSON.stringify(yamlObject));
+            this.clientSocket.emit('returnAvailableStoryboards', yamlObject);
             this.stringProtocol = new StringProtocol();
           }
           console.log('messageType received GetAvailableStoryboards');
@@ -163,11 +164,11 @@ class Socket {
       });
 
       socket.on('getAvailableStoryboards', () => {
-        const yamlFile = fs.readFileSync('./../../StellaServerConsole/Resources/Storyboards/AllAnimations.yaml', 'utf8');
-        const yamlObject = yamlToString(yamlFile);
-        fs.writeFileSync('./savedData/temp.json', JSON.stringify(yamlObject));
+        // const yamlFile = fs.readFileSync('./../../StellaServerConsole/Resources/Storyboards/AllAnimations.yaml', 'utf8');
+        // const yamlObject = yamlToString(yamlFile);
+        // fs.writeFileSync('./savedData/temp.json', JSON.stringify(yamlObject));
 
-        // this.getAvailableStoryboards();
+        this.getAvailableStoryboards();
         // socket.emit('returnAvailableStoryboards', {})
       });
 
