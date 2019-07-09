@@ -163,19 +163,8 @@ namespace StellaServerAPI
             StreamWriter streamWriter = new StreamWriter(memoryStream);
             StoryboardSerializer serializer = new StoryboardSerializer();
 
-            // Convert to array to prevent race condition crash
-            Storyboard[] storyboards = _storyboards.ToArray();
-            for (int i = 0; i < storyboards.Length; i++)
-            {
-                // Add separator
-                if (i != 0)
-                {
-                    streamWriter.Write("\n");
-                }
-                // Serialize 
-                serializer.Save(storyboards[i], streamWriter);
-            }
-
+            serializer.Save(_storyboards.ToArray(), streamWriter);
+           
             // send
             streamWriter.Flush();
             memoryStream.Flush();

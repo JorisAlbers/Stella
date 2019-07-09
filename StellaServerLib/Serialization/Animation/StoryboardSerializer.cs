@@ -21,6 +21,7 @@ namespace StellaServerLib.Serialization.Animation
             _settings = new SerializerSettings();
             _settings.EmitDefaultValues = true;
             _settings.RegisterAssembly(typeof(Storyboard).Assembly);
+            _settings.RegisterTagMapping("Storyboards", typeof(Storyboard[]));
             _serializer = new Serializer(_settings);
         }
 
@@ -52,7 +53,19 @@ namespace StellaServerLib.Serialization.Animation
         {
             _serializer.Serialize(writer, storyboard, typeof(Storyboard));
         }
-        
+
+        /// <summary>
+        /// Writes the list of storyboards as yaml to the writer
+        /// </summary>
+        /// <param name="storyboard"></param>
+        /// <param name="writer"></param>
+        public void Save(Storyboard[] storyboard, StreamWriter writer)
+        {
+            _serializer.Serialize(writer, storyboard, typeof(Storyboard));
+        }
+
+
+
         private bool AnimationsAreValid(IAnimationSettings[] storyboardAnimationSettings, out List<string> errors)
         {
             errors = new List<string>();
