@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing.Fade
@@ -75,6 +76,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                 // All fade points at this index have the same fade step count.
                 int fadeStep = fadePoints[0].Step;
                 Color[] pattern = _fadePatterns[_fadeSteps - 1 - fadeStep];
+                Color[] adjustedColor = pattern.Select(x=>_animationTransformation.AdjustColor(x)).ToArray();
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
@@ -86,7 +88,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                             continue;
                         }
 
-                        frame.Add(new PixelInstruction(_startIndex + pixelIndex, pattern[i]));
+                        frame.Add(new PixelInstruction(_startIndex + pixelIndex, adjustedColor[i]));
                     }
                     fadePoint.Step++;
                 }
