@@ -69,7 +69,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
-                    for (int j = fadePoint.Point - fadeStep; j < fadePoint.Point + fadeStep; j++)
+                    for (int j = fadePoint.Point - fadeStep; j < fadePoint.Point + fadeStep + 1; j++)
                     {
                         if (j < 0 || j > _stripLength - 1)
                         {
