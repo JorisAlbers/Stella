@@ -13,6 +13,8 @@ namespace StellaServerLib.Animation.Drawing.Fade
         private readonly AnimationTransformation _animationTransformation;
         private readonly int _fadeSteps;
         private readonly Color[] _fadeColors; 
+
+        private const int MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME = 1;
         
 
         public FadingPulseDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color color, int fadeSteps)
@@ -39,7 +41,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             while (true)
             {
                 // Create new FadePoints
-                int fadePointsToAdd = random.Next(0, 5);
+                int fadePointsToAdd = random.Next(MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME, 5);
                 if (fadePointsToAdd > 0)
                 {
                     fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
