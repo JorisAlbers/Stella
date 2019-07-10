@@ -3,6 +3,8 @@ import Grid from '@material-ui/core/Grid/index';
 import Slider from "@material-ui/core/Slider";
 import {socketConnect} from 'socket.io-react';
 import Typography from "@material-ui/core/Typography";
+import PlayIcon from "@material-ui/icons/PlayArrow";
+import Stop from "@material-ui/icons/Stop";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -10,30 +12,15 @@ class HomePage extends React.Component {
     this.props = props;
     this.state = {
       status: null,
-      storyboards: []
+      storyboards: [],
+      currentSelectedStoryboard: null,
+      currentPlayingStoryboard: null
     };
 
     this.props.socket.on('returnStatus', (status) => this.setState({status}));
-    this.props.socket.on('returnAvailableStoryboards', (stringedStoryboards) => {
-      console.log(stringedStoryboards);
-
-      /*
-      if (typeof stringedStoryboards === 'string') {
-        const storyboards = stringedStoryboards.split(';');
-        const result = [];
-        for (let i = 0; i < storyboards.length; i++) {
-          result.push({
-            id: i,
-            name: storyboards[i],
-            speed: 10,
-            brightness: 0,
-            r: 0,
-            g: 0,
-            b: 0,
-          })
-        }
-        return this.setState({storyboards: result});
-      }*/
+    this.props.socket.on('returnAvailableStoryboards', (data) => {
+      console.log(data);
+      this.setState({storyboards: data.storyboards})
     });
   }
 
@@ -43,14 +30,43 @@ class HomePage extends React.Component {
   }
 
   render() {
+    console.log(this.state);
+
     return <div>
       <Grid container direction={'row'}>
-        <Grid xs={9} item>
-          <h2>Available storyboards</h2>
-          {this.state.storyboards &&
-          <React.Fragment>
-
-          </React.Fragment>}
+        <Grid xs item>
+          <Typography variant={'h6'}>Available storyboards</Typography>
+          {this.state.storyboards && this.state.storyboards.map((item, i) => (
+            <div key={i} style={{cursor: 'pointer'}}>
+              <Typography variant={'subtitle2'}>
+                {this.state.currentPlayingStoryboard && item.Name === this.state.currentPlayingStoryboard.Name ?
+                  <PlayIcon onClick={() => this.setState({currentPlayingStoryboard: null})}/> :
+                  <Stop onClick={() => this.setState({currentPlayingStoryboard: item})}/>
+                }
+                <p style={{display: 'inline'}}
+                   onClick={() => this.setState({currentSelectedStoryboard: item})}>{item.Name}</p>
+              </Typography>
+            </div>
+          ))}
+        </Grid>
+        <Grid xs item>
+          <Typography variant={'h6'}>Content of selected Storyboard</Typography>
+          {this.state.currentSelectedStoryboard &&
+          <Typography variant={'subtitle2'}>Storyboard name: {this.state.currentSelectedStoryboard.Name}</Typography>
+          }
+          {this.state.currentSelectedStoryboard && this.state.currentSelectedStoryboard.Animations.map((animation, i) => (
+            <div key={i}>
+              <Typography>Type: {animation.class}</Typography>
+            </div>
+          ))}
+          {this.state.currentSelectedStoryboard && this.state.currentSelectedStoryboard &&
+          <Stop style={{cursor: 'pointer'}}
+                onClick={() => this.setState({currentPlayingStoryboard: null})}/>
+          }
+          {this.state.currentSelectedStoryboard && this.state.currentSelectedStoryboard &&
+          <PlayIcon style={{cursor: 'pointer'}}
+                    onClick={() => this.setState({currentPlayingStoryboard: this.state.currentSelectedStoryboard})}/>
+          }
         </Grid>
         <Grid xs={3} item>
           <h2>Application status</h2>
@@ -68,15 +84,16 @@ class HomePage extends React.Component {
         <Grid item xs>
           <h2>Control panel</h2>
           <div style={{whiteSpace: 'nowrap', overflowX: 'scroll'}}>
-            {this.state.storyboards[0] && (
-              this.state.storyboards.map((storyboard) =>
-                <div key={storyboard.id} style={{display: 'inline-block', width: '500px'}}>
-                  <Typography id={'slider-label-name'}>{storyboard.name}</Typography>
+            {this.state.currentPlayingStoryboard && (
+              this.state.currentPlayingStoryboard.Animations.map((storyboard, i) =>
+                <div key={i} style={{display: 'inline-block', width: '500px'}}>
+                  <Typography
+                    id={'slider-label-name'}>{storyboard.class} [{storyboard.startIndex}, {storyboard.startIndex + storyboard.stripLength}]</Typography>
                   <div aria-labelledby="slider-label-name" style={{float: 'left', display: 'inline', width: '100px'}}>
                     <Slider
                       style={{height: '100px', marginTop: '10px'}}
                       orientation="vertical"
-                      defaultValue={storyboard.speed}
+                      defaultValue={storyboard.frameWaitMs}
                       aria-labelledby="slider-label-speed"
                       min={5}
                       max={250}
@@ -122,7 +139,7 @@ class HomePage extends React.Component {
                     <Slider
                       style={{height: '100px', marginTop: '10px'}}
                       orientation="vertical"
-                      defaultValue={storyboard.r}
+                      defaultValue={storyboard.rgbValues[0]}
                       aria-labelledby="slider-label-red"
                       step={0.1}
                       min={-1}
@@ -144,7 +161,7 @@ class HomePage extends React.Component {
                     <Slider
                       style={{height: '100px', marginTop: '10px'}}
                       orientation="vertical"
-                      defaultValue={storyboard.g}
+                      defaultValue={storyboard.rgbValues[1]}
                       aria-labelledby="slider-label-green"
                       step={0.1}
                       min={-1}
@@ -166,7 +183,7 @@ class HomePage extends React.Component {
                     <Slider
                       style={{height: '100px', marginTop: '10px'}}
                       orientation="vertical"
-                      defaultValue={storyboard.b}
+                      defaultValue={storyboard.rgbValues[2]}
                       aria-labelledby="slider-label-blue"
                       step={0.1}
                       min={-1}
