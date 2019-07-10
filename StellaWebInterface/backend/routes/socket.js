@@ -65,10 +65,14 @@ class Socket {
           return null;
         case 1:
           this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
+
           if (this.stringProtocol.message !== null) {
             fs.writeFileSync('./savedData/temp1.yaml', this.stringProtocol.message, {encoding: 'ascii'});
+
             const yamlObject = yamlToString(this.stringProtocol.message);
+
             fs.writeFileSync('./savedData/temp2.json', JSON.stringify(yamlObject));
+
             this.clientSocket.emit('returnAvailableStoryboards', yamlObject);
             this.stringProtocol = new StringProtocol();
           }

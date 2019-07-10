@@ -80,7 +80,7 @@ function Storyboard(name, animations) {
           return animation instanceof None;
       }
     })) {
-      throw new Error('A non-Point inside a points array!');
+      throw new Error('A non-Animation inside a Animation array!');
     }
   }
 
@@ -96,6 +96,27 @@ const StoryboardYamlType = new yaml.Type('!Storyboard', {
     return new Storyboard(data.Name || 'null', data.Animations || []);
   },
   instanceOf: Storyboard
+});
+
+function Storyboards(storyboards) {
+  if (storyboards) {
+    if (!storyboards.map(function (storyboard) {
+      return storyboard instanceof Storyboard;
+    })) {
+      throw new Error('A non-Storyboard inside a Storyboards array!');
+    }
+  }
+  this.class = 'Storyboards';
+  this.storyboards = storyboards;
+}
+
+const StoryboardsYamlType = new yaml.Type('!Storyboards', {
+  kind: 'sequence',
+  construct: function (data) {
+    data = data || []; // in case of empty node
+    return new Storyboards(data);
+  },
+  instanceOf: Storyboards
 });
 
 function None() {
@@ -180,8 +201,6 @@ const FadingPulseYamlType = new yaml.Type('!FadingPulse', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    // todo, check what exactly is in data.Color
-    console.log('data.Color', data.Color);
     return new FadingPulse(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.FadeSteps || 0, data.Color || [0, 0, 0]);
   },
   instanceOf: FadingPulse
@@ -242,7 +261,7 @@ const SlidingPatternYamlType = new yaml.Type('!SlidingPattern', {
   instanceOf: SlidingPattern
 });
 
-const STORYBOARD_SCHEMA = yaml.Schema.create([NoneYamlType, MovingPatternYamlType, FadingPulseYamlType, SlidingPatternYamlType, RandomFadeYamlType, RepeatingPatternYamlType, BitmapYamlType, CachedAnimationYamlType, StoryboardYamlType]);
+const STORYBOARD_SCHEMA = yaml.Schema.create([NoneYamlType, MovingPatternYamlType, FadingPulseYamlType, SlidingPatternYamlType, RandomFadeYamlType, RepeatingPatternYamlType, BitmapYamlType, CachedAnimationYamlType, StoryboardYamlType, StoryboardsYamlType]);
 
 function yamlToJson(yamlString) {
   try {

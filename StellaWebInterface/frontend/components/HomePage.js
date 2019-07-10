@@ -15,6 +15,9 @@ class HomePage extends React.Component {
 
     this.props.socket.on('returnStatus', (status) => this.setState({status}));
     this.props.socket.on('returnAvailableStoryboards', (stringedStoryboards) => {
+      console.log(stringedStoryboards);
+
+      /*
       if (typeof stringedStoryboards === 'string') {
         const storyboards = stringedStoryboards.split(';');
         const result = [];
@@ -30,7 +33,7 @@ class HomePage extends React.Component {
           })
         }
         return this.setState({storyboards: result});
-      }
+      }*/
     });
   }
 
