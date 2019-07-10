@@ -132,12 +132,14 @@ const NoneYamlType = new yaml.Type('!None', {
 });
 
 
-function MovingPattern(startIndex, stripLength, frameWaitMs, relativeStart, pattern) {
+function MovingPattern(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues, pattern) {
   this.class = 'MovingPattern';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
   this.pattern = pattern;
 }
 
@@ -145,17 +147,19 @@ const MovingPatternYamlType = new yaml.Type('!MovingPattern', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    return new MovingPattern(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Pattern || []);
+    return new MovingPattern(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0], data.Pattern || []);
   },
   instanceOf: MovingPattern
 });
 
-function Bitmap(startIndex, stripLength, frameWaitMs, relativeStart, imageName, wraps) {
+function Bitmap(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues, imageName, wraps) {
   this.class = 'Bitmap';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
   this.imageName = imageName;
   this.wraps = wraps
 }
@@ -164,17 +168,19 @@ const BitmapYamlType = new yaml.Type('!Bitmap', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    return new Bitmap(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.ImageName || '', data.Wraps || false);
+    return new Bitmap(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0], data.ImageName || '', data.Wraps || false);
   },
   instanceOf: Bitmap
 });
 
-function CachedAnimation(startIndex, stripLength, frameWaitMs, relativeStart) {
+function CachedAnimation(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues) {
   this.class = 'CachedAnimation';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
 }
 
 const CachedAnimationYamlType = new yaml.Type('!CachedAnimation', {
@@ -182,17 +188,19 @@ const CachedAnimationYamlType = new yaml.Type('!CachedAnimation', {
   construct: function (data) {
     console.log("Deprecation warning! 'CachedAnimation' Is deprecated please use 'Bitmap' instead");
     data = data || {}; // in case of empty node
-    return new CachedAnimation(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0);
+    return new CachedAnimation(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0]);
   },
   instanceOf: CachedAnimation
 });
 
-function FadingPulse(startIndex, stripLength, frameWaitMs, relativeStart, fadeSteps, color) {
+function FadingPulse(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues, fadeSteps, color) {
   this.class = 'FadingPulse';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
   this.fadeSteps = fadeSteps;
   this.color = color;
 }
@@ -201,17 +209,19 @@ const FadingPulseYamlType = new yaml.Type('!FadingPulse', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    return new FadingPulse(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.FadeSteps || 0, data.Color || [0, 0, 0]);
+    return new FadingPulse(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0], data.FadeSteps || 0, data.Color || [0, 0, 0]);
   },
   instanceOf: FadingPulse
 });
 
-function RandomFade(startIndex, stripLength, frameWaitMs, relativeStart, fadeSteps, pattern) {
+function RandomFade(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues, fadeSteps, pattern) {
   this.class = 'RandomFade';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
   this.fadeSteps = fadeSteps;
   this.pattern = pattern;
 }
@@ -220,17 +230,19 @@ const RandomFadeYamlType = new yaml.Type('!RandomFade', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    return new RandomFade(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.FadeSteps || 0, data.Pattern || []);
+    return new RandomFade(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0], data.FadeSteps || 0, data.Pattern || []);
   },
   instanceOf: RandomFade
 });
 
-function RepeatingPattern(startIndex, stripLength, frameWaitMs, relativeStart, pattern) {
+function RepeatingPattern(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues, pattern) {
   this.class = 'RepeatingPattern';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
   this.pattern = pattern;
 }
 
@@ -238,17 +250,19 @@ const RepeatingPatternYamlType = new yaml.Type('!RepeatingPattern', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    return new RepeatingPattern(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Pattern || []);
+    return new RepeatingPattern(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0], data.Pattern || []);
   },
   instanceOf: RepeatingPattern
 });
 
-function SlidingPattern(startIndex, stripLength, frameWaitMs, relativeStart, pattern) {
+function SlidingPattern(startIndex, stripLength, frameWaitMs, relativeStart, brightness, rgbValues, pattern) {
   this.class = 'SlidingPattern';
   this.startIndex = startIndex;
   this.stripLength = stripLength;
   this.frameWaitMs = frameWaitMs;
   this.relativeStart = relativeStart;
+  this.brightness = brightness;
+  this.rgbValues = rgbValues;
   this.pattern = pattern;
 }
 
@@ -256,7 +270,7 @@ const SlidingPatternYamlType = new yaml.Type('!SlidingPattern', {
   kind: 'mapping',
   construct: function (data) {
     data = data || {}; // in case of empty node
-    return new SlidingPattern(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Pattern || []);
+    return new SlidingPattern(data.StartIndex || 0, data.StripLength || 0, data.FrameWaitMs || 5, data.RelativeStart || 0, data.Brightness || 0, data.RgbValues || [0,0,0], data.Pattern || []);
   },
   instanceOf: SlidingPattern
 });
