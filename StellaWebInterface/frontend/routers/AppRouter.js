@@ -4,6 +4,7 @@ import PublicRoute from './PublicRouter';
 //Public
 import HomePage from '../components/HomePage';
 import EditorPage from "../components/EditorPage";
+import StoryboardPage from "../components/StoryboardEditorPage";
 import ConfigurationPage from '../components/ConfigurationPage';
 
 const AppRouter = () => (
@@ -11,9 +12,9 @@ const AppRouter = () => (
     <div>
       <Switch>
         <PublicRoute path="/" component={HomePage} exact={true}/>
-        <PublicRoute path="/editor" component={EditorPage}/>
+        <PublicRoute path="/storyboard-editor" component={StoryboardPage}/>
+        <PublicRoute path="/animation-editor" component={EditorPage}/>
         <PublicRoute path="/configurations" component={ConfigurationPage}/>
-        {/*<PublicRoute path="/register" component={Register}/>*/}
 
         {/*<Route component={NotFoundPage}/>*/}
       </Switch>

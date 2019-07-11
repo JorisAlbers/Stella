@@ -52,8 +52,9 @@ class Header extends React.Component {
                           onClick={this.onLeftIconButtonClick}>
                 <MenuIcon/>
               </IconButton>
-              <Button color="inherit" align="right"><Link to="/">Home</Link></Button>
-              <Button color="inherit" align="right"><Link to="/editor">Editor</Link></Button>
+              <Button color="inherit" align="right"><Link to="/">Controls</Link></Button>
+              <Button color="inherit" align="right"><Link to="/storyboard-editor">Storyboard editor</Link></Button>
+              <Button color="inherit" align="right"><Link to="/animation-editor">Animation editor</Link></Button>
               <Button color="inherit" align="right"><Link to="/configurations">Configurations</Link></Button>
             </Toolbar>
           </AppBar>
