@@ -41,7 +41,30 @@ namespace StellaVisualizer.ViewModels
         public int StripLength { get; set; } = 1200;
         public int LengthPerSection { get; set; } = 600;
 
-        public string ImagePath { get; set; } = Path.Combine(Environment.CurrentDirectory, "image.png");
+        private string _imageDir;
+
+        public string ImageDir
+        {
+            get { return _imageDir;}
+            set
+            {
+                _imageDir = value;
+                try
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(value);
+                    Images = directoryInfo.GetFiles().Select(x => x.FullName).ToArray();
+                }
+                catch (Exception e)
+                {
+                    ;
+                }
+                
+            }
+        }
+
+        public string[] Images { get; set; }
+
+        public string SelectedImage { get; set; }
 
         /// <summary>
         /// Fired when the user has created a new animation
@@ -75,6 +98,7 @@ namespace StellaVisualizer.ViewModels
             AddPatternViewModel(255, 0, 0);
             AddPatternViewModel(0, 255,0);
             AddPatternViewModel(0, 0, 255);
+            
         }
         
         public event PropertyChangedEventHandler PropertyChanged;
@@ -139,17 +163,24 @@ namespace StellaVisualizer.ViewModels
                     animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
                     break;
                 case DrawMethod.Bitmap:
-                    if (!File.Exists(ImagePath))
+                    if (SelectedImage == null || !File.Exists(SelectedImage))
                     {
-                        Console.Out.WriteLine($"The image at {ImagePath} does not exist.");
+                        Console.Out.WriteLine($"The image at {ImageDir} does not exist.");
                         return;
                     }
-                    IDrawer drawer11 = new BitmapDrawer(0, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer22 = new BitmapDrawer(LengthPerSection * 1, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer33 = new BitmapDrawer(LengthPerSection * 2, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer44 = new BitmapDrawer(LengthPerSection * 3, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer55 = new BitmapDrawer(LengthPerSection * 4, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
-                    IDrawer drawer66 = new BitmapDrawer(LengthPerSection * 5, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(ImagePath)));
+/*                    drawer = new BitmapDrawer(0, 3600, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                    animationTransformations = new AnimationTransformation[]
+                    {
+                        new AnimationTransformation(50),
+                    };
+                    break;*/
+
+                    IDrawer drawer11 = new BitmapDrawer(0, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                    IDrawer drawer22 = new BitmapDrawer(LengthPerSection * 1, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                    IDrawer drawer33 = new BitmapDrawer(LengthPerSection * 2, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                    IDrawer drawer44 = new BitmapDrawer(LengthPerSection * 3, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                    IDrawer drawer55 = new BitmapDrawer(LengthPerSection * 4, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                    IDrawer drawer66 = new BitmapDrawer(LengthPerSection * 5, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
 
                     //drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 1000, 2000, 3000, 4000, 5000 });
                     drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 2000, 1000, 0, 0, 1000, 2000 });
