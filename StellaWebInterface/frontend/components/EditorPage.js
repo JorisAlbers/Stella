@@ -205,7 +205,9 @@ class EditorPage extends React.Component {
                     onClick={() => {
                       this.props.socket.emit('sendSingleFrame', {numberOfStripsPerRow: this.state.numberOfStripsPerRow, imageFile: this.state.imageFile});
                     }}>Upload</Button>
-            <canvas id={'canvas-class-name'} style={{width: '100%'}}/>
+            <canvas id={'canvas-class-name'}
+                    // style={{width: '100%'}}
+            />
           </Grid>
           }
           {(currentMode === "javascript" || currentMode === 'python') &&

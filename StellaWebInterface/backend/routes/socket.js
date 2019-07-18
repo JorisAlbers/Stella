@@ -37,7 +37,7 @@ const net = require("net");
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 const StringProtocol = require("../service/stringProtocol");
-const yamlToString = require("../service/yamlConverter");
+const yamlToJson = require("../service/yamlConverter");
 const SimpleImageToAnimationHelper = require("../service/simpleImageToRowHelper");
 
 
@@ -69,7 +69,7 @@ class Socket {
           if (this.stringProtocol.message !== null) {
             fs.writeFileSync('./savedData/temp1.yaml', this.stringProtocol.message, {encoding: 'ascii'});
 
-            const yamlObject = yamlToString(this.stringProtocol.message);
+            const yamlObject = yamlToJson(this.stringProtocol.message);
 
             fs.writeFileSync('./savedData/temp2.json', JSON.stringify(yamlObject));
 
@@ -178,7 +178,8 @@ class Socket {
 
       socket.on('sendSingleFrame', (data) => {
         // todo: Send joris the animation
-        const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).getAnimation();
+        // const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).getAnimation();
+        const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).saveAnimation();
         fs.writeFileSync('./savedData/temp.json', JSON.stringify(animation));
       });
 
