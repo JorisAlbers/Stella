@@ -60,6 +60,7 @@
         <TextBlock Grid.Column="0" Grid.Row="4" Text="Image path: "/>
         <TextBox   Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding ImageDir, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2"  ItemsSource="{Binding Images}" SelectedItem="{Binding SelectedImage, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
+        <CheckBox Grid.Column="0" Grid.Row="5" Content="3600px" IsChecked="{Binding ImageFor3600Pixels}"></CheckBox>
 
 
 

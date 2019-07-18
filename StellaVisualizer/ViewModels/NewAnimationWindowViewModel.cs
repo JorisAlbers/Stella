@@ -66,6 +66,8 @@ namespace StellaVisualizer.ViewModels
 
         public string SelectedImage { get; set; }
 
+        public bool ImageFor3600Pixels { get; set; }
+
         /// <summary>
         /// Fired when the user has created a new animation
         /// </summary>
@@ -137,9 +139,6 @@ namespace StellaVisualizer.ViewModels
                     break;
                 case DrawMethod.MovingPattern:
                     //drawer = new MovingPatternDrawer(0, StripLength, WaitMS, pattern);
-                    
-
-
                     IDrawer drawer1 = new MovingPatternDrawer(0,LengthPerSection, new AnimationTransformation(WaitMS), new Color[]{Color.Red});
                     IDrawer drawer2 = new MovingPatternDrawer(LengthPerSection,LengthPerSection*2, new AnimationTransformation(WaitMS), new Color[] { Color.Green });
                     IDrawer drawer3 = new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection /2, LengthPerSection * 5, new AnimationTransformation(WaitMS), new Color[] { Color.Blue });
@@ -168,12 +167,17 @@ namespace StellaVisualizer.ViewModels
                         Console.Out.WriteLine($"The image at {ImageDir} does not exist.");
                         return;
                     }
-/*                    drawer = new BitmapDrawer(0, 3600, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
-                    animationTransformations = new AnimationTransformation[]
+
+                    if (ImageFor3600Pixels)
                     {
-                        new AnimationTransformation(50),
-                    };
-                    break;*/
+                        drawer = new BitmapDrawer(0, 3600, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
+                        animationTransformations = new AnimationTransformation[]
+                        {
+                            new AnimationTransformation(50),
+                        };
+                        break;
+                    }
+
 
                     IDrawer drawer11 = new BitmapDrawer(0, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
                     IDrawer drawer22 = new BitmapDrawer(LengthPerSection * 1, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
@@ -183,7 +187,7 @@ namespace StellaVisualizer.ViewModels
                     IDrawer drawer66 = new BitmapDrawer(LengthPerSection * 5, LengthPerSection, new AnimationTransformation(WaitMS), false, new Bitmap(Image.FromFile(SelectedImage)));
 
                     //drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 1000, 2000, 3000, 4000, 5000 });
-                    drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 2000, 1000, 0, 0, 1000, 2000 });
+                    drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 0, 0, 0, 0, 0 });
                     animationTransformations = new AnimationTransformation[]
                     {
                         new AnimationTransformation(WaitMS),
