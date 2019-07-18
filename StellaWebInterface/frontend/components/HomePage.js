@@ -69,7 +69,7 @@ class HomePage extends React.Component {
           }
         </Grid>
         <Grid xs={3} item>
-          <h2>Application status</h2>
+          <Typography variant={'h6'}>Application status</Typography>
           {this.state.status &&
           <React.Fragment>
             <p>clientConnectedToBackend: {this.state.status.clientConnectedToBackend ? 'true' : 'false'}</p>
@@ -82,7 +82,7 @@ class HomePage extends React.Component {
 
       <Grid container direction={'row'}>
         <Grid item xs>
-          <h2>Control panel</h2>
+          <Typography variant={'h6'}>Control panel</Typography>
           <div style={{whiteSpace: 'nowrap', overflowX: 'scroll'}}>
             {this.state.currentPlayingStoryboard && (
               this.state.currentPlayingStoryboard.Animations.map((storyboard, i) =>

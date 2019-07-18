@@ -1,4 +1,5 @@
 const fs = require("fs");
+const PImage = require('pureimage');
 
 class simpleImageToAnimationHelper {
   constructor(imageData, numberOfStripsPerRow) {
@@ -66,6 +67,28 @@ class simpleImageToAnimationHelper {
       result.push(rowResult);
     }
     return result
+  }
+
+  saveAnimation(path = './savedData/result.png') {
+    let imageWidth = this.numberOfLedPerStrip * this.config.ledstrips.amount;
+    const image = PImage.make(imageWidth, this.imageData.height, {});
+
+    for (let frame = 0; frame < this.imageData.height; frame++) {
+      for (let pixel = 0; pixel < this.config.ledstrips.amount * this.numberOfLedPerStrip; pixel++) {
+        const row = (this.numberOfStripsPerRow * this.numberOfLedPerStrip) % pixel;
+
+        const rowWidthPixel = pixel % (this.numberOfStripsPerRow * this.numberOfLedPerStrip);
+        const pixelInformation = this.getPx(Math.floor(rowWidthPixel / (this.numberOfStripsPerRow * this.numberOfLedPerStrip) * this.imageData.width), frame);
+
+        image.setPixelRGBA_i(pixel, frame, pixelInformation[0], pixelInformation[1], pixelInformation[2], 0)
+      }
+    }
+
+    PImage.encodeJPEGToStream(image, fs.createWriteStream(path)).then(() => {
+      console.log(`wrote out the png file to ${path}`);
+    }).catch((e)=>{
+      console.log("there was an error writing");
+    });
   }
 }
 
