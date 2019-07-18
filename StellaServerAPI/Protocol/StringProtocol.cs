@@ -27,7 +27,7 @@ namespace StellaServerAPI.Protocol
             returnData[0] = CreatePackage(data, 0, bytesAvailablePerPackage, packagesNeeded);
             for (int i = 1; i < packagesNeeded; i++)
             {
-                returnData[i] = CreatePackage(data, i * bytesAvailablePerPackage, maxPackageSize, i);
+                returnData[i] = CreatePackage(data, i * bytesAvailablePerPackage, bytesAvailablePerPackage, i);
             }
             return returnData;
         }

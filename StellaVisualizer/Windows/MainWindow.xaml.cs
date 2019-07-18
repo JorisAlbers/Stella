@@ -86,10 +86,24 @@ namespace StellaVisualizer.Windows
                 return;
             }
 
-            if (_time > _startAt && _time > _startAt + _nextFramePerLedStripViewModel[0].TimeStampRelative)
+            int startAt = -1;
+            foreach (FrameWithoutDelta frameWithoutDelta in _nextFramePerLedStripViewModel)
+            {
+                if(frameWithoutDelta == null) continue;
+                startAt = frameWithoutDelta.TimeStampRelative;
+                break;
+            }
+
+            if (startAt == -1)
+            {
+                return;
+            }
+
+            if (_time > _startAt && _time > _startAt + startAt)
             {
                 for (int i = 0; i < NUMBER_OF_PIS; i++)
                 {
+                    if(_nextFramePerLedStripViewModel[i] == null) continue;
                     RpiViewModels[i].DrawFrame(_nextFramePerLedStripViewModel[i]);
                 }
 
