@@ -255,12 +255,12 @@ namespace StellaServerConsole
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
                         // lower
-                        newWaitMs = currentWaitms + 5;
+                        newWaitMs = currentWaitms + 1;
                     }
                     else
                     {
                         // raise
-                        newWaitMs = Math.Max(10, currentWaitms - 5);
+                        newWaitMs = Math.Max(1, currentWaitms - 1);
                     }
 
                     _stellaServer.Animator.SetFrameWaitMs(newWaitMs);
