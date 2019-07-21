@@ -24,7 +24,7 @@ namespace StellaClient.Serialization
             }
 
             return new Configuration(configuration.Id, configuration.Ip, configuration.Port, configuration.UdpPort, 
-                configuration.LedCount, configuration.PwmPin, configuration.DmaChannel);
+                configuration.LedCount, configuration.PwmPin, configuration.DmaChannel, configuration.MinimumFrameRate);
         }
 
         private bool ValidateConfigurationSettings(ConfigurationSettings configuration, out List<string> errors)
@@ -70,6 +70,9 @@ namespace StellaClient.Serialization
 
             /// <summary> The dma channel used to generate the pwm signal.</summary>
             public int DmaChannel { get; set; }
+
+            /// <summary> The minimum frame rate allowed. </summary>
+            public int MinimumFrameRate { get; set; }
 
     }
 }

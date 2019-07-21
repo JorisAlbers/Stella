@@ -31,8 +31,10 @@ namespace StellaClient
         /// <summary> The dma channel used to generate the pwm signal.</summary>
         public int DmaChannel { get; }
 
+        /// <summary> The minimum frame rate allowed. </summary>
+        public int MinimumFrameRate { get; }
 
-        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel)
+        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel, int minimumFrameRate)
         {
             Id = id;
             Ip = ip;
@@ -41,6 +43,7 @@ namespace StellaClient
             LedCount = ledCount;
             PwmPin = pwmPin;
             DmaChannel = dmaChannel;
+            MinimumFrameRate = minimumFrameRate;
         }
     }
 }
