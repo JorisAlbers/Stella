@@ -45,11 +45,11 @@ namespace StellaServerLib.Animation
             }
         }
 
-        public void SetFrameWaitMs(int frameWaitMs, int animationIndex)
+        public void SetFrameWaitMs(int animationIndex, int frameWaitMs)
         {
-            if (frameWaitMs < 10)
+            if (frameWaitMs < 1)
             {
-                throw new ArgumentException($"The frameWaitMs must be at least 10 ms.");
+                throw new ArgumentException($"The frameWaitMs must be at least 1 ms.");
             }
 
             if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
