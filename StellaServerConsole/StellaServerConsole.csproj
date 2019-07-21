@@ -183,6 +183,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
+    <None Update="Resources\Storyboards\Cloud\WhiteTrace.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
     <None Update="Resources\Storyboards\Cloud\BlueScan.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
