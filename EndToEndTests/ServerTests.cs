@@ -5,6 +5,7 @@ using StellaLib.Animation;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
 
@@ -75,26 +76,25 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 225),
                 Color.FromArgb(0, 0, 250),
             };
-
-            RepeatingPatternsDrawer repeatingPatternsDrawer = new RepeatingPatternsDrawer(0,300, new AnimationTransformation(100), new Color[][]
-            {
-                new Color[2]
+            IFrameProvider repeatingPatternsFrameProvider = new FrameProvider(
+                new RepeatingPatternsDrawer(0, 300, new AnimationTransformation(100), new Color[][]
                 {
-                    Color.Blue, Color.DarkBlue
-                },
-                new Color[3]
-                {
-                    Color.DarkBlue, Color.DarkBlue, Color.Red
-                },
-                new Color[1]
-                {
-                    Color.FromArgb(0,0,0)
-                }
+                    new Color[2]
+                    {
+                        Color.Blue, Color.DarkBlue
+                    },
+                    new Color[3]
+                    {
+                        Color.DarkBlue, Color.DarkBlue, Color.Red
+                    },
+                    new Color[1]
+                    {
+                        Color.FromArgb(0, 0, 0)
+                    }
 
-            });
-
-            SlidingPatternDrawer slidingPatternDrawer = new SlidingPatternDrawer(0,300,new AnimationTransformation(100), pattern);
-            MovingPatternDrawer movingPatternDrawer = new MovingPatternDrawer(0,300, new AnimationTransformation(30), pattern);
+                }), new AnimationTransformation(100));
+            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300,new AnimationTransformation(100), pattern), new AnimationTransformation(100));
+            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300, new AnimationTransformation(30), pattern), new AnimationTransformation(30));
             AnimationTransformation[] animationTransformations = new AnimationTransformation[]{new AnimationTransformation(0), };
 
             string input;
@@ -112,13 +112,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsDrawer, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
+                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternDrawer, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
+                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternDrawer, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
+                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");
