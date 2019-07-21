@@ -217,8 +217,9 @@ class Socket {
 
       socket.on('setFrameWaitMs', (data) => {
         const buffer = new Buffer.alloc(8);
-        buffer.writeUInt32LE(data.index, 0);
-        buffer.writeUInt32LE(data.value, 4);
+        buffer.writeInt32LE(data.index, 0);
+        buffer.writeInt32LE(data.value, 4);
+        console.log('setFrameWaitMs', data);
         this.serverSocket.write(this.packageProtocol.wrapMessage(6, buffer));
 
         if (data.index === -1) {
@@ -229,10 +230,11 @@ class Socket {
       });
       socket.on('setRgbFade', (data) => {
         const buffer = new Buffer.alloc(16);
-        buffer.writeUInt32LE(data.index, 0);
+        buffer.writeInt32LE(data.index, 0);
         buffer.writeFloatLE(data.value[0], 4);
         buffer.writeFloatLE(data.value[1], 8);
         buffer.writeFloatLE(data.value[2], 12);
+        console.log('setRgbFade', data);
         this.serverSocket.write(this.packageProtocol.wrapMessage(8, buffer));
 
         if (data.index === -1) {
@@ -243,8 +245,9 @@ class Socket {
       });
       socket.on('setBrightnessCorrection', (data) => {
         const buffer = new Buffer.alloc(8);
-        buffer.writeUInt32LE(data.index, 0);
+        buffer.writeInt32LE(data.index, 0);
         buffer.writeFloatLE(data.value, 4);
+        console.log('setBrightnessCorrection', data);
         this.serverSocket.write(this.packageProtocol.wrapMessage(10, buffer));
 
         if (data.index === -1) {
