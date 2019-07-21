@@ -12,7 +12,7 @@ class StringProtocol {
     const data = new Buffer(message, 'ascii');
 
     const bytesAvailablePerPackage = maxPackageSize - this.PACKAGE_HEADER_BYTES;
-    const packagesNeeded = (data.length + bytesAvailablePerPackage - 1) / bytesAvailablePerPackage;
+    const packagesNeeded = Math.floor((data.length + bytesAvailablePerPackage - 1) / bytesAvailablePerPackage);
 
     const returnData = [];
     // Create first package
@@ -27,11 +27,11 @@ class StringProtocol {
   ///  Create a subsequent package with a normal package header
   /// </summary>
   createPackage(data, startIndex, maxPackageSize, headerCounter) {
-    const buffer = new Buffer([Math.min(data.length - startIndex + this.PACKAGE_HEADER_BYTES, maxPackageSize + this.PACKAGE_HEADER_BYTES)]);
+      const packageSize = Math.min(maxPackageSize + this.PACKAGE_HEADER_BYTES, data.length - startIndex + this.PACKAGE_HEADER_BYTES);
+    const buffer = new Buffer.alloc(packageSize);
 
     buffer.writeInt32LE(headerCounter, 0);
-
-    data.copy(buffer, 4, 0, buffer.length);
+    data.copy(buffer, 4, 0, buffer.length-4);
     return buffer;
   }
 

@@ -20,15 +20,18 @@
  *
  *  Client listeners
  *    Incoming messages:
- *    * name = getSavedLedMapping          - Client asks for available save file of led mapping
- *    * name = setSavedLedMapping          - Client set for available save file of led mapping
- *    * name = sendSingleFrame             - Client sends a single frame that needs horizontal scanning
- *    * name = getStatus                   - Client asks for the status data
+ *    * name = getSavedLedMapping             - Client asks for available save file of led mapping
+ *    * name = setSavedLedMapping             - Client set for available save file of led mapping
+ *    * name = sendSingleFrame                - Client sends a single frame that needs horizontal scanning
+ *    * name = getStatus                      - Client asks for the status data
+ *    * name = getCurrentPlayingStoryboard    - Client asks the current playing storyboard
+ *    * name = setCurrentPlayingStoryboard    - Client sets the current playing storyboard
  *
  *    Outgoing messages
- *    * name = returnSavedLedMapping       - Return available save file of led mapping
- *    * name = returnAvailableStoryboards  - Return available storyboards
- *    * name = returnStatus                - Return available status data
+ *    * name = returnSavedLedMapping          - Return available save file of led mapping
+ *    * name = returnAvailableStoryboards     - Return available storyboards
+ *    * name = returnStatus                   - Return available status data
+ *    * name = returnCurrentPlayingStoryboard - Return the current playing storyboard
  */
 
 const fs = require("fs");
@@ -57,6 +60,9 @@ class Socket {
     this.packageProtocol = new PackageProtocol();
     this.stringProtocol = new StringProtocol();
 
+    this.availableStoryboards = {};
+    this.currentPlayingStoryboard = {name: '', animations: []};
+
     this.packageProtocol.messageArrived = (messageType, data) => {
       console.log("message protocol says it has a package - messageType: ", messageType, ", data: ", data.readUInt32LE());
       switch (messageType) {
@@ -67,10 +73,9 @@ class Socket {
           this.stringProtocol.deserialize(data, this.packageProtocol.MAX_MESSAGE_SIZE);
 
           if (this.stringProtocol.message !== null) {
+
             fs.writeFileSync('./savedData/temp1.yaml', this.stringProtocol.message, {encoding: 'ascii'});
-
             const yamlObject = yamlToJson(this.stringProtocol.message);
-
             fs.writeFileSync('./savedData/temp2.json', JSON.stringify(yamlObject));
 
             this.clientSocket.emit('returnAvailableStoryboards', yamlObject);
@@ -167,14 +172,17 @@ class Socket {
         fs.writeFileSync('./savedData/savedLedMapping.json', JSON.stringify(data));
       });
 
-      socket.on('getAvailableStoryboards', () => {
-        // const yamlFile = fs.readFileSync('./../../StellaServerConsole/Resources/Storyboards/AllAnimations.yaml', 'utf8');
-        // const yamlObject = yamlToString(yamlFile);
-        // fs.writeFileSync('./savedData/temp.json', JSON.stringify(yamlObject));
+      socket.on('setCurrentPlayingStoryboard', (dataString) => {
+        const packages = this.stringProtocol.serialize(dataString, this.packageProtocol.MAX_MESSAGE_SIZE);
+        for (let i = 0; i < packages.length; i++) {
+          this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
+        }
 
-        this.getAvailableStoryboards();
-        // socket.emit('returnAvailableStoryboards', {})
+        this.currentPlayingStoryboard.name = dataString
       });
+      socket.on('getCurrentPlayingStoryboard', () => socket.emit('returnCurrentPlayingStoryboard', this.currentPlayingStoryboard));
+
+      socket.on('getAvailableStoryboards', () => this.getAvailableStoryboards());
 
       socket.on('sendSingleFrame', (data) => {
         // todo: Send joris the animation

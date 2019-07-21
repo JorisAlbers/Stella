@@ -27,6 +27,7 @@ class HomePage extends React.Component {
   componentDidMount() {
     this.props.socket.emit('getStatus');
     this.props.socket.emit('getAvailableStoryboards');
+    this.props.socket.emit('getCurrentPlayingStoryboard');
   }
 
   render() {
@@ -40,8 +41,14 @@ class HomePage extends React.Component {
             <div key={i} style={{cursor: 'pointer'}}>
               <Typography variant={'subtitle2'}>
                 {this.state.currentPlayingStoryboard && item.Name === this.state.currentPlayingStoryboard.Name ?
-                  <PlayIcon onClick={() => this.setState({currentPlayingStoryboard: null})}/> :
-                  <Stop onClick={() => this.setState({currentPlayingStoryboard: item})}/>
+                  <Stop onClick={() => {
+                    this.setState({currentPlayingStoryboard: null});
+                  }}/>
+                  :
+                  <PlayIcon onClick={() => {
+                    this.props.socket.emit('setCurrentPlayingStoryboard', item.Name);
+                    this.setState({currentPlayingStoryboard: item});
+                  }}/>
                 }
                 <p style={{display: 'inline'}}
                    onClick={() => this.setState({currentSelectedStoryboard: item})}>{item.Name}</p>
@@ -61,11 +68,15 @@ class HomePage extends React.Component {
           ))}
           {this.state.currentSelectedStoryboard && this.state.currentSelectedStoryboard &&
           <Stop style={{cursor: 'pointer'}}
-                onClick={() => this.setState({currentPlayingStoryboard: null})}/>
+                onClick={() => {
+                  this.setState({currentPlayingStoryboard: null});
+                }}/>
           }
           {this.state.currentSelectedStoryboard && this.state.currentSelectedStoryboard &&
-          <PlayIcon style={{cursor: 'pointer'}}
-                    onClick={() => this.setState({currentPlayingStoryboard: this.state.currentSelectedStoryboard})}/>
+          <PlayIcon style={{cursor: 'pointer'}} onClick={() => {
+            this.props.socket.emit('setCurrentPlayingStoryboard', this.state.currentSelectedStoryboard.Name);
+            this.setState({currentPlayingStoryboard: this.state.currentSelectedStoryboard});
+          }}/>
           }
         </Grid>
         <Grid xs={3} item>
