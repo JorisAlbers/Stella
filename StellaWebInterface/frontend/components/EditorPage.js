@@ -9,6 +9,8 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {socketConnect} from 'socket.io-react';
 import AceEditor from 'react-ace';
+import SocketIOFileUpload from 'socketio-file-upload';
+
 // import * as rapydscript from 'rapydscript-ng';
 // Import tools
 import "brace/ext/language_tools";
@@ -27,7 +29,7 @@ class EditorPage extends React.Component {
     this.state = {
       error: null,
       finalObject: null,
-      currentMode: 'image',
+      currentMode: 'mappedVideoUpload',
       modeOptions: [{
         name: 'Javascript',
         machineName: 'javascript',
@@ -35,6 +37,10 @@ class EditorPage extends React.Component {
       }, {
         name: 'Python',
         machineName: 'python',
+        enabled: true
+      }, {
+        name: 'Mapped Video Upload',
+        machineName: 'mappedVideoUpload',
         enabled: true
       }, {
         name: 'Draw',
@@ -49,17 +55,34 @@ class EditorPage extends React.Component {
         machineName: 'vimeo',
         enabled: true
       }, {
-        name: 'Image',
+        name: 'Scan Image',
         machineName: 'image',
         enabled: true
       }],
       imageFile: null,
+      uploadFile: null,
       numberOfStripsPerRow: 2
     };
     this.code = {
       javascript: `// Javascript sample code \nreturn {a: "foo", b: {c:"bar", d:"brazzers"}};`,
       python: `# Python sample code \nprint('hello world')`,
     };
+  }
+
+  componentDidMount() {
+    if (this.state.currentMode === 'mappedVideoUpload') {
+      const siofu = new SocketIOFileUpload(this.props.socket);
+      siofu.listenOnInput(document.getElementById("siofu_input"));
+
+      siofu.addEventListener("progress", (event) => {
+        // todo set this in a setState or something and display it.
+        const percent = event.bytesLoaded / event.file.size * 100;
+        console.log("File is", percent.toFixed(2), "percent loaded");
+      });
+      siofu.addEventListener("complete", (event) => {
+        this.props.socket.emit('addNewAnimation', {type: 'mappedVideoUpload', fileName: event.file.name})
+      });
+    }
   }
 
   runCode() {
@@ -152,6 +175,22 @@ class EditorPage extends React.Component {
           </FormControl>
         </Grid>
         <Grid container direction={'row'}>
+          {(currentMode === "mappedVideoUpload") &&
+          <Grid xs={11} item>
+            <input
+              accept="video/*"
+              style={{display: 'none'}}
+              id="siofu_input"
+              type="file"
+            />
+            <label htmlFor="siofu_input">
+              <Button variant="contained" component="span">Select file
+                <CloudUploadIcon/>
+              </Button>
+            </label>
+
+          </Grid>
+          }
           {(currentMode === "image") &&
           <Grid xs={11} item>
             <TextField
@@ -203,10 +242,13 @@ class EditorPage extends React.Component {
             </label>
             <Button color="inherit" align="left" disabled={!this.state.imageFile}
                     onClick={() => {
-                      this.props.socket.emit('sendSingleFrame', {numberOfStripsPerRow: this.state.numberOfStripsPerRow, imageFile: this.state.imageFile});
+                      this.props.socket.emit('sendSingleFrame', {
+                        numberOfStripsPerRow: this.state.numberOfStripsPerRow,
+                        imageFile: this.state.imageFile
+                      });
                     }}>Upload</Button>
             <canvas id={'canvas-class-name'}
-                    // style={{width: '100%'}}
+              // style={{width: '100%'}}
             />
           </Grid>
           }
