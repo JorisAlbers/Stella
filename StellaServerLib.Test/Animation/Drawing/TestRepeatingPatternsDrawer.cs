@@ -29,11 +29,10 @@ namespace StellaServerLib.Test.Animation.Drawing
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            Frame frame = drawer.First();
+            List<PixelInstruction> frame = drawer.First();
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
-            Assert.AreEqual(0, frame.TimeStampRelative);
             Assert.AreEqual(frame[0].Color, expectedColor1);
             Assert.AreEqual(frame[1].Color, expectedColor2);
             Assert.AreEqual(frame[2].Color, expectedColor3);
@@ -66,11 +65,10 @@ namespace StellaServerLib.Test.Animation.Drawing
             int expectedIndex6 = 105;
             int expectedIndex7 = 106;
 
-            Frame frame = drawer.First();
+            List<PixelInstruction> frame = drawer.First();
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
-            Assert.AreEqual(0, frame.TimeStampRelative);
             Assert.AreEqual(frame[0].Index, expectedIndex1);
             Assert.AreEqual(frame[1].Index, expectedIndex2);
             Assert.AreEqual(frame[2].Index, expectedIndex3);
@@ -99,15 +97,13 @@ namespace StellaServerLib.Test.Animation.Drawing
             Color expectedColor1 =  Color.FromArgb(1,2,3);
             Color expectedColor2 =  Color.FromArgb(4,5,6);
 
-            List<Frame> frames = drawer.Take(2).ToList();
+            List<List<PixelInstruction>> frames = drawer.Take(2).ToList();
 
 
             //Assert
-            Frame frame1 = frames[0];
-            Assert.AreEqual(0, frame1.TimeStampRelative);
+            List<PixelInstruction> frame1 = frames[0];
             Assert.AreEqual(frame1[0].Color, expectedColor1);
-            Frame frame2 = frames[1];
-            Assert.AreEqual(frameWaitMS, frame2.TimeStampRelative);
+            List<PixelInstruction> frame2 = frames[1];
             Assert.AreEqual(frame2[0].Color, expectedColor2);
         }
     }

@@ -3,70 +3,70 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using StellaLib.Animation;
-using StellaServerLib.Animation.Drawing;
 
-namespace StellaServerLib.Animation
+namespace StellaServerLib.Animation.FrameProviding
 {
     /// <summary>
-    /// Wrapper around multiple drawers. Combines the drawers to a single frame.
+    /// Wrapper around multiple FrameProviders. Combines the FrameProviders to a single frame.
     /// This class allows us to draw multiple animations to the same led strip.
     /// </summary>
-    public class SectionDrawer : IDrawer
+    public class CombinedFrameProvider : IFrameProvider
     {
-        private readonly IDrawer[] _drawers;
+        private readonly IFrameProvider[] _frameProviders;
         private readonly int[] _relativeTimestamps;
         private readonly int _firstTimestamp;
 
         /// <summary>
         /// CTOR
         /// </summary>
-        /// <param name="drawers"></param>
+        /// <param name="frameProviders"></param>
         /// <param name="relativeTimestamps">The time to start each frame relative to each other, in milliseconds</param>
-        public SectionDrawer(IDrawer[] drawers, int[] relativeTimestamps)
+        public CombinedFrameProvider(IFrameProvider[] frameProviders, int[] relativeTimestamps)
         {
-            _drawers = drawers;
+            _frameProviders = frameProviders;
             _relativeTimestamps = relativeTimestamps;
             _firstTimestamp = relativeTimestamps.Min();
         }
 
         public IEnumerator<Frame> GetEnumerator()
         {
-            IEnumerator<Frame>[] enumerators = _drawers.Select(x => x.GetEnumerator()).ToArray();
-            Frame[] frames = new Frame[_drawers.Length];
+            IEnumerator<Frame>[] enumerators = _frameProviders.Select(x => x.GetEnumerator()).ToArray();
+            Frame[] frames = new Frame[_frameProviders.Length];
 
             int frameIndex = 0;
 
             // Initialize frames
-            for (int i = 0; i < _drawers.Length; i++)
+            for (int i = 0; i < _frameProviders.Length; i++)
             {
-               enumerators[i].MoveNext();
-               frames[i] = enumerators[i].Current;
+                enumerators[i].MoveNext();
+                frames[i] = enumerators[i].Current;
             }
 
             while (true)
             {
                 // Find the section that will start first
-                List<int> drawersInNextFrame = GetNextInLineDrawers(frames);
-                if (drawersInNextFrame.Count == 0)
+                List<int> providersInNextFrame = GetNextInLineProviders(frames);
+                if (providersInNextFrame.Count == 0)
                 {
                     throw new Exception("There must always be a next frame");
                 }
 
-                // Overwrite the metadata of the frame of the fist drawer.
-                Frame frame = frames[drawersInNextFrame[0]];
+                // Overwrite the metadata of the frame of the fist provider.
+                Frame frame = frames[providersInNextFrame[0]];
 
                 // Calculate the timestampRelative
-                
-                int timestampFirstDrawer = _relativeTimestamps[drawersInNextFrame[0]] + frame.TimeStampRelative;
+
+                int timestampFirstDrawer = _relativeTimestamps[providersInNextFrame[0]] + frame.TimeStampRelative;
                 int deltaWithOverallTimestamp = timestampFirstDrawer - _firstTimestamp;
                 frame.TimeStampRelative = deltaWithOverallTimestamp;
                 frame.Index = frameIndex;
-                
-                // If there are more than one drawers in this frame, add their data to the frame.
-                for (int i = 1; i < drawersInNextFrame.Count; i++)
+
+                // If there are more than one provider  in this frame, add their data to the frame.
+                for (int i = 1; i < providersInNextFrame.Count; i++)
                 {
-                    frame.AddRange(frames[drawersInNextFrame[i]]);
+                    frame.AddRange(frames[providersInNextFrame[i]]);
                 }
 
                 yield return frame;
@@ -74,7 +74,7 @@ namespace StellaServerLib.Animation
 
 
                 // Get the next frames of the used drawers
-                foreach (int sectionIndex in drawersInNextFrame)
+                foreach (int sectionIndex in providersInNextFrame)
                 {
                     enumerators[sectionIndex].MoveNext();
                     frames[sectionIndex] = enumerators[sectionIndex].Current;
@@ -89,7 +89,7 @@ namespace StellaServerLib.Animation
         /// Returns the indexes of the drawers that have a frame starting before the other drawers.
         /// </summary>
         /// <returns></returns>
-        private List<int> GetNextInLineDrawers(Frame[] frames)
+        private List<int> GetNextInLineProviders(Frame[] frames)
         {
             int firstTimestamp = int.MaxValue;
             List<int> sectionIndexes = null;
@@ -99,7 +99,7 @@ namespace StellaServerLib.Animation
                 if (startAt < firstTimestamp)
                 {
                     firstTimestamp = startAt;
-                    sectionIndexes = new List<int>() {i};
+                    sectionIndexes = new List<int>() { i };
                     continue;
                 }
 

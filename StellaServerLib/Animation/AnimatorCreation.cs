@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Drawing.Fade;
+using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Serialization.Animation;
 
@@ -21,36 +19,37 @@ namespace StellaServerLib.Animation
 
         public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
-            IDrawer drawer;
+            IFrameProvider frameProvider;
             AnimationTransformation[] animationTransformations = new AnimationTransformation[storyboard.AnimationSettings.Length];
 
             if (storyboard.AnimationSettings.Length == 1)
             {
                 // Use a normal drawer
-                drawer = CreateDrawer(storyboard.AnimationSettings[0], out AnimationTransformation animationTransformation);
+                IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0], out AnimationTransformation animationTransformation);
+                frameProvider = new FrameProvider(drawer,animationTransformation);
                 animationTransformations[0] = animationTransformation;
             }
             else
             {
-                // Use a SectionDrawer to combine multiple drawers
+                // Use a CombinedFrameProvider to combine multiple frameProviders
                 // First, get the drawers
-                IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
+                IFrameProvider[] frameProviders = new IFrameProvider[storyboard.AnimationSettings.Length];
                 int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
 
                 for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
                 {
                     IAnimationSettings settings = storyboard.AnimationSettings[i];
-
-                    drawers[i] = CreateDrawer(settings, out AnimationTransformation animationTransformation);
+                    IDrawer drawer = CreateDrawer(settings, out AnimationTransformation animationTransformation);
+                    frameProviders[i] = new FrameProvider(drawer, animationTransformation);
                     animationTransformations[i] = animationTransformation;
                     relativeTimeStamps[i] = settings.RelativeStart;
                 }
 
-                // Then, combine them in a single drawer by using the SectionDrawer
-                drawer = new SectionDrawer(drawers, relativeTimeStamps);
+                // Then, combine them in a single frame provider by using the CombinedFrameProvider
+                frameProvider = new CombinedFrameProvider(frameProviders, relativeTimeStamps);
             }
 
-            return new Animator(drawer, stripLengthPerPi, mask, animationTransformations);
+            return new Animator(frameProvider, stripLengthPerPi, mask, animationTransformations);
         }
 
         private IDrawer CreateDrawer(IAnimationSettings animationSetting, out AnimationTransformation animationTransformation)
