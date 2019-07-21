@@ -182,10 +182,10 @@ namespace StellaServerConsole
 
         private static void ApiServerOnBrightnessCorrectionSet(int animationIndex, float brightnessCorrection)
         {
-            if (animationIndex == 1)
+            if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+                _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
                 return;
             }
 
@@ -194,7 +194,7 @@ namespace StellaServerConsole
 
         private static void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
         {
-            if (animationIndex == 1)
+            if (animationIndex == -1)
             {
                 // Set for all
                 _stellaServer.Animator.SetRgbFadeCorrection(rgbFade);
@@ -206,7 +206,7 @@ namespace StellaServerConsole
 
         private static void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
         {
-            if (animationIndex == 1)
+            if (animationIndex == -1)
             {
                 // Set for all
                 _stellaServer.Animator.SetFrameWaitMs(frameWaitMs);
