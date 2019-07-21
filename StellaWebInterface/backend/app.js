@@ -8,6 +8,7 @@ const debug = require('debug')('contento:server');
 const cookieParser = require('cookie-parser')();
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
+const siofu  = require("socketio-file-upload");
 
 /** Relative imports **/
 const config = require('./config/config');
@@ -18,6 +19,7 @@ const port = normalizePort('3001');
 
 const init = () => {
   const app = express();
+  app.use(siofu.router);
   app.use(logger('dev'));
   app.use(express.json());
   app.use(express.urlencoded({extended: false}));

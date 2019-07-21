@@ -22,7 +22,8 @@
  *    Incoming messages:
  *    * name = getSavedLedMapping                    - Client asks for available save file of led mapping
  *    * name = setSavedLedMapping                    - Client set for available save file of led mapping
- *    * name = sendSingleFrame                       - Client sends a single frame that needs horizontal scanning
+ *    * name = sendSingleFrame (Deprecated)          - Client sends a single frame that needs horizontal scanning
+ *    * name = addNewAnimation                       - Client sends new data to generate a new animation
  *    * name = getStatus                             - Client asks for the status data
  *    * name = getCurrentPlayingStoryboard           - Client asks the current playing storyboard
  *    * name = setCurrentPlayingStoryboard           - Client sets the current playing storyboard
@@ -41,12 +42,14 @@
 
 const fs = require("fs");
 const net = require("net");
+const siofu = require("socketio-file-upload");
 
 const config = require('../../backend/config/config');
 const PackageProtocol = require("../service/packageProtocol");
 const StringProtocol = require("../service/stringProtocol");
 const yamlToJson = require("../service/yamlConverter");
 const SimpleImageToAnimationHelper = require("../service/simpleImageToRowHelper");
+const convertMp4ToRow = require("../service/convertMp4ToRow");
 
 
 class Socket {
@@ -165,9 +168,20 @@ class Socket {
 
   _setClientListeners() {
     this.clientSocket.on('connection', (socket) => {
+      const uploader = new siofu();
+      uploader.dir = "./savedData";
+      uploader.listen(socket);
+
       this.clientSocket.connectedClients.push(socket.id);
 
       console.log("Client connection connected");
+
+      uploader.on('saved', event => {
+        console.log(event.file);
+      });
+      uploader.on("error", (event) => {
+        console.log("Error from uploader", event);
+      });
 
       socket.on('getSavedLedMapping', () => {
         if (fs.existsSync('./savedData/savedLedMapping.json')) {
@@ -183,7 +197,7 @@ class Socket {
       socket.on('setCurrentPlayingStoryboard', (dataString) => {
         const packages = this.stringProtocol.serialize(dataString, this.packageProtocol.MAX_MESSAGE_SIZE);
         for (let i = 0; i < packages.length; i++) {
-          this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
+          this.serverSocket.write(this.packageProtocol.wrapMessage(2, packages[i]));
         }
 
         // get the current playing storyboard from the list of available storyboards.
@@ -202,10 +216,11 @@ class Socket {
       });
 
       socket.on('setFrameWaitMs', (data) => {
-        // const packages = this.stringProtocol.serialize(dataString, this.packageProtocol.MAX_MESSAGE_SIZE);
-        // for (let i = 0; i < packages.length; i++) {
-        //   this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
-        // }
+        const buffer = new Buffer.alloc(8);
+        buffer.writeInt32LE(data.index, 0);
+        buffer.writeInt32LE(data.value, 4);
+        console.log('setFrameWaitMs', data);
+        this.serverSocket.write(this.packageProtocol.wrapMessage(6, buffer));
 
         if (data.index === -1) {
           this.masterControl.frameWaitMs = data.value;
@@ -214,6 +229,14 @@ class Socket {
         }
       });
       socket.on('setRgbFade', (data) => {
+        const buffer = new Buffer.alloc(16);
+        buffer.writeInt32LE(data.index, 0);
+        buffer.writeFloatLE(data.value[0], 4);
+        buffer.writeFloatLE(data.value[1], 8);
+        buffer.writeFloatLE(data.value[2], 12);
+        console.log('setRgbFade', data);
+        this.serverSocket.write(this.packageProtocol.wrapMessage(8, buffer));
+
         if (data.index === -1) {
           this.masterControl.rgbValues = data.value;
         } else {
@@ -221,6 +244,12 @@ class Socket {
         }
       });
       socket.on('setBrightnessCorrection', (data) => {
+        const buffer = new Buffer.alloc(8);
+        buffer.writeInt32LE(data.index, 0);
+        buffer.writeFloatLE(data.value, 4);
+        console.log('setBrightnessCorrection', data);
+        this.serverSocket.write(this.packageProtocol.wrapMessage(10, buffer));
+
         if (data.index === -1) {
           this.masterControl.brightness = data.value;
         } else {
@@ -236,6 +265,17 @@ class Socket {
         }
       });
 
+      socket.on('addNewAnimation', (data) => {
+        let animation = null;
+        switch (data.type) {
+          case 'mappedVideoUpload':
+            animation = new convertMp4ToRow(data).saveAnimation();
+            break;
+          default:
+            break;
+        }
+        fs.writeFileSync('./savedData/temp.json', JSON.stringify(animation));
+      });
       socket.on('sendSingleFrame', (data) => {
         // todo: Send joris the animation
         // const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).getAnimation();
