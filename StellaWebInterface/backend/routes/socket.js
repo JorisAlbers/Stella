@@ -197,7 +197,7 @@ class Socket {
       socket.on('setCurrentPlayingStoryboard', (dataString) => {
         const packages = this.stringProtocol.serialize(dataString, this.packageProtocol.MAX_MESSAGE_SIZE);
         for (let i = 0; i < packages.length; i++) {
-          this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
+          this.serverSocket.write(this.packageProtocol.wrapMessage(2, packages[i]));
         }
 
         // get the current playing storyboard from the list of available storyboards.
@@ -216,10 +216,10 @@ class Socket {
       });
 
       socket.on('setFrameWaitMs', (data) => {
-        // const packages = this.stringProtocol.serialize(dataString, this.packageProtocol.MAX_MESSAGE_SIZE);
-        // for (let i = 0; i < packages.length; i++) {
-        //   this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
-        // }
+        const buffer = new Buffer.alloc(8);
+        buffer.writeUInt32LE(data.index, 0);
+        buffer.writeUInt32LE(data.value, 4);
+        this.serverSocket.write(this.packageProtocol.wrapMessage(6, buffer));
 
         if (data.index === -1) {
           this.masterControl.frameWaitMs = data.value;
@@ -228,6 +228,13 @@ class Socket {
         }
       });
       socket.on('setRgbFade', (data) => {
+        const buffer = new Buffer.alloc(16);
+        buffer.writeUInt32LE(data.index, 0);
+        buffer.writeFloatLE(data.value[0], 4);
+        buffer.writeFloatLE(data.value[1], 8);
+        buffer.writeFloatLE(data.value[2], 12);
+        this.serverSocket.write(this.packageProtocol.wrapMessage(8, buffer));
+
         if (data.index === -1) {
           this.masterControl.rgbValues = data.value;
         } else {
@@ -235,6 +242,11 @@ class Socket {
         }
       });
       socket.on('setBrightnessCorrection', (data) => {
+        const buffer = new Buffer.alloc(8);
+        buffer.writeUInt32LE(data.index, 0);
+        buffer.writeFloatLE(data.value, 4);
+        this.serverSocket.write(this.packageProtocol.wrapMessage(10, buffer));
+
         if (data.index === -1) {
           this.masterControl.brightness = data.value;
         } else {
