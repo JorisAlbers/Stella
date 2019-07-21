@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node app",
-    "watcher": "nodemon app --ignore savedData/*"
+    "watcher": "nodemon app --ignore savedData/*",
+    "debug": "nodemon --inspect app --ignore savedData/*"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
