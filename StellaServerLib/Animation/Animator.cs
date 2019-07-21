@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
 
 namespace StellaServerLib.Animation
 {
     public class Animator : IAnimator
     {
-        private readonly IEnumerator<Frame> _drawerEnumerator;
+        private readonly IEnumerator<Frame> frameEnumerator;
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
@@ -18,13 +19,13 @@ namespace StellaServerLib.Animation
         /// <summary>
         /// CTOR
         /// </summary>s
-        /// <param name="drawer">The drawer to get frames from.</param>
+        /// <param name="frameProvider">The drawer to get frames from.</param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
         /// <param name="animationTransformations">Used by the drawers as input to draw frames with</param>
-        public Animator(IDrawer drawer, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformation[] animationTransformations)
+        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformation[] animationTransformations)
         {
-            _drawerEnumerator = drawer.GetEnumerator();
+            frameEnumerator = frameProvider.GetEnumerator();
             _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
             _animationTransformations = animationTransformations;
@@ -151,8 +152,8 @@ namespace StellaServerLib.Animation
         /// <inheritdoc />
         public FrameWithoutDelta[] GetNextFramePerPi()
         {
-            _drawerEnumerator.MoveNext();
-            Frame combinedFrame = _drawerEnumerator.Current;
+            frameEnumerator.MoveNext();
+            Frame combinedFrame = frameEnumerator.Current;
             return SplitFrameOverPis(combinedFrame, _mask);
         }
 

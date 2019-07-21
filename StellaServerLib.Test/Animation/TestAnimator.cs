@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServerLib.Animation;
-using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
 
 namespace StellaServerLib.Test.Animation
@@ -32,7 +31,7 @@ namespace StellaServerLib.Test.Animation
                 }
             };
 
-            var drawerMock = new Mock<IDrawer>();
+            var drawerMock = new Mock<IFrameProvider>();
             drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
@@ -81,7 +80,7 @@ namespace StellaServerLib.Test.Animation
                 }
             };
 
-            var drawerMock = new Mock<IDrawer>();
+            var drawerMock = new Mock<IFrameProvider>();
             drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
@@ -147,7 +146,7 @@ namespace StellaServerLib.Test.Animation
                 }
             };
 
-            var drawerMock = new Mock<IDrawer>();
+            var drawerMock = new Mock<IFrameProvider>();
             drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
             List<PiMaskItem> mask = new List<PiMaskItem>
             {

@@ -20,7 +20,7 @@ namespace StellaServerLib.Animation.Drawing
         /// </summary>
         /// <param name="startIndex">The start index on the led strip</param>
         /// <param name="stripLength">The length of the section to draw</param>
-        /// <param name="frameWaitMS">The frame duration</param>
+        /// <param name="animationTransformation"></param>
         /// <param name="pattern">The pattern to move</param>
         public MovingPatternDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern)
         {
@@ -32,48 +32,43 @@ namespace StellaServerLib.Animation.Drawing
 
 
         /// <inheritdoc />
-        public IEnumerator<Frame> GetEnumerator()
+        public IEnumerator<List<PixelInstruction>> GetEnumerator()
         {
-            int timestampRelative = 0;
-            int frameIndex = 0;
             while (true)
             {
                 // Slide into view
                 for (int i = 0; i < _pattern.Length - 1; i++)
                 {
-                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     for (int j = 0; j < i + 1; j++)
                     {
-                        frame.Add(new PixelInstruction(_startIndex + j, _pattern[_pattern.Length - 1 - i + j]));
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, _pattern[_pattern.Length - 1 - i + j]));
                     }
-                    yield return frame;
-                    timestampRelative += _animationTransformation.FrameWaitMs;
+                    yield return pixelInstructions;
                 }
 
                 // Normal
                 for (int i = 0; i < _stripLength - _pattern.Length + 1; i++)
                 {
-                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     for (int j = 0; j < _pattern.Length; j++)
                     {
-                        frame.Add(new PixelInstruction { Index = _startIndex + i + j, Color = _pattern[j] });
+                        pixelInstructions.Add(new PixelInstruction { Index = _startIndex + i + j, Color = _pattern[j] });
                     }
 
-                    yield return frame;
-                    timestampRelative += _animationTransformation.FrameWaitMs;
+                    yield return pixelInstructions;
                 }
 
                 // Slide out of view
                 for (int i = 0; i < _pattern.Length - 1; i++)
                 {
-                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     for (int j = 0; j < _pattern.Length - 1 - i; j++)
                     {
-                        frame.Add(new PixelInstruction(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
                     }
 
-                    yield return frame;
-                    timestampRelative += _animationTransformation.FrameWaitMs;
+                    yield return pixelInstructions;
                 }
             }
         }

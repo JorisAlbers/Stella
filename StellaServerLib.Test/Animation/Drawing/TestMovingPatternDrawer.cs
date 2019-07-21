@@ -29,18 +29,16 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMS = 100;
             int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, new AnimationTransformation(frameWaitMS), pattern);
-            List<Frame> frames = drawer.Take(framesToTake).ToList();
+            List<List<PixelInstruction>> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
             //Frame 1, slide in
-            Frame frame = frames[0];
+            List<PixelInstruction> frame = frames[0];
             Assert.AreEqual(1, frame.Count);
-            Assert.AreEqual(0, frame.TimeStampRelative);
             Assert.AreEqual(expectedColor3, frame[0].Color);
             //Frame 2, slide in
             frame = frames[1];
             Assert.AreEqual(2, frame.Count);
-            Assert.AreEqual(frameWaitMS, frame.TimeStampRelative);
             Assert.AreEqual(0, frame[0].Index);
             Assert.AreEqual(expectedColor2, frame[0].Color);
             Assert.AreEqual(1, frame[1].Index);
@@ -48,7 +46,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 3 , normal
             frame = frames[2];
             Assert.AreEqual(3, frame.Count);
-            Assert.AreEqual(frameWaitMS * 2, frame.TimeStampRelative);
             Assert.AreEqual(expectedColor1, frame[0].Color );
             Assert.AreEqual(0, frame[0].Index);
             Assert.AreEqual(expectedColor2, frame[1].Color );
@@ -58,7 +55,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 4 , normal
             frame = frames[3];
             Assert.AreEqual(3, frame.Count);
-            Assert.AreEqual(frameWaitMS * 3, frame.TimeStampRelative);
             Assert.AreEqual(1, frame[0].Index);
             Assert.AreEqual(expectedColor1, frame[0].Color);
             Assert.AreEqual(2, frame[1].Index);
@@ -69,7 +65,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 5, slide out
             frame = frames[4];
             Assert.AreEqual(2, frame.Count);
-            Assert.AreEqual(frameWaitMS * 4, frame.TimeStampRelative);
             Assert.AreEqual(2, frame[0].Index);
             Assert.AreEqual(expectedColor1, frame[0].Color);
             Assert.AreEqual(3, frame[1].Index);
@@ -77,7 +72,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 6, slide out
             frame = frames[5];
             Assert.AreEqual(1, frame.Count);
-            Assert.AreEqual(frameWaitMS * 5, frame.TimeStampRelative);
             Assert.AreEqual(3, frame[0].Index);
             Assert.AreEqual(expectedColor1,  frame[0].Color);
         }
@@ -102,18 +96,16 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMS = 100;
             int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip, new AnimationTransformation(frameWaitMS), pattern);
-            List<Frame> frames = drawer.Take(framesToTake).ToList();
+            List<List<PixelInstruction>> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
             //Frame 1, slide in
-            Frame frame = frames[0];
+            List<PixelInstruction> frame = frames[0];
             Assert.AreEqual(1, frame.Count);
-            Assert.AreEqual(0, frame.TimeStampRelative);
             Assert.AreEqual(expectedColor3, frame[0].Color);
             //Frame 2, slide in
             frame = frames[1];
             Assert.AreEqual(2, frame.Count);
-            Assert.AreEqual(frameWaitMS, frame.TimeStampRelative);
             Assert.AreEqual(startIndex + 0, frame[0].Index);
             Assert.AreEqual(expectedColor2, frame[0].Color);
             Assert.AreEqual(startIndex + 1, frame[1].Index);
@@ -121,7 +113,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 3 , normal
             frame = frames[2];
             Assert.AreEqual(3, frame.Count);
-            Assert.AreEqual(frameWaitMS * 2, frame.TimeStampRelative);
             Assert.AreEqual(expectedColor1, frame[0].Color);
             Assert.AreEqual(startIndex + 0, frame[0].Index);
             Assert.AreEqual(expectedColor2, frame[1].Color);
@@ -131,7 +122,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 4 , normal
             frame = frames[3];
             Assert.AreEqual(3, frame.Count);
-            Assert.AreEqual(frameWaitMS * 3, frame.TimeStampRelative);
             Assert.AreEqual(startIndex + 1, frame[0].Index);
             Assert.AreEqual(expectedColor1, frame[0].Color);
             Assert.AreEqual(startIndex + 2, frame[1].Index);
@@ -142,7 +132,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 5, slide out
             frame = frames[4];
             Assert.AreEqual(2, frame.Count);
-            Assert.AreEqual(frameWaitMS * 4, frame.TimeStampRelative);
             Assert.AreEqual(startIndex + 2, frame[0].Index);
             Assert.AreEqual(expectedColor1, frame[0].Color);
             Assert.AreEqual(startIndex + 3, frame[1].Index);
@@ -150,7 +139,6 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 6, slide out
             frame = frames[5];
             Assert.AreEqual(1, frame.Count);
-            Assert.AreEqual(frameWaitMS * 5, frame.TimeStampRelative);
             Assert.AreEqual(startIndex + 3, frame[0].Index);
             Assert.AreEqual(expectedColor1, frame[0].Color);
         }

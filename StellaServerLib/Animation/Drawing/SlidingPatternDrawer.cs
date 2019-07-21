@@ -24,23 +24,20 @@ namespace StellaServerLib.Animation.Drawing
             _pattern = pattern;
         }
 
-        public IEnumerator<Frame> GetEnumerator()
+        public IEnumerator<List<PixelInstruction>> GetEnumerator()
         {
-            int timestampRelative = 0;
-            int frameIndex = 0;
             while (true)
             {
                 for (int i = 0; i < _pattern.Length; i++)
                 {
-                    Frame frame = new Frame(frameIndex++, timestampRelative);
+                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     int patternStart = i;
                     for (int j = 0; j < _stripLength; j++)
                     {
-                        frame.Add(new PixelInstruction() { Index = _startIndex + j, Color = _pattern[(j + patternStart) % (_pattern.Length)] });
+                        pixelInstructions.Add(new PixelInstruction() { Index = _startIndex + j, Color = _pattern[(j + patternStart) % (_pattern.Length)] });
                     }
 
-                    yield return frame;
-                    timestampRelative += _animationTransformation.FrameWaitMs;
+                    yield return pixelInstructions;
                 }
             }
         }

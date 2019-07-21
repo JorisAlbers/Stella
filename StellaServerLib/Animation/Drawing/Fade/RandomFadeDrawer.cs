@@ -28,11 +28,9 @@ namespace StellaServerLib.Animation.Drawing.Fade
             _fadePatterns = FadeCalculation.CalculateFadedPatterns(_pattern, _fadeSteps);
         }
 
-        public IEnumerator<Frame> GetEnumerator()
+        public IEnumerator<List<PixelInstruction>> GetEnumerator()
         {
             Random random = new Random();
-            int frameIndex = 0;
-            int timestampRelative = 0;
             LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
             while (true)
             {
@@ -44,8 +42,8 @@ namespace StellaServerLib.Animation.Drawing.Fade
                 }
 
                 // draw existing FadePoints
-                Frame frame = new Frame(frameIndex++, timestampRelative += _animationTransformation.FrameWaitMs);
-                DrawFadePoints(fadePointsPerFadeStep, frame);
+                List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
 
                 // remove FadePoints that have elapsed
                 if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
@@ -53,7 +51,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                     fadePointsPerFadeStep.RemoveFirst();
                 }
 
-                yield return frame;
+                yield return pixelInstructions;
             }
         }
 
@@ -69,7 +67,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             return fadePoints;
         }
         
-        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, Frame frame)
+        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstruction> pixelInstructions )
         {
             foreach (List<FadePoint> fadePoints in fadePointsPerFadeStep)
             {
@@ -88,7 +86,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                             continue;
                         }
 
-                        frame.Add(new PixelInstruction(_startIndex + pixelIndex, adjustedColor[i]));
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + pixelIndex, adjustedColor[i]));
                     }
                     fadePoint.Step++;
                 }
