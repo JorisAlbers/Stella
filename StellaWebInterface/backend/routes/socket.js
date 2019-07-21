@@ -20,18 +20,23 @@
  *
  *  Client listeners
  *    Incoming messages:
- *    * name = getSavedLedMapping             - Client asks for available save file of led mapping
- *    * name = setSavedLedMapping             - Client set for available save file of led mapping
- *    * name = sendSingleFrame                - Client sends a single frame that needs horizontal scanning
- *    * name = getStatus                      - Client asks for the status data
- *    * name = getCurrentPlayingStoryboard    - Client asks the current playing storyboard
- *    * name = setCurrentPlayingStoryboard    - Client sets the current playing storyboard
+ *    * name = getSavedLedMapping                    - Client asks for available save file of led mapping
+ *    * name = setSavedLedMapping                    - Client set for available save file of led mapping
+ *    * name = sendSingleFrame                       - Client sends a single frame that needs horizontal scanning
+ *    * name = getStatus                             - Client asks for the status data
+ *    * name = getCurrentPlayingStoryboard           - Client asks the current playing storyboard
+ *    * name = setCurrentPlayingStoryboard           - Client sets the current playing storyboard
+ *    * name = setFrameWaitMs,          index, value - Client sets the frame of given index
+ *    * name = setRgbFade,              index, value - Client sets the rgbFade of given index
+ *    * name = setBrightnessCorrection, index, value - Client sets the brightness of given index
+ *    * name = getMasterControl                      - Client asks master control settings
  *
  *    Outgoing messages
- *    * name = returnSavedLedMapping          - Return available save file of led mapping
- *    * name = returnAvailableStoryboards     - Return available storyboards
- *    * name = returnStatus                   - Return available status data
- *    * name = returnCurrentPlayingStoryboard - Return the current playing storyboard
+ *    * name = returnSavedLedMapping                 - Return available save file of led mapping
+ *    * name = returnAvailableStoryboards            - Return available storyboards
+ *    * name = returnStatus                          - Return available status data
+ *    * name = returnCurrentPlayingStoryboard        - Return the current playing storyboard
+ *    * name = returnMasterControl                   - Return the current master control settings
  */
 
 const fs = require("fs");
@@ -60,8 +65,9 @@ class Socket {
     this.packageProtocol = new PackageProtocol();
     this.stringProtocol = new StringProtocol();
 
-    this.availableStoryboards = {};
-    this.currentPlayingStoryboard = {name: '', animations: []};
+    this.availableStoryboards = null;
+    this.currentPlayingStoryboard = null;
+    this.masterControl = {frameWaitMs: 10, brightness: 0, rgbValues: [0, 0, 0],};
 
     this.packageProtocol.messageArrived = (messageType, data) => {
       console.log("message protocol says it has a package - messageType: ", messageType, ", data: ", data.readUInt32LE());
@@ -74,10 +80,11 @@ class Socket {
 
           if (this.stringProtocol.message !== null) {
 
-            fs.writeFileSync('./savedData/temp1.yaml', this.stringProtocol.message, {encoding: 'ascii'});
+            // fs.writeFileSync('./savedData/temp1.yaml', this.stringProtocol.message, {encoding: 'ascii'});
             const yamlObject = yamlToJson(this.stringProtocol.message);
-            fs.writeFileSync('./savedData/temp2.json', JSON.stringify(yamlObject));
+            // fs.writeFileSync('./savedData/temp2.json', JSON.stringify(yamlObject));
 
+            this.availableStoryboards = yamlObject;
             this.clientSocket.emit('returnAvailableStoryboards', yamlObject);
             this.stringProtocol = new StringProtocol();
           }
@@ -112,6 +119,7 @@ class Socket {
 
     this.serverSocket.on('connect', () => {
       this.serverSocket.connected = true;
+      this.getAvailableStoryboards();
       this.clientSocket.emit('status', {
         clientConnectedToBackend: true,
         backendConnectedToServer: this.serverSocket.connected,
@@ -178,17 +186,65 @@ class Socket {
           this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
         }
 
-        this.currentPlayingStoryboard.name = dataString
+        // get the current playing storyboard from the list of available storyboards.
+        this.currentPlayingStoryboard = (() => {
+          for (let i = 0; i < this.availableStoryboards.storyboards.length; i++) {
+            if (this.availableStoryboards.storyboards[i].Name === dataString) {
+              return this.availableStoryboards.storyboards[i];
+            }
+          }
+        })()
       });
-      socket.on('getCurrentPlayingStoryboard', () => socket.emit('returnCurrentPlayingStoryboard', this.currentPlayingStoryboard));
+      socket.on('getCurrentPlayingStoryboard', () => {
+        if (this.currentPlayingStoryboard) {
+          socket.emit('returnCurrentPlayingStoryboard', this.currentPlayingStoryboard);
+        }
+      });
 
-      socket.on('getAvailableStoryboards', () => this.getAvailableStoryboards());
+      socket.on('setFrameWaitMs', (data) => {
+        // const packages = this.stringProtocol.serialize(dataString, this.packageProtocol.MAX_MESSAGE_SIZE);
+        // for (let i = 0; i < packages.length; i++) {
+        //   this.serverSocket.write(this.packageProtocol.wrapMessage(3, packages[i]));
+        // }
+
+        if (data.index === -1) {
+          this.masterControl.frameWaitMs = data.value;
+        } else {
+          this.currentPlayingStoryboard.Animations[data.index].frameWaitMs = data.value;
+        }
+      });
+      socket.on('setRgbFade', (data) => {
+        if (data.index === -1) {
+          this.masterControl.rgbValues = data.value;
+        } else {
+          this.currentPlayingStoryboard.Animations[data.index].rgbValues = data.value
+        }
+      });
+      socket.on('setBrightnessCorrection', (data) => {
+        if (data.index === -1) {
+          this.masterControl.brightness = data.value;
+        } else {
+          this.currentPlayingStoryboard.Animations[data.index].brightness = data.value;
+        }
+      });
+
+      socket.on('getAvailableStoryboards', () => {
+        if (this.availableStoryboards !== null) {
+          socket.emit('returnAvailableStoryboards', this.availableStoryboards)
+        } else {
+          this.getAvailableStoryboards();
+        }
+      });
 
       socket.on('sendSingleFrame', (data) => {
         // todo: Send joris the animation
         // const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).getAnimation();
         const animation = new SimpleImageToAnimationHelper(data.imageFile, data.numberOfStripsPerRow).saveAnimation();
         fs.writeFileSync('./savedData/temp.json', JSON.stringify(animation));
+      });
+
+      socket.on('getMasterControl', () => {
+        socket.emit('returnMasterControl', this.masterControl)
       });
 
       socket.on('getStatus', () => {
