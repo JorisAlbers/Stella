@@ -21,10 +21,22 @@ namespace StellaServerLib.Animation.FrameProvider
             _animationTransformation = animationTransformation;
         }
 
-
         public IEnumerator<Frame> GetEnumerator()
         {
-            throw new NotImplementedException();
+            int timestampRelative = 0;
+            int frameIndex = 0;
+            IEnumerator<Frame> drawerEnumerator = _drawer.GetEnumerator();
+
+            while (true)
+            {
+                drawerEnumerator.MoveNext();
+                Frame frame = new Frame(frameIndex, timestampRelative);
+                frame.AddRange(drawerEnumerator.Current); // TODO IDrawer should return PixelInstruction[], not Frame
+                
+                yield return frame;
+                timestampRelative += _animationTransformation.FrameWaitMs;
+                frameIndex++;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
