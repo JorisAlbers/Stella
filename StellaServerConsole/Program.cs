@@ -251,16 +251,20 @@ namespace StellaServerConsole
                 if (key.KeyChar == 's' || key.KeyChar == 'S')
                 {
                     int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
+                    int newWaitMs;
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
                         // lower
-                        _stellaServer.Animator.SetFrameWaitMs(currentWaitms + 5);
+                        newWaitMs = currentWaitms + 5;
                     }
                     else
                     {
                         // raise
-                        _stellaServer.Animator.SetFrameWaitMs(Math.Max(10, currentWaitms - 5));
+                        newWaitMs = Math.Max(10, currentWaitms - 5);
                     }
+
+                    _stellaServer.Animator.SetFrameWaitMs(newWaitMs);
+                    Console.Out.WriteLine($"Speed set to {newWaitMs}");
                 }
 
                 // Brightness
