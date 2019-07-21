@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
-namespace StellaServerLib.Animation.FrameProvider
+namespace StellaServerLib.Animation.FrameProviding
 {
     /// <summary>
     /// Provides the next frame to animate.

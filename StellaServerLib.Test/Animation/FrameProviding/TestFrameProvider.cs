@@ -8,8 +8,9 @@ using NUnit.Framework;
 using StellaLib.Animation;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.FrameProviding;
 
-namespace StellaServerLib.Test.Animation.FrameProvider
+namespace StellaServerLib.Test.Animation.FrameProviding
 {
     [TestFixture]
     public class TestFrameProvider
@@ -32,7 +33,7 @@ namespace StellaServerLib.Test.Animation.FrameProvider
             var drawerMock = new Mock<IDrawer>();
             drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
             AnimationTransformation animationTransformation = new AnimationTransformation(100);
-            StellaServerLib.Animation.FrameProvider.FrameProvider frameProvider =  new StellaServerLib.Animation.FrameProvider.FrameProvider(drawerMock.Object, animationTransformation);
+            FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, animationTransformation);
 
             Frame[] frames = frameProvider.Take(2).ToArray();
             // Frame 1
