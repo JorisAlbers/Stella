@@ -45,7 +45,7 @@ class ConfigurationPage extends React.Component {
         this.state.data.ledstrips.items.push({
           id: i,
           position: {
-            x: i  * 20,
+            x: i * 20,
             y: 0,
             degree: 0
           },
@@ -86,7 +86,7 @@ class ConfigurationPage extends React.Component {
           data.ledstrips.items.push({
             id: i,
             position: {
-              x: i  * 20,
+              x: i * 20,
               y: 0,
               degree: 0,
             },
@@ -175,8 +175,8 @@ class ConfigurationPage extends React.Component {
           key={i}
           bounds={'parent'}
           position={{
-            x: data.ledstrips.items[i].position.x,
-            y: data.ledstrips.items[i].position.y,
+            x: data.ledstrips.items[i].position.x / data.room.x * this.state.parentRoomDiv.clientWidth,
+            y: data.ledstrips.items[i].position.y / data.room.y * this.state.parentRoomDiv.clientHeight
           }}
           size={{
             width: data.ledstrips.items[i].size.x,
@@ -184,8 +184,8 @@ class ConfigurationPage extends React.Component {
             degree: data.ledstrips.items[i].position.degree
           }}
           onDragStop={(e, d) => {
-            data.ledstrips.items[i].position.x = d.x;
-            data.ledstrips.items[i].position.y = d.y;
+            data.ledstrips.items[i].position.x = d.x / this.state.parentRoomDiv.clientWidth * data.room.x;
+            data.ledstrips.items[i].position.y = d.y / this.state.parentRoomDiv.clientHeight * data.room.y;
             this.setState({data})
           }}
           onResizeStop={(e, direction, resizable, delta, position) => {
@@ -197,13 +197,9 @@ class ConfigurationPage extends React.Component {
         </Rnd>
       })}
     </div>
-
   }
 
   render() {
-    const {currentTab, data} = this.state;
-    console.log(data);
-
     return <div>
       <Grid container spacing={0} direction={'column'}>
         <Grid xs item>
@@ -214,12 +210,12 @@ class ConfigurationPage extends React.Component {
             strips</Button>
         </Grid>
         <Grid container direction={'row'}>
-          {currentTab === 'general' &&
+          {this.state.currentTab === 'general' &&
           <React.Fragment>
 
           </React.Fragment>
           }
-          {currentTab === 'pixelMapping' &&
+          {this.state.currentTab === 'pixelMapping' &&
           <React.Fragment>
             <Grid xs item>
               <TextField
@@ -230,7 +226,7 @@ class ConfigurationPage extends React.Component {
                 min={1}
                 max={100}
                 label="Amount of LED-strips"
-                defaultValue={data.ledstrips.amount}
+                value={this.state.data.ledstrips.amount}
                 onChange={(e) => {
                   this.setState({
                     data: {
@@ -250,7 +246,7 @@ class ConfigurationPage extends React.Component {
                 min={2}
                 max={100}
                 label="Depth of the room"
-                defaultValue={data.room.y}
+                value={this.state.data.room.y}
                 onChange={(e) => {
                   this.setState({
                     data: {
@@ -269,7 +265,7 @@ class ConfigurationPage extends React.Component {
                 min={1}
                 max={100}
                 label="Width of the room"
-                defaultValue={data.room.x}
+                value={this.state.data.room.x}
                 onChange={(e) => {
                   this.setState({
                     data: {
@@ -292,7 +288,7 @@ class ConfigurationPage extends React.Component {
                     backgroundColor: '#434343',
                     backgroundImage: 'linear-gradient(#5480D3, #3256A7)',
                   }}>
-              {this.state.parentRoomDiv !== null && this.drawRoom(data)}
+              {this.state.parentRoomDiv !== null && this.drawRoom(this.state.data)}
             </Grid>
           </React.Fragment>
           }
