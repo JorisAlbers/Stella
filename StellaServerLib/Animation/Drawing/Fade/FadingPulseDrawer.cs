@@ -10,18 +10,16 @@ namespace StellaServerLib.Animation.Drawing.Fade
     {
         private readonly int _startIndex;
         private readonly int _stripLength;
-        private readonly AnimationTransformation _animationTransformation;
         private readonly int _fadeSteps;
         private readonly Color[] _fadeColors; 
 
         private const int MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME = 1;
         
 
-        public FadingPulseDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color color, int fadeSteps)
+        public FadingPulseDrawer(int startIndex, int stripLength, Color color, int fadeSteps)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _animationTransformation = animationTransformation;
             _fadeSteps = fadeSteps;
 
             Color[][] fadedPatterns = FadeCalculation.CalculateFadedPatterns(new Color[] { color }, _fadeSteps);

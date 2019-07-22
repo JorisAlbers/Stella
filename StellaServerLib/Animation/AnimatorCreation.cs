@@ -74,7 +74,7 @@ namespace StellaServerLib.Animation
             }
             if (animationSetting is FadingPulseAnimationSettings fadingPulseSetting)
             {
-                return new FadingPulseDrawer(fadingPulseSetting.StartIndex, fadingPulseSetting.StripLength, animationTransformation, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
+                return new FadingPulseDrawer(fadingPulseSetting.StartIndex, fadingPulseSetting.StripLength, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
             }
             if (animationSetting is BitmapAnimationSettings bitmapSetting)
             {
