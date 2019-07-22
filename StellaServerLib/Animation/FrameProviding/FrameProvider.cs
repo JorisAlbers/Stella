@@ -29,12 +29,25 @@ namespace StellaServerLib.Animation.FrameProviding
             {
                 drawerEnumerator.MoveNext();
                 Frame frame = new Frame(frameIndex, timestampRelative);
-                frame.AddRange(drawerEnumerator.Current);
+                frame.AddRange(TransformInstructions(drawerEnumerator.Current));
                 
                 yield return frame;
                 timestampRelative += _animationTransformation.FrameWaitMs;
                 frameIndex++;
             }
+        }
+
+        private List<PixelInstruction> TransformInstructions(List<PixelInstruction> instructions)
+        {
+            List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+            for (int i = 0; i < instructions.Count; i++)
+            {
+                PixelInstruction instruction = instructions[i];
+                instruction.Color = _animationTransformation.AdjustColor(instruction.Color);
+                pixelInstructions.Add(instruction);
+            }
+
+            return pixelInstructions;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
