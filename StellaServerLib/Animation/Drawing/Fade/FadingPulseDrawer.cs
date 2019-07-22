@@ -65,7 +65,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             {
                 // All fade points at this index have the same fade step count.
                 int fadeStep = fadePoints[0].Step;
-                Color color = _animationTransformation.AdjustColor(_fadeColors[_fadeColors.Length - 1 - fadeStep]);
+                Color color = _fadeColors[_fadeColors.Length - 1 - fadeStep];
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
