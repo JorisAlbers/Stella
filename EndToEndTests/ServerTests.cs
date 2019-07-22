@@ -77,7 +77,7 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 250),
             };
             IFrameProvider repeatingPatternsFrameProvider = new FrameProvider(
-                new RepeatingPatternsDrawer(0, 300, new AnimationTransformation(100), new Color[][]
+                new RepeatingPatternsDrawer(0, 300,  new Color[][]
                 {
                     new Color[2]
                     {
