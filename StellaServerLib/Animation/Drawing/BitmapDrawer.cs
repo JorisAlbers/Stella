@@ -20,7 +20,7 @@ namespace StellaServerLib.Animation.Drawing
 
 
         /// <param name="wrap">If the bitmap drawer should draw the first line after the last line</param>
-        public BitmapDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, bool wrap, Bitmap bitmap)
+        public BitmapDrawer(int startIndex, int stripLength, bool wrap, Bitmap bitmap)
         {
             // Convert the bitmap to frames
             int width = Math.Min(bitmap.Width, stripLength);
@@ -37,7 +37,6 @@ namespace StellaServerLib.Animation.Drawing
                 _frames[i] = frame;
             }
 
-            _animationTransformation = animationTransformation;
             _wrap = wrap;
         }
 
@@ -48,7 +47,7 @@ namespace StellaServerLib.Animation.Drawing
                 // Top to bottom
                 for (int i = 0; i < _frames.Length; i++)
                 {
-                    yield return TransformInstructions(_frames[i]);
+                    yield return _frames[i];
                 }
 
                 if (_wrap)
@@ -56,23 +55,10 @@ namespace StellaServerLib.Animation.Drawing
                     // Bottom to top
                     for (int i = _frames.Length - 1; i >= 0; i--)
                     {
-                        yield return TransformInstructions(_frames[i]);
+                        yield return _frames[i];
                     }
                 }
             }
-        }
-
-        private List<PixelInstruction> TransformInstructions(List<PixelInstruction> instructions)
-        {
-            List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
-            for (int i = 0; i < instructions.Count; i++)
-            {
-                PixelInstruction instruction = instructions[i];
-                instruction.Color = _animationTransformation.AdjustColor(instruction.Color);
-                pixelInstructions.Add(instruction);
-            }
-            
-            return pixelInstructions;
         }
 
         IEnumerator IEnumerable.GetEnumerator()

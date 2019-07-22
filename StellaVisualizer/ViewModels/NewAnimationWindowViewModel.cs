@@ -175,7 +175,7 @@ namespace StellaVisualizer.ViewModels
                             new AnimationTransformation(50),
                         };
 
-                        frameProvider = new FrameProvider(new BitmapDrawer(0, 3600, animationTransformations[0], false, new Bitmap(Image.FromFile(SelectedImage))), animationTransformations[0]);
+                        frameProvider = new FrameProvider(new BitmapDrawer(0, 3600, false, new Bitmap(Image.FromFile(SelectedImage))), animationTransformations[0]);
                         break;
                     }
 
@@ -190,12 +190,12 @@ namespace StellaVisualizer.ViewModels
                     };
 
 
-                    IFrameProvider frameProvider11 = new FrameProvider(new BitmapDrawer(0,                    LengthPerSection, animationTransformations[0], false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[0]);
-                    IFrameProvider frameProvider22 = new FrameProvider(new BitmapDrawer(LengthPerSection * 1, LengthPerSection, animationTransformations[1], false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[1]);
-                    IFrameProvider frameProvider33 = new FrameProvider(new BitmapDrawer(LengthPerSection * 2, LengthPerSection, animationTransformations[2], false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[2]);
-                    IFrameProvider frameProvider44 = new FrameProvider(new BitmapDrawer(LengthPerSection * 3, LengthPerSection, animationTransformations[3], false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[3]);
-                    IFrameProvider frameProvider55 = new FrameProvider(new BitmapDrawer(LengthPerSection * 4, LengthPerSection, animationTransformations[4], false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[4]);
-                    IFrameProvider frameProvider66 = new FrameProvider(new BitmapDrawer(LengthPerSection * 5, LengthPerSection, animationTransformations[5], false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[5]);
+                    IFrameProvider frameProvider11 = new FrameProvider(new BitmapDrawer(0,                    LengthPerSection,  false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[0]);
+                    IFrameProvider frameProvider22 = new FrameProvider(new BitmapDrawer(LengthPerSection * 1, LengthPerSection,  false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[1]);
+                    IFrameProvider frameProvider33 = new FrameProvider(new BitmapDrawer(LengthPerSection * 2, LengthPerSection,  false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[2]);
+                    IFrameProvider frameProvider44 = new FrameProvider(new BitmapDrawer(LengthPerSection * 3, LengthPerSection,  false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[3]);
+                    IFrameProvider frameProvider55 = new FrameProvider(new BitmapDrawer(LengthPerSection * 4, LengthPerSection,  false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[4]);
+                    IFrameProvider frameProvider66 = new FrameProvider(new BitmapDrawer(LengthPerSection * 5, LengthPerSection,  false, new Bitmap(Image.FromFile(SelectedImage))),animationTransformations[5]);
 
                     //drawer = new SectionDrawer(new IDrawer[] { drawer11, drawer22, drawer33, drawer44, drawer55, drawer66 }, new int[] { 0, 1000, 2000, 3000, 4000, 5000 });
                     frameProvider = new CombinedFrameProvider(new IFrameProvider[] { frameProvider11, frameProvider22, frameProvider33, frameProvider44, frameProvider55, frameProvider66 }, new int[] { 0, 0, 0, 0, 0, 0 });

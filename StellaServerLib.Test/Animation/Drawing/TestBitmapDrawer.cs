@@ -33,7 +33,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2,0,expectedColor3);
             
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, new AnimationTransformation(frameWaitMs), true,bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true,bitmap);
 
             List<PixelInstruction> frame = drawer.First();
 
@@ -72,7 +72,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 1, expectedColor6);
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex,stripLength, new AnimationTransformation(frameWaitMs), true, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex,stripLength, true, bitmap);
             List<List<PixelInstruction>> frames = drawer.Take(2).ToList();
 
             // ASSERT
@@ -110,7 +110,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 0, Color.FromArgb(255, 0, 0, 255));
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, new AnimationTransformation(frameWaitMs), true, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, bitmap);
 
             List<PixelInstruction> frame = drawer.First();
 
@@ -142,7 +142,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(0, 2, expectedColor3);
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, new AnimationTransformation(frameWaitMs), true, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, bitmap);
             List<List<PixelInstruction>> frames = drawer.Take(4).ToList();
 
             // ASSERT
