@@ -134,7 +134,7 @@ namespace StellaVisualizer.ViewModels
                     return;
                 case DrawMethod.SlidingPattern:
                     animationTransformations = new AnimationTransformation[] { new AnimationTransformation(WaitMS), };
-                    frameProvider = new FrameProvider(new SlidingPatternDrawer(0,StripLength, new AnimationTransformation(WaitMS), pattern), animationTransformations[0]);
+                    frameProvider = new FrameProvider(new SlidingPatternDrawer(0,StripLength, pattern), animationTransformations[0]);
                     break;
                 case DrawMethod.RepeatingPattern:
                     break;

@@ -24,7 +24,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int lengthStrip = 7;
             int frameWaitMS = 100;
             int framesToTake = 3;
-            SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,lengthStrip,new AnimationTransformation(frameWaitMS), pattern);
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,lengthStrip,pattern);
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -78,7 +78,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMS = 100;
             int framesToTake = 1;
             int startIndex = 100;
-            SlidingPatternDrawer drawer = new SlidingPatternDrawer(startIndex,lengthStrip,new AnimationTransformation(frameWaitMS), pattern);
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(startIndex,lengthStrip, pattern);
 
             // Expected
             int expectedIndex1 = 100;
