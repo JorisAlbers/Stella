@@ -94,7 +94,7 @@ namespace EndToEndTests
 
                 }), new AnimationTransformation(100));
             IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), new AnimationTransformation(100));
-            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300, new AnimationTransformation(30), pattern), new AnimationTransformation(30));
+            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), new AnimationTransformation(30));
             AnimationTransformation[] animationTransformations = new AnimationTransformation[]{new AnimationTransformation(0), };
 
             string input;

@@ -28,7 +28,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int lengthStrip = 4;
             int frameWaitMS = 100;
             int framesToTake = 6;
-            MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, new AnimationTransformation(frameWaitMS), pattern);
+            MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, pattern);
             List<List<PixelInstruction>> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
@@ -95,7 +95,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int lengthStrip = 4;
             int frameWaitMS = 100;
             int framesToTake = 6;
-            MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip, new AnimationTransformation(frameWaitMS), pattern);
+            MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip,  pattern);
             List<List<PixelInstruction>> frames = drawer.Take(framesToTake).ToList();
 
             //Assert

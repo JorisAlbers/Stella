@@ -13,7 +13,6 @@ namespace StellaServerLib.Animation.Drawing
         private Color[] _pattern;
         private readonly int _startIndex;
         private int _stripLength;
-        private readonly AnimationTransformation _animationTransformation;
 
         /// <summary>
         /// Ctor
@@ -22,11 +21,10 @@ namespace StellaServerLib.Animation.Drawing
         /// <param name="stripLength">The length of the section to draw</param>
         /// <param name="animationTransformation"></param>
         /// <param name="pattern">The pattern to move</param>
-        public MovingPatternDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern)
+        public MovingPatternDrawer(int startIndex, int stripLength, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _animationTransformation = animationTransformation;
             _pattern = pattern;
         }
 

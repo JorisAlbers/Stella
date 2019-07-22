@@ -146,9 +146,9 @@ namespace StellaVisualizer.ViewModels
                         new AnimationTransformation(WaitMS),
                     };
 
-                    IFrameProvider frameProvider1 = new FrameProvider(new MovingPatternDrawer(0, LengthPerSection, animationTransformations[0], new Color[] { Color.Red }), animationTransformations[0]);
-                    IFrameProvider frameProvider2 = new FrameProvider(new MovingPatternDrawer(LengthPerSection, LengthPerSection * 2, animationTransformations[1], new Color[] { Color.Green }), animationTransformations[1]);
-                    IFrameProvider frameProvider3 = new FrameProvider(new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection / 2, LengthPerSection * 5, animationTransformations[2], new Color[] { Color.Blue }), animationTransformations[0]);
+                    IFrameProvider frameProvider1 = new FrameProvider(new MovingPatternDrawer(0, LengthPerSection,  new Color[] { Color.Red }), animationTransformations[0]);
+                    IFrameProvider frameProvider2 = new FrameProvider(new MovingPatternDrawer(LengthPerSection, LengthPerSection * 2,  new Color[] { Color.Green }), animationTransformations[1]);
+                    IFrameProvider frameProvider3 = new FrameProvider(new MovingPatternDrawer(LengthPerSection * 3 + LengthPerSection / 2, LengthPerSection * 5,  new Color[] { Color.Blue }), animationTransformations[0]);
                     
                     frameProvider = new CombinedFrameProvider(new IFrameProvider[]{ frameProvider1, frameProvider2, frameProvider3 }, new int[]{0,0,0} );
                     break;
