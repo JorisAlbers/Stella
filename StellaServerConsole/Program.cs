@@ -349,27 +349,78 @@ namespace StellaServerConsole
                 {
                     Storyboard sb = new Storyboard();
                     string name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-
                     sb.Name = name;
-                    // Assume we have 2 pi's, each with 1 line of 240 pixels
-                    sb.AnimationSettings = new IAnimationSettings[]
+                    
+                    if (name.Contains("3600"))
                     {
+                        sb.Name = name;
+                        // Assume we have 2 pi's, each with 1 line of 240 pixels
+                        sb.AnimationSettings = new IAnimationSettings[]
+                        {
+                            new BitmapAnimationSettings
+                            {
+                                FrameWaitMs = 10,
+                                ImageName = name,
+                                StripLength = 3600,
+                                Wraps = true
+                            }
+                        };
+                    }
+                    else
+                    {
+                        // Assume we have 2 pi's, each with 1 line of 240 pixels
+                        sb.AnimationSettings = new IAnimationSettings[]
+                        {
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 240,
+                            StripLength = 600,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 240,
-                            StartIndex = 240,
+                            StripLength = 600,
+                            StartIndex = 600,
                             Wraps = true
                         },
-                    };
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 1200,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 1800,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 2400,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 3000,
+                            Wraps = true
+                        },
+                        };
+                    }
+                    
                     storyboards.Add(sb);
                 }
             }
