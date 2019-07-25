@@ -20,8 +20,10 @@ namespace StellaClient.Test.Serialization
             int expectedUdpPort = 20065;
             int expectedLedCount = 1200;
             int expectedPwmPin = 18;
+            byte expectedBrightness = 250;
             int expectedDmaChannel = 10;
             int expectedMinimumFrameRate = 24;
+            
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("!Configuration");
@@ -31,6 +33,7 @@ namespace StellaClient.Test.Serialization
             stringBuilder.AppendLine($"UdpPort: {expectedUdpPort}");
             stringBuilder.AppendLine($"LedCount: {expectedLedCount}");
             stringBuilder.AppendLine($"PwmPin: {expectedPwmPin}");
+            stringBuilder.AppendLine($"Brightness: {expectedBrightness}");
             stringBuilder.AppendLine($"DmaChannel: {expectedDmaChannel}");
             stringBuilder.AppendLine($"MinimumFrameRate: {expectedMinimumFrameRate}");
 
@@ -45,6 +48,7 @@ namespace StellaClient.Test.Serialization
             Assert.AreEqual(expectedPort, configuration.Port);
             Assert.AreEqual(expectedLedCount, configuration.LedCount);
             Assert.AreEqual(expectedPwmPin, configuration.PwmPin);
+            Assert.AreEqual(expectedBrightness, configuration.Brightness);
             Assert.AreEqual(expectedDmaChannel, configuration.DmaChannel);
             Assert.AreEqual(expectedMinimumFrameRate, configuration.MinimumFrameRate);
 

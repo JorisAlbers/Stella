@@ -34,7 +34,10 @@ namespace StellaClient
         /// <summary> The minimum frame rate allowed. </summary>
         public int MinimumFrameRate { get; }
 
-        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel, int minimumFrameRate)
+        /// <summary> The overall brightness </summary>
+        public byte Brightness { get;}
+
+        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel, int minimumFrameRate, byte brightness)
         {
             Id = id;
             Ip = ip;
@@ -44,6 +47,7 @@ namespace StellaClient
             PwmPin = pwmPin;
             DmaChannel = dmaChannel;
             MinimumFrameRate = minimumFrameRate;
+            Brightness = brightness;
         }
     }
 }

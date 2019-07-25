@@ -24,7 +24,7 @@ namespace StellaClient.Serialization
             }
 
             return new Configuration(configuration.Id, configuration.Ip, configuration.Port, configuration.UdpPort, 
-                configuration.LedCount, configuration.PwmPin, configuration.DmaChannel, configuration.MinimumFrameRate);
+                configuration.LedCount, configuration.PwmPin, configuration.DmaChannel, configuration.MinimumFrameRate, configuration.Brightness);
         }
 
         private bool ValidateConfigurationSettings(ConfigurationSettings configuration, out List<string> errors)
@@ -74,5 +74,7 @@ namespace StellaClient.Serialization
             /// <summary> The minimum frame rate allowed. </summary>
             public int MinimumFrameRate { get; set; }
 
+            /// <summary> The overall brightness </summary>
+            public byte Brightness { get; set; }
     }
 }
