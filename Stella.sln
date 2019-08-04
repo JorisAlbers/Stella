@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServerAPI", "StellaSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServerAPI.Test", "StellaServerAPI.Test\StellaServerAPI.Test.csproj", "{961C9576-4C42-44B4-945C-8372B6BD0B95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaTestSuite", "StellaTestSuite\StellaTestSuite.csproj", "{8CA212E8-08DF-46A0-AA51-D6D884DBF285}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaVisualizer", "StellaVisualizer\StellaVisualizer.csproj", "{8CA212E8-08DF-46A0-AA51-D6D884DBF285}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClientLib", "StellaClientLib\StellaClientLib.csproj", "{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}"
 EndProject
