@@ -20,7 +20,7 @@
 
     <Grid Background="LightCoral">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 

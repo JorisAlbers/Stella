@@ -17,8 +17,8 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <UniformGrid Columns="1">
-        <ContentControl Content="{Binding ServerConfigurationViewModel}"/>
-        <ContentControl Content="{Binding ServerControlPanelViewModel}"/>
-    </UniformGrid>
+    <DockPanel >
+        <ContentControl DockPanel.Dock="Top" Content="{Binding ServerConfigurationViewModel}"/>
+        <ContentControl DockPanel.Dock="Top" Content="{Binding ServerControlPanelViewModel}"/>
+    </DockPanel>
 </UserControl>
