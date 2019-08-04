@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Client\ClientViewerViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Model\Client\MemoryStellaServerFactory.cs" />
     <Compile Include="Model\Client\MemoryStellaServer.cs" />
     <Compile Include="Model\Server\MemoryServer.cs" />
     <Compile Include="Server\ServerConfigurationControl.xaml.cs">
@@ -77,6 +78,7 @@
       <DependentUpon>ServerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Server\ServerControlViewModel.cs" />
+    <Compile Include="StellaTestSuite.cs" />
     <Page Include="Client\ClientViewerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
