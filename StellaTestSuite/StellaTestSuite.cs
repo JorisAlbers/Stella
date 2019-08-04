@@ -19,6 +19,8 @@ namespace StellaTestSuite
             clients[0] = CreateClient(0,numberOfPixelsPerRow * numberOfRows, minimumFrameRate,brightness);
             clients[1] = CreateClient(1,numberOfPixelsPerRow * numberOfRows, minimumFrameRate,brightness);
             clients[2] = CreateClient(2,numberOfPixelsPerRow * numberOfRows, minimumFrameRate,brightness);
+
+
         }
 
 

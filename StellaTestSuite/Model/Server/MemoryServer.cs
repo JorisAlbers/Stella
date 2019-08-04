@@ -12,6 +12,11 @@ namespace StellaTestSuite.Model.Server
         /// </summary>
         public event EventHandler<MessageSendEventArgs> MessageSend;
 
+        public void Start(string ip, int port, int udpPort)
+        {
+            ;
+        }
+
         public void SendToClient(int clientId, MessageType messageType)
         {
             throw new NotImplementedException();
@@ -31,11 +36,6 @@ namespace StellaTestSuite.Model.Server
         }
 
         public void Dispose()
-        {
-            ;
-        }
-
-        public void Start()
         {
             ;
         }

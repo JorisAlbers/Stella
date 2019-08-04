@@ -49,8 +49,8 @@ namespace EndToEndTests
             int port = 20055;
             int udpPort = 20056;
             Console.Out.WriteLine("Starting StellaServer instance");
-            Server server = new Server(Program.SERVER_IP,port, udpPort);
-            server.Start();
+            Server server = new Server();
+            server.Start(Program.SERVER_IP, port, udpPort);
             ClientController clientController = new ClientController(server);
 
             // Set mapping and create mask
@@ -131,9 +131,9 @@ namespace EndToEndTests
 
         private static void StartServerInstance()
         {
-            Server server = new Server(Program.SERVER_IP,20055, 20056);
+            Server server = new Server();
             Console.WriteLine("Starting server instance, press enter to quit");
-            server.Start();
+            server.Start(Program.SERVER_IP, 20055, 20056);
             Console.ReadLine();
             server.Dispose();
         }
