@@ -1,8 +1,8 @@
-﻿<Application x:Class="StellaVisualizer.App"
+﻿<Application x:Class="StellaTestSuite.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:StellaVisualizer"
-             StartupUri="Windows/MainWindow.xaml">
+             xmlns:local="clr-namespace:StellaTestSuite"
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

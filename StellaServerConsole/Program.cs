@@ -5,6 +5,7 @@ using System.Linq;
 using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
+using StellaServerLib.Network;
 using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerConsole
@@ -92,7 +93,7 @@ namespace StellaServerConsole
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new AnimatorCreation(_bitmapRepository));
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new Server(), new AnimatorCreation(_bitmapRepository));
 
             try
             {

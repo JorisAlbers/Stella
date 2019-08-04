@@ -1,10 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="SharpYaml" Version="1.6.5" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\StellaClientLib\StellaClientLib.csproj" />
     <ProjectReference Include="..\StellaLib\StellaLib.csproj" />
     <ProjectReference Include="..\rpi_ws281x\rpi_ws281x.csproj" />
   </ItemGroup>
