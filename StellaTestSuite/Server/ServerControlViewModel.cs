@@ -8,17 +8,20 @@ using System.Threading.Tasks;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
+using StellaTestSuite.Model;
 
 namespace StellaTestSuite.Server
 {
     public class ServerControlViewModel : INotifyPropertyChanged
     {
+        private readonly MemoryNetworkController _memoryNetworkController;
         public ServerConfigurationViewModel ServerConfigurationViewModel { get; set; }
 
         public ServerControlPanelViewModel ServerControlPanelViewModel { get; set; }
         
-        public ServerControlViewModel()
+        public ServerControlViewModel(MemoryNetworkController memoryNetworkController)
         {
+            _memoryNetworkController = memoryNetworkController;
             ServerConfigurationViewModel = new ServerConfigurationViewModel();
             ServerConfigurationViewModel.ApplyRequested += ServerConfigurationViewModel_OnApplyRequested;
         }
@@ -43,6 +46,15 @@ namespace StellaTestSuite.Server
 
             // Store in the ServerControlPanelViewModel
             ServerControlPanelViewModel = new ServerControlPanelViewModel(storyboards);
+            ServerControlPanelViewModel.StartStoryboardRequested += ServerControlPanelViewModel_OnStartStoryboardRequested;
+
+            // Start a new Server
+            _memoryNetworkController.StartServer(viewmodel.ConfigurationFile, viewmodel.BitmapDirectory);
+        }
+
+        private void ServerControlPanelViewModel_OnStartStoryboardRequested(object sender, Storyboard e)
+        {
+            _memoryNetworkController.StellaServer.StartStoryboard(e);
         }
 
         private static void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)

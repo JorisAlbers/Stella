@@ -18,7 +18,7 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Grid Background="LightCoral">
+    <Grid Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>

@@ -9,7 +9,7 @@
              Background="Azure"
              d:DataContext="{d:DesignInstance local:ServerControlPanelViewModel}">
     <Grid>
-        <ListView ItemsSource="{Binding Storyboards}">
+        <ListView ItemsSource="{Binding Storyboards}" SelectedItem="{Binding SelectedStoryboard}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>

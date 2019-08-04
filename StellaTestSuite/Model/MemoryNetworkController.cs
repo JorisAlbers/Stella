@@ -9,13 +9,14 @@ using StellaTestSuite.Model.Server;
 
 namespace StellaTestSuite.Model
 {
-    class MemoryNetworkController
+    public class MemoryNetworkController
     {
         private StellaClient[] _clients;
         private MemoryStellaServer[] _memoryStellaServers;
 
-        private StellaServer _stellaServer;
         private MemoryServer _memoryServer;
+
+        public StellaServer StellaServer { get; private set; }
 
         /// <summary>
         /// The server is sending a message to a client
@@ -51,8 +52,8 @@ namespace StellaTestSuite.Model
 
             _memoryServer = new MemoryServer();
             _memoryServer.FrameSend += MemoryServerOnFrameSend;
-            _stellaServer = new StellaServer(mappingFilePath,string.Empty,0,0,_memoryServer,new AnimatorCreation(new BitmapRepository(bitmapDirectoryPath)));
-            _stellaServer.Start();
+            StellaServer = new StellaServer(mappingFilePath,string.Empty,0,0,_memoryServer,new AnimatorCreation(new BitmapRepository(bitmapDirectoryPath)));
+            StellaServer.Start();
         }
 
         private void MemoryServerOnFrameSend(object sender, MessageSendEventArgs e)
