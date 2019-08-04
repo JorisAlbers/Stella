@@ -4,7 +4,7 @@ using StellaLib.Network;
 
 namespace StellaServerLib.Network
 {
-    public interface IServer
+    public interface IServer : IDisposable
     {
         void Start();
 

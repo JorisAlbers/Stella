@@ -18,7 +18,7 @@ namespace StellaServerLib
 
         private List<PiMaskItem> _mask;
         private int[] _stripLengthPerPi;
-        private Server _server;
+        private IServer _server;
         private ClientController _clientController;
 
         public IAnimator Animator { get; private set; }
