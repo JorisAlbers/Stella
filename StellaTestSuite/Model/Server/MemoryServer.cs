@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaServerLib.Network;
 
-namespace StellaTestSuite.Model
+namespace StellaTestSuite.Model.Server
 {
     public class MemoryServer : IServer
     {
