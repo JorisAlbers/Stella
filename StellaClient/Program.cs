@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using StellaClientLib.Network;
 using StellaClientLib.Serialization;
 
 namespace StellaClient
@@ -64,7 +65,7 @@ namespace StellaClient
             StellaClientLib.StellaClient stellaClient;
             try
             {
-                stellaClient = new StellaClientLib.StellaClient(configuration);
+                stellaClient = new StellaClientLib.StellaClient(configuration, new StellaServerFactory());
                 stellaClient.Start();
             }
             catch (Exception e)
