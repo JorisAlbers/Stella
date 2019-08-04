@@ -24,5 +24,13 @@ namespace StellaTestSuite.Server
         {
             InitializeComponent();
         }
+
+        private void OkButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ServerConfigurationViewModel viewmodel = DataContext as ServerConfigurationViewModel;
+            viewmodel.Apply();
+
+
+        }
     }
 }

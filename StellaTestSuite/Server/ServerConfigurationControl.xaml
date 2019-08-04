@@ -6,11 +6,23 @@
              xmlns:local="clr-namespace:StellaTestSuite.Server"
              d:DataContext="{d:DesignInstance local:ServerConfigurationViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="PapayaWhip">
     <StackPanel>
         <TextBlock Text="Server settings" FontWeight="Bold"/>
         <TextBlock Text="Storyboard dir"/>
-        <TextBox MaxLines="1"/>
+        <TextBox MaxLines="1" Text="{Binding StoryboardDirectory, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+
+        <TextBlock Text="Bitmap dir"/>
+        <TextBox MaxLines="1" Text="{Binding BitmapDirectory, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+
+        <TextBlock Text="Configuration file"/>
+        <TextBox MaxLines="1" Text="{Binding ConfigurationFile, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+
+        <Button Content="Apply" Click="OkButton_OnClick"/>
+
+
+
 
     </StackPanel>
 </UserControl>
