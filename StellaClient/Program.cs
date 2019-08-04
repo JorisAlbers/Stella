@@ -1,21 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Threading;
-using rpi_ws281x;
-using StellaClientLib.Light;
-using StellaClientLib.Network;
 using StellaClientLib.Serialization;
 
 namespace StellaClient
 {
     class Program
     {
-        private static Configuration _configuration;
-        private static LedController _ledController;
-        private static IStellaServer _stellaServer;
-
-
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -53,12 +44,13 @@ namespace StellaClient
             }
 
             // Get the configuration
+            Configuration configuration;
             try
             {
                 ConfigurationLoader configurationLoader = new ConfigurationLoader();
                 using (StreamReader reader = new StreamReader(configurationFilepath))
                 {
-                    _configuration = configurationLoader.Load(reader);
+                    configuration = configurationLoader.Load(reader);
                 }
             }
             catch (Exception e)
@@ -68,33 +60,16 @@ namespace StellaClient
                 return;
             }
 
-            // Start the ledController
+            // Start StellaClient
+            StellaClientLib.StellaClient stellaClient;
             try
             {
-                Settings settings = new Settings(800000, _configuration.DmaChannel);
-                settings.Channels[0] = new Channel(_configuration.LedCount, _configuration.PwmPin, _configuration.Brightness, false,
-                    StripType.WS2812_STRIP);
-                _ledController = new LedController(new WS281x(settings), _configuration.MinimumFrameRate);
+                stellaClient = new StellaClientLib.StellaClient(configuration);
+                stellaClient.Start();
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("Failed to start the ledController (Are you running with sudo rights?)");
-                OutputError(e);
-                return;
-            }
-
-            // Start the StellaServer connection
-            try
-            {
-                IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port);
-                _stellaServer = new StellaServer(localEndPoint, _configuration.UdpPort, _configuration.Id);
-                _stellaServer.RenderFrameReceived += (sender, frame) => _ledController.RenderFrame(frame);
-                
-                _stellaServer.Start();
-            }
-            catch (Exception e)
-            {
-                Console.Out.WriteLine("Failed to start opening a connection with the server.");
+                Console.Out.WriteLine("Failed to start StellaClient");
                 OutputError(e);
                 return;
             }
@@ -111,8 +86,7 @@ namespace StellaClient
             // main blocks here waiting for ctrl-C
             autoResetEvent.WaitOne();
             Console.WriteLine("Manual shutdown.");
-            _stellaServer.Dispose();
-            
+            stellaClient.Dispose();
         }
       
         static void OutputHelp()
