@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Client\ClientViewerViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Model\Client\MemoryStellaServer.cs" />
     <Compile Include="Model\Server\MemoryServer.cs" />
     <Compile Include="Server\ServerConfigurationControl.xaml.cs">
       <DependentUpon>ServerConfigurationControl.xaml</DependentUpon>
@@ -129,6 +130,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\StellaClientLib\StellaClientLib.csproj">
+      <Project>{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}</Project>
+      <Name>StellaClientLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StellaLib\StellaLib.csproj">
       <Project>{0a3463fd-cf48-4b70-be83-6668d052b70f}</Project>
       <Name>StellaLib</Name>
