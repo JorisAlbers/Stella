@@ -12,9 +12,13 @@
         <DataTemplate DataType="{x:Type server:ServerConfigurationViewModel}">
             <server:ServerConfigurationControl/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type server:ServerControlPanelViewModel}">
+            <server:ServerControlPanelControl/>
+        </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <UniformGrid Columns="1">
         <ContentControl Content="{Binding ServerConfigurationViewModel}"/>
-    </Grid>
+        <ContentControl Content="{Binding ServerControlPanelViewModel}"/>
+    </UniformGrid>
 </UserControl>
