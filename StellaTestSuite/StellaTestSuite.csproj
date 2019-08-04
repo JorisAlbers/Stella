@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Client\ClientViewerViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Model\MemoryServer.cs" />
     <Compile Include="Server\ServerConfigurationControl.xaml.cs">
       <DependentUpon>ServerConfigurationControl.xaml</DependentUpon>
     </Compile>
@@ -132,7 +133,12 @@
       <Project>{0a3463fd-cf48-4b70-be83-6668d052b70f}</Project>
       <Name>StellaLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj">
+      <Project>{7FEEB1EA-08AD-44CF-877E-90A55F8154EF}</Project>
+      <Name>StellaServerLib</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\packages\Fody.3.3.5\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
