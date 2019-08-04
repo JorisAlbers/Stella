@@ -13,7 +13,7 @@ namespace StellaClient
     {
         private static Configuration _configuration;
         private static LedController _ledController;
-        private static StellaServer _stellaServer;
+        private static IStellaServer _stellaServer;
 
 
         static void Main(string[] args)
