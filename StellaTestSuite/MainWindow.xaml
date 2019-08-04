@@ -5,12 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StellaTestSuite"
         xmlns:server="clr-namespace:StellaTestSuite.Server"
+        xmlns:client="clr-namespace:StellaTestSuite.Client"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type server:ServerControlViewModel}">
             <server:ServerControl/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type client:ClientViewerViewModel}">
+            <client:ClientViewerControl/>
         </DataTemplate>
     </Window.Resources>
 
@@ -20,7 +24,12 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ContentPresenter Content="{Binding ServerViewModel}"/>
+        <ContentPresenter Grid.Column="0" Content="{Binding ServerViewModel}"/>
+        <UniformGrid Grid.Column="1" Rows="1">
+            <ContentPresenter Content="{Binding Client1}"/>
+            <ContentPresenter Content="{Binding Client2}"/>
+            <ContentPresenter Content="{Binding Client3}"/>
+        </UniformGrid>
 
     </Grid>
 </Window>
