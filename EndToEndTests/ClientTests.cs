@@ -61,9 +61,9 @@ namespace EndToEndTests
 
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
-            StellaClientLib.Network.StellaServer stellaServer = new StellaClientLib.Network.StellaServer(localEndPoint,20056, id);
+            StellaClientLib.Network.StellaServer stellaServer = new StellaClientLib.Network.StellaServer();
             stellaServer.RenderFrameReceived += (sender, frame) => ledController.RenderFrame(frame);
-            stellaServer.Start();
+            stellaServer.Start(localEndPoint, 20056, id);
             
             string input;
             Console.Out.WriteLine($"Running StellaClient instance with id {id}");
@@ -93,9 +93,9 @@ namespace EndToEndTests
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);
 
-            StellaServer stellaServer = new StellaServer(localEndPoint, 20056, 0);
+            StellaServer stellaServer = new StellaServer();
             Console.WriteLine("Starting Client, press enter to quit");
-            stellaServer.Start();
+            stellaServer.Start(localEndPoint, 20056, 0);
             Console.ReadLine();
             stellaServer.Dispose();
         }

@@ -25,7 +25,7 @@ namespace StellaTestSuite
         private StellaClient CreateClient(int id, int numberOfPixels, int minimumFrameRate, byte brightness)
         {
             Configuration configuration = new Configuration(id,string.Empty,0,0,numberOfPixels,0,0, minimumFrameRate, brightness);
-            return new StellaClient(configuration, new MemoryStellaServerFactory());
+            return new StellaClient(configuration, new MemoryStellaServer());
         }
     }
 }

@@ -28,8 +28,8 @@ namespace StellaClient.Test.Network
 
             // Create a SocketConnectionController
             int clientId = 0;
-            StellaServer stellaServer = new StellaServer(localEndPoint, 20056, clientId);
-            stellaServer.Start();
+            StellaServer stellaServer = new StellaServer();
+            stellaServer.Start(localEndPoint, 20056, clientId);
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);

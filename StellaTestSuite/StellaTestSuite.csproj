@@ -67,7 +67,6 @@
     </Compile>
     <Compile Include="Client\ClientViewerViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="Model\Client\MemoryStellaServerFactory.cs" />
     <Compile Include="Model\Client\MemoryStellaServer.cs" />
     <Compile Include="Model\Server\MemoryServer.cs" />
     <Compile Include="Server\ServerConfigurationControl.xaml.cs">

@@ -14,13 +14,12 @@ namespace StellaClientLib
     {
         private static Configuration _configuration;
         private static LedController _ledController;
-        private readonly IStellaServerFactory _stellaServerFactory;
         private static IStellaServer _stellaServer;
 
-        public StellaClient(Configuration configuration, IStellaServerFactory stellaServerFactory)
+        public StellaClient(Configuration configuration, IStellaServer stellaServer)
         {
             _configuration = configuration;
-            _stellaServerFactory = stellaServerFactory;
+            _stellaServer = stellaServer;
         }
 
         public void Start()
@@ -43,10 +42,8 @@ namespace StellaClientLib
             try
             {
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port);
-                _stellaServer = _stellaServerFactory.Create(remoteEndPoint, _configuration.UdpPort, _configuration.Id);
                 _stellaServer.RenderFrameReceived += (sender, frame) => _ledController.RenderFrame(frame);
-
-                _stellaServer.Start();
+                _stellaServer.Start(remoteEndPoint, _configuration.UdpPort, _configuration.Id);
             }
             catch (Exception e)
             {

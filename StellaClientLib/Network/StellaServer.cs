@@ -22,7 +22,6 @@ namespace StellaClientLib.Network
 
         private bool _isDisposed;
         private IPEndPoint _serverAdress;
-        private readonly int _udpPort;
         private int _id;
         private SocketConnectionController<MessageType> _socketConnectionController;
         private UdpSocketConnectionController<MessageType> _udpSocketConnectionController;
@@ -33,19 +32,18 @@ namespace StellaClientLib.Network
         public event EventHandler<FrameWithoutDelta> RenderFrameReceived;
 
 
-        public StellaServer(IPEndPoint serverAdress, int udpPort, int ID)
+        public StellaServer()
         {
-            _serverAdress = serverAdress;
-            _udpPort = udpPort;
-            _id = ID;
             _frameSectionBuffer = new Dictionary<int, FrameWithoutDeltaProtocol>();
         }
 
-        public void Start()
+        public void Start(IPEndPoint serverAdress, int udpPort, int Id)
         {
+            _serverAdress = serverAdress;
+            _id = Id;
             // Start UDP connection
-            IPEndPoint udpRemoteEndpoint = new IPEndPoint(_serverAdress.Address, _udpPort);
-            IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, _udpPort); // TODO inject the local endpoint?
+            IPEndPoint udpRemoteEndpoint = new IPEndPoint(_serverAdress.Address, udpPort);
+            IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, udpPort); // TODO inject the local endpoint?
 
             ISocketConnection udpSocket = UdpSocketConnectionController<MessageType>.CreateSocket(udpLocalEndPoint);
             _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint, UDP_BUFFER_SIZE);
