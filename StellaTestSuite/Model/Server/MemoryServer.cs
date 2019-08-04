@@ -10,7 +10,7 @@ namespace StellaTestSuite.Model.Server
         /// <summary>
         /// The server is sending a message to a client
         /// </summary>
-        public event EventHandler<MessageSendEventArgs> MessageSend;
+        public event EventHandler<MessageSendEventArgs> FrameSend;
 
         public void Start(string ip, int port, int udpPort)
         {
@@ -24,7 +24,7 @@ namespace StellaTestSuite.Model.Server
 
         public void SendToClient(int clientId, FrameWithoutDelta frame)
         {
-            var eventHandler = MessageSend;
+            var eventHandler = FrameSend;
             if (eventHandler != null)
             {
                 eventHandler.Invoke(this,new MessageSendEventArgs
