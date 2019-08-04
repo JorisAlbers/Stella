@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\StellaClientLib\StellaClientLib.csproj" />
     <ProjectReference Include="..\StellaClient\StellaClient.csproj" />
   </ItemGroup>
 

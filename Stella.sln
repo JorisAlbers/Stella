@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServerAPI.Test", "Ste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaTestSuite", "StellaTestSuite\StellaTestSuite.csproj", "{8CA212E8-08DF-46A0-AA51-D6D884DBF285}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaClientLib", "StellaClientLib\StellaClientLib.csproj", "{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +197,18 @@ Global
 		{8CA212E8-08DF-46A0-AA51-D6D884DBF285}.Release|x64.Build.0 = Release|Any CPU
 		{8CA212E8-08DF-46A0-AA51-D6D884DBF285}.Release|x86.ActiveCfg = Release|Any CPU
 		{8CA212E8-08DF-46A0-AA51-D6D884DBF285}.Release|x86.Build.0 = Release|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Debug|x64.Build.0 = Debug|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Debug|x86.Build.0 = Debug|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x64.ActiveCfg = Release|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x64.Build.0 = Release|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x86.ActiveCfg = Release|Any CPU
+		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

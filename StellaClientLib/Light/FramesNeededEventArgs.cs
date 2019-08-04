@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace StellaClient.Light
+namespace StellaClientLib.Light
 {
     public class FramesNeededEventArgs : EventArgs
     {

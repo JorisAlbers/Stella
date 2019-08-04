@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using rpi_ws281x;
 using StellaLib.Animation;
 
-namespace StellaClient.Light
+namespace StellaClientLib.Light
 {
     /// <summary>
     ///  Controls the LedStrip.

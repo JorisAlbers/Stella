@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpYaml" Version="1.6.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\rpi_ws281x\rpi_ws281x.csproj" />
+    <ProjectReference Include="..\StellaLib\StellaLib.csproj" />
+  </ItemGroup>
+
+</Project>

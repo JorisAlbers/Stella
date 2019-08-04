@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StellaClient
+﻿namespace StellaClientLib.Serialization
 {
     /// <summary>
     /// The configuration of the StellaClient

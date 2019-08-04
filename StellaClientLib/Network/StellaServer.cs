@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaLib.Network;
-using StellaLib.Network.Packages;
-using StellaLib.Network.Protocol;
 using StellaLib.Network.Protocol.Animation;
 
-namespace StellaClient.Network
+namespace StellaClientLib.Network
 {
     /// <summary>
     /// The connection with StellaServer

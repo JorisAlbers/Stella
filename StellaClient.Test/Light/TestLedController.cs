@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Threading;
+﻿using System.Drawing;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using rpi_ws281x;
-using StellaClient.Light;
+using StellaClientLib.Light;
 using StellaLib.Animation;
 
 namespace StellaClient.Test.Light

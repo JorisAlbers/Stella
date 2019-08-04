@@ -2,7 +2,7 @@
 using StellaLib.Animation;
 using StellaLib.Network;
 
-namespace StellaClient.Network
+namespace StellaClientLib.Network
 {
     public interface IStellaServer
     {

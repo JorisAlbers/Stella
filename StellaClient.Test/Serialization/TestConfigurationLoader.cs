@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
-using StellaClient.Serialization;
+using StellaClientLib.Serialization;
 
 namespace StellaClient.Test.Serialization
 {

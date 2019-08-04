@@ -1,5 +1,4 @@
 using rpi_ws281x;
-using StellaClient.Light;
 using StellaLib.Animation;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using StellaClientLib.Light;
+using StellaClientLib.Network;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Drawing.Fade;
 
@@ -60,7 +61,7 @@ namespace EndToEndTests
 
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint,20056, id);
+            StellaClientLib.Network.StellaServer stellaServer = new StellaClientLib.Network.StellaServer(localEndPoint,20056, id);
             stellaServer.RenderFrameReceived += (sender, frame) => ledController.RenderFrame(frame);
             stellaServer.Start();
             
@@ -92,7 +93,7 @@ namespace EndToEndTests
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);
 
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, 20056, 0);
+            StellaServer stellaServer = new StellaServer(localEndPoint, 20056, 0);
             Console.WriteLine("Starting Client, press enter to quit");
             stellaServer.Start();
             Console.ReadLine();

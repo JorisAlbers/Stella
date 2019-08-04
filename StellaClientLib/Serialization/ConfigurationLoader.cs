@@ -4,7 +4,7 @@ using System.IO;
 using SharpYaml.Serialization;
 using StellaLib.Serialization;
 
-namespace StellaClient.Serialization
+namespace StellaClientLib.Serialization
 {
     /// <summary>
     /// Load a configuration. Must be in yaml format.

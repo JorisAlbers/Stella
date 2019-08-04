@@ -3,10 +3,9 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using rpi_ws281x;
-using StellaClient.Light;
-using StellaClient.Network;
-using StellaClient.Serialization;
-using StellaLib.Animation;
+using StellaClientLib.Light;
+using StellaClientLib.Network;
+using StellaClientLib.Serialization;
 
 namespace StellaClient
 {
