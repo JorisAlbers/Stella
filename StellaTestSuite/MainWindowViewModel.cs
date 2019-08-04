@@ -22,6 +22,8 @@ namespace StellaTestSuite
         public MainWindowViewModel()
         {
             ServerViewModel = new ServerControlViewModel();
+            ServerViewModel.ServerConfigurationViewModel.ApplyRequested += ServerConfigurationViewModel_OnApplyRequested;
+
             ClientViewModels = new ClientViewerViewModel[3];
 
             ClientViewModels[0] = new ClientViewerViewModel(1200);
@@ -30,6 +32,13 @@ namespace StellaTestSuite
 
             _memoryNetworkController = new MemoryNetworkController(3,1200,20,255);
             _memoryNetworkController.FrameSend += MemoryNetworkControllerOnFrameSend;
+        }
+
+        private void ServerConfigurationViewModel_OnApplyRequested(object sender, EventArgs e)
+        {
+            // Start a new Server
+            ServerConfigurationViewModel vm = sender as ServerConfigurationViewModel;
+            _memoryNetworkController.StartServer(vm.ConfigurationFile, vm.BitmapDirectory);
         }
 
         private void MemoryNetworkControllerOnFrameSend(object sender, MessageSendEventArgs e)
