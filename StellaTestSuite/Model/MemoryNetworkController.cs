@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StellaClientLib;
 using StellaClientLib.Serialization;
 using StellaLib.Network;
@@ -11,9 +7,9 @@ using StellaServerLib.Animation;
 using StellaTestSuite.Model.Client;
 using StellaTestSuite.Model.Server;
 
-namespace StellaTestSuite
+namespace StellaTestSuite.Model
 {
-    class StellaTestSuite
+    class MemoryNetworkController
     {
         private StellaClient[] _clients;
         private MemoryStellaServer[] _memoryStellaServers;
@@ -26,7 +22,7 @@ namespace StellaTestSuite
         /// </summary>
         public event EventHandler<MessageSendEventArgs> FrameSend;
 
-        public StellaTestSuite(int numberOfClients, int numberOfPixels, int minimumFrameRate, byte brightness)
+        public MemoryNetworkController(int numberOfClients, int numberOfPixels, int minimumFrameRate, byte brightness)
         {
             if (_memoryStellaServers != null)
             {

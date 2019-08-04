@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StellaLib.Animation;
 
 namespace StellaTestSuite.Client
 {
@@ -11,6 +12,8 @@ namespace StellaTestSuite.Client
     {
         public int NumberOfPixels { get; private set; }
         public int NumberOfPixelsPerRow { get; private set; }
+
+        public Action<FrameWithoutDelta> FrameReceived;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -20,5 +23,9 @@ namespace StellaTestSuite.Client
             NumberOfPixelsPerRow = numberOfPixels / 2;
         }
 
+        public void DrawFrame(FrameWithoutDelta frame)
+        {
+            FrameReceived.Invoke(frame);
+        }
     }
 }

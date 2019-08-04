@@ -58,29 +58,34 @@ namespace StellaTestSuite.Client
                     VerticalAlignment = VerticalAlignment.Stretch
                 });
             }
+
+            // Subscribe to the frame received so we can draw in this code behind
+            ViewModel.FrameReceived += FrameReceived;
         }
 
-        /// <summary>
-        /// Draw a frame. Should be called from the main thread.
-        /// </summary>
-        /// <param name="frame"></param>
-        public void DrawFrame(List<PixelInstruction> frame)
+        private void FrameReceived(FrameWithoutDelta frame)
         {
-            for (int i = 0; i < frame.Count; i++)
+            Dispatcher.Invoke(() => { DrawFrame(frame); });
+        }
+
+        private void DrawFrame(FrameWithoutDelta frame)
+        {
+            // Row 1
+            for (int i = 0; i < ViewModel.NumberOfPixelsPerRow; i++)
             {
                 System.Drawing.Color color = frame[i].Color;
                 SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
-                if (frame[i].Index < ViewModel.NumberOfPixelsPerRow)
-                {
-                    // Draw on row 1
-                    ((Rectangle)Row1.Children[(int)frame[i].Index]).Fill = brush;
-                }
-                else
-                {
-                    // Draw on row 2
-                    ((Rectangle)Row1.Children[(int)frame[i].Index - ViewModel.NumberOfPixelsPerRow]).Fill = brush;
-                }
+                ((Rectangle)Row1.Children[i]).Fill = brush;
+            }
+
+            // Row 2
+            for (int i = ViewModel.NumberOfPixelsPerRow; i < ViewModel.NumberOfPixelsPerRow * 2; i++)
+            {
+                System.Drawing.Color color = frame[i].Color;
+                SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+                ((Rectangle)Row2.Children[i - ViewModel.NumberOfPixelsPerRow]).Fill = brush;
             }
         }
+
     }
 }

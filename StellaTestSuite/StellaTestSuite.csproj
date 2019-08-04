@@ -77,7 +77,7 @@
       <DependentUpon>ServerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Server\ServerControlViewModel.cs" />
-    <Compile Include="StellaTestSuite.cs" />
+    <Compile Include="Model\MemoryNetworkController.cs" />
     <Page Include="Client\ClientViewerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

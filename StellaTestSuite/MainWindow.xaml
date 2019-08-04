@@ -26,9 +26,9 @@
 
         <ContentPresenter Grid.Column="0" Content="{Binding ServerViewModel}"/>
         <UniformGrid Grid.Column="1" Rows="1">
-            <ContentPresenter Content="{Binding Client1}"/>
-            <ContentPresenter Content="{Binding Client2}"/>
-            <ContentPresenter Content="{Binding Client3}"/>
+            <ContentPresenter Content="{Binding ClientViewModels[0]}"/>
+            <ContentPresenter Content="{Binding ClientViewModels[1]}"/>
+            <ContentPresenter Content="{Binding ClientViewModels[2]}"/>
         </UniformGrid>
 
     </Grid>
