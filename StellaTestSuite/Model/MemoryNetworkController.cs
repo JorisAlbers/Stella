@@ -52,6 +52,7 @@ namespace StellaTestSuite.Model
             _memoryServer = new MemoryServer();
             _memoryServer.FrameSend += MemoryServerOnFrameSend;
             _stellaServer = new StellaServer(mappingFilePath,string.Empty,0,0,_memoryServer,new AnimatorCreation(new BitmapRepository(bitmapDirectoryPath)));
+            _stellaServer.Start();
         }
 
         private void MemoryServerOnFrameSend(object sender, MessageSendEventArgs e)
