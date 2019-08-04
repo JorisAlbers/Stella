@@ -19,16 +19,18 @@ namespace StellaServerLib
         private List<PiMaskItem> _mask;
         private int[] _stripLengthPerPi;
         private IServer _server;
+        private readonly IServerFactory _serverFactory;
         private ClientController _clientController;
 
         public IAnimator Animator { get; private set; }
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, AnimatorCreation animatorCreation)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, IServerFactory serverFactory, AnimatorCreation animatorCreation)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
+            _serverFactory = serverFactory;
             _animatorCreation = animatorCreation;
         }
 
@@ -37,7 +39,7 @@ namespace StellaServerLib
             // Read mapping
             _mask = LoadMask(_mappingFilePath);
             // Start Server
-            _server = StartServer(_ip, _port, _udpPort);
+            _server = StartServer(_ip, _port, _udpPort, _serverFactory);
             // Start ClientController
             _clientController = StartClientController(_server);
         }
@@ -77,12 +79,12 @@ namespace StellaServerLib
             }
         }
 
-        private Server StartServer(string ip, int port, int udpPort)
+        private IServer StartServer(string ip, int port, int udpPort, IServerFactory serverFactory)
         {
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
-                Server server = new Server(ip, port, udpPort);
+                IServer server = serverFactory.Create(ip, port, udpPort);
                 server.Start();
                 return server;
             }
