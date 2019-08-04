@@ -11,23 +11,18 @@ namespace StellaTestSuite
 {
     class StellaTestSuite
     {
-        private StellaClient[] clients;
+        private StellaClient[] _clients;
+        private MemoryStellaServer[] _memoryStellaServers;
 
-        public StellaTestSuite(int numberOfClients, int numberOfPixelsPerRow, int numberOfRows, int minimumFrameRate, byte brightness)
+        public StellaTestSuite(int numberOfClients, int numberOfPixels, int minimumFrameRate, byte brightness)
         {
-            clients = new StellaClient[numberOfClients];
-            clients[0] = CreateClient(0,numberOfPixelsPerRow * numberOfRows, minimumFrameRate,brightness);
-            clients[1] = CreateClient(1,numberOfPixelsPerRow * numberOfRows, minimumFrameRate,brightness);
-            clients[2] = CreateClient(2,numberOfPixelsPerRow * numberOfRows, minimumFrameRate,brightness);
-
-
-        }
-
-
-        private StellaClient CreateClient(int id, int numberOfPixels, int minimumFrameRate, byte brightness)
-        {
-            Configuration configuration = new Configuration(id,string.Empty,0,0,numberOfPixels,0,0, minimumFrameRate, brightness);
-            return new StellaClient(configuration, new MemoryStellaServer());
+            _clients = new StellaClient[numberOfClients];
+            _memoryStellaServers = new MemoryStellaServer[numberOfClients];
+            for (int i = 0; i < numberOfClients; i++)
+            {
+                _memoryStellaServers[i] = new MemoryStellaServer();
+                _clients[i] = new StellaClient(new Configuration(i, string.Empty, 0, 0, numberOfPixels, 0, 0, minimumFrameRate, brightness), _memoryStellaServers[i] );
+            }
         }
     }
 }
