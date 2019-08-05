@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using rpi_ws281x;
 using StellaClientLib.Network;
 using StellaClientLib.Serialization;
 
@@ -65,7 +66,9 @@ namespace StellaClient
             StellaClientLib.StellaClient stellaClient;
             try
             {
-                stellaClient = new StellaClientLib.StellaClient(configuration, new StellaServer());
+                Settings settings = new Settings(800000, configuration.DmaChannel);
+                settings.Channels[0] = new Channel(configuration.LedCount, configuration.PwmPin, configuration.Brightness, false, StripType.WS2812_STRIP);
+                stellaClient = new StellaClientLib.StellaClient(configuration, new StellaServer(), new WS281x(settings));
                 stellaClient.Start();
             }
             catch (Exception e)

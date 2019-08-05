@@ -12,14 +12,16 @@ namespace StellaClientLib
 {
     public class StellaClient : IDisposable
     {
-        private static Configuration _configuration;
-        private static LedController _ledController;
-        private static IStellaServer _stellaServer;
+        private readonly Configuration _configuration;
+        private LedController _ledController;
+        private readonly IStellaServer _stellaServer;
+        private readonly ILEDStrip _ledStrip;
 
-        public StellaClient(Configuration configuration, IStellaServer stellaServer)
+        public StellaClient(Configuration configuration, IStellaServer stellaServer, ILEDStrip ledStrip)
         {
             _configuration = configuration;
             _stellaServer = stellaServer;
+            _ledStrip = ledStrip;
         }
 
         public void Start()
@@ -27,10 +29,7 @@ namespace StellaClientLib
             // Start the ledController
             try
             {
-                Settings settings = new Settings(800000, _configuration.DmaChannel);
-                settings.Channels[0] = new Channel(_configuration.LedCount, _configuration.PwmPin, _configuration.Brightness, false,
-                    StripType.WS2812_STRIP);
-                _ledController = new LedController(new WS281x(settings), _configuration.MinimumFrameRate);
+                _ledController = new LedController(_ledStrip, _configuration.MinimumFrameRate);
             }
             catch (Exception e)
             {

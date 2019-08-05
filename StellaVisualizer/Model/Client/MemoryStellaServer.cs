@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -16,6 +17,21 @@ namespace StellaTestSuite.Model.Client
         /// Fired when the client is sending a message
         /// </summary>
         public event EventHandler<MessageType> MessageSend;
+
+        public event EventHandler<FrameWithoutDelta> RenderFrameReceived;
+
+        /// <summary>
+        /// Fakes an incoming message by firing the RenderFrameReceived event
+        /// </summary>
+        /// <param name="frame"></param>
+        public void OnRenderFrameReceived(FrameWithoutDelta frame)
+        {
+            var eventHandler = RenderFrameReceived;
+            if (eventHandler != null)
+            {
+                eventHandler.Invoke(this,frame);
+            }
+        }
 
         public void Dispose()
         {
@@ -36,6 +52,7 @@ namespace StellaTestSuite.Model.Client
             ;
         }
 
-        public event EventHandler<FrameWithoutDelta> RenderFrameReceived;
+
+
     }
 }

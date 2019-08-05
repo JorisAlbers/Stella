@@ -63,17 +63,17 @@ namespace StellaTestSuite.Client
             ViewModel.FrameReceived += FrameReceived;
         }
 
-        private void FrameReceived(FrameWithoutDelta frame)
+        private void FrameReceived(System.Drawing.Color[] frame)
         {
             Dispatcher.Invoke(() => { DrawFrame(frame); });
         }
 
-        private void DrawFrame(FrameWithoutDelta frame)
+        private void DrawFrame(System.Drawing.Color[] frame)
         {
             // Row 1
             for (int i = 0; i < ViewModel.NumberOfPixelsPerRow; i++)
             {
-                System.Drawing.Color color = frame[i].Color;
+                System.Drawing.Color color = frame[i];
                 SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
                 ((Rectangle)Row1.Children[i]).Fill = brush;
             }
@@ -81,7 +81,7 @@ namespace StellaTestSuite.Client
             // Row 2
             for (int i = ViewModel.NumberOfPixelsPerRow; i < ViewModel.NumberOfPixelsPerRow * 2; i++)
             {
-                System.Drawing.Color color = frame[i].Color;
+                System.Drawing.Color color = frame[i];
                 SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
                 ((Rectangle)Row2.Children[i - ViewModel.NumberOfPixelsPerRow]).Fill = brush;
             }

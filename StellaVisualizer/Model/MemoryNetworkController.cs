@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using StellaClientLib;
 using StellaClientLib.Serialization;
 using StellaLib.Network;
@@ -6,6 +7,7 @@ using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaTestSuite.Model.Client;
 using StellaTestSuite.Model.Server;
+using StellaVisualizer.Model.Client;
 
 namespace StellaTestSuite.Model
 {
@@ -18,12 +20,7 @@ namespace StellaTestSuite.Model
 
         public StellaServer StellaServer { get; private set; }
 
-        /// <summary>
-        /// The server is sending a message to a client
-        /// </summary>
-        public event EventHandler<MessageSendEventArgs> FrameSend;
-
-        public MemoryNetworkController(int numberOfClients, int numberOfPixels, int minimumFrameRate, byte brightness)
+        public MemoryNetworkController(MemoryLedStrip[] ledstrips, int numberOfPixels, int minimumFrameRate, byte brightness)
         {
             if (_memoryStellaServers != null)
             {
@@ -33,15 +30,21 @@ namespace StellaTestSuite.Model
                 }
             }
 
+            int numberOfClients = ledstrips.Length;
+
             _clients = new StellaClient[numberOfClients];
             _memoryStellaServers = new MemoryStellaServer[numberOfClients];
             for (int i = 0; i < numberOfClients; i++)
             {
+                // Network
                 _memoryStellaServers[i] = new MemoryStellaServer();
                 _memoryStellaServers[i].MessageSend += MemoryStellaServer_OnMessageSend;
-                _clients[i] = new StellaClient(new Configuration(i, string.Empty, 0, 0, numberOfPixels, 0, 0, minimumFrameRate, brightness), _memoryStellaServers[i] );
+                
+                _clients[i] = new StellaClient(new Configuration(i, "192.168.1.110", 20055, 20060, numberOfPixels, 18, 10, minimumFrameRate, brightness), _memoryStellaServers[i], ledstrips[i]);
+                _clients[i].Start();
             }
         }
+
 
         public void StartServer(string mappingFilePath, string bitmapDirectoryPath)
         {
@@ -52,17 +55,16 @@ namespace StellaTestSuite.Model
 
             _memoryServer = new MemoryServer();
             _memoryServer.FrameSend += MemoryServerOnFrameSend;
-            StellaServer = new StellaServer(mappingFilePath,string.Empty,0,0,_memoryServer,new AnimatorCreation(new BitmapRepository(bitmapDirectoryPath)));
+            StellaServer = new StellaServer(mappingFilePath, "192.168.1.110", 20055, 20060, _memoryServer,new AnimatorCreation(new BitmapRepository(bitmapDirectoryPath)));
             StellaServer.Start();
         }
 
         private void MemoryServerOnFrameSend(object sender, MessageSendEventArgs e)
         {
-            // Server is sending a frame. Bubble the event
-            var eventHandler = FrameSend;
-            if (eventHandler != null)
+            // Server is sending a frame. Fake a send to the client
+            if (_memoryStellaServers.Length > e.ID)
             {
-                eventHandler.Invoke(sender,e);
+                _memoryStellaServers[e.ID].OnRenderFrameReceived(e.frame);
             }
         }
 
