@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StellaLib.Animation;
 
-namespace StellaTestSuite.Client
+namespace StellaVisualizer.Client
 {
     public class ClientViewerViewModel: INotifyPropertyChanged
     {

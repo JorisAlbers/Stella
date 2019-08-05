@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace StellaTestSuite.Properties
+namespace StellaVisualizer.Properties
 {
 
 

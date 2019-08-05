@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using StellaTestSuite.Client;
-using StellaTestSuite.Model;
-using StellaTestSuite.Model.Server;
-using StellaTestSuite.Server;
+﻿using StellaVisualizer.Client;
+using StellaVisualizer.Model;
 using StellaVisualizer.Model.Client;
+using StellaVisualizer.Server;
 
-namespace StellaTestSuite
+namespace StellaVisualizer
 {
     public class MainWindowViewModel
     {

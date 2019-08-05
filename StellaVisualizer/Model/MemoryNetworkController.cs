@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Drawing;
 using StellaClientLib;
 using StellaClientLib.Serialization;
 using StellaLib.Network;
 using StellaServerLib;
 using StellaServerLib.Animation;
-using StellaTestSuite.Model.Client;
-using StellaTestSuite.Model.Server;
 using StellaVisualizer.Model.Client;
+using StellaVisualizer.Model.Server;
 
-namespace StellaTestSuite.Model
+namespace StellaVisualizer.Model
 {
     public class MemoryNetworkController
     {

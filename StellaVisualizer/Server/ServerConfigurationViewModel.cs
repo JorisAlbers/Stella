@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
-namespace StellaTestSuite.Server
+namespace StellaVisualizer.Server
 {
     public class ServerConfigurationViewModel : INotifyPropertyChanged
     {

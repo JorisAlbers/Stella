@@ -3,7 +3,7 @@ using StellaLib.Animation;
 using StellaLib.Network;
 using StellaServerLib.Network;
 
-namespace StellaTestSuite.Model.Server
+namespace StellaVisualizer.Model.Server
 {
     public class MemoryServer : IServer
     {

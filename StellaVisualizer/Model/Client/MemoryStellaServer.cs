@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using StellaClientLib.Network;
 using StellaLib.Animation;
 using StellaLib.Network;
 
-namespace StellaTestSuite.Model.Client
+namespace StellaVisualizer.Model.Client
 {
     public class MemoryStellaServer : IStellaServer
     {

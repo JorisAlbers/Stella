@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StellaServerLib.Animation;
 
-namespace StellaTestSuite.Server
+namespace StellaVisualizer.Server
 {
     public class ServerControlPanelViewModel : INotifyPropertyChanged
     {

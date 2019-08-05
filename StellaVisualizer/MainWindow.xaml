@@ -1,13 +1,13 @@
-﻿<Window x:Class="StellaTestSuite.MainWindow"
+﻿<Window x:Class="StellaVisualizer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:StellaTestSuite"
-        xmlns:server="clr-namespace:StellaTestSuite.Server"
-        xmlns:client="clr-namespace:StellaTestSuite.Client"
+        xmlns:stellaVisualizer="clr-namespace:StellaVisualizer"
+        xmlns:server="clr-namespace:StellaVisualizer.Server"
+        xmlns:client="clr-namespace:StellaVisualizer.Client"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
+        d:DataContext="{d:DesignInstance stellaVisualizer:MainWindowViewModel}"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type server:ServerControlViewModel}">
