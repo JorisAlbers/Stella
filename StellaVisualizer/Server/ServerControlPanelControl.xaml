@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:server="clr-namespace:StellaVisualizer.Server"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="250"
              Background="Azure"
-             d:DataContext="{d:DesignInstance local:ServerControlPanelViewModel}">
+             d:DataContext="{d:DesignInstance server:ServerControlPanelViewModel}">
     <Grid>
         <ListView ItemsSource="{Binding Storyboards}" SelectedItem="{Binding SelectedStoryboard}">
             <ListView.ItemTemplate>
