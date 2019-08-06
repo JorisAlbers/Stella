@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Drawing.Fade;
 using StellaServerLib.Animation.FrameProviding;
@@ -25,7 +26,8 @@ namespace StellaServerLib.Animation
             if (storyboard.AnimationSettings.Length == 1)
             {
                 // Use a normal drawer
-                IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0], out AnimationTransformation animationTransformation);
+                IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0]);
+                AnimationTransformation animationTransformation = new AnimationTransformation(storyboard.AnimationSettings[0].FrameWaitMs);
                 frameProvider = new FrameProvider(drawer,animationTransformation);
                 animationTransformations[0] = animationTransformation;
             }
@@ -36,10 +38,31 @@ namespace StellaServerLib.Animation
                 IFrameProvider[] frameProviders = new IFrameProvider[storyboard.AnimationSettings.Length];
                 int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
 
+                // Dirty check
+                Dictionary<string, List<PixelInstructionWithoutDelta>[]> bitmapToFramesDictionary = new Dictionary<string, List<PixelInstructionWithoutDelta>[]>();
+
                 for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
                 {
                     IAnimationSettings settings = storyboard.AnimationSettings[i];
-                    IDrawer drawer = CreateDrawer(settings, out AnimationTransformation animationTransformation);
+                    IDrawer drawer;
+                    AnimationTransformation animationTransformation;
+
+
+                    if (settings is BitmapAnimationSettings bitmapAnimationSettings)
+                    {
+                        if (!bitmapToFramesDictionary.ContainsKey(bitmapAnimationSettings.ImageName))
+                        {
+                            bitmapToFramesDictionary[bitmapAnimationSettings.ImageName] =
+                                BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName));
+                        }
+                        animationTransformation = new AnimationTransformation(bitmapAnimationSettings.FrameWaitMs);
+                        drawer = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
+                    }
+                    else
+                    {
+                        animationTransformation = new AnimationTransformation(settings.FrameWaitMs);
+                        drawer = CreateDrawer(settings);
+                    }                    
                     frameProviders[i] = new FrameProvider(drawer, animationTransformation);
                     animationTransformations[i] = animationTransformation;
                     relativeTimeStamps[i] = settings.RelativeStart;
@@ -52,10 +75,8 @@ namespace StellaServerLib.Animation
             return new Animator(frameProvider, stripLengthPerPi, mask, animationTransformations);
         }
 
-        private IDrawer CreateDrawer(IAnimationSettings animationSetting, out AnimationTransformation animationTransformation)
+        private IDrawer CreateDrawer(IAnimationSettings animationSetting)
         {
-            animationTransformation = new AnimationTransformation(animationSetting.FrameWaitMs);
-
             if (animationSetting is MovingPatternAnimationSettings movingPatternSetting)
             {
                 return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, movingPatternSetting.Pattern);
@@ -76,9 +97,11 @@ namespace StellaServerLib.Animation
             {
                 return new FadingPulseDrawer(fadingPulseSetting.StartIndex, fadingPulseSetting.StripLength, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
             }
-            if (animationSetting is BitmapAnimationSettings bitmapSetting)
+
+            if (animationSetting is BitmapAnimationSettings bitmapAnimationSettings)
             {
-                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, bitmapSetting.Wraps, _bitmapRepository.Load(bitmapSetting.ImageName));
+                return new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName)));
+
             }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");
