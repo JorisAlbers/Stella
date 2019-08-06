@@ -110,7 +110,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 0, Color.FromArgb(255, 0, 0, 255));
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
 
             List<PixelInstruction> frame = drawer.First();
 
