@@ -182,7 +182,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 if (FrameWaitMsRequested != null)
                 {
                     int frameWaitMs = FrameWaitMsRequested(animationIndex);
@@ -223,7 +223,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 if (RgbFadeRequested != null)
                 {
                     float[] rgbFade = RgbFadeRequested.Invoke(animationIndex);
@@ -271,7 +271,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 if (BrightnessCorrectionRequested != null)
                 {
                     float brightnessCorrection = BrightnessCorrectionRequested(animationIndex);
@@ -292,7 +292,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 float brightnessCorrection = BitConverter.ToSingle(data, 4);
                 if (BrightnessCorrectionSet != null)
                 {
