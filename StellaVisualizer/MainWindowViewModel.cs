@@ -17,11 +17,13 @@ namespace StellaVisualizer
 
         public MainWindowViewModel()
         {
+            // Start NetworkController which shortcuts the network connection between the server and each client
             _memoryLedStrips = new MemoryLedStrip[3];
             _memoryLedStrips[0] = new MemoryLedStrip(1200);
             _memoryLedStrips[1] = new MemoryLedStrip(1200);
             _memoryLedStrips[2] = new MemoryLedStrip(1200);
             _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, 1200, 20, 255);
+            
             ServerViewModel = new ServerControlViewModel(_memoryNetworkController);
 
             ClientViewModels = new ClientViewerViewModel[3];

@@ -159,6 +159,10 @@
       <Project>{0a3463fd-cf48-4b70-be83-6668d052b70f}</Project>
       <Name>StellaLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\StellaServerAPI\StellaServerAPI.csproj">
+      <Project>{54b047f4-e0cf-4643-b178-9cfeb81f9d2c}</Project>
+      <Name>StellaServerAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj">
       <Project>{7FEEB1EA-08AD-44CF-877E-90A55F8154EF}</Project>
       <Name>StellaServerLib</Name>

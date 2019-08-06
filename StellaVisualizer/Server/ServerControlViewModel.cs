@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
@@ -12,10 +13,15 @@ namespace StellaVisualizer.Server
     public class ServerControlViewModel : INotifyPropertyChanged
     {
         private readonly MemoryNetworkController _memoryNetworkController;
+        private APIServer _apiServer;
+        
+
         public ServerConfigurationViewModel ServerConfigurationViewModel { get; set; }
 
         public ServerControlPanelViewModel ServerControlPanelViewModel { get; set; }
-        
+
+
+
         public ServerControlViewModel(MemoryNetworkController memoryNetworkController)
         {
             _memoryNetworkController = memoryNetworkController;
@@ -47,12 +53,95 @@ namespace StellaVisualizer.Server
 
             // Start a new Server
             _memoryNetworkController.StartServer(viewmodel.ConfigurationFile, viewmodel.BitmapDirectory);
+
+            // Start API server
+            if (!string.IsNullOrWhiteSpace(viewmodel.ApiServerIpAddress))
+            {
+                try
+                {
+                    _apiServer = new APIServer(viewmodel.ApiServerIpAddress, 20060, storyboards);
+                    _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
+                    _apiServer.FrameWaitMsSet += ApiServerOnFrameWaitMsSet;
+                    _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
+                    _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
+                    _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
+                    _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
+                    _apiServer.StartStoryboard += (s, storyboard) => _memoryNetworkController.StellaServer.StartStoryboard(storyboard);
+                    _apiServer.BitmapReceived += (s, eventArgs) =>
+                    {
+                        if (bitmapRepository.BitmapExists(eventArgs.Name))
+                        {
+                            throw new Exception("Failed to store bitmap. A bitmap with the name {eventArgs.Name} already exists.");
+                        }
+
+                        bitmapRepository.Save(eventArgs.Bitmap, eventArgs.Name);
+                    };
+
+                    _apiServer.Start();
+                }
+                catch (Exception exception)
+                {
+                    Console.Out.WriteLine("An exception occured when starting the APIServer.");
+                    throw;
+                }
+            }
         }
 
         private void ServerControlPanelViewModel_OnStartStoryboardRequested(object sender, Storyboard e)
         {
             _memoryNetworkController.StellaServer.StartStoryboard(e);
         }
+        private void ApiServerOnBrightnessCorrectionSet(int animationIndex, float brightnessCorrection)
+        {
+            if (animationIndex == -1)
+            {
+                // Set for all
+                _memoryNetworkController.StellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                return;
+            }
+
+            _memoryNetworkController.StellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+        }
+
+        private void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
+        {
+            if (animationIndex == -1)
+            {
+                // Set for all
+                _memoryNetworkController.StellaServer.Animator.SetRgbFadeCorrection(rgbFade);
+                return;
+            }
+
+            _memoryNetworkController.StellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
+        }
+
+        private void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
+        {
+            if (animationIndex == -1)
+            {
+                // Set for all
+                _memoryNetworkController.StellaServer.Animator.SetFrameWaitMs(frameWaitMs);
+                return;
+            }
+
+            _memoryNetworkController.StellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
+        }
+
+        private float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
+        {
+            return _memoryNetworkController.StellaServer.Animator.GetBrightnessCorrection(animationIndex);
+        }
+
+        private float[] ApiServerOnRgbFadeRequested(int animationIndex)
+        {
+            return _memoryNetworkController.StellaServer.Animator.GetRgbFadeCorrection(animationIndex);
+        }
+
+        private int ApiServerOnFrameWaitMsRequested(int animationIndex)
+        {
+            return _memoryNetworkController.StellaServer.Animator.GetFrameWaitMs(animationIndex);
+        }
+
 
         private static void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)
         {
