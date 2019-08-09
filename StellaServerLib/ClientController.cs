@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaLib.Network;
@@ -23,9 +24,10 @@ namespace StellaServerLib
             _server = server;
         }
 
-        public async void Run()
+        public void Run()
         {
-            await new TaskFactory().StartNew(MainLoop);
+            Thread thread = new Thread(MainLoop) {Priority = ThreadPriority.Highest};
+            thread.Start();
         }
 
         private void MainLoop()
