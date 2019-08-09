@@ -22,13 +22,12 @@ namespace StellaServerLib.Test
             MessageType expectedMessageType = MessageType.AnimationRenderFrame;
             var mock = new Mock<IServer>();
 
-            FrameSetMetadata frameSetMetadata = new FrameSetMetadata(DateTime.Now);
             Assert.Fail("TODO: Fix this test.");
 
             /*var animatorMock = new Mock<IAnimator>();
             animatorMock.Setup(x => x.GetNextFramePerPi())
                 .Returns(new FrameWithoutDelta[] {new FrameWithoutDelta(0, 0),  {new PixelInstruction(1, 2, 3, 4)}});*/
-            
+
             /*byte[] expectedBytes = FrameSetMetadataProtocol.Serialize(frameSetMetadata);
             mock.SetupGet(x=> x.ConnectedClients).Returns(new int[]{expectedID});
 
