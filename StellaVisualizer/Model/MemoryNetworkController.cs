@@ -15,9 +15,7 @@ namespace StellaVisualizer.Model
         private MemoryStellaServer[] _memoryStellaServers;
 
         private MemoryServer _memoryServer;
-
-        public StellaServer StellaServer { get; private set; }
-
+        
         public MemoryNetworkController(MemoryLedStrip[] ledstrips, int numberOfPixels, int minimumFrameRate, byte brightness)
         {
             if (_memoryStellaServers != null)
@@ -44,17 +42,15 @@ namespace StellaVisualizer.Model
         }
 
 
-        public void StartServer(string mappingFilePath, string bitmapDirectoryPath)
+        public void SetServer(MemoryServer memoryServer)
         {
             if (_memoryServer != null)
             {
                 _memoryServer.FrameSend -= MemoryServerOnFrameSend;
             }
 
-            _memoryServer = new MemoryServer();
+            _memoryServer = memoryServer;
             _memoryServer.FrameSend += MemoryServerOnFrameSend;
-            StellaServer = new StellaServer(mappingFilePath, "192.168.1.110", 20055, 20060, _memoryServer,new AnimatorCreation(new BitmapRepository(bitmapDirectoryPath)));
-            StellaServer.Start();
         }
 
         private void MemoryServerOnFrameSend(object sender, MessageSendEventArgs e)
