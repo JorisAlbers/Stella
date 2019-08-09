@@ -56,7 +56,7 @@ namespace StellaServerLib
                 throw new Exception("Failed to create new animator.",e);
             }
 
-            _clientController.StartAnimation(Animator, DateTime.Now + TimeSpan.FromMilliseconds(200)); // TODO variable startAT
+            _clientController.StartAnimation(Animator, Environment.TickCount); // TODO variable startAT
 
         }
 

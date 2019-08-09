@@ -49,10 +49,10 @@ namespace StellaServerLib
                 if (renderNextFrameAt == 0)
                 {
                     frames = animationWithStartingTime.Animator.GetNextFramePerPi();
-                    renderNextFrameAt = animationWithStartingTime.StartAt.Ticks + frames.First(x => x != null).TimeStampRelative * TimeSpan.TicksPerMillisecond;
+                    renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
                 }
 
-                long now = DateTime.Now.Ticks;
+                long now = Environment.TickCount;
 
                 if (now < renderNextFrameAt)
                 {
@@ -65,7 +65,7 @@ namespace StellaServerLib
 
                 // Prepare
                 frames = animationWithStartingTime.Animator.GetNextFramePerPi();
-                renderNextFrameAt = animationWithStartingTime.StartAt.Ticks + frames.First(x => x != null).TimeStampRelative * TimeSpan.TicksPerMillisecond;
+                renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
             }
         }
 
@@ -80,11 +80,16 @@ namespace StellaServerLib
             }
         }
 
-        public void StartAnimation(IAnimator animator, DateTime at)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="animator">The animator to retrieve frames from</param>
+        /// <param name="startAtTicks">The environment.TickCount at which to start the animation</param>
+        public void StartAnimation(IAnimator animator, long startAtTicks)
         {
             lock(_frameSetLock)
             {
-                _animationWithStartingTime = new AnimationWithStartingTime(animator, at);
+                _animationWithStartingTime = new AnimationWithStartingTime(animator, startAtTicks);
             }
         }
         
@@ -97,12 +102,12 @@ namespace StellaServerLib
     internal class AnimationWithStartingTime
     {
         public IAnimator Animator { get; }
-        public DateTime StartAt { get; }
+        public long StartAtTicks { get; }
 
-        public AnimationWithStartingTime(IAnimator animator, DateTime startAt)
+        public AnimationWithStartingTime(IAnimator animator, long startAtTicks)
         {
             Animator = animator;
-            StartAt = startAt;
+            StartAtTicks = startAtTicks;
         }
     }
 }
