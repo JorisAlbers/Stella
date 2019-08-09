@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
@@ -20,6 +22,8 @@ namespace StellaServerLib
         private int[] _stripLengthPerPi;
         private IServer _server;
         private ClientController _clientController;
+
+        private int _loadingAnimation;
 
         public IAnimator Animator { get; private set; }
 
@@ -43,13 +47,25 @@ namespace StellaServerLib
             _clientController = StartClientController(_server);
         }
 
-        public void StartStoryboard(Storyboard storyboard)
+        public async void StartStoryboard(Storyboard storyboard)
         {
             Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
 
             try
             {
-                Animator = _animatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
+                // Check if we are already loading an animation. If so, skip.
+                if (0 == Interlocked.Exchange(ref _loadingAnimation, 1))
+                {
+                    // Create the animation on a new task
+                    Animator = await Task.Factory.StartNew(() => _animatorCreation.Create(storyboard, _stripLengthPerPi, _mask)); 
+                    // Release the lock
+                    Interlocked.Exchange(ref _loadingAnimation, 0);
+                }
+                else
+                {
+                    Console.Out.WriteLine("Failed to create a new animation, we are already loading one");
+                    return;
+                }
             }
             catch (Exception e)
             {
