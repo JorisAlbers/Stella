@@ -18,8 +18,6 @@ namespace StellaServerLib
         private object _frameSetLock = new object();
         private bool _isDisposed;
 
-        private List<Frame[]> _framesPerPi;
-
         public ClientController(IServer server)
         {
             _server = server;
