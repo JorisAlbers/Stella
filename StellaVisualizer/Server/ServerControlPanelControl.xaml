@@ -9,13 +9,26 @@
              Background="Azure"
              d:DataContext="{d:DesignInstance server:ServerControlPanelViewModel}">
     <Grid>
-        <ListView ItemsSource="{Binding Storyboards}" SelectedItem="{Binding SelectedStoryboard}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="0" ItemsSource="{Binding Storyboards}" SelectedItem="{Binding SelectedStoryboard}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <UniformGrid Grid.Row="1" Rows="1" Background="LightSalmon">
+            <Slider Orientation="Vertical" Minimum="1" Maximum="250" Value="{Binding MasterWaitMs}"/>
+            <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterRedCorrection}"/>
+            <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterGreenCorrection}"/>
+            <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterBlueCorrection}"/>
+
+        </UniformGrid>
+
             
     </Grid>
 </UserControl>

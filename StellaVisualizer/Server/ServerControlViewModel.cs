@@ -14,7 +14,7 @@ namespace StellaVisualizer.Server
     {
         private readonly MemoryNetworkController _memoryNetworkController;
         private APIServer _apiServer;
-        
+
 
         public ServerConfigurationViewModel ServerConfigurationViewModel { get; set; }
 
@@ -47,12 +47,13 @@ namespace StellaVisualizer.Server
             // Add animations on the images in the bitmap directory
             AddBitmapAnimations(storyboards, viewmodel.BitmapDirectory);
 
-            // Store in the ServerControlPanelViewModel
-            ServerControlPanelViewModel = new ServerControlPanelViewModel(storyboards);
-            ServerControlPanelViewModel.StartStoryboardRequested += ServerControlPanelViewModel_OnStartStoryboardRequested;
-
             // Start a new Server
             _memoryNetworkController.StartServer(viewmodel.ConfigurationFile, viewmodel.BitmapDirectory);
+
+            // Store in the ServerControlPanelViewModel
+            ServerControlPanelViewModel = new ServerControlPanelViewModel(_memoryNetworkController.StellaServer, storyboards);
+            ServerControlPanelViewModel.StartStoryboardRequested += ServerControlPanelViewModel_OnStartStoryboardRequested;
+            
 
             // Start API server
             if (!string.IsNullOrWhiteSpace(viewmodel.ApiServerIpAddress))

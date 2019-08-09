@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using PropertyChanged;
+using StellaServerLib;
 using StellaServerLib.Animation;
+using StellaServerLib.Network;
 
 namespace StellaVisualizer.Server
 {
     public class ServerControlPanelViewModel : INotifyPropertyChanged
     {
+        private readonly StellaServer _stellaServer;
         public List<Storyboard> Storyboards { get; private set; }
 
         public Storyboard SelectedStoryboard { get; set; }
 
-        public ServerControlPanelViewModel(List<Storyboard> storyboards)
+        public int MasterWaitMs { get; set; }
+
+        public float MasterRedCorrection { get; set; }
+        public float MasterGreenCorrection { get; set; }
+        public float MasterBlueCorrection { get; set; }
+        
+        public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<Storyboard> storyboards)
         {
+            _stellaServer = stellaServer;
             Storyboards = storyboards;
             PropertyChanged += OnPropertyChanged;
         }
@@ -23,6 +34,14 @@ namespace StellaVisualizer.Server
             {
                 case nameof(SelectedStoryboard):
                     StartStoryboard(SelectedStoryboard);
+                    break;
+                case nameof(MasterWaitMs):
+                    _stellaServer.Animator.SetFrameWaitMs(MasterWaitMs);
+                    break;
+                case nameof(MasterRedCorrection):
+                case nameof(MasterBlueCorrection):
+                case nameof(MasterGreenCorrection):
+                    _stellaServer.Animator.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
                     break;
             }
         }
