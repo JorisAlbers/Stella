@@ -15,19 +15,19 @@ namespace StellaServerLib.Animation.FrameProviding
     public class CombinedFrameProvider : IFrameProvider
     {
         private readonly IFrameProvider[] _frameProviders;
-        private readonly int[] _relativeTimestamps;
+        private readonly int[] _relativeStartingTimestamps;
         private readonly int _firstTimestamp;
 
         /// <summary>
         /// CTOR
         /// </summary>
         /// <param name="frameProviders"></param>
-        /// <param name="relativeTimestamps">The time to start each frame relative to each other, in milliseconds</param>
-        public CombinedFrameProvider(IFrameProvider[] frameProviders, int[] relativeTimestamps)
+        /// <param name="relativeStartingTimestamps">The time to start each frame relative to each other, in milliseconds</param>
+        public CombinedFrameProvider(IFrameProvider[] frameProviders, int[] relativeStartingTimestamps)
         {
             _frameProviders = frameProviders;
-            _relativeTimestamps = relativeTimestamps;
-            _firstTimestamp = relativeTimestamps.Min();
+            _relativeStartingTimestamps = relativeStartingTimestamps;
+            _firstTimestamp = relativeStartingTimestamps.Min();
         }
 
         public IEnumerator<Frame> GetEnumerator()
@@ -58,7 +58,7 @@ namespace StellaServerLib.Animation.FrameProviding
 
                 // Calculate the timestampRelative
 
-                int timestampFirstDrawer = _relativeTimestamps[providersInNextFrame[0]] + frame.TimeStampRelative;
+                int timestampFirstDrawer = _relativeStartingTimestamps[providersInNextFrame[0]] + frame.TimeStampRelative;
                 int deltaWithOverallTimestamp = timestampFirstDrawer - _firstTimestamp;
                 frame.TimeStampRelative = deltaWithOverallTimestamp;
                 frame.Index = frameIndex;
@@ -95,7 +95,7 @@ namespace StellaServerLib.Animation.FrameProviding
             List<int> sectionIndexes = null;
             for (int i = 0; i < frames.Length; i++)
             {
-                int startAt = _relativeTimestamps[i] + frames[i].TimeStampRelative;
+                int startAt = _relativeStartingTimestamps[i] + frames[i].TimeStampRelative;
                 if (startAt < firstTimestamp)
                 {
                     firstTimestamp = startAt;
