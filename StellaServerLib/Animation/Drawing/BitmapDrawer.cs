@@ -14,7 +14,6 @@ namespace StellaServerLib.Animation.Drawing
     /// </summary>
     public class BitmapDrawer : IDrawer
     {
-        private readonly AnimationTransformation _animationTransformation;
         private readonly int _startIndex;
         private readonly int _stripLength;
         private readonly bool _wrap;
