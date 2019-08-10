@@ -53,9 +53,9 @@ namespace StellaServerLib.Animation.Transformation
         /// </summary>
         public void SetFrameWaitMs(int frameWaitMs)
         {
-            if (frameWaitMs < 1)
+            if (frameWaitMs < 0)
             {
-                throw new ArgumentException($"The master frameWaitMs must be at least 1 ms.");
+                throw new ArgumentException($"The master frameWaitMs must be at least 0 ms.");
             }
 
             _masterTransformationSettings.FrameWaitMs = frameWaitMs;
@@ -66,9 +66,9 @@ namespace StellaServerLib.Animation.Transformation
         /// </summary>
         public void SetFrameWaitMs(int frameWaitMs, int animationIndex)
         {
-            if (frameWaitMs < 0)
+            if (frameWaitMs < 1)
             {
-                throw new ArgumentException($"The frameWaitMs must be at least 0 ms.");
+                throw new ArgumentException($"The frameWaitMs must be at least 1 ms.");
             }
 
             if (animationIndex < 0 || animationIndex >= _animationsTransformationSettings.Count)
