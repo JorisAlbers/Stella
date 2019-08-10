@@ -15,6 +15,8 @@ namespace StellaServerLib.Animation
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
+
+        private readonly PixelInstructionWithoutDelta[][] _currentFrame;
         public AnimationTransformations AnimationTransformations { get; private set; }
 
         /// <summary>
@@ -31,17 +33,31 @@ namespace StellaServerLib.Animation
             _mask = mask;
             AnimationTransformations = animationTransformations;
             _numberOfPis = _stripLengthPerPi.Length;
+
+            _currentFrame = new PixelInstructionWithoutDelta[stripLengthPerPi.Sum()][];
+            for (int i = 0; i < stripLengthPerPi.Length; i++)
+            {
+                _currentFrame[i] = new PixelInstructionWithoutDelta[stripLengthPerPi[i]];
+            }
         }
 
         /// <inheritdoc />
         public FrameWithoutDelta[] GetNextFramePerPi()
         {
+            // Get the combined frame from the FrameProvider
             frameEnumerator.MoveNext();
             Frame combinedFrame = frameEnumerator.Current;
-            return SplitFrameOverPis(combinedFrame, _mask);
+
+            // Split the frame over pis
+            Frame[] framePerPi = SplitFrameOverPis(combinedFrame, _mask);
+            
+            // Overlay with the previous frame
+            return OverlayWithCurrentFrame(framePerPi);
         }
 
-        private FrameWithoutDelta[] SplitFrameOverPis(Frame combinedFrame, List<PiMaskItem> mask)
+
+
+        private Frame[] SplitFrameOverPis(Frame combinedFrame, List<PiMaskItem> mask)
         {
             // Create a new Frame for each pi
             Frame[] framePerPi = new Frame[_numberOfPis];
@@ -57,21 +73,34 @@ namespace StellaServerLib.Animation
                 framePerPi[maskItem.PiIndex].Add(new PixelInstruction(maskItem.PixelIndex, combinedFrame[i].Color));
             }
 
-            // Convert to non-delta
-            FrameWithoutDelta[] frameWithoutDeltaPerPi = new FrameWithoutDelta[_numberOfPis];
-            for (int i = 0; i < framePerPi.Length; i++)
+            return framePerPi;
+        }
+
+        private FrameWithoutDelta[] OverlayWithCurrentFrame(Frame[] framePerPi)
+        {
+            FrameWithoutDelta[] overlayFramePerPi = new FrameWithoutDelta[framePerPi.Length];
+            for (int index = 0; index < framePerPi.Length; index++)
             {
-                if (framePerPi[i].Count > 0)
+                Frame frame = framePerPi[index];
+                if (frame != null && frame.Count > 0)
                 {
-                    frameWithoutDeltaPerPi[i] = new FrameWithoutDelta(combinedFrame.Index, combinedFrame.TimeStampRelative, _stripLengthPerPi[i]);
-                    foreach (PixelInstruction pixelInstruction in framePerPi[i])
+                    // Overlay in current frame 
+                    foreach (PixelInstruction pixelInstruction in framePerPi[index])
                     {
-                        frameWithoutDeltaPerPi[i][pixelInstruction.Index] = new PixelInstructionWithoutDelta(pixelInstruction.Color);
+                        _currentFrame[index][pixelInstruction.Index] = new PixelInstructionWithoutDelta(pixelInstruction.Color);
                     }
+
+                    // Copy all frames from the current frame to the frameWithoutDelta
+                    overlayFramePerPi[index] = new FrameWithoutDelta(frame.Index, frame.TimeStampRelative, _currentFrame[index].Length);
+                    for (int i = 0; i < _currentFrame[index].Length; i++)
+                    {
+                        overlayFramePerPi[index][i] = new PixelInstructionWithoutDelta(_currentFrame[index][i].Color);
+                    }
+                    
                 }
             }
 
-            return frameWithoutDeltaPerPi;
+            return overlayFramePerPi;
         }
     }
 }
