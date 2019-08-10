@@ -22,15 +22,14 @@ namespace StellaServerLib.Animation
         public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IFrameProvider frameProvider;
-            AnimationTransformation[] animationTransformations = new AnimationTransformation[storyboard.AnimationSettings.Length];
+            AnimationTransformations animationTransformations = new AnimationTransformations();
 
-            if (storyboard.AnimationSettings.Length == 1)
+            if (storyboard.AnimationSettings.Length == 1)// TODO remove this redundant if statement
             {
-                // Use a normal drawer
+                // Use a normal drawer 
                 IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0]);
-                AnimationTransformation animationTransformation = new AnimationTransformation(storyboard.AnimationSettings[0].FrameWaitMs);
-                frameProvider = new FrameProvider(drawer,animationTransformation);
-                animationTransformations[0] = animationTransformation;
+                animationTransformations.AddTransformationSettings(storyboard.AnimationSettings[0].FrameWaitMs);
+                frameProvider = new FrameProvider(drawer,animationTransformations);
             }
             else
             {
@@ -59,7 +58,7 @@ namespace StellaServerLib.Animation
                         drawers[i] = CreateDrawer(settings);
                     }
 
-                    animationTransformations[i] = new AnimationTransformation(settings.FrameWaitMs);
+                    animationTransformations.AddTransformationSettings(settings.FrameWaitMs);
                     relativeTimeStamps[i] = settings.RelativeStart;
                 }
 

@@ -39,7 +39,10 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex , expectedPixelIndex)
             };
 
-            Animator animator = new Animator(drawerMock.Object, stripLengthPerPi, mask, new AnimationTransformation[]{new AnimationTransformation(5) } );
+            AnimationTransformations animationTransformations = new AnimationTransformations();
+            animationTransformations.AddTransformationSettings(5);
+
+            Animator animator = new Animator(drawerMock.Object, stripLengthPerPi, mask, animationTransformations );
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(1, framePerPi.Length);
@@ -90,7 +93,9 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
 
-            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi,mask, new AnimationTransformation[] { new AnimationTransformation(5) });
+            AnimationTransformations animationTransformations = new AnimationTransformations();
+            animationTransformations.AddTransformationSettings(5);
+            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi,mask, animationTransformations);
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(3,framePerPi.Length);
@@ -155,8 +160,9 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex2 , expectedPixelIndex2),
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
-
-            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi, mask, new AnimationTransformation[] { new AnimationTransformation(5) });
+            AnimationTransformations animationTransformations = new AnimationTransformations();
+            animationTransformations.AddTransformationSettings(5);
+            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi, mask, animationTransformations);
             // Flush first two frames
             animator.GetNextFramePerPi();
             animator.GetNextFramePerPi();

@@ -186,11 +186,11 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                _stellaServer.Animator.AnimationTransformations.SetBrightnessCorrection(brightnessCorrection);
                 return;
             }
 
-            _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+            _stellaServer.Animator.AnimationTransformations.SetBrightnessCorrection(brightnessCorrection, animationIndex);
         }
 
         private static void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
@@ -198,11 +198,11 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetRgbFadeCorrection(rgbFade);
+                _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(rgbFade);
                 return;
             }
 
-            _stellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
+            _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
         private static void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
@@ -210,26 +210,26 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetFrameWaitMs(frameWaitMs);
+                _stellaServer.Animator.AnimationTransformations.SetFrameWaitMs(frameWaitMs);
                 return;
             }
 
-            _stellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
+            _stellaServer.Animator.AnimationTransformations.SetFrameWaitMs(animationIndex, frameWaitMs);
         }
 
         private static float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
         {
-            return _stellaServer.Animator.GetBrightnessCorrection(animationIndex);
+            return _stellaServer.Animator.AnimationTransformations.GetBrightnessCorrection(animationIndex);
         }
 
         private static float[] ApiServerOnRgbFadeRequested(int animationIndex)
         {
-            return _stellaServer.Animator.GetRgbFadeCorrection(animationIndex);
+            return _stellaServer.Animator.AnimationTransformations.GetRgbFadeCorrection(animationIndex);
         }
 
         private static int ApiServerOnFrameWaitMsRequested(int animationIndex)
         {
-            return _stellaServer.Animator.GetFrameWaitMs(animationIndex);
+            return _stellaServer.Animator.AnimationTransformations.GetFrameWaitMs(animationIndex);
         }
 
         private static void GetTransformationInput()
@@ -251,7 +251,7 @@ namespace StellaServerConsole
                 // Animation speed
                 if (key.KeyChar == 's' || key.KeyChar == 'S')
                 {
-                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
+                    int currentWaitms = _stellaServer.Animator.AnimationTransformations.GetFrameWaitMs();
                     int newWaitMs;
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
@@ -264,7 +264,7 @@ namespace StellaServerConsole
                         newWaitMs = Math.Max(1, currentWaitms - 1);
                     }
 
-                    _stellaServer.Animator.SetFrameWaitMs(newWaitMs);
+                    _stellaServer.Animator.AnimationTransformations.SetFrameWaitMs(newWaitMs);
                     Console.Out.WriteLine($"Speed set to {newWaitMs}");
                 }
 
@@ -285,7 +285,7 @@ namespace StellaServerConsole
                         if (brightnessCorrection > 1)
                             brightnessCorrection = 1;
                     }
-                    _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                    _stellaServer.Animator.AnimationTransformations.SetBrightnessCorrection(brightnessCorrection);
                 }
 
                 // Color
@@ -303,7 +303,7 @@ namespace StellaServerConsole
                         if (transformationFactor[0] > 0)
                             transformationFactor[0] = 0;
                     }
-                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(transformationFactor);
                 }
                 if (key.KeyChar == 'g' || key.KeyChar == 'G')
                 {
@@ -319,7 +319,7 @@ namespace StellaServerConsole
                         if (transformationFactor[1] > 0)
                             transformationFactor[1] = 0;
                     }
-                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(transformationFactor);
                 }
                 if (key.KeyChar == 'b' || key.KeyChar == 'B')
                 {
@@ -335,7 +335,7 @@ namespace StellaServerConsole
                         if (transformationFactor[2] > 0)
                             transformationFactor[2] = 0;
                     }
-                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(transformationFactor);
                 }
                
             }

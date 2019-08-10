@@ -15,7 +15,7 @@ namespace StellaServerLib.Animation
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
-        private readonly AnimationTransformation[] _animationTransformations;
+        public AnimationTransformations AnimationTransformations { get; private set; }
 
         /// <summary>
         /// CTOR
@@ -23,131 +23,14 @@ namespace StellaServerLib.Animation
         /// <param name="frameProvider">The drawer to get frames from.</param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
-        /// <param name="animationTransformations">Used by the drawers as input to draw frames with</param>
-        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformation[] animationTransformations)
+        /// <param name="animationTransformations">Class that provides run time animation changes</param>
+        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformations animationTransformations)
         {
             frameEnumerator = frameProvider.GetEnumerator();
             _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
-            _animationTransformations = animationTransformations;
+            AnimationTransformations = animationTransformations;
             _numberOfPis = _stripLengthPerPi.Length;
-        }
-
-        public void SetFrameWaitMs(int frameWaitMs)
-        {
-            if (frameWaitMs < 1)
-            {
-                throw new ArgumentException($"The frameWaitMs must be at least 1 ms.");
-            }
-            
-            for (int i = 0; i < _animationTransformations.Length; i++)
-            {
-                _animationTransformations[i].FrameWaitMs = frameWaitMs;
-            }
-        }
-
-        public void SetFrameWaitMs(int animationIndex, int frameWaitMs)
-        {
-            if (frameWaitMs < 1)
-            {
-                throw new ArgumentException($"The frameWaitMs must be at least 1 ms.");
-            }
-
-            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
-            {
-                throw new ArgumentException($"There is no animation at index {animationIndex}");
-            }
-
-            _animationTransformations[animationIndex].FrameWaitMs = frameWaitMs;
-        }
-
-        public int GetFrameWaitMs(int animationIndex)
-        {
-            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
-            {
-                throw new ArgumentException($"There is no animation at index {animationIndex}");
-            }
-
-            return _animationTransformations[animationIndex].FrameWaitMs;
-        }
-
-        public float GetBrightnessCorrection(int animationIndex)
-        {
-            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
-            {
-                throw new ArgumentException($"There is no animation at index {animationIndex}");
-            }
-
-            return _animationTransformations[animationIndex].BrightnessCorrection;
-        }
-
-        public void SetBrightnessCorrection(float brightnessCorrection)
-        {
-            if (brightnessCorrection < -1 || brightnessCorrection > 1)
-            {
-                throw new ArgumentException("The brightness correction must be between -1 and 1");
-            }
-
-            for (int i = 0; i < _animationTransformations.Length; i++)
-            {
-                _animationTransformations[i].BrightnessCorrection = brightnessCorrection;
-            }
-        }
-
-        public void SetBrightnessCorrection(int animationIndex, float brightnessCorrection)
-        {
-            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
-            {
-                throw new ArgumentException($"There is no animation at index {animationIndex}");
-            }
-
-            if (brightnessCorrection < -1 || brightnessCorrection > 1)
-            {
-                throw new ArgumentException("The brightness correction must be between -1 and 1");
-            }
-
-            _animationTransformations[animationIndex].BrightnessCorrection = brightnessCorrection;
-        }
-
-        public float[] GetRgbFadeCorrection(int animationIndex)
-        {
-            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
-            {
-                throw new ArgumentException($"There is no animation at index {animationIndex}");
-            }
-
-            return _animationTransformations[animationIndex].RgbFadeCorrection;
-        }
-
-        public void SetRgbFadeCorrection(float[] rgbFadeCorrection)
-        {
-            if (rgbFadeCorrection.Any(x => x > 0 || x < -1))
-            {
-                throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
-            }
-
-            for (int i = 0; i < _animationTransformations.Length; i++)
-            {
-                _animationTransformations[i].RgbFadeCorrection = rgbFadeCorrection;
-            }
-        }
-
-        public void SetRgbFadeCorrection(int animationIndex, float[] rgbFadeCorrection)
-        {
-            if (animationIndex < 0 || animationIndex >= _animationTransformations.Length)
-            {
-                throw new ArgumentException($"There is no animation at index {animationIndex}");
-            }
-
-            if (rgbFadeCorrection.Any(x => x > 0 || x < -1))
-            {
-                throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
-            }
-
-            for (int i = 0; i < _animationTransformations.Length; i++)
-            {
-                _animationTransformations[i].RgbFadeCorrection = rgbFadeCorrection;
-            }
         }
 
         /// <inheritdoc />

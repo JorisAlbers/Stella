@@ -77,6 +77,9 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 225),
                 Color.FromArgb(0, 0, 250),
             };
+
+            AnimationTransformations animationTransformations1 = new AnimationTransformations();
+            animationTransformations1.AddTransformationSettings(100);
             IFrameProvider repeatingPatternsFrameProvider = new FrameProvider(
                 new RepeatingPatternsDrawer(0, 300,  new Color[][]
                 {
@@ -93,10 +96,14 @@ namespace EndToEndTests
                         Color.FromArgb(0, 0, 0)
                     }
 
-                }), new AnimationTransformation(100));
-            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), new AnimationTransformation(100));
-            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), new AnimationTransformation(30));
-            AnimationTransformation[] animationTransformations = new AnimationTransformation[]{new AnimationTransformation(0), };
+                }), animationTransformations1);
+            AnimationTransformations animationTransformations2 = new AnimationTransformations();
+            animationTransformations2.AddTransformationSettings(100);
+            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), animationTransformations2);
+
+            AnimationTransformations animationTransformations3 = new AnimationTransformations();
+            animationTransformations3.AddTransformationSettings(100);
+            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), animationTransformations3);
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
@@ -113,13 +120,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, animationTransformations), Environment.TickCount);
+                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, animationTransformations1), Environment.TickCount);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations), Environment.TickCount);
+                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations2), Environment.TickCount);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations), Environment.TickCount);
+                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations3), Environment.TickCount);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");

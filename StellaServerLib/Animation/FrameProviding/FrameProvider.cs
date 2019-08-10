@@ -15,7 +15,7 @@ namespace StellaServerLib.Animation.FrameProviding
     public class FrameProvider : IFrameProvider
     {
         private readonly IEnumerator<List<PixelInstruction>>[] _framesPerDrawer;
-        private readonly AnimationTransformation[] _animationTransformations;
+        private readonly AnimationTransformations _animationTransformations;
         private readonly int[] _relativeStartingTimestamps;
         private readonly int _firstTimestamp;
         
@@ -23,11 +23,11 @@ namespace StellaServerLib.Animation.FrameProviding
         /// Create a new FrameProvider with a single drawer
         /// </summary>
         /// <param name="drawer"></param>
-        /// <param name="animationTransformation"></param>
-        public FrameProvider(IDrawer drawer, AnimationTransformation animationTransformation)
+        /// <param name="animationTransformations></param>
+        public FrameProvider(IDrawer drawer, AnimationTransformations animationTransformations)
         {
             _framesPerDrawer = new[] { drawer.GetEnumerator() };
-            _animationTransformations = new []{animationTransformation};
+            _animationTransformations = animationTransformations;
             _relativeStartingTimestamps = new []{0};
         }
 
@@ -35,10 +35,9 @@ namespace StellaServerLib.Animation.FrameProviding
         /// Create a new FrameProvider with multiple drawers
         /// </summary>
         /// <param name="drawers"></param>
-        /// <param name="relativeStartingTimestamps"></param>
-        /// <param name="animationTransformations">The time to start each frame relative to each other, in milliseconds</param>
-        public FrameProvider(IDrawer[] drawers, int[] relativeStartingTimestamps,
-            AnimationTransformation[] animationTransformations)
+        /// <param name="relativeStartingTimestamps">The time to start each frame relative to each other, in milliseconds</param>
+        /// <param name="animationTransformations"></param>
+        public FrameProvider(IDrawer[] drawers, int[] relativeStartingTimestamps,AnimationTransformations animationTransformations)
         {
             _framesPerDrawer = drawers.Select(x => x.GetEnumerator()).ToArray();
             _animationTransformations = animationTransformations;
@@ -77,11 +76,10 @@ namespace StellaServerLib.Animation.FrameProviding
                 foreach (int providerIndex in providersInNextFrame)
                 {
                     List<PixelInstruction> instructions = _framesPerDrawer[providerIndex].Current;
-                    AnimationTransformation animationTransformation = _animationTransformations[providerIndex];
                     for (int j = 0; j < instructions.Count; j++)
                     {
                         PixelInstruction pixelInstruction = instructions[j];
-                        pixelInstruction.Color = animationTransformation.AdjustColor(pixelInstruction.Color);
+                        pixelInstruction.Color = _animationTransformations.AdjustColor(providerIndex, pixelInstruction.Color);
                         frame.Add(pixelInstruction);
                     }
                 }
@@ -91,7 +89,7 @@ namespace StellaServerLib.Animation.FrameProviding
                 // Get the next frames of the used drawers
                 foreach (int sectionIndex in providersInNextFrame)
                 {
-                    timestamps[sectionIndex] += _animationTransformations[sectionIndex].FrameWaitMs;
+                    timestamps[sectionIndex] += _animationTransformations.GetCorrectedFrameWaitMs(sectionIndex);
                     _framesPerDrawer[sectionIndex].MoveNext();
                 }
 

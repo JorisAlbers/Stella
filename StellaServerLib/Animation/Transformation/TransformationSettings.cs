@@ -1,9 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Text;
 
 namespace StellaServerLib.Animation.Transformation
 {
-    // Used to change animation characteristics during animation
-    public class AnimationTransformation
+    public class TransformationSettings
     {
         public int FrameWaitMs { get; set; }
 
@@ -17,11 +19,10 @@ namespace StellaServerLib.Animation.Transformation
         /// </summary>
         public float[] RgbFadeCorrection { get; set; } = new float[3];
 
-
-        public AnimationTransformation(int initialFrameWaitMs)
+        
+        public TransformationSettings(int initialFrameWaitMs)
         {
             FrameWaitMs = initialFrameWaitMs;
-            BrightnessCorrection = 0;
         }
 
         public Color AdjustColor(Color color)
@@ -33,12 +34,12 @@ namespace StellaServerLib.Animation.Transformation
             // Blue
             float blue = TransformChannel(color.B, RgbFadeCorrection[2]);
 
-            return AdjustBrightness(red, green, blue);
+            return Color.FromArgb((int)red, (int)green, (int)blue);
         }
 
         private float TransformChannel(byte channel, float correctionFactor)
         {
-            float channelAsFloat = (float) channel;
+            float channelAsFloat = (float)channel;
 
             if (correctionFactor == 0)
             {
@@ -47,16 +48,16 @@ namespace StellaServerLib.Animation.Transformation
 
             correctionFactor = 1 + correctionFactor;
             channelAsFloat *= correctionFactor;
-           
+
             return channelAsFloat;
         }
 
-        
-
-
-        private Color AdjustBrightness(float red, float green, float blue)
+        public Color AdjustBrightness(Color color)
         {
             float correctionFactor = BrightnessCorrection;
+            float red = color.R;
+            float green = color.G;
+            float blue = color.B;
 
             if (correctionFactor < 0)
             {
@@ -71,9 +72,8 @@ namespace StellaServerLib.Animation.Transformation
                 green = (255 - green) * correctionFactor + green;
                 blue = (255 - blue) * correctionFactor + blue;
             }
-            
+
             return Color.FromArgb((int)red, (int)green, (int)blue);
         }
-
     }
 }
