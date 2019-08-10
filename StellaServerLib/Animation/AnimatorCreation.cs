@@ -33,9 +33,8 @@ namespace StellaServerLib.Animation
             }
             else
             {
-                // Use a CombinedFrameProvider to combine multiple frameProviders
                 // First, get the drawers
-                IFrameProvider[] frameProviders = new IFrameProvider[storyboard.AnimationSettings.Length];
+                IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
                 int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
 
                 // Dirty check
@@ -44,9 +43,6 @@ namespace StellaServerLib.Animation
                 for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
                 {
                     IAnimationSettings settings = storyboard.AnimationSettings[i];
-                    IDrawer drawer;
-                    AnimationTransformation animationTransformation;
-
 
                     if (settings is BitmapAnimationSettings bitmapAnimationSettings)
                     {
@@ -55,21 +51,19 @@ namespace StellaServerLib.Animation
                             bitmapToFramesDictionary[bitmapAnimationSettings.ImageName] =
                                 BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName));
                         }
-                        animationTransformation = new AnimationTransformation(bitmapAnimationSettings.FrameWaitMs);
-                        drawer = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
+                        drawers[i] = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
                     }
                     else
                     {
-                        animationTransformation = new AnimationTransformation(settings.FrameWaitMs);
-                        drawer = CreateDrawer(settings);
-                    }                    
-                    frameProviders[i] = new FrameProvider(drawer, animationTransformation);
-                    animationTransformations[i] = animationTransformation;
+                        drawers[i] = CreateDrawer(settings);
+                    }
+
+                    animationTransformations[i] = new AnimationTransformation(settings.FrameWaitMs);
                     relativeTimeStamps[i] = settings.RelativeStart;
                 }
 
-                // Then, combine them in a single frame provider by using the CombinedFrameProvider
-                frameProvider = new CombinedFrameProvider(frameProviders, relativeTimeStamps);
+                // Then, create a new FrameProvider with multiple animations
+                frameProvider = new FrameProvider(drawers, relativeTimeStamps, animationTransformations);
             }
 
             return new Animator(frameProvider, stripLengthPerPi, mask, animationTransformations);
