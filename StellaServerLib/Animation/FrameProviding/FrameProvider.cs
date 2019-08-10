@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
+using StellaServerLib.Animation.Transformation;
 
 namespace StellaServerLib.Animation.FrameProviding
 {

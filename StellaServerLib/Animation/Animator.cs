@@ -5,6 +5,7 @@ using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
+using StellaServerLib.Animation.Transformation;
 
 namespace StellaServerLib.Animation
 {

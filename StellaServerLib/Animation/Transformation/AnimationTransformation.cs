@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Text;
+﻿using System.Drawing;
 
-namespace StellaServerLib.Animation
+namespace StellaServerLib.Animation.Transformation
 {
     // Used to change animation characteristics during animation
     public class AnimationTransformation
