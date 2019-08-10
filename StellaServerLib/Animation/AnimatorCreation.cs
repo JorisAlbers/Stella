@@ -13,16 +13,18 @@ namespace StellaServerLib.Animation
     public class AnimatorCreation
     {
         private readonly BitmapRepository _bitmapRepository;
+        private readonly TransformationSettings _masterTransformationSettings;
 
         public AnimatorCreation(BitmapRepository bitmapRepository)
         {
             _bitmapRepository = bitmapRepository;
+            _masterTransformationSettings = new TransformationSettings(0);
         }
 
         public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IFrameProvider frameProvider;
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(_masterTransformationSettings);
 
             if (storyboard.AnimationSettings.Length == 1)// TODO remove this redundant if statement
             {

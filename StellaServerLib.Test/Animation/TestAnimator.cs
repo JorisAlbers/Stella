@@ -39,7 +39,7 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex , expectedPixelIndex)
             };
 
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(5);
 
             Animator animator = new Animator(drawerMock.Object, stripLengthPerPi, mask, animationTransformations );
@@ -93,7 +93,7 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
 
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(5);
             Animator animator = new Animator(drawerMock.Object,stripLengthPerPi,mask, animationTransformations);
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
@@ -160,7 +160,7 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex2 , expectedPixelIndex2),
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(5);
             Animator animator = new Animator(drawerMock.Object,stripLengthPerPi, mask, animationTransformations);
             // Flush first two frames

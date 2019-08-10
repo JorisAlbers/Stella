@@ -33,7 +33,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             var drawerMock = new Mock<IDrawer>();
             drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(100);
             FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, animationTransformations);
 
@@ -99,7 +99,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 50; // 50ms to make sure they get out of frame
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(100);
             animationTransformations.AddTransformationSettings(100);
             FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, animationTransformations);
@@ -160,7 +160,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 0; // Both are in frame
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(100);
             animationTransformations.AddTransformationSettings(100);
             FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, animationTransformations);

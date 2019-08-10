@@ -78,7 +78,9 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 250),
             };
 
-            AnimationTransformations animationTransformations1 = new AnimationTransformations();
+            TransformationSettings masterTransformationSetting = new TransformationSettings(0);
+            AnimationTransformations animationTransformations1 =
+                new AnimationTransformations(masterTransformationSetting);
             animationTransformations1.AddTransformationSettings(100);
             IFrameProvider repeatingPatternsFrameProvider = new FrameProvider(
                 new RepeatingPatternsDrawer(0, 300,  new Color[][]
@@ -97,11 +99,11 @@ namespace EndToEndTests
                     }
 
                 }), animationTransformations1);
-            AnimationTransformations animationTransformations2 = new AnimationTransformations();
+            AnimationTransformations animationTransformations2 = new AnimationTransformations(masterTransformationSetting);
             animationTransformations2.AddTransformationSettings(100);
             IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), animationTransformations2);
 
-            AnimationTransformations animationTransformations3 = new AnimationTransformations();
+            AnimationTransformations animationTransformations3 = new AnimationTransformations(masterTransformationSetting);
             animationTransformations3.AddTransformationSettings(100);
             IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), animationTransformations3);
 

@@ -15,7 +15,7 @@ namespace StellaServerLib.Test.Animation.Transformation
         public void GetCorrectedFrameWaitMs_Index_CorrectValue(int masterFrameWaitMs, int animationFrameWaitMs)
         {
             int expected = masterFrameWaitMs + animationFrameWaitMs;
-            AnimationTransformations animationTransformations = new AnimationTransformations();
+            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
             animationTransformations.AddTransformationSettings(animationFrameWaitMs);
             animationTransformations.SetFrameWaitMs(masterFrameWaitMs);
             Assert.AreEqual(expected, animationTransformations.GetCorrectedFrameWaitMs(0));

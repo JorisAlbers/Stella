@@ -13,9 +13,9 @@ namespace StellaServerLib.Animation.Transformation
         private readonly List<TransformationSettings> _animationsTransformationSettings;
 
 
-        public AnimationTransformations()
+        public AnimationTransformations(TransformationSettings masterTransformationSettings)
         {
-            _masterTransformationSettings = new TransformationSettings(0);
+            _masterTransformationSettings = masterTransformationSettings;
             _animationsTransformationSettings = new List<TransformationSettings>();
         }
 
