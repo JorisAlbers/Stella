@@ -102,11 +102,11 @@ namespace StellaVisualizer.Server
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.AnimationTransformations.SetBrightnessCorrection(brightnessCorrection);
+                _stellaServer.Animator.AnimationTransformation.SetBrightnessCorrection(brightnessCorrection);
                 return;
             }
 
-            _stellaServer.Animator.AnimationTransformations.SetBrightnessCorrection(brightnessCorrection, animationIndex);
+            _stellaServer.Animator.AnimationTransformation.SetBrightnessCorrection(brightnessCorrection, animationIndex);
         }
 
         private void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
@@ -114,11 +114,11 @@ namespace StellaVisualizer.Server
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(rgbFade);
+                _stellaServer.Animator.AnimationTransformation.SetRgbFadeCorrection(rgbFade);
                 return;
             }
 
-            _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(rgbFade, animationIndex);
+            _stellaServer.Animator.AnimationTransformation.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
         private void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
@@ -126,26 +126,26 @@ namespace StellaVisualizer.Server
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.AnimationTransformations.SetFrameWaitMs(frameWaitMs);
+                _stellaServer.Animator.AnimationTransformation.SetFrameWaitMs(frameWaitMs);
                 return;
             }
 
-            _stellaServer.Animator.AnimationTransformations.SetFrameWaitMs(frameWaitMs, animationIndex);
+            _stellaServer.Animator.AnimationTransformation.SetFrameWaitMs(frameWaitMs, animationIndex);
         }
 
         private float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
         {
-            return _stellaServer.Animator.AnimationTransformations.GetBrightnessCorrection(animationIndex);
+            return _stellaServer.Animator.AnimationTransformation.GetBrightnessCorrection(animationIndex);
         }
 
         private float[] ApiServerOnRgbFadeRequested(int animationIndex)
         {
-            return _stellaServer.Animator.AnimationTransformations.GetRgbFadeCorrection(animationIndex);
+            return _stellaServer.Animator.AnimationTransformation.GetRgbFadeCorrection(animationIndex);
         }
 
         private int ApiServerOnFrameWaitMsRequested(int animationIndex)
         {
-            return _stellaServer.Animator.AnimationTransformations.GetFrameWaitMs(animationIndex);
+            return _stellaServer.Animator.AnimationTransformation.GetFrameWaitMs(animationIndex);
         }
 
 

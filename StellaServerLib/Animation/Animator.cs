@@ -17,7 +17,7 @@ namespace StellaServerLib.Animation
         private readonly int _numberOfPis;
 
         private readonly PixelInstructionWithoutDelta[][] _currentFrame;
-        public AnimationTransformations AnimationTransformations { get; private set; }
+        public AnimationTransformation AnimationTransformation { get; private set; }
 
         /// <summary>
         /// CTOR
@@ -25,13 +25,13 @@ namespace StellaServerLib.Animation
         /// <param name="frameProvider">The drawer to get frames from.</param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
-        /// <param name="animationTransformations">Class that provides run time animation changes</param>
-        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformations animationTransformations)
+        /// <param name="animationTransformation">Class that provides run time animation changes</param>
+        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformation animationTransformation)
         {
             frameEnumerator = frameProvider.GetEnumerator();
             _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
-            AnimationTransformations = animationTransformations;
+            AnimationTransformation = animationTransformation;
             _numberOfPis = _stripLengthPerPi.Length;
 
             _currentFrame = new PixelInstructionWithoutDelta[stripLengthPerPi.Sum()][];

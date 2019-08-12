@@ -24,14 +24,14 @@ namespace StellaServerLib.Animation
         public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IFrameProvider frameProvider;
-            AnimationTransformations animationTransformations = new AnimationTransformations(_masterTransformationSettings);
+            AnimationTransformation animationTransformation = new AnimationTransformation(_masterTransformationSettings);
 
             if (storyboard.AnimationSettings.Length == 1)// TODO remove this redundant if statement
             {
                 // Use a normal drawer 
                 IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0]);
-                animationTransformations.AddTransformationSettings(storyboard.AnimationSettings[0].FrameWaitMs);
-                frameProvider = new FrameProvider(drawer,animationTransformations);
+                animationTransformation.AddTransformationSettings(storyboard.AnimationSettings[0].FrameWaitMs);
+                frameProvider = new FrameProvider(drawer,animationTransformation);
             }
             else
             {
@@ -60,15 +60,15 @@ namespace StellaServerLib.Animation
                         drawers[i] = CreateDrawer(settings);
                     }
 
-                    animationTransformations.AddTransformationSettings(settings.FrameWaitMs);
+                    animationTransformation.AddTransformationSettings(settings.FrameWaitMs);
                     relativeTimeStamps[i] = settings.RelativeStart;
                 }
 
                 // Then, create a new FrameProvider with multiple animations
-                frameProvider = new FrameProvider(drawers, relativeTimeStamps, animationTransformations);
+                frameProvider = new FrameProvider(drawers, relativeTimeStamps, animationTransformation);
             }
 
-            return new Animator(frameProvider, stripLengthPerPi, mask, animationTransformations);
+            return new Animator(frameProvider, stripLengthPerPi, mask, animationTransformation);
         }
 
         private IDrawer CreateDrawer(IAnimationSettings animationSetting)

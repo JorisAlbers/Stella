@@ -12,6 +12,6 @@ namespace StellaServerLib.Animation
         /// <returns>A frame for each pi.</returns>
         FrameWithoutDelta[] GetNextFramePerPi();
 
-        AnimationTransformations AnimationTransformations { get; }
+        AnimationTransformation AnimationTransformation { get; }
     }
 }

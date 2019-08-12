@@ -36,12 +36,12 @@ namespace StellaVisualizer.Server
                     StartStoryboard(SelectedStoryboard);
                     break;
                 case nameof(MasterWaitMs):
-                    _stellaServer.Animator.AnimationTransformations.SetFrameWaitMs(MasterWaitMs);
+                    _stellaServer.Animator.AnimationTransformation.SetFrameWaitMs(MasterWaitMs);
                     break;
                 case nameof(MasterRedCorrection):
                 case nameof(MasterBlueCorrection):
                 case nameof(MasterGreenCorrection):
-                    _stellaServer.Animator.AnimationTransformations.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
+                    _stellaServer.Animator.AnimationTransformation.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
                     break;
             }
         }

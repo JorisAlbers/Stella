@@ -7,7 +7,7 @@ using StellaServerLib.Animation.Transformation;
 namespace StellaServerLib.Test.Animation.Transformation
 {
     [TestFixture]
-    public class TestAnimationTransformations
+    public class TestAnimationTransformation
     {
         [TestCase(5, 10)]
         [TestCase(10, 5)]
@@ -15,10 +15,10 @@ namespace StellaServerLib.Test.Animation.Transformation
         public void GetCorrectedFrameWaitMs_Index_CorrectValue(int masterFrameWaitMs, int animationFrameWaitMs)
         {
             int expected = masterFrameWaitMs + animationFrameWaitMs;
-            AnimationTransformations animationTransformations = new AnimationTransformations(new TransformationSettings(0));
-            animationTransformations.AddTransformationSettings(animationFrameWaitMs);
-            animationTransformations.SetFrameWaitMs(masterFrameWaitMs);
-            Assert.AreEqual(expected, animationTransformations.GetCorrectedFrameWaitMs(0));
+            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
+            animationTransformation.AddTransformationSettings(animationFrameWaitMs);
+            animationTransformation.SetFrameWaitMs(masterFrameWaitMs);
+            Assert.AreEqual(expected, animationTransformation.GetCorrectedFrameWaitMs(0));
         }
     }
 }

@@ -6,14 +6,14 @@ using System.Linq;
 namespace StellaServerLib.Animation.Transformation
 {
     // Used to change animation characteristics during animation
-    public class AnimationTransformations
+    public class AnimationTransformation
     {
         private readonly TransformationSettings _masterTransformationSettings;
 
         private readonly List<TransformationSettings> _animationsTransformationSettings;
 
 
-        public AnimationTransformations(TransformationSettings masterTransformationSettings)
+        public AnimationTransformation(TransformationSettings masterTransformationSettings)
         {
             _masterTransformationSettings = masterTransformationSettings;
             _animationsTransformationSettings = new List<TransformationSettings>();
