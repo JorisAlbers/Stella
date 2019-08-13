@@ -39,10 +39,12 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex , expectedPixelIndex)
             };
 
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
-            animationTransformation.AddTransformationSettings(5);
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
+            {
+                new TransformationSettings(5,0,new float[3]),
+            });
 
-            Animator animator = new Animator(drawerMock.Object, stripLengthPerPi, mask, animationTransformation );
+            Animator animator = new Animator(drawerMock.Object, stripLengthPerPi, mask, transformationController);
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(1, framePerPi.Length);
@@ -93,9 +95,13 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
 
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
-            animationTransformation.AddTransformationSettings(5);
-            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi,mask, animationTransformation);
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
+            {
+                new TransformationSettings(5,0,new float[3]),
+            });
+
+
+            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi,mask, transformationController);
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(3,framePerPi.Length);
@@ -160,9 +166,12 @@ namespace StellaServerLib.Test.Animation
                 new PiMaskItem(piIndex2 , expectedPixelIndex2),
                 new PiMaskItem(piIndex3 , expectedPixelIndex3),
             };
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
-            animationTransformation.AddTransformationSettings(5);
-            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi, mask, animationTransformation);
+
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
+            {
+                new TransformationSettings(5,0,new float[3]),
+            });
+            Animator animator = new Animator(drawerMock.Object,stripLengthPerPi, mask, transformationController);
             // Flush first two frames
             animator.GetNextFramePerPi();
             animator.GetNextFramePerPi();

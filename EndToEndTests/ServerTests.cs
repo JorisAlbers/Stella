@@ -78,10 +78,10 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 250),
             };
 
-            TransformationSettings masterTransformationSetting = new TransformationSettings(0);
-            AnimationTransformation animationTransformations1 =
-                new AnimationTransformation(masterTransformationSetting);
-            animationTransformations1.AddTransformationSettings(100);
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0,0,new float[3]), new TransformationSettings[1]
+            {
+                new TransformationSettings(0,0,new float[3])
+            });
             IFrameProvider repeatingPatternsFrameProvider = new FrameProvider(
                 new RepeatingPatternsDrawer(0, 300,  new Color[][]
                 {
@@ -98,14 +98,10 @@ namespace EndToEndTests
                         Color.FromArgb(0, 0, 0)
                     }
 
-                }), animationTransformations1);
-            AnimationTransformation animationTransformations2 = new AnimationTransformation(masterTransformationSetting);
-            animationTransformations2.AddTransformationSettings(100);
-            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), animationTransformations2);
+                }), transformationController);
+            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), transformationController);
 
-            AnimationTransformation animationTransformations3 = new AnimationTransformation(masterTransformationSetting);
-            animationTransformations3.AddTransformationSettings(100);
-            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), animationTransformations3);
+            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), transformationController);
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
@@ -122,13 +118,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, animationTransformations1), Environment.TickCount);
+                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, transformationController), Environment.TickCount);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations2), Environment.TickCount);
+                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, transformationController), Environment.TickCount);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations3), Environment.TickCount);
+                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, transformationController), Environment.TickCount);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");

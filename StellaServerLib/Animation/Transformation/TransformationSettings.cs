@@ -1,29 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace StellaServerLib.Animation.Transformation
 {
     public class TransformationSettings
     {
-        public int FrameWaitMs { get; set; }
+        public int FrameWaitMs { get; }
 
         /// <summary>
         /// The brightness to correct each pixel to. Must be between -1 (black) and 1 (white).
         /// </summary>
-        public float BrightnessCorrection { get; set; }
+        public float BrightnessCorrection { get; }
 
         /// <summary>
         /// The fade correction for each rgb channel. Must be between -1 (color removed) and 0 (color present);
         /// </summary>
-        public float[] RgbFadeCorrection { get; set; } = new float[3];
+        public float[] RgbFadeCorrection { get; }
 
         
-        public TransformationSettings(int initialFrameWaitMs)
+        public TransformationSettings(int frameWaitMs, float brightnessCorrection, float[] rgbFadeCorrection)
         {
-            FrameWaitMs = initialFrameWaitMs;
+            if (rgbFadeCorrection.Length != 3)
+            {
+                throw new ArgumentException($"Length of {nameof(rgbFadeCorrection)} must be 3");
+            }
+
+            FrameWaitMs = frameWaitMs;
+            BrightnessCorrection = brightnessCorrection;
+            RgbFadeCorrection = rgbFadeCorrection;
         }
+
 
         public Color AdjustColor(Color color)
         {

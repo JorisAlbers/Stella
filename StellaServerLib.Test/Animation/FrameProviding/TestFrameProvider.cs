@@ -33,9 +33,11 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             var drawerMock = new Mock<IDrawer>();
             drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
-            animationTransformation.AddTransformationSettings(100);
-            FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, animationTransformation);
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0,0,new float[3]),new TransformationSettings[]
+            {
+                new TransformationSettings(100,0,new float[3]), 
+            } );
+            FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, transformationController);
 
             Frame[] frames = frameProvider.Take(2).ToArray();
             // Frame 1
@@ -99,10 +101,12 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 50; // 50ms to make sure they get out of frame
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
-            animationTransformation.AddTransformationSettings(100);
-            animationTransformation.AddTransformationSettings(100);
-            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, animationTransformation);
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
+            {
+                new TransformationSettings(100,0,new float[3]),
+                new TransformationSettings(100,0,new float[3]),
+            });
+            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController);
 
 
             List<Frame> receivedFrames = sectionDrawer.Take(4).ToList();
@@ -160,10 +164,13 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 0; // Both are in frame
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(0));
-            animationTransformation.AddTransformationSettings(100);
-            animationTransformation.AddTransformationSettings(100);
-            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, animationTransformation);
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
+            {
+                new TransformationSettings(100,0,new float[3]),
+                new TransformationSettings(100,0,new float[3]),
+            });
+
+            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController);
 
             List<Frame> receivedFrames = sectionDrawer.Take(2).ToList();
 
