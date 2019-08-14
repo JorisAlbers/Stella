@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing
@@ -22,20 +23,34 @@ namespace StellaServerLib.Animation.Drawing
         public static List<PixelInstructionWithoutDelta>[] CreateFrames(Bitmap bitmap)
         {
             // Convert the bitmap to frames
-            int width = bitmap.Width;
             List<PixelInstructionWithoutDelta>[] frames = new List<PixelInstructionWithoutDelta>[bitmap.Height];
-            for (int i = 0; i < bitmap.Height; i++)
+            
+            unsafe
             {
-                List<PixelInstructionWithoutDelta> frame = new List<PixelInstructionWithoutDelta>();
-                for (int j = 0; j < width; j++)
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+                int bytesPerPixel = Image.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+                int heightInPixels = bitmapData.Height;
+                int widthInBytes = bitmapData.Width * bytesPerPixel;
+                byte* ptrFirstPixel = (byte*)bitmapData.Scan0;
+
+                for (int y = 0; y < heightInPixels; y++)
                 {
-                    Color color = bitmap.GetPixel(j, i);
-                    frame.Add(new PixelInstructionWithoutDelta(color));
+                    List<PixelInstructionWithoutDelta> frame = new List<PixelInstructionWithoutDelta>();
+
+                    byte* currentLine = ptrFirstPixel + (y * bitmapData.Stride);
+                    for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                    {
+                        int oldBlue = currentLine[x];
+                        int oldGreen = currentLine[x + 1];
+                        int oldRed = currentLine[x + 2];
+
+                        frame.Add(new PixelInstructionWithoutDelta(Color.FromArgb(oldRed,oldGreen,oldBlue)));
+                    }
+
+                    frames[y] = frame;
                 }
-
-                frames[i] = frame;
+                bitmap.UnlockBits(bitmapData);
             }
-
             return frames;
 
         }
