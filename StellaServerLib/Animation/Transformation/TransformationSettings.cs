@@ -31,39 +31,34 @@ namespace StellaServerLib.Animation.Transformation
         }
 
 
-        public Color AdjustColor(Color color)
+        public (float red, float green, float blue) AdjustColor(float red, float green, float blue)
         {
             // Red
-            float red = TransformChannel(color.R, RgbFadeCorrection[0]);
+            red = TransformChannel(red, RgbFadeCorrection[0]);
             // Green
-            float green = TransformChannel(color.G, RgbFadeCorrection[1]);
+            green = TransformChannel(green, RgbFadeCorrection[1]);
             // Blue
-            float blue = TransformChannel(color.B, RgbFadeCorrection[2]);
+            blue = TransformChannel(blue, RgbFadeCorrection[2]);
 
-            return Color.FromArgb((int)red, (int)green, (int)blue);
+            return (red, green, blue);
         }
 
-        private float TransformChannel(byte channel, float correctionFactor)
+        private float TransformChannel(float channel, float correctionFactor)
         {
-            float channelAsFloat = (float)channel;
-
             if (correctionFactor == 0)
             {
-                return channelAsFloat;
+                return channel;
             }
 
             correctionFactor = 1 + correctionFactor;
-            channelAsFloat *= correctionFactor;
+            channel *= correctionFactor;
 
-            return channelAsFloat;
+            return channel;
         }
 
-        public Color AdjustBrightness(Color color)
+        public (float red, float green, float blue) AdjustBrightness(float red, float green, float blue)
         {
             float correctionFactor = BrightnessCorrection;
-            float red = color.R;
-            float green = color.G;
-            float blue = color.B;
 
             if (correctionFactor < 0)
             {
@@ -79,7 +74,7 @@ namespace StellaServerLib.Animation.Transformation
                 blue = (255 - blue) * correctionFactor + blue;
             }
 
-            return Color.FromArgb((int)red, (int)green, (int)blue);
+            return (red, green, blue);
         }
     }
 }

@@ -82,7 +82,11 @@ namespace StellaServerLib.Animation.FrameProviding
                     for (int j = 0; j < instructions.Count; j++)
                     {
                         PixelInstruction pixelInstruction = instructions[j];
-                        pixelInstruction.Color = animationTransformation.AdjustColor(providerIndex, pixelInstruction.Color);
+                        (byte red, byte green, byte blue) = animationTransformation.AdjustColor(providerIndex, pixelInstruction.R,
+                            pixelInstruction.G, pixelInstruction.B);
+                        pixelInstruction.R = red;
+                        pixelInstruction.G = green;
+                        pixelInstruction.B = blue;
                         frame.Add(pixelInstruction);
                     }
                 }

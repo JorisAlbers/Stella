@@ -33,7 +33,9 @@ namespace StellaClientLib.Light
                     {
                         for (int i = 0; i < frame.Count; i++)
                         {
-                            _ledStrip.SetLEDColor(0, i, frame[i].Color);
+                            PixelInstructionWithoutDelta instruction = frame[i];
+
+                            _ledStrip.SetLEDColor(0, i, System.Drawing.Color.FromArgb(instruction.R, instruction.G, instruction.B));
                         }
 
                         _ledStrip.Render();

@@ -23,11 +23,11 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new Frame(0,0)
                 {
-                    new PixelInstruction(0,Color.Red),
+                    new PixelInstruction(0,255,0,0),
                 },
                 new Frame(0,0)
                 {
-                    new PixelInstruction(1,Color.Blue),
+                    new PixelInstruction(1,0,0,255),
                 }
             };
 

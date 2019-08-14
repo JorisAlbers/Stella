@@ -19,16 +19,25 @@ namespace StellaServerLib.Animation.Transformation
             AnimationsTransformationSettings = animationTransformationSettings;
         }
 
-        public Color AdjustColor(int index, Color color)
+        public (byte red, byte green, byte blue) AdjustColor(int index, byte red, byte green, byte blue)
         {
             // TODO slow and not thread safe
+
+            // Convert to floats
+            float f_red = red;
+            float f_green = green;
+            float f_blue = blue;
+
             // Adjust RGB
-            color = MasterTransformationSettings.AdjustColor(color);
-            color = AnimationsTransformationSettings[index].AdjustColor(color);
+            (f_red, f_green, f_blue) = MasterTransformationSettings.AdjustColor(f_red, f_green, f_blue);
+            (f_red, f_green, f_blue) = AnimationsTransformationSettings[index].AdjustColor(f_red, f_green, f_blue);
 
             // Adjust Brightness
-            color = MasterTransformationSettings.AdjustBrightness(color);
-            return AnimationsTransformationSettings[index].AdjustBrightness(color);
+            (f_red, f_green, f_blue) = MasterTransformationSettings.AdjustBrightness(f_red, f_green, f_blue);
+            (f_red, f_green, f_blue) = AnimationsTransformationSettings[index].AdjustBrightness(f_red, f_green, f_blue);
+
+            return ((byte red, byte green, byte blue)) (f_red, f_green, f_blue);
+
         }
 
         /// <summary>

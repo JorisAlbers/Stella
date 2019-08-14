@@ -22,9 +22,9 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMs = 100;
             int startIndex = 0;
 
-            Color expectedColor1 = Color.FromArgb(255, 255, 0, 0);
-            Color expectedColor2 = Color.FromArgb(255, 0, 255, 0);
-            Color expectedColor3 = Color.FromArgb(255, 0, 0, 255);
+            Color expectedColor1 = Color.FromArgb(255, 0, 0);
+            Color expectedColor2 = Color.FromArgb(0, 255, 0);
+            Color expectedColor3 = Color.FromArgb(0, 0, 255);
 
            
             Bitmap bitmap = new Bitmap(width,height);
@@ -38,9 +38,9 @@ namespace StellaServerLib.Test.Animation.Drawing
             // ASSERT
             Assert.AreEqual(1,frames.Length);
             Assert.AreEqual(3, frames[0].Count);
-            Assert.AreEqual(expectedColor1, frames[0][0].Color);
-            Assert.AreEqual(expectedColor2, frames[0][1].Color);
-            Assert.AreEqual(expectedColor3, frames[0][2].Color);
+            Assert.AreEqual(expectedColor1, frames[0][0].ToColor());
+            Assert.AreEqual(expectedColor2, frames[0][1].ToColor());
+            Assert.AreEqual(expectedColor3, frames[0][2].ToColor());
         }
 
         [Test]
@@ -78,14 +78,14 @@ namespace StellaServerLib.Test.Animation.Drawing
             Assert.AreEqual(2,frames.Length);
             // row 1
             Assert.AreEqual(3, frames[0].Count);
-            Assert.AreEqual(expectedColor1, frames[0][0].Color);
-            Assert.AreEqual(expectedColor2, frames[0][1].Color);
-            Assert.AreEqual(expectedColor3, frames[0][2].Color);
+            Assert.AreEqual(expectedColor1, frames[0][0].ToColor());
+            Assert.AreEqual(expectedColor2, frames[0][1].ToColor());
+            Assert.AreEqual(expectedColor3, frames[0][2].ToColor());
             // row 2
             Assert.AreEqual(3,frames[1].Count);
-            Assert.AreEqual(expectedColor4, frames[1][0].Color);
-            Assert.AreEqual(expectedColor5, frames[1][1].Color);
-            Assert.AreEqual(expectedColor6, frames[1][2].Color);
+            Assert.AreEqual(expectedColor4, frames[1][0].ToColor());
+            Assert.AreEqual(expectedColor5, frames[1][1].ToColor());
+            Assert.AreEqual(expectedColor6, frames[1][2].ToColor());
 
         }
 
@@ -148,16 +148,16 @@ namespace StellaServerLib.Test.Animation.Drawing
             // ASSERT
             // row 1
             Assert.AreEqual(1, frames[0].Count);
-            Assert.AreEqual(expectedColor1, frames[0][0].Color);
+            Assert.AreEqual(expectedColor1, frames[0][0].ToColor());
             // row 2
             Assert.AreEqual(1, frames[1].Count);
-            Assert.AreEqual(expectedColor2, frames[1][0].Color);
+            Assert.AreEqual(expectedColor2, frames[1][0].ToColor());
             // Row 3
             Assert.AreEqual(1, frames[2].Count);
-            Assert.AreEqual(expectedColor3, frames[2][0].Color);
+            Assert.AreEqual(expectedColor3, frames[2][0].ToColor());
             // Row 4 
             Assert.AreEqual(1, frames[3].Count);
-            Assert.AreEqual(expectedColor3, frames[3][0].Color);
+            Assert.AreEqual(expectedColor3, frames[3][0].ToColor());
 
         }
 

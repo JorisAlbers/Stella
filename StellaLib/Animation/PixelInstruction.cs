@@ -12,46 +12,59 @@ namespace StellaLib.Animation
         /// The index of the pixel to change
         /// </summary>
         public int Index;
+        
+        public byte R;
 
-        /// <summary>
-        /// The color to set the pixel to
-        /// </summary>
-        public Color Color;
+        public byte G;
 
-        [DebuggerStepThrough]
-        public PixelInstruction(int index, Color color)
-        {
-            Index = index;
-            Color = color;
-        }
+        public byte B;
 
         [DebuggerStepThrough]
         public PixelInstruction(int index, byte red, byte green, byte blue)
         {
             Index = index;
-            Color = Color.FromArgb(red,green,blue);
+            R = red;
+            G = green;
+            B = blue;
+        }
+
+        /// <summary>
+        /// Do not use when time efficiency is an issue!
+        /// </summary>
+        /// <returns></returns>
+        public Color ToColor()
+        {
+            return Color.FromArgb(R, G, B);
         }
     }
 
     public struct PixelInstructionWithoutDelta
     {
-        /// <summary>
-        /// The color to set the pixel to
-        /// </summary>
-        public Color Color;
+        public byte R;
 
-        [DebuggerStepThrough]
-        public PixelInstructionWithoutDelta(Color color)
-        {
-            Color = color;
-        }
+        public byte G;
+
+        public byte B;
 
         [DebuggerStepThrough]
         public PixelInstructionWithoutDelta(byte red, byte green, byte blue)
         {
-            Color = Color.FromArgb(red, green, blue);
+            R = red;
+            G = green;
+            B = blue;
+        }
+
+        /// <summary>
+        /// Do not use when time efficiency is an issue!
+        /// </summary>
+        /// <returns></returns>
+        public Color ToColor()
+        {
+            return Color.FromArgb(R, G, B);
         }
     }
+
+    
 
 
 }

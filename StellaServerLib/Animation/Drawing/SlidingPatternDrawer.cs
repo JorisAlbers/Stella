@@ -32,7 +32,8 @@ namespace StellaServerLib.Animation.Drawing
                     int patternStart = i;
                     for (int j = 0; j < _stripLength; j++)
                     {
-                        pixelInstructions.Add(new PixelInstruction() { Index = _startIndex + j, Color = _pattern[(j + patternStart) % (_pattern.Length)] });
+                        Color color = _pattern[(j + patternStart) % (_pattern.Length)];
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, color.R,color.G,color.B));
                     }
 
                     yield return pixelInstructions;

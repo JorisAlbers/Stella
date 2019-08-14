@@ -28,7 +28,7 @@ namespace StellaServerLib.Test.Animation
             {
                 new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
                 {
-                    new PixelInstruction(0,expectedColor),
+                    new PixelInstruction(0,1,2,3),
                 }
             };
 
@@ -52,7 +52,7 @@ namespace StellaServerLib.Test.Animation
             FrameWithoutDelta frame = framePerPi[0];
             Assert.AreEqual(expectedFrameIndex, frame.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame.TimeStampRelative);
-            Assert.AreEqual(expectedColor, frame[expectedPixelIndex].Color);
+            Assert.AreEqual(expectedColor, frame[expectedPixelIndex].ToColor());
            
         }
 
@@ -80,9 +80,9 @@ namespace StellaServerLib.Test.Animation
             {
                 new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
                 {
-                    new PixelInstruction(0,expectedColor1),
-                    new PixelInstruction(1,expectedColor2),
-                    new PixelInstruction(2,expectedColor3),
+                    new PixelInstruction(0,1,2,3),
+                    new PixelInstruction(1,4,5,6),
+                    new PixelInstruction(2,7,8,9),
                 }
             };
 
@@ -110,19 +110,19 @@ namespace StellaServerLib.Test.Animation
             Assert.AreEqual(50,frame1.Count);
             Assert.AreEqual(expectedFrameIndex,frame1.Index);
             Assert.AreEqual(expectedRelativeTimeStamp,frame1.TimeStampRelative);
-            Assert.AreEqual(expectedColor1,frame1[expectedPixelIndex1].Color);
+            Assert.AreEqual(expectedColor1,frame1[expectedPixelIndex1].ToColor());
             // Pi1
             FrameWithoutDelta frame2 = framePerPi[1];
             Assert.AreEqual(50, frame2.Count);
             Assert.AreEqual(expectedFrameIndex, frame2.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame2.TimeStampRelative);
-            Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].Color);
+            Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].ToColor());
             // Pi 3
             FrameWithoutDelta frame3 = framePerPi[2];
             Assert.AreEqual(50, frame3.Count);
             Assert.AreEqual(expectedFrameIndex, frame3.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
-            Assert.AreEqual(expectedColor3, frame3[expectedPixelIndex3].Color);
+            Assert.AreEqual(expectedColor3, frame3[expectedPixelIndex3].ToColor());
         }
 
         [Test]
@@ -152,9 +152,9 @@ namespace StellaServerLib.Test.Animation
                 new Frame(1,2),
                 new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
                 {
-                    new PixelInstruction(0,expectedColor1),
-                    new PixelInstruction(1,expectedColor2),
-                    new PixelInstruction(2,expectedColor3),
+                    new PixelInstruction(0,1,2,3),
+                    new PixelInstruction(1,4,5,6),
+                    new PixelInstruction(2,7,8,9),
                 }
             };
 
@@ -184,17 +184,17 @@ namespace StellaServerLib.Test.Animation
             FrameWithoutDelta frame1 = framePerPi[0];
             Assert.AreEqual(expectedFrameIndex, frame1.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame1.TimeStampRelative);
-            Assert.AreEqual(expectedColor1, frame1[expectedPixelIndex1].Color);
+            Assert.AreEqual(expectedColor1, frame1[expectedPixelIndex1].ToColor());
             // Pi1
             FrameWithoutDelta frame2 = framePerPi[1];
             Assert.AreEqual(expectedFrameIndex, frame2.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame2.TimeStampRelative);
-            Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].Color);
+            Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].ToColor());
             // Pi 3
             FrameWithoutDelta frame3 = framePerPi[2];
             Assert.AreEqual(expectedFrameIndex, frame3.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
-            Assert.AreEqual(expectedColor3, frame3[expectedPixelIndex3].Color);
+            Assert.AreEqual(expectedColor3, frame3[expectedPixelIndex3].ToColor());
         }
 
     }

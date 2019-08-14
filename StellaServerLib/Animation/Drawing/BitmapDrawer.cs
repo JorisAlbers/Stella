@@ -27,7 +27,7 @@ namespace StellaServerLib.Animation.Drawing
             
             unsafe
             {
-                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
                 int bytesPerPixel = Image.GetPixelFormatSize(bitmap.PixelFormat) / 8;
                 int heightInPixels = bitmapData.Height;
                 int widthInBytes = bitmapData.Width * bytesPerPixel;
@@ -44,7 +44,7 @@ namespace StellaServerLib.Animation.Drawing
                         int oldGreen = currentLine[x + 1];
                         int oldRed = currentLine[x + 2];
 
-                        frame.Add(new PixelInstructionWithoutDelta(Color.FromArgb(oldRed,oldGreen,oldBlue)));
+                        frame.Add(new PixelInstructionWithoutDelta((byte) oldRed,(byte) oldGreen,(byte) oldBlue));
                     }
 
                     frames[y] = frame;
@@ -91,7 +91,9 @@ namespace StellaServerLib.Animation.Drawing
             List<PixelInstruction> frames = new List<PixelInstruction>();
             for (int i = 0; i < width; i++)
             {
-                frames.Add(new PixelInstruction(_startIndex+i, originalFrames[i].Color));
+                PixelInstructionWithoutDelta instruction = originalFrames[i];
+
+                frames.Add(new PixelInstruction(_startIndex+i, instruction.R, instruction.G, instruction.B));
             }
 
             return frames;
