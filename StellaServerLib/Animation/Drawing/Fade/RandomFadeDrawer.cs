@@ -30,28 +30,37 @@ namespace StellaServerLib.Animation.Drawing.Fade
         {
             Random random = new Random();
             LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
+
+            // The first frame should always start with some points
+            yield return CreateFrame(random.Next(1, 10), random ,fadePointsPerFadeStep);
+
             while (true)
             {
                 // Create new FadePoints
-                int fadePointsToAdd = random.Next(0, 10);
-                if (fadePointsToAdd > 0)
-                {
-                    fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
-                }
-
-                // draw existing FadePoints
-                List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
-                DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
-
-                // remove FadePoints that have elapsed
-                if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
-                {
-                    fadePointsPerFadeStep.RemoveFirst();
-                }
-
-                yield return pixelInstructions;
+                yield return CreateFrame(random.Next(0, 10), random, fadePointsPerFadeStep);
             }
         }
+
+        private List<PixelInstruction> CreateFrame(int fadePointsToAdd,Random random, LinkedList<List<FadePoint>> fadePointsPerFadeStep)
+        {
+            if (fadePointsToAdd > 0)
+            {
+                fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
+            }
+
+            // draw existing FadePoints
+            List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+            DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
+
+            // remove FadePoints that have elapsed
+            if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+            {
+                fadePointsPerFadeStep.RemoveFirst();
+            }
+
+            return pixelInstructions;
+        }
+
 
         private List<FadePoint> CreateNewFadePoints(Random random, int number)
         {
