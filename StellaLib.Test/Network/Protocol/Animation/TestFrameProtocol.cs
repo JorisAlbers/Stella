@@ -18,9 +18,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameIndex = 9;
             Frame frame = new Frame(frameIndex,frameWaitMS)
             { 
-                new PixelInstruction{ Index = 1,   Color = Color.FromArgb(1,2,3)},
-                new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
-                new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
+                new PixelInstruction(1,   1,2,3),
+                new PixelInstruction(2,   4,5,6),
+                new PixelInstruction(10,  7,8,9)
             };
             byte[] expectedBytes = new byte[sizeof(int)+ sizeof(int) +sizeof(int) + sizeof(bool) + sizeof(int)+3 + sizeof(int)+3 + sizeof(int)+3];
             int startIndex = 0;
@@ -104,9 +104,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             Frame expectedFrame = new Frame(1,frameWaitMS)
             { 
-                new PixelInstruction{ Index = 1,   Color = Color.FromArgb(1,2,3)},
-                new PixelInstruction{ Index = 2,   Color = Color.FromArgb(4,5,6)},
-                new PixelInstruction{ Index = 10,  Color = Color.FromArgb(7,8,9)}
+                new PixelInstruction(1,   1,2,3),
+                new PixelInstruction(2,   4,5,6),
+                new PixelInstruction(10,  7,8,9)
             };
             byte[] bytes = new byte[sizeof(int)+ sizeof(int) +sizeof(int) + sizeof(bool) + PixelInstructionProtocol.BYTES_NEEDED * 3];
             int startIndex = 0;
@@ -230,9 +230,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             int frameIndex = 9;
             FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS, 3);
-            frame[0] = new PixelInstructionWithoutDelta{Color = Color.FromArgb(1,2,3)};
-            frame[1] = new PixelInstructionWithoutDelta{Color = Color.FromArgb(4, 5, 6)};
-            frame[2] = new PixelInstructionWithoutDelta{Color = Color.FromArgb(7, 8, 9)};
+            frame[0] = new PixelInstructionWithoutDelta(1,2,3);
+            frame[1] = new PixelInstructionWithoutDelta(4, 5, 6);
+            frame[2] = new PixelInstructionWithoutDelta(7, 8, 9);
 
             byte[] expectedBytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + 3 + 3 + 3];
             int startIndex = 0;
@@ -297,9 +297,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
         {
             int frameWaitMS = 100;
             FrameWithoutDelta expectedFrame = new FrameWithoutDelta(1, frameWaitMS, 3);
-            expectedFrame[0] = new PixelInstructionWithoutDelta { Color = Color.FromArgb(1, 2, 3) };
-            expectedFrame[1] = new PixelInstructionWithoutDelta { Color = Color.FromArgb(4, 5, 6) };
-            expectedFrame[2] = new PixelInstructionWithoutDelta { Color = Color.FromArgb(7, 8, 9) };
+            expectedFrame[0] = new PixelInstructionWithoutDelta (1, 2, 3) ;
+            expectedFrame[1] = new PixelInstructionWithoutDelta (4, 5, 6) ;
+            expectedFrame[2] = new PixelInstructionWithoutDelta (7, 8, 9) ;
 
             byte[] bytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED * 3];
             int startIndex = 0;

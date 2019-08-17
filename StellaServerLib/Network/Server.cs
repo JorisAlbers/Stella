@@ -22,34 +22,36 @@ namespace StellaServerLib.Network
         private ConcurrentDictionary<int,Client> _clients;
 
         private IPEndPoint _tcpLocalEndpoint;
-        private readonly IPEndPoint _udpLocalEndpoint;
+        private IPEndPoint _udpLocalEndpoint;
 
-        private readonly int _port;
-        private readonly int _udpPort;
+        private int _port;
+        private int _udpPort;
         private bool _isShuttingDown = false;
         private readonly object _isShuttingDownLock = new object();
 
         private ISocketConnection _listenerSocket;
         private ISocketConnection _udpSocketConnection;
 
-        public Server(string ip, int port, int udpPort)
+        public Server()
         {
+            _newConnections =  new List<Client>();
+            _clients = new ConcurrentDictionary<int, Client>();
+        }
+
+        public void Start(string ip, int port, int udpPort)
+        {
+            Console.Out.WriteLine($"Starting server on {port}");
+
             IPAddress ipAddress = IPAddress.Parse(ip);
             _tcpLocalEndpoint = new IPEndPoint(ipAddress, port);
             _udpLocalEndpoint = new IPEndPoint(ipAddress, udpPort);
             _port = port;
             _udpPort = udpPort;
-            _newConnections =  new List<Client>();
-            _clients = new ConcurrentDictionary<int, Client>();
-        }
 
-        public void Start()
-        {
-            Console.Out.WriteLine($"Starting server on {_port}");
             // Create a TCP/IP socket.  
             _listenerSocket = new SocketConnection(_tcpLocalEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
-            // Bind the socket to the local endpoint and listen for incoming connections.  
 
+            // Bind the socket to the local endpoint and listen for incoming connections.  
             _listenerSocket.Bind(_tcpLocalEndpoint);  
             _listenerSocket.Listen(100);
 

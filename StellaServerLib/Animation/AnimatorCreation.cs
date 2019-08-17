@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Drawing.Fade;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
+using StellaServerLib.Animation.Transformation;
 using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Animation
@@ -11,6 +13,7 @@ namespace StellaServerLib.Animation
     public class AnimatorCreation
     {
         private readonly BitmapRepository _bitmapRepository;
+        private TransformationController _transformationController;
 
         public AnimatorCreation(BitmapRepository bitmapRepository)
         {
@@ -20,65 +23,94 @@ namespace StellaServerLib.Animation
         public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IFrameProvider frameProvider;
-            AnimationTransformation[] animationTransformations = new AnimationTransformation[storyboard.AnimationSettings.Length];
+            TransformationSettings masterTransformationSettings;
+            TransformationSettings[] animationTransformationSettings = new TransformationSettings[storyboard.AnimationSettings.Length];
 
-            if (storyboard.AnimationSettings.Length == 1)
+            if (_transformationController != null)
             {
-                // Use a normal drawer
-                IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0], out AnimationTransformation animationTransformation);
-                frameProvider = new FrameProvider(drawer,animationTransformation);
-                animationTransformations[0] = animationTransformation;
+                masterTransformationSettings =_transformationController.AnimationTransformation.MasterTransformationSettings;
             }
             else
             {
-                // Use a CombinedFrameProvider to combine multiple frameProviders
+                masterTransformationSettings = new TransformationSettings(0,0,new float[3]);
+            }
+
+            _transformationController = new TransformationController(masterTransformationSettings,animationTransformationSettings);
+
+
+            if (storyboard.AnimationSettings.Length == 1)// TODO remove this redundant if statement
+            {
+                // Use a normal drawer 
+                IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0]);
+                animationTransformationSettings[0] = new TransformationSettings(storyboard.AnimationSettings[0].FrameWaitMs,0,new float[3]);
+
+                frameProvider = new FrameProvider(drawer, _transformationController);
+            }
+            else
+            {
                 // First, get the drawers
-                IFrameProvider[] frameProviders = new IFrameProvider[storyboard.AnimationSettings.Length];
+                IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
                 int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
+
+                // Dirty check
+                Dictionary<string, List<PixelInstructionWithoutDelta>[]> bitmapToFramesDictionary = new Dictionary<string, List<PixelInstructionWithoutDelta>[]>();
 
                 for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
                 {
                     IAnimationSettings settings = storyboard.AnimationSettings[i];
-                    IDrawer drawer = CreateDrawer(settings, out AnimationTransformation animationTransformation);
-                    frameProviders[i] = new FrameProvider(drawer, animationTransformation);
-                    animationTransformations[i] = animationTransformation;
+
+                    if (settings is BitmapAnimationSettings bitmapAnimationSettings)
+                    {
+                        if (!bitmapToFramesDictionary.ContainsKey(bitmapAnimationSettings.ImageName))
+                        {
+                            bitmapToFramesDictionary[bitmapAnimationSettings.ImageName] =
+                                BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName));
+                        }
+                        drawers[i] = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
+                    }
+                    else
+                    {
+                        drawers[i] = CreateDrawer(settings);
+                    }
+
+                    animationTransformationSettings[i] = new TransformationSettings(settings.FrameWaitMs, 0, new float[3]);
                     relativeTimeStamps[i] = settings.RelativeStart;
                 }
 
-                // Then, combine them in a single frame provider by using the CombinedFrameProvider
-                frameProvider = new CombinedFrameProvider(frameProviders, relativeTimeStamps);
+                // Then, create a new FrameProvider with multiple animations
+                frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController);
             }
 
-            return new Animator(frameProvider, stripLengthPerPi, mask, animationTransformations);
+            return new Animator(frameProvider, stripLengthPerPi, mask, _transformationController);
         }
 
-        private IDrawer CreateDrawer(IAnimationSettings animationSetting, out AnimationTransformation animationTransformation)
+        private IDrawer CreateDrawer(IAnimationSettings animationSetting)
         {
-            animationTransformation = new AnimationTransformation(animationSetting.FrameWaitMs);
-
             if (animationSetting is MovingPatternAnimationSettings movingPatternSetting)
             {
-                return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, animationTransformation, movingPatternSetting.Pattern);
+                return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, movingPatternSetting.Pattern);
             }
             if (animationSetting is SlidingPatternAnimationSettings slidingPatternSetting)
             {
-                return new SlidingPatternDrawer(slidingPatternSetting.StartIndex, slidingPatternSetting.StripLength, animationTransformation, slidingPatternSetting.Pattern);
+                return new SlidingPatternDrawer(slidingPatternSetting.StartIndex, slidingPatternSetting.StripLength, slidingPatternSetting.Pattern);
             }
             if (animationSetting is RepeatingPatternAnimationSettings repeatingPatternSetting)
             {
-                return new RepeatingPatternsDrawer(repeatingPatternSetting.StartIndex, repeatingPatternSetting.StripLength, animationTransformation, repeatingPatternSetting.Patterns);
+                return new RepeatingPatternsDrawer(repeatingPatternSetting.StartIndex, repeatingPatternSetting.StripLength, repeatingPatternSetting.Patterns);
             }
             if (animationSetting is RandomFadeAnimationSettings randomFadeSetting)
             {
-                return new RandomFadeDrawer(randomFadeSetting.StartIndex, randomFadeSetting.StripLength, animationTransformation, randomFadeSetting.Pattern, randomFadeSetting.FadeSteps);
+                return new RandomFadeDrawer(randomFadeSetting.StartIndex, randomFadeSetting.StripLength, randomFadeSetting.Pattern, randomFadeSetting.FadeSteps);
             }
             if (animationSetting is FadingPulseAnimationSettings fadingPulseSetting)
             {
-                return new FadingPulseDrawer(fadingPulseSetting.StartIndex, fadingPulseSetting.StripLength, animationTransformation, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
+                return new FadingPulseDrawer(fadingPulseSetting.StartIndex, fadingPulseSetting.StripLength, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
             }
-            if (animationSetting is BitmapAnimationSettings bitmapSetting)
+
+            if (animationSetting is BitmapAnimationSettings bitmapAnimationSettings)
             {
-                return new BitmapDrawer(bitmapSetting.StartIndex, bitmapSetting.StripLength, animationTransformation, bitmapSetting.Wraps, _bitmapRepository.Load(bitmapSetting.ImageName));
+                return new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName)));
+
             }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");

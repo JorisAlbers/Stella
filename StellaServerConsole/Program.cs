@@ -5,6 +5,7 @@ using System.Linq;
 using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
+using StellaServerLib.Network;
 using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerConsole
@@ -92,7 +93,7 @@ namespace StellaServerConsole
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new AnimatorCreation(_bitmapRepository));
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new Server(), new AnimatorCreation(_bitmapRepository));
 
             try
             {
@@ -185,11 +186,11 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection);
                 return;
             }
 
-            _stellaServer.Animator.SetBrightnessCorrection(animationIndex, brightnessCorrection);
+            _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection, animationIndex);
         }
 
         private static void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
@@ -197,11 +198,11 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetRgbFadeCorrection(rgbFade);
+                _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade);
                 return;
             }
 
-            _stellaServer.Animator.SetRgbFadeCorrection(animationIndex, rgbFade);
+            _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
         private static void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
@@ -209,26 +210,26 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.SetFrameWaitMs(frameWaitMs);
+                _stellaServer.Animator.TransformationController.SetFrameWaitMs(frameWaitMs);
                 return;
             }
 
-            _stellaServer.Animator.SetFrameWaitMs(animationIndex, frameWaitMs);
+            _stellaServer.Animator.TransformationController.SetFrameWaitMs(animationIndex, frameWaitMs);
         }
 
         private static float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
         {
-            return _stellaServer.Animator.GetBrightnessCorrection(animationIndex);
+            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].BrightnessCorrection;
         }
 
         private static float[] ApiServerOnRgbFadeRequested(int animationIndex)
         {
-            return _stellaServer.Animator.GetRgbFadeCorrection(animationIndex);
+            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].RgbFadeCorrection;
         }
 
         private static int ApiServerOnFrameWaitMsRequested(int animationIndex)
         {
-            return _stellaServer.Animator.GetFrameWaitMs(animationIndex);
+            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].FrameWaitMs;
         }
 
         private static void GetTransformationInput()
@@ -250,7 +251,7 @@ namespace StellaServerConsole
                 // Animation speed
                 if (key.KeyChar == 's' || key.KeyChar == 'S')
                 {
-                    int currentWaitms = _stellaServer.Animator.GetFrameWaitMs(0);
+                    int currentWaitms = _stellaServer.Animator.TransformationController.AnimationTransformation.MasterTransformationSettings.FrameWaitMs;
                     int newWaitMs;
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
@@ -263,7 +264,7 @@ namespace StellaServerConsole
                         newWaitMs = Math.Max(1, currentWaitms - 1);
                     }
 
-                    _stellaServer.Animator.SetFrameWaitMs(newWaitMs);
+                    _stellaServer.Animator.TransformationController.SetFrameWaitMs(newWaitMs);
                     Console.Out.WriteLine($"Speed set to {newWaitMs}");
                 }
 
@@ -284,7 +285,7 @@ namespace StellaServerConsole
                         if (brightnessCorrection > 1)
                             brightnessCorrection = 1;
                     }
-                    _stellaServer.Animator.SetBrightnessCorrection(brightnessCorrection);
+                    _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection);
                 }
 
                 // Color
@@ -302,7 +303,7 @@ namespace StellaServerConsole
                         if (transformationFactor[0] > 0)
                             transformationFactor[0] = 0;
                     }
-                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(transformationFactor);
                 }
                 if (key.KeyChar == 'g' || key.KeyChar == 'G')
                 {
@@ -318,7 +319,7 @@ namespace StellaServerConsole
                         if (transformationFactor[1] > 0)
                             transformationFactor[1] = 0;
                     }
-                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(transformationFactor);
                 }
                 if (key.KeyChar == 'b' || key.KeyChar == 'B')
                 {
@@ -334,7 +335,7 @@ namespace StellaServerConsole
                         if (transformationFactor[2] > 0)
                             transformationFactor[2] = 0;
                     }
-                    _stellaServer.Animator.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(transformationFactor);
                 }
                
             }
@@ -349,27 +350,78 @@ namespace StellaServerConsole
                 {
                     Storyboard sb = new Storyboard();
                     string name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-
                     sb.Name = name;
-                    // Assume we have 2 pi's, each with 1 line of 240 pixels
-                    sb.AnimationSettings = new IAnimationSettings[]
+                    
+                    if (name.Contains("3600"))
                     {
+                        sb.Name = name;
+                        // Assume we have 2 pi's, each with 1 line of 240 pixels
+                        sb.AnimationSettings = new IAnimationSettings[]
+                        {
+                            new BitmapAnimationSettings
+                            {
+                                FrameWaitMs = 10,
+                                ImageName = name,
+                                StripLength = 3600,
+                                Wraps = true
+                            }
+                        };
+                    }
+                    else
+                    {
+                        // Assume we have 2 pi's, each with 1 line of 240 pixels
+                        sb.AnimationSettings = new IAnimationSettings[]
+                        {
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 240,
+                            StripLength = 600,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 240,
-                            StartIndex = 240,
+                            StripLength = 600,
+                            StartIndex = 600,
                             Wraps = true
                         },
-                    };
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 1200,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 1800,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 2400,
+                            Wraps = true
+                        },
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 600,
+                            StartIndex = 3000,
+                            Wraps = true
+                        },
+                        };
+                    }
+                    
                     storyboards.Add(sb);
                 }
             }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing
@@ -14,30 +15,52 @@ namespace StellaServerLib.Animation.Drawing
     /// </summary>
     public class BitmapDrawer : IDrawer
     {
-        private readonly AnimationTransformation _animationTransformation;
+        private readonly int _startIndex;
+        private readonly int _stripLength;
         private readonly bool _wrap;
-        private readonly List<PixelInstruction>[] _frames;
+        private readonly List<PixelInstructionWithoutDelta>[] _imageFrames;
 
-
-        /// <param name="wrap">If the bitmap drawer should draw the first line after the last line</param>
-        public BitmapDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, bool wrap, Bitmap bitmap)
+        public static List<PixelInstructionWithoutDelta>[] CreateFrames(Bitmap bitmap)
         {
             // Convert the bitmap to frames
-            int width = Math.Min(bitmap.Width, stripLength);
-            _frames = new List<PixelInstruction>[bitmap.Height];
-            for (int i = 0; i < bitmap.Height; i++)
+            List<PixelInstructionWithoutDelta>[] frames = new List<PixelInstructionWithoutDelta>[bitmap.Height];
+            
+            unsafe
             {
-                List<PixelInstruction> frame = new List<PixelInstruction>();
-                for (int j = 0; j < width; j++)
+                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+                int bytesPerPixel = Image.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+                int heightInPixels = bitmapData.Height;
+                int widthInBytes = bitmapData.Width * bytesPerPixel;
+                byte* ptrFirstPixel = (byte*)bitmapData.Scan0;
+
+                for (int y = 0; y < heightInPixels; y++)
                 {
-                    Color color = bitmap.GetPixel(j, i);
-                    frame.Add(new PixelInstruction(startIndex + j, color));
+                    List<PixelInstructionWithoutDelta> frame = new List<PixelInstructionWithoutDelta>();
+
+                    byte* currentLine = ptrFirstPixel + (y * bitmapData.Stride);
+                    for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                    {
+                        int oldBlue = currentLine[x];
+                        int oldGreen = currentLine[x + 1];
+                        int oldRed = currentLine[x + 2];
+
+                        frame.Add(new PixelInstructionWithoutDelta((byte) oldRed,(byte) oldGreen,(byte) oldBlue));
+                    }
+
+                    frames[y] = frame;
                 }
-
-                _frames[i] = frame;
+                bitmap.UnlockBits(bitmapData);
             }
+            return frames;
 
-            _animationTransformation = animationTransformation;
+        }
+
+        /// <param name="wrap">If the bitmap drawer should draw the first line after the last line</param>
+        public BitmapDrawer(int startIndex, int stripLength, bool wrap, List<PixelInstructionWithoutDelta>[] imageFrames)
+        {
+            _startIndex = startIndex;
+            _stripLength = stripLength;
+            _imageFrames = imageFrames;
             _wrap = wrap;
         }
 
@@ -46,33 +69,34 @@ namespace StellaServerLib.Animation.Drawing
             while (true)
             {
                 // Top to bottom
-                for (int i = 0; i < _frames.Length; i++)
+                for (int i = 0; i < _imageFrames.Length; i++)
                 {
-                    yield return TransformInstructions(_frames[i]);
+                    yield return ConvertToDelta(_imageFrames[i]);
                 }
 
                 if (_wrap)
                 {
                     // Bottom to top
-                    for (int i = _frames.Length - 1; i >= 0; i--)
+                    for (int i = _imageFrames.Length - 1; i >= 0; i--)
                     {
-                        yield return TransformInstructions(_frames[i]);
+                        yield return ConvertToDelta(_imageFrames[i]);
                     }
                 }
             }
         }
 
-        private List<PixelInstruction> TransformInstructions(List<PixelInstruction> instructions)
+        private List<PixelInstruction> ConvertToDelta(List<PixelInstructionWithoutDelta> originalFrames)
         {
-            List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
-            for (int i = 0; i < instructions.Count; i++)
+            int width = Math.Min(originalFrames.Count, _stripLength);
+            List<PixelInstruction> frames = new List<PixelInstruction>();
+            for (int i = 0; i < width; i++)
             {
-                PixelInstruction instruction = instructions[i];
-                instruction.Color = _animationTransformation.AdjustColor(instruction.Color);
-                pixelInstructions.Add(instruction);
+                PixelInstructionWithoutDelta instruction = originalFrames[i];
+
+                frames.Add(new PixelInstruction(_startIndex+i, instruction.R, instruction.G, instruction.B));
             }
-            
-            return pixelInstructions;
+
+            return frames;
         }
 
         IEnumerator IEnumerable.GetEnumerator()

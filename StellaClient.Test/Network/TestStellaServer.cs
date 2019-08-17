@@ -3,11 +3,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NUnit.Framework;
-using StellaClient.Network;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
-using Moq;
 using System.Text;
+using StellaClientLib.Network;
 
 namespace StellaClient.Test.Network
 {
@@ -29,8 +28,8 @@ namespace StellaClient.Test.Network
 
             // Create a SocketConnectionController
             int clientId = 0;
-            StellaServer stellaServer = new StellaServer(localEndPoint, 20056, clientId);
-            stellaServer.Start();
+            StellaServer stellaServer = new StellaServer();
+            stellaServer.Start(localEndPoint, 20056, clientId);
             
             Socket server_receiver = server.Accept();
             Thread.Sleep(1000);

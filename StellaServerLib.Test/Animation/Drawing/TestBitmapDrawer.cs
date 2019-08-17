@@ -12,7 +12,7 @@ namespace StellaServerLib.Test.Animation.Drawing
     class TestBitmapDrawer
     {
         [Test]
-        public void Create_BitmapWithOneRow_CreatesAnimationWithOneFrame()
+        public void CreateFrames_BitmapWithOneRow_CreatesAnimationWithOneFrame()
         {
             // SETUP
             int width = 3;
@@ -22,9 +22,9 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMs = 100;
             int startIndex = 0;
 
-            Color expectedColor1 = Color.FromArgb(255, 255, 0, 0);
-            Color expectedColor2 = Color.FromArgb(255, 0, 255, 0);
-            Color expectedColor3 = Color.FromArgb(255, 0, 0, 255);
+            Color expectedColor1 = Color.FromArgb(255, 0, 0);
+            Color expectedColor2 = Color.FromArgb(0, 255, 0);
+            Color expectedColor3 = Color.FromArgb(0, 0, 255);
 
            
             Bitmap bitmap = new Bitmap(width,height);
@@ -33,18 +33,18 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2,0,expectedColor3);
             
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, new AnimationTransformation(frameWaitMs), true,bitmap);
-
-            List<PixelInstruction> frame = drawer.First();
+            List<PixelInstructionWithoutDelta>[] frames = BitmapDrawer.CreateFrames(bitmap);
 
             // ASSERT
-            Assert.AreEqual(expectedColor1, frame[0].Color);
-            Assert.AreEqual(expectedColor2, frame[1].Color);
-            Assert.AreEqual(expectedColor3, frame[2].Color);
+            Assert.AreEqual(1,frames.Length);
+            Assert.AreEqual(3, frames[0].Count);
+            Assert.AreEqual(expectedColor1, frames[0][0].ToColor());
+            Assert.AreEqual(expectedColor2, frames[0][1].ToColor());
+            Assert.AreEqual(expectedColor3, frames[0][2].ToColor());
         }
 
         [Test]
-        public void Create_BitmapWithTwoRow_CreatesAnimationWithOneFrame()
+        public void CreateFrames_BitmapWithTwoRow_CreatesAnimationWithOneFrame()
         {
             // SETUP
             int width = 3;
@@ -72,20 +72,20 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 1, expectedColor6);
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex,stripLength, new AnimationTransformation(frameWaitMs), true, bitmap);
-            List<List<PixelInstruction>> frames = drawer.Take(2).ToList();
+            List<PixelInstructionWithoutDelta>[] frames = BitmapDrawer.CreateFrames(bitmap);
 
             // ASSERT
+            Assert.AreEqual(2,frames.Length);
             // row 1
             Assert.AreEqual(3, frames[0].Count);
-            Assert.AreEqual(expectedColor1, frames[0][0].Color);
-            Assert.AreEqual(expectedColor2, frames[0][1].Color);
-            Assert.AreEqual(expectedColor3, frames[0][2].Color);
+            Assert.AreEqual(expectedColor1, frames[0][0].ToColor());
+            Assert.AreEqual(expectedColor2, frames[0][1].ToColor());
+            Assert.AreEqual(expectedColor3, frames[0][2].ToColor());
             // row 2
             Assert.AreEqual(3,frames[1].Count);
-            Assert.AreEqual(expectedColor4, frames[1][0].Color);
-            Assert.AreEqual(expectedColor5, frames[1][1].Color);
-            Assert.AreEqual(expectedColor6, frames[1][2].Color);
+            Assert.AreEqual(expectedColor4, frames[1][0].ToColor());
+            Assert.AreEqual(expectedColor5, frames[1][1].ToColor());
+            Assert.AreEqual(expectedColor6, frames[1][2].ToColor());
 
         }
 
@@ -110,7 +110,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 0, Color.FromArgb(255, 0, 0, 255));
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, new AnimationTransformation(frameWaitMs), true, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
 
             List<PixelInstruction> frame = drawer.First();
 
@@ -142,22 +142,22 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(0, 2, expectedColor3);
 
             // ACT
-            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, new AnimationTransformation(frameWaitMs), true, bitmap);
+            BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
             List<List<PixelInstruction>> frames = drawer.Take(4).ToList();
 
             // ASSERT
             // row 1
             Assert.AreEqual(1, frames[0].Count);
-            Assert.AreEqual(expectedColor1, frames[0][0].Color);
+            Assert.AreEqual(expectedColor1, frames[0][0].ToColor());
             // row 2
             Assert.AreEqual(1, frames[1].Count);
-            Assert.AreEqual(expectedColor2, frames[1][0].Color);
+            Assert.AreEqual(expectedColor2, frames[1][0].ToColor());
             // Row 3
             Assert.AreEqual(1, frames[2].Count);
-            Assert.AreEqual(expectedColor3, frames[2][0].Color);
+            Assert.AreEqual(expectedColor3, frames[2][0].ToColor());
             // Row 4 
             Assert.AreEqual(1, frames[3].Count);
-            Assert.AreEqual(expectedColor3, frames[3][0].Color);
+            Assert.AreEqual(expectedColor3, frames[3][0].ToColor());
 
         }
 

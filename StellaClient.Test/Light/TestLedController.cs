@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Threading;
+﻿using System.Drawing;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using rpi_ws281x;
-using StellaClient.Light;
+using StellaClientLib.Light;
 using StellaLib.Animation;
 
 namespace StellaClient.Test.Light
@@ -19,7 +14,7 @@ namespace StellaClient.Test.Light
         public void PrepareFrame_Frame_FrameGetsDrawnToStrip()
         {
             FrameWithoutDelta frame = new FrameWithoutDelta(0,100,1);
-            frame[0] = new PixelInstructionWithoutDelta(Color.FromArgb(10, 20, 30));
+            frame[0] = new PixelInstructionWithoutDelta(10, 20, 30);
 
             var mock = new Mock<ILEDStrip>();
 
@@ -41,7 +36,7 @@ namespace StellaClient.Test.Light
         public void Render__LedStripRenderGetsCalled()
         {
             FrameWithoutDelta frame = new FrameWithoutDelta(0, 100, 1);
-            frame[0] = new PixelInstructionWithoutDelta(Color.FromArgb(10, 20, 30));
+            frame[0] = new PixelInstructionWithoutDelta(10, 20, 30);
             var mock = new Mock<ILEDStrip>();
             mock.Setup(x => x.Render());
 

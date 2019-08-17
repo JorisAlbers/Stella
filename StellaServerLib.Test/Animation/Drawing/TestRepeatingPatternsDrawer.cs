@@ -22,7 +22,7 @@ namespace StellaServerLib.Test.Animation.Drawing
                  };
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,new AnimationTransformation(frameWaitMS), new Color[][]{pattern});
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,new Color[][]{pattern});
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -33,13 +33,13 @@ namespace StellaServerLib.Test.Animation.Drawing
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
-            Assert.AreEqual(frame[0].Color, expectedColor1);
-            Assert.AreEqual(frame[1].Color, expectedColor2);
-            Assert.AreEqual(frame[2].Color, expectedColor3);
-            Assert.AreEqual(frame[3].Color, expectedColor1);
-            Assert.AreEqual(frame[4].Color, expectedColor2);
-            Assert.AreEqual(frame[5].Color, expectedColor3);
-            Assert.AreEqual(frame[6].Color, expectedColor1);
+            Assert.AreEqual(frame[0].ToColor(), expectedColor1);
+            Assert.AreEqual(frame[1].ToColor(), expectedColor2);
+            Assert.AreEqual(frame[2].ToColor(), expectedColor3);
+            Assert.AreEqual(frame[3].ToColor(), expectedColor1);
+            Assert.AreEqual(frame[4].ToColor(), expectedColor2);
+            Assert.AreEqual(frame[5].ToColor(), expectedColor3);
+            Assert.AreEqual(frame[6].ToColor(), expectedColor1);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int startIndex = 100;
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip, new AnimationTransformation(frameWaitMS), new Color[][] { pattern });
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip,  new Color[][] { pattern });
 
             // Expected
             int expectedIndex1 = 100;
@@ -91,7 +91,7 @@ namespace StellaServerLib.Test.Animation.Drawing
 
             int lengthStrip = 7;
             int frameWaitMS = 100;
-            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,new AnimationTransformation(frameWaitMS), patterns);
+            RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip, patterns);
 
             // Expected
             Color expectedColor1 =  Color.FromArgb(1,2,3);
@@ -102,9 +102,9 @@ namespace StellaServerLib.Test.Animation.Drawing
 
             //Assert
             List<PixelInstruction> frame1 = frames[0];
-            Assert.AreEqual(frame1[0].Color, expectedColor1);
+            Assert.AreEqual(frame1[0].ToColor(), expectedColor1);
             List<PixelInstruction> frame2 = frames[1];
-            Assert.AreEqual(frame2[0].Color, expectedColor2);
+            Assert.AreEqual(frame2[0].ToColor(), expectedColor2);
         }
     }
 }

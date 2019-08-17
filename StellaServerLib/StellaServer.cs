@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
@@ -18,17 +20,20 @@ namespace StellaServerLib
 
         private List<PiMaskItem> _mask;
         private int[] _stripLengthPerPi;
-        private Server _server;
+        private IServer _server;
         private ClientController _clientController;
+
+        private int _loadingAnimation;
 
         public IAnimator Animator { get; private set; }
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, AnimatorCreation animatorCreation)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, IServer server, AnimatorCreation animatorCreation)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
+            _server = server;
             _animatorCreation = animatorCreation;
         }
 
@@ -37,25 +42,37 @@ namespace StellaServerLib
             // Read mapping
             _mask = LoadMask(_mappingFilePath);
             // Start Server
-            _server = StartServer(_ip, _port, _udpPort);
+            _server = StartServer(_ip, _port, _udpPort, _server);
             // Start ClientController
             _clientController = StartClientController(_server);
         }
 
-        public void StartStoryboard(Storyboard storyboard)
+        public async void StartStoryboard(Storyboard storyboard)
         {
             Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
 
             try
             {
-                Animator = _animatorCreation.Create(storyboard, _stripLengthPerPi, _mask);
+                // Check if we are already loading an animation. If so, skip.
+                if (0 == Interlocked.Exchange(ref _loadingAnimation, 1))
+                {
+                    // Create the animation on a new task
+                    Animator = await Task.Factory.StartNew(() => _animatorCreation.Create(storyboard, _stripLengthPerPi, _mask)); 
+                    // Release the lock
+                    Interlocked.Exchange(ref _loadingAnimation, 0);
+                }
+                else
+                {
+                    Console.Out.WriteLine("Failed to create a new animation, we are already loading one");
+                    return;
+                }
             }
             catch (Exception e)
             {
                 throw new Exception("Failed to create new animator.",e);
             }
 
-            _clientController.StartAnimation(Animator, DateTime.Now + TimeSpan.FromMilliseconds(200)); // TODO variable startAT
+            _clientController.StartAnimation(Animator, Environment.TickCount); // TODO variable startAT
 
         }
 
@@ -77,13 +94,12 @@ namespace StellaServerLib
             }
         }
 
-        private Server StartServer(string ip, int port, int udpPort)
+        private IServer StartServer(string ip, int port, int udpPort, IServer server)
         {
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
-                Server server = new Server(ip, port, udpPort);
-                server.Start();
+                server.Start(ip, port, udpPort);
                 return server;
             }
             catch (Exception e)

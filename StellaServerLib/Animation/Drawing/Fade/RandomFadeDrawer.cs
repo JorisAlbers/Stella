@@ -13,15 +13,13 @@ namespace StellaServerLib.Animation.Drawing.Fade
         private readonly Color[][] _fadePatterns;
         private readonly int _startIndex;
         private readonly int _stripLength;
-        private readonly AnimationTransformation _animationTransformation;
         private readonly int _fadeSteps;
 
 
-        public RandomFadeDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern, int fadeSteps)
+        public RandomFadeDrawer(int startIndex, int stripLength, Color[] pattern, int fadeSteps)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _animationTransformation = animationTransformation;
             _pattern = pattern;
             _fadeSteps = fadeSteps;
 
@@ -32,28 +30,37 @@ namespace StellaServerLib.Animation.Drawing.Fade
         {
             Random random = new Random();
             LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
+
+            // The first frame should always start with some points
+            yield return CreateFrame(random.Next(1, 10), random ,fadePointsPerFadeStep);
+
             while (true)
             {
                 // Create new FadePoints
-                int fadePointsToAdd = random.Next(0, 10);
-                if (fadePointsToAdd > 0)
-                {
-                    fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
-                }
-
-                // draw existing FadePoints
-                List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
-                DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
-
-                // remove FadePoints that have elapsed
-                if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
-                {
-                    fadePointsPerFadeStep.RemoveFirst();
-                }
-
-                yield return pixelInstructions;
+                yield return CreateFrame(random.Next(0, 10), random, fadePointsPerFadeStep);
             }
         }
+
+        private List<PixelInstruction> CreateFrame(int fadePointsToAdd,Random random, LinkedList<List<FadePoint>> fadePointsPerFadeStep)
+        {
+            if (fadePointsToAdd > 0)
+            {
+                fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
+            }
+
+            // draw existing FadePoints
+            List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+            DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
+
+            // remove FadePoints that have elapsed
+            if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+            {
+                fadePointsPerFadeStep.RemoveFirst();
+            }
+
+            return pixelInstructions;
+        }
+
 
         private List<FadePoint> CreateNewFadePoints(Random random, int number)
         {
@@ -74,7 +81,6 @@ namespace StellaServerLib.Animation.Drawing.Fade
                 // All fade points at this index have the same fade step count.
                 int fadeStep = fadePoints[0].Step;
                 Color[] pattern = _fadePatterns[_fadeSteps - 1 - fadeStep];
-                Color[] adjustedColor = pattern.Select(x=>_animationTransformation.AdjustColor(x)).ToArray();
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
@@ -86,7 +92,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                             continue;
                         }
 
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + pixelIndex, adjustedColor[i]));
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + pixelIndex, pattern[i].R, pattern[i].G, pattern[i].B));
                     }
                     fadePoint.Step++;
                 }

@@ -24,7 +24,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int lengthStrip = 7;
             int frameWaitMS = 100;
             int framesToTake = 3;
-            SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,lengthStrip,new AnimationTransformation(frameWaitMS), pattern);
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,lengthStrip,pattern);
 
             // Expected
             Color expectedColor1 = Color.FromArgb(1,2,3);
@@ -37,33 +37,33 @@ namespace StellaServerLib.Test.Animation.Drawing
             //Frame 1
             List<PixelInstruction> frame1 = frames[0];
             Assert.AreEqual(lengthStrip, frame1.Count);
-            Assert.AreEqual(frame1[0].Color, expectedColor1);
-            Assert.AreEqual(frame1[1].Color, expectedColor2);
-            Assert.AreEqual(frame1[2].Color, expectedColor3);
-            Assert.AreEqual(frame1[3].Color, expectedColor1);
-            Assert.AreEqual(frame1[4].Color, expectedColor2);
-            Assert.AreEqual(frame1[5].Color, expectedColor3);
-            Assert.AreEqual(frame1[6].Color, expectedColor1);
+            Assert.AreEqual(frame1[0].ToColor(), expectedColor1);
+            Assert.AreEqual(frame1[1].ToColor(), expectedColor2);
+            Assert.AreEqual(frame1[2].ToColor(), expectedColor3);
+            Assert.AreEqual(frame1[3].ToColor(), expectedColor1);
+            Assert.AreEqual(frame1[4].ToColor(), expectedColor2);
+            Assert.AreEqual(frame1[5].ToColor(), expectedColor3);
+            Assert.AreEqual(frame1[6].ToColor(), expectedColor1);
             //Frame 2
             List<PixelInstruction> frame2 = frames[1];
             Assert.AreEqual(lengthStrip, frame2.Count);
-            Assert.AreEqual(frame2[0].Color, expectedColor2);
-            Assert.AreEqual(frame2[1].Color, expectedColor3);
-            Assert.AreEqual(frame2[2].Color, expectedColor1);
-            Assert.AreEqual(frame2[3].Color, expectedColor2);
-            Assert.AreEqual(frame2[4].Color, expectedColor3);
-            Assert.AreEqual(frame2[5].Color, expectedColor1);
-            Assert.AreEqual(frame2[6].Color, expectedColor2);
+            Assert.AreEqual(frame2[0].ToColor(), expectedColor2);
+            Assert.AreEqual(frame2[1].ToColor(), expectedColor3);
+            Assert.AreEqual(frame2[2].ToColor(), expectedColor1);
+            Assert.AreEqual(frame2[3].ToColor(), expectedColor2);
+            Assert.AreEqual(frame2[4].ToColor(), expectedColor3);
+            Assert.AreEqual(frame2[5].ToColor(), expectedColor1);
+            Assert.AreEqual(frame2[6].ToColor(), expectedColor2);
             //Frame 3
             List<PixelInstruction> frame3 = frames[2];
             Assert.AreEqual(lengthStrip, frame3.Count);
-            Assert.AreEqual(frame3[0].Color, expectedColor3);
-            Assert.AreEqual(frame3[1].Color, expectedColor1);
-            Assert.AreEqual(frame3[2].Color, expectedColor2);
-            Assert.AreEqual(frame3[3].Color, expectedColor3);
-            Assert.AreEqual(frame3[4].Color, expectedColor1);
-            Assert.AreEqual(frame3[5].Color, expectedColor2);
-            Assert.AreEqual(frame3[6].Color, expectedColor3);
+            Assert.AreEqual(frame3[0].ToColor(), expectedColor3);
+            Assert.AreEqual(frame3[1].ToColor(), expectedColor1);
+            Assert.AreEqual(frame3[2].ToColor(), expectedColor2);
+            Assert.AreEqual(frame3[3].ToColor(), expectedColor3);
+            Assert.AreEqual(frame3[4].ToColor(), expectedColor1);
+            Assert.AreEqual(frame3[5].ToColor(), expectedColor2);
+            Assert.AreEqual(frame3[6].ToColor(), expectedColor3);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMS = 100;
             int framesToTake = 1;
             int startIndex = 100;
-            SlidingPatternDrawer drawer = new SlidingPatternDrawer(startIndex,lengthStrip,new AnimationTransformation(frameWaitMS), pattern);
+            SlidingPatternDrawer drawer = new SlidingPatternDrawer(startIndex,lengthStrip, pattern);
 
             // Expected
             int expectedIndex1 = 100;

@@ -13,18 +13,16 @@ namespace StellaServerLib.Animation.Drawing
     {
         private readonly int _startIndex;
         private int _lengthStrip;
-        private readonly AnimationTransformation _animationTransformation;
         private Color[][] _patterns;
 
         /// <summary>
         /// Each array of colors in the patterns list will be repeated over the length of the ledstip.
         /// Each frame is the next pattern, repeated.
         /// </summary>
-        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, AnimationTransformation animationTransformation, Color[][] patterns)
+        public RepeatingPatternsDrawer(int startIndex, int lengthStrip, Color[][] patterns)
         {
             _startIndex = startIndex;
             _lengthStrip = lengthStrip;
-            _animationTransformation = animationTransformation;
             _patterns = patterns;
         }
 
@@ -44,12 +42,9 @@ namespace StellaServerLib.Animation.Drawing
                         leftPixelIndex = _startIndex + pattern.Length * j;
                         for (int k = 0; k < pattern.Length; k++)
                         {
-                            int pixelIndex = (int)leftPixelIndex + k;
-                            pixelInstructions.Add(new PixelInstruction()
-                            {
-                                Index = pixelIndex,
-                                Color = pattern[k]
-                            });
+                            int pixelIndex = leftPixelIndex + k;
+                            pixelInstructions.Add(new PixelInstruction(pixelIndex, pattern[k].R, pattern[k].G,
+                                pattern[k].B));
                         }
                     }
 
@@ -57,12 +52,9 @@ namespace StellaServerLib.Animation.Drawing
                     // draw remaining pixels of the pattern that does not completely fit on the end of the led strip
                     for (int j = 0; j < _lengthStrip % pattern.Length; j++)
                     {
-                        int pixelIndex = (int)leftPixelIndex + j;
-                        pixelInstructions.Add(new PixelInstruction()
-                        {
-                            Index = pixelIndex,
-                            Color = pattern[j]
-                        });
+                        int pixelIndex = leftPixelIndex + j;
+                        pixelInstructions.Add(
+                            new PixelInstruction(pixelIndex, pattern[j].R, pattern[j].G, pattern[j].B));
                     }
 
                     yield return pixelInstructions;

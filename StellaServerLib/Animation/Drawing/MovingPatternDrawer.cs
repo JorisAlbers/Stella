@@ -13,7 +13,6 @@ namespace StellaServerLib.Animation.Drawing
         private Color[] _pattern;
         private readonly int _startIndex;
         private int _stripLength;
-        private readonly AnimationTransformation _animationTransformation;
 
         /// <summary>
         /// Ctor
@@ -22,11 +21,10 @@ namespace StellaServerLib.Animation.Drawing
         /// <param name="stripLength">The length of the section to draw</param>
         /// <param name="animationTransformation"></param>
         /// <param name="pattern">The pattern to move</param>
-        public MovingPatternDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern)
+        public MovingPatternDrawer(int startIndex, int stripLength, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _animationTransformation = animationTransformation;
             _pattern = pattern;
         }
 
@@ -42,7 +40,8 @@ namespace StellaServerLib.Animation.Drawing
                     List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     for (int j = 0; j < i + 1; j++)
                     {
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, _pattern[_pattern.Length - 1 - i + j]));
+                        Color color = _pattern[_pattern.Length - 1 - i + j];
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, color.R, color.G, color.B ));
                     }
                     yield return pixelInstructions;
                 }
@@ -53,7 +52,8 @@ namespace StellaServerLib.Animation.Drawing
                     List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     for (int j = 0; j < _pattern.Length; j++)
                     {
-                        pixelInstructions.Add(new PixelInstruction { Index = _startIndex + i + j, Color = _pattern[j] });
+                        Color color = _pattern[j];
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + i + j, color.R, color.G, color.B));
                     }
 
                     yield return pixelInstructions;
@@ -65,7 +65,8 @@ namespace StellaServerLib.Animation.Drawing
                     List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
                     for (int j = 0; j < _pattern.Length - 1 - i; j++)
                     {
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), _pattern[j]));
+                        Color color = _pattern[j];
+                        pixelInstructions.Add(new PixelInstruction(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), color.R, color.G, color.B));
                     }
 
                     yield return pixelInstructions;

@@ -79,7 +79,7 @@ namespace StellaServerAPI
 
         private void AcceptCallback(IAsyncResult ar)
         {
-            Console.Out.WriteLine("Received accept callback");
+            Console.Out.WriteLine("APIServer : Received accept callback");
             // Get the socket that handles the client request.  
             ISocketConnection listener = (ISocketConnection)ar.AsyncState;
 
@@ -87,7 +87,7 @@ namespace StellaServerAPI
             {
                 if (_isShuttingDown)
                 {
-                    Console.WriteLine("Ignored new client callback as the server is shutting down.");
+                    Console.WriteLine("APIServer: ignored new client callback as the server is shutting down.");
                     return;
                 }
             }
@@ -110,14 +110,14 @@ namespace StellaServerAPI
         private void Client_Disconnected(object sender, SocketException e)
         {
             Client client = (Client)sender;
-            Console.WriteLine($"Client {client.ID} disconnected, {e.SocketErrorCode}"); // TODO add intended disconnect, not just on SocketException
+            Console.WriteLine($"APIServer: Client {client.ID} disconnected, {e.SocketErrorCode}"); // TODO add intended disconnect, not just on SocketException
             ConnectedClients.Remove(client);
             DisposeClient(client);
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
-            Console.Out.WriteLine($"[IN] {e.MessageType}");
+            Console.Out.WriteLine($"[API-IN] {e.MessageType}");
             switch (e.MessageType)
             {
                 case MessageType.None:
@@ -153,7 +153,7 @@ namespace StellaServerAPI
                     ParseSetBrightnessCorrectionMessage(e.Message);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException($"Unknown message type {e}");
+                    throw new ArgumentOutOfRangeException($"APIServer: Unknown message type {e}");
             }
         }
 
@@ -182,7 +182,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 if (FrameWaitMsRequested != null)
                 {
                     int frameWaitMs = FrameWaitMsRequested(animationIndex);
@@ -223,7 +223,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 if (RgbFadeRequested != null)
                 {
                     float[] rgbFade = RgbFadeRequested.Invoke(animationIndex);
@@ -271,7 +271,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 if (BrightnessCorrectionRequested != null)
                 {
                     float brightnessCorrection = BrightnessCorrectionRequested(animationIndex);
@@ -292,7 +292,7 @@ namespace StellaServerAPI
         {
             try
             {
-                int animationIndex = BitConverter.ToInt32(data);
+                int animationIndex = BitConverter.ToInt32(data,0);
                 float brightnessCorrection = BitConverter.ToSingle(data, 4);
                 if (BrightnessCorrectionSet != null)
                 {
@@ -327,7 +327,7 @@ namespace StellaServerAPI
                 }
                 catch (Exception e)
                 {
-                    Console.Out.WriteLine("APIserver: Failed to start storyboard.");
+                    Console.Out.WriteLine("APIServer: Failed to start storyboard.");
                     Console.Out.WriteLine(e);
                     return;
                 }
@@ -408,7 +408,7 @@ namespace StellaServerAPI
             }
             catch (SocketException e)
             {
-                Console.WriteLine("Listening socket was already disconnected.");
+                Console.WriteLine("APIServer: Listening socket was already disconnected.");
             }
             _listenerSocket.Dispose();
             _listenerSocket.Close();
