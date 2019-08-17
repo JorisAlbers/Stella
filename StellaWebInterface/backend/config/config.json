@@ -3,7 +3,7 @@
     "sessionSecret": "cogito-session-secret-try-out"
   },
   "stellaServerConsole": {
-    "ip": "87.214.228.165",
+    "ip": "192.168.2.3",
     "port": 20060
   }
 }
