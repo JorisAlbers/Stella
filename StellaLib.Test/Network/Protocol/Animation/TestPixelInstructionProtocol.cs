@@ -15,9 +15,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
 
             byte[] expectedBytes = new byte[sizeof(int)+ 1 + 1 + 1]; // Index, red, green , blue 
             BitConverter.GetBytes(pi.Index).CopyTo(expectedBytes,0);
-            expectedBytes[4] = (byte)pi.R;
-            expectedBytes[5] = (byte)pi.G;
-            expectedBytes[6] = (byte)pi.B;
+            expectedBytes[4] = pi.R;
+            expectedBytes[5] = pi.G;
+            expectedBytes[6] = pi.B;
            
             byte[] buffer = new byte[PixelInstructionProtocol.BYTES_NEEDED];
             PixelInstructionProtocol.Serialize(pi,buffer,0);
@@ -31,9 +31,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
 
             byte[] bytes = new byte[sizeof(int)+ 1 + 1 + 1]; // Index, red, green , blue 
             BitConverter.GetBytes(expectedPixelInstruction.Index).CopyTo(bytes,0);
-            bytes[4] = (byte)expectedPixelInstruction.R;
-            bytes[5] = (byte)expectedPixelInstruction.G;
-            bytes[6] = (byte)expectedPixelInstruction.B;
+            bytes[4] = expectedPixelInstruction.R;
+            bytes[5] = expectedPixelInstruction.G;
+            bytes[6] = expectedPixelInstruction.B;
 
             PixelInstruction pi = PixelInstructionProtocol.Deserialize(bytes,0);
             Assert.AreEqual(expectedPixelInstruction,pi);
@@ -50,9 +50,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
             PixelInstructionWithoutDelta pi = new PixelInstructionWithoutDelta(1,2,3);
 
             byte[] expectedBytes = new byte[1 + 1 + 1]; // Red, green , blue 
-            expectedBytes[0] = (byte)pi.R;
-            expectedBytes[1] = (byte)pi.G;
-            expectedBytes[2] = (byte)pi.B;
+            expectedBytes[0] = pi.R;
+            expectedBytes[1] = pi.G;
+            expectedBytes[2] = pi.B;
 
             byte[] buffer = new byte[PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED];
             PixelInstructionWithoutDeltaProtocol.Serialize(pi, buffer, 0);
@@ -65,9 +65,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
             PixelInstructionWithoutDelta expectedPixelInstruction = new PixelInstructionWithoutDelta(1,2,3);
 
             byte[] bytes = new byte[1 + 1 + 1]; // Red, green , blue 
-            bytes[0] = (byte)expectedPixelInstruction.R;
-            bytes[1] = (byte)expectedPixelInstruction.G;
-            bytes[2] = (byte)expectedPixelInstruction.B;
+            bytes[0] = expectedPixelInstruction.R;
+            bytes[1] = expectedPixelInstruction.G;
+            bytes[2] = expectedPixelInstruction.B;
 
             PixelInstructionWithoutDelta pi = PixelInstructionWithoutDeltaProtocol.Deserialize(bytes, 0);
             Assert.AreEqual(expectedPixelInstruction, pi);

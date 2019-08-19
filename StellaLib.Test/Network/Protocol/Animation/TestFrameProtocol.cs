@@ -29,19 +29,19 @@ namespace StellaLib.Test.Network.Protocol.Animation
             BitConverter.GetBytes(false).CopyTo(expectedBytes,startIndex+=4); // Has FrameSections
             // instruction 1
             BitConverter.GetBytes(1).CopyTo(expectedBytes,startIndex+=1);
-            expectedBytes[startIndex+=4] = (byte)1;
-            expectedBytes[startIndex+=1] = (byte)2;
-            expectedBytes[startIndex+=1] = (byte)3;
+            expectedBytes[startIndex+=4] = 1;
+            expectedBytes[startIndex+=1] = 2;
+            expectedBytes[startIndex+=1] = 3;
             // instruction 2
             BitConverter.GetBytes(2).CopyTo(expectedBytes,startIndex+=1);
-            expectedBytes[startIndex+=4] = (byte)4;
-            expectedBytes[startIndex+=1] = (byte)5;
-            expectedBytes[startIndex+=1] = (byte)6;
+            expectedBytes[startIndex+=4] = 4;
+            expectedBytes[startIndex+=1] = 5;
+            expectedBytes[startIndex+=1] = 6;
             // instruction 3
             BitConverter.GetBytes(10).CopyTo(expectedBytes,startIndex+=1);
-            expectedBytes[startIndex+=4] = (byte)7;
-            expectedBytes[startIndex+=1] = (byte)8;
-            expectedBytes[startIndex+=1] = (byte)9;
+            expectedBytes[startIndex+=4] = 7;
+            expectedBytes[startIndex+=1] = 8;
+            expectedBytes[startIndex+=1] = 9;
 
             byte[][] packages = FrameProtocol.SerializeFrame(frame, maxPackageSize);
 
@@ -115,19 +115,19 @@ namespace StellaLib.Test.Network.Protocol.Animation
             BitConverter.GetBytes(false).CopyTo(bytes,startIndex+=4); // Has FrameSections
             // instruction 1
             BitConverter.GetBytes(1).CopyTo(bytes,startIndex+=1);
-            bytes[startIndex+=4] = (byte)1;
-            bytes[startIndex+=1] = (byte)2;
-            bytes[startIndex+=1] = (byte)3;
+            bytes[startIndex+=4] = 1;
+            bytes[startIndex+=1] = 2;
+            bytes[startIndex+=1] = 3;
             // instruction 2
             BitConverter.GetBytes(2).CopyTo(bytes,startIndex+=1);
-            bytes[startIndex+=4] = (byte)4;
-            bytes[startIndex+=1] = (byte)5;
-            bytes[startIndex+=1] = (byte)6;
+            bytes[startIndex+=4] = 4;
+            bytes[startIndex+=1] = 5;
+            bytes[startIndex+=1] = 6;
             // instruction 3
             BitConverter.GetBytes(10).CopyTo(bytes,startIndex+=1);
-            bytes[startIndex+=4] = (byte)7;
-            bytes[startIndex+=1] = (byte)8;
-            bytes[startIndex+=1] = (byte)9;
+            bytes[startIndex+=4] = 7;
+            bytes[startIndex+=1] = 8;
+            bytes[startIndex+=1] = 9;
 
             FrameProtocol protocol = new FrameProtocol();
             Frame frame;
@@ -240,17 +240,17 @@ namespace StellaLib.Test.Network.Protocol.Animation
             BitConverter.GetBytes(frame.Count).CopyTo(expectedBytes, startIndex += 4); // Number of PixelInstructions
             BitConverter.GetBytes(false).CopyTo(expectedBytes, startIndex += 4); // Has FrameSections
             // instruction 1
-            expectedBytes[startIndex += 1] = (byte)1;
-            expectedBytes[startIndex += 1] = (byte)2;
-            expectedBytes[startIndex += 1] = (byte)3;
+            expectedBytes[startIndex += 1] = 1;
+            expectedBytes[startIndex += 1] = 2;
+            expectedBytes[startIndex += 1] = 3;
             // instruction 2
-            expectedBytes[startIndex += 1] = (byte)4;
-            expectedBytes[startIndex += 1] = (byte)5;
-            expectedBytes[startIndex += 1] = (byte)6;
+            expectedBytes[startIndex += 1] = 4;
+            expectedBytes[startIndex += 1] = 5;
+            expectedBytes[startIndex += 1] = 6;
             // instruction 3
-            expectedBytes[startIndex += 1] = (byte)7;
-            expectedBytes[startIndex += 1] = (byte)8;
-            expectedBytes[startIndex += 1] = (byte)9;
+            expectedBytes[startIndex += 1] = 7;
+            expectedBytes[startIndex += 1] = 8;
+            expectedBytes[startIndex += 1] = 9;
 
             byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, maxPackageSize);
 
@@ -307,17 +307,17 @@ namespace StellaLib.Test.Network.Protocol.Animation
             BitConverter.GetBytes(expectedFrame.Count).CopyTo(bytes, startIndex += 4); // Number of PixelInstructions
             BitConverter.GetBytes(false).CopyTo(bytes, startIndex += 4); // Has FrameSections
             // instruction 1
-            bytes[startIndex += 1] = (byte)1;
-            bytes[startIndex += 1] = (byte)2;
-            bytes[startIndex += 1] = (byte)3;
+            bytes[startIndex += 1] = 1;
+            bytes[startIndex += 1] = 2;
+            bytes[startIndex += 1] = 3;
             // instruction 2
-            bytes[startIndex += 1] = (byte)4;
-            bytes[startIndex += 1] = (byte)5;
-            bytes[startIndex += 1] = (byte)6;
+            bytes[startIndex += 1] = 4;
+            bytes[startIndex += 1] = 5;
+            bytes[startIndex += 1] = 6;
             // instruction 3
-            bytes[startIndex += 1] = (byte)7;
-            bytes[startIndex += 1] = (byte)8;
-            bytes[startIndex += 1] = (byte)9;
+            bytes[startIndex += 1] = 7;
+            bytes[startIndex += 1] = 8;
+            bytes[startIndex += 1] = 9;
 
             FrameWithoutDeltaProtocol protocol = new FrameWithoutDeltaProtocol();
             FrameWithoutDelta frame;

@@ -46,7 +46,7 @@ namespace StellaLib.Network.Protocol
         /// </summary>
         public static byte[] WrapKeepaliveMessage()
         {
-            return BitConverter.GetBytes((int)0);
+            return BitConverter.GetBytes(0);
         }
 
         /// <summary>
