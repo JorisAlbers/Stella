@@ -8,7 +8,7 @@ using StellaLib.Network.Protocol.Animation;
 namespace StellaLib.Test.Network.Protocol.Animation
 {
     [TestFixture]
-    public class TestFrameSectionWithoutDeltaProtocol
+    public class TestFrameSectionProtocol
     {
         [Test]
         public void Serialize_FrameSectionPackage_CorrectlySerialized()
@@ -34,8 +34,8 @@ namespace StellaLib.Test.Network.Protocol.Animation
             PixelInstructionWithoutDeltaProtocol.Serialize(package.pixelInstructions[0], expectedBytes, 12);
             PixelInstructionWithoutDeltaProtocol.Serialize(package.pixelInstructions[1], expectedBytes, 12 + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED);
 
-            byte[] returnBytes = new byte[FrameSectionWithoutDeltaProtocol.HEADER_BYTES_NEEDED + pixelInstructions_bytes_needed];
-            FrameSectionWithoutDeltaProtocol.Serialize(package, returnBytes, 0);
+            byte[] returnBytes = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED + pixelInstructions_bytes_needed];
+            FrameSectionProtocol.Serialize(package, returnBytes, 0);
             Assert.AreEqual(expectedBytes, returnBytes);
         }
 
@@ -63,7 +63,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             PixelInstructionWithoutDeltaProtocol.Serialize(expectedPackage.pixelInstructions[0], expectedBytes, 12);
             PixelInstructionWithoutDeltaProtocol.Serialize(expectedPackage.pixelInstructions[1], expectedBytes, 12 + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED);
 
-            FrameSectionPackageWithoutDelta package = FrameSectionWithoutDeltaProtocol.Deserialize(expectedBytes, 0);
+            FrameSectionPackageWithoutDelta package = FrameSectionProtocol.Deserialize(expectedBytes, 0);
             Assert.AreEqual(expectedPackage.FrameSequenceIndex, package.FrameSequenceIndex);
             Assert.AreEqual(expectedPackage.Index, package.Index);
             Assert.AreEqual(expectedPackage.NumberOfPixelInstructions, package.NumberOfPixelInstructions);

@@ -5,7 +5,7 @@ using StellaLib.Network.Packages;
 
 namespace StellaLib.Network.Protocol.Animation
 {
-    public class FrameSectionWithoutDeltaProtocol
+    public class FrameSectionProtocol
     {
         public const int HEADER_BYTES_NEEDED = sizeof(int) + sizeof(int) + sizeof(int); // frameSequenceIndex + Index + number of pixelinstructions;
 

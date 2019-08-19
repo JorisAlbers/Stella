@@ -39,11 +39,11 @@ namespace StellaLib.Network.Protocol.Animation
             // Create multiple packages with the help of FrameSectionPackage
 
             // First, calculate the inital package
-            int headerBytesNeeded = HEADER_BYTES_NEEDED + FrameSectionWithoutDeltaProtocol.HEADER_BYTES_NEEDED;
+            int headerBytesNeeded = HEADER_BYTES_NEEDED + FrameSectionProtocol.HEADER_BYTES_NEEDED;
             int instructionsInFirstSection = (maxSizePerPackage - headerBytesNeeded) / PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
 
             // Second, calculate how many FrameSections are needed
-            int instructionsThatFitInOtherSections = (maxSizePerPackage - FrameSectionWithoutDeltaProtocol.HEADER_BYTES_NEEDED) / PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
+            int instructionsThatFitInOtherSections = (maxSizePerPackage - FrameSectionProtocol.HEADER_BYTES_NEEDED) / PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
             int frameSectionsNeeded = (int)Math.Ceiling((double)(frame.Count - instructionsInFirstSection) / instructionsThatFitInOtherSections) + 1; // +1 for the first section
 
             packages = new byte[frameSectionsNeeded][];
@@ -62,7 +62,7 @@ namespace StellaLib.Network.Protocol.Animation
             {
                 int instructionStartIndex = instructionsInFirstSection + i * instructionsThatFitInOtherSections;
                 int instructionsInThisSection = Math.Min(instructionsThatFitInOtherSections, frame.Count - instructionStartIndex);
-                packages[i + 1] = new byte[FrameSectionWithoutDeltaProtocol.HEADER_BYTES_NEEDED + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED * instructionsInThisSection];
+                packages[i + 1] = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED * instructionsInThisSection];
                 CreateFrameSection(packages[i + 1], 0, frame, frame.Index, i + 1, instructionStartIndex, instructionsInThisSection);
             }
             return packages;
@@ -80,7 +80,7 @@ namespace StellaLib.Network.Protocol.Animation
                 package.pixelInstructions.Add(frame[i]);
             }
 
-            FrameSectionWithoutDeltaProtocol.Serialize(package, buffer, bufferStartIndex);
+            FrameSectionProtocol.Serialize(package, buffer, bufferStartIndex);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace StellaLib.Network.Protocol.Animation
                     _frameSectionsReceived = new bool[itemCount];
                     _frameSectionsReceived[0] = true;
                     // The rest of the package is a FrameSection
-                    _frameSectionPackages[0] = FrameSectionWithoutDeltaProtocol.Deserialize(bytes, startIndex);
+                    _frameSectionPackages[0] = FrameSectionProtocol.Deserialize(bytes, startIndex);
                     return false;
                 }
                 else
@@ -143,7 +143,7 @@ namespace StellaLib.Network.Protocol.Animation
             else
             {
                 // Subsequent package. Always starts with a FrameSection.
-                FrameSectionPackageWithoutDelta package = FrameSectionWithoutDeltaProtocol.Deserialize(bytes, 0);
+                FrameSectionPackageWithoutDelta package = FrameSectionProtocol.Deserialize(bytes, 0);
                 if (package.FrameSequenceIndex != _frameIndex)
                 {
                     throw new System.Net.ProtocolViolationException(
