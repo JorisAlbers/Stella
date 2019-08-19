@@ -30,7 +30,7 @@ namespace StellaServerLib.Test.Animation
             Storyboard sb1 = new Storyboard {AnimationSettings = new IAnimationSettings[] {animationSettings}};
             Storyboard sb2 = new Storyboard {AnimationSettings = new IAnimationSettings[] {animationSettings}};
 
-            Animator animator = creator.Create(sb1, new int[]{100}, null);
+            IAnimator animator = creator.Create(sb1, new int[]{100}, null);
             TransformationSettings expectedSettings =
                 animator.TransformationController.AnimationTransformation.MasterTransformationSettings;
 

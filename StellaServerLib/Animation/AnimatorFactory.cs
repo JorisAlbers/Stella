@@ -20,7 +20,7 @@ namespace StellaServerLib.Animation
             _bitmapRepository = bitmapRepository;
         }
 
-        public Animator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
+        public IAnimator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
         {
             IFrameProvider frameProvider;
             TransformationSettings masterTransformationSettings;
