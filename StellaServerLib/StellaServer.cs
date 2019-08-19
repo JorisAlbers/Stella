@@ -16,7 +16,7 @@ namespace StellaServerLib
         private readonly string _ip;
         private readonly int _port;
         private readonly int _udpPort;
-        private readonly AnimatorCreation _animatorCreation;
+        private readonly AnimatorFactory _animatorFactory;
 
         private List<PiMaskItem> _mask;
         private int[] _stripLengthPerPi;
@@ -27,14 +27,14 @@ namespace StellaServerLib
 
         public IAnimator Animator { get; private set; }
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, IServer server, AnimatorCreation animatorCreation)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, IServer server, AnimatorFactory animatorFactory)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
             _server = server;
-            _animatorCreation = animatorCreation;
+            _animatorFactory = animatorFactory;
         }
 
         public void Start()
@@ -57,7 +57,7 @@ namespace StellaServerLib
                 if (0 == Interlocked.Exchange(ref _loadingAnimation, 1))
                 {
                     // Create the animation on a new task
-                    Animator = await Task.Factory.StartNew(() => _animatorCreation.Create(storyboard, _stripLengthPerPi, _mask)); 
+                    Animator = await Task.Factory.StartNew(() => _animatorFactory.Create(storyboard, _stripLengthPerPi, _mask)); 
                     // Release the lock
                     Interlocked.Exchange(ref _loadingAnimation, 0);
                 }

@@ -10,12 +10,12 @@ using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Animation
 {// Creates an Animator
-    public class AnimatorCreation
+    public class AnimatorFactory
     {
         private readonly BitmapRepository _bitmapRepository;
         private TransformationController _transformationController;
 
-        public AnimatorCreation(BitmapRepository bitmapRepository)
+        public AnimatorFactory(BitmapRepository bitmapRepository)
         {
             _bitmapRepository = bitmapRepository;
         }

@@ -9,13 +9,13 @@ using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Test.Animation
 {
-    public class TestAnimatorCreator
+    public class TestAnimatorFactory
     {
 
         [Test]
         public void MasterTransformationSettingsIsPreserved()
         {
-            AnimatorCreation creator = new AnimatorCreation(null);
+            AnimatorFactory creator = new AnimatorFactory(null);
 
             MovingPatternAnimationSettings animationSettings = new MovingPatternAnimationSettings
             {
