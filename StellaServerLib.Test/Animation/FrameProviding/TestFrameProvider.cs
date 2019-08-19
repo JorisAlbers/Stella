@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Transformation;

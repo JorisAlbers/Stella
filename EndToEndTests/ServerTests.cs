@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using StellaLib.Animation;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;

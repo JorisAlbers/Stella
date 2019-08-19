@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using PropertyChanged;
 using StellaServerLib;
 using StellaServerLib.Animation;
-using StellaServerLib.Network;
 
 namespace StellaVisualizer.Server
 {

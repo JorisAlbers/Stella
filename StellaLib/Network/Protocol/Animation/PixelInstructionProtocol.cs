@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using StellaLib.Animation;
 
 namespace StellaLib.Network.Protocol.Animation

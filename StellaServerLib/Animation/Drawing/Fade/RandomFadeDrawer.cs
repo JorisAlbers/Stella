@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing.Fade

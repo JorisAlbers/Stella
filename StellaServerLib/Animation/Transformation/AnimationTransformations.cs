@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace StellaServerLib.Animation.Transformation
+﻿namespace StellaServerLib.Animation.Transformation
 {
 
     /// <summary>

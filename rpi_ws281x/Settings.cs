@@ -1,6 +1,4 @@
 ﻿using Native;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace rpi_ws281x
 {
