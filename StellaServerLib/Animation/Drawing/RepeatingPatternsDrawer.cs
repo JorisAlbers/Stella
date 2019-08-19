@@ -27,13 +27,13 @@ namespace StellaServerLib.Animation.Drawing
         }
 
         /// <inheritdoc />
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             while (true)
             {
                 foreach (Color[] pattern in _patterns)
                 {
-                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                     int patternsInStrip = _lengthStrip / pattern.Length;
                     int leftPixelIndex = 0;
 
@@ -43,7 +43,7 @@ namespace StellaServerLib.Animation.Drawing
                         for (int k = 0; k < pattern.Length; k++)
                         {
                             int pixelIndex = leftPixelIndex + k;
-                            pixelInstructions.Add(new PixelInstruction(pixelIndex, pattern[k].R, pattern[k].G,
+                            pixelInstructions.Add(new PixelInstructionWithDelta(pixelIndex, pattern[k].R, pattern[k].G,
                                 pattern[k].B));
                         }
                     }
@@ -54,7 +54,7 @@ namespace StellaServerLib.Animation.Drawing
                     {
                         int pixelIndex = leftPixelIndex + j;
                         pixelInstructions.Add(
-                            new PixelInstruction(pixelIndex, pattern[j].R, pattern[j].G, pattern[j].B));
+                            new PixelInstructionWithDelta(pixelIndex, pattern[j].R, pattern[j].G, pattern[j].B));
                     }
 
                     yield return pixelInstructions;

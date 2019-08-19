@@ -19,11 +19,11 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new Frame(0,0)
                 {
-                    new PixelInstruction(0,255,0,0),
+                    new PixelInstructionWithDelta(0,255,0,0),
                 },
                 new Frame(0,0)
                 {
-                    new PixelInstruction(1,0,0,255),
+                    new PixelInstructionWithDelta(1,0,0,255),
                 }
             };
 
@@ -54,15 +54,15 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new Frame(0, 0)
                 {
-                    new PixelInstruction(0, 1, 2, 3)
+                    new PixelInstructionWithDelta(0, 1, 2, 3)
                 },
                 new Frame(1, 100)
                 {
-                    new PixelInstruction(2, 1, 2, 3)
+                    new PixelInstructionWithDelta(2, 1, 2, 3)
                 },
                 new Frame(2, 200)
                 {
-                    new PixelInstruction(3, 1, 2, 3)
+                    new PixelInstructionWithDelta(3, 1, 2, 3)
                 }
             };
 
@@ -70,15 +70,15 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new Frame(0, 0)
                 {
-                    new PixelInstruction(7, 1, 2, 3)
+                    new PixelInstructionWithDelta(7, 1, 2, 3)
                 },
                 new Frame(1, 100)
                 {
-                    new PixelInstruction(8, 1, 2, 3)
+                    new PixelInstructionWithDelta(8, 1, 2, 3)
                 },
                 new Frame(2, 100)
                 {
-                    new PixelInstruction(9, 1, 2, 3)
+                    new PixelInstructionWithDelta(9, 1, 2, 3)
                 }
             };
 
@@ -120,15 +120,15 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new Frame(0, 0)
                 {
-                    new PixelInstruction(0, 1, 2, 3)
+                    new PixelInstructionWithDelta(0, 1, 2, 3)
                 },
                 new Frame(1, 100)
                 {
-                    new PixelInstruction(2, 1, 2, 3)
+                    new PixelInstructionWithDelta(2, 1, 2, 3)
                 },
                 new Frame(2, 200)
                 {
-                    new PixelInstruction(3, 1, 2, 3)
+                    new PixelInstructionWithDelta(3, 1, 2, 3)
                 }
             };
 
@@ -136,15 +136,15 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new Frame(0, 0)
                 {
-                    new PixelInstruction(7, 1, 2, 3)
+                    new PixelInstructionWithDelta(7, 1, 2, 3)
                 },
                 new Frame(1, 100)
                 {
-                    new PixelInstruction(8, 1, 2, 3)
+                    new PixelInstructionWithDelta(8, 1, 2, 3)
                 },
                 new Frame(2, 100)
                 {
-                    new PixelInstruction(9, 1, 2, 3)
+                    new PixelInstructionWithDelta(9, 1, 2, 3)
                 }
             };
 

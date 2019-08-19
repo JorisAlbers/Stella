@@ -11,7 +11,7 @@ namespace StellaLib.Animation
     /// 
     /// </summary>
     [DebuggerDisplay("Index = {Index}, TSR = {TimeStampRelative}, Count = {Count}")]
-    public class Frame : List<PixelInstruction> , IEquatable<Frame>
+    public class Frame : List<PixelInstructionWithDelta> , IEquatable<Frame>
     {   
         /// <summary>
         /// The index of the Frame in the frameSet.

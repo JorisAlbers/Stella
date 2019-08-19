@@ -111,7 +111,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             // ACT
             BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
 
-            List<PixelInstruction> frame = drawer.First();
+            List<PixelInstructionWithDelta> frame = drawer.First();
 
             // ASSERT
             Assert.AreEqual(expectedIndex1, frame[0].Index);
@@ -142,7 +142,7 @@ namespace StellaServerLib.Test.Animation.Drawing
 
             // ACT
             BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
-            List<List<PixelInstruction>> frames = drawer.Take(4).ToList();
+            List<List<PixelInstructionWithDelta>> frames = drawer.Take(4).ToList();
 
             // ASSERT
             // row 1

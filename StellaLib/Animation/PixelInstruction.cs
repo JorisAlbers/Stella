@@ -6,7 +6,7 @@ namespace StellaLib.Animation
     /// <summary>
     /// Struct that contains the index of the pixel to change and its new rgb value.
     /// </summary>
-    public struct PixelInstruction
+    public struct PixelInstructionWithDelta
     {
         /// <summary>
         /// The index of the pixel to change
@@ -20,7 +20,7 @@ namespace StellaLib.Animation
         public byte B;
 
         [DebuggerStepThrough]
-        public PixelInstruction(int index, byte red, byte green, byte blue)
+        public PixelInstructionWithDelta(int index, byte red, byte green, byte blue)
         {
             Index = index;
             R = red;

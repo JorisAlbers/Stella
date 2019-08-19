@@ -22,18 +22,18 @@ namespace StellaServerLib.Animation.Drawing
             _pattern = pattern;
         }
 
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             while (true)
             {
                 for (int i = 0; i < _pattern.Length; i++)
                 {
-                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                     int patternStart = i;
                     for (int j = 0; j < _stripLength; j++)
                     {
                         Color color = _pattern[(j + patternStart) % (_pattern.Length)];
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, color.R,color.G,color.B));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R,color.G,color.B));
                     }
 
                     yield return pixelInstructions;

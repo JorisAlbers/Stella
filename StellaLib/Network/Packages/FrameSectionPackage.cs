@@ -10,7 +10,7 @@ namespace StellaLib.Network.Packages
         public int Index {get;set;}
         public int NumberOfPixelInstructions {get{return pixelInstructions.Count;}}
         //Content
-        public List<PixelInstruction> pixelInstructions{get;set;}
+        public List<PixelInstructionWithDelta> pixelInstructions{get;set;}
     }
 
     public class FrameSectionPackageWithoutDelta

@@ -64,7 +64,7 @@ namespace StellaServerLib.Animation.Drawing
             _wrap = wrap;
         }
 
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             while (true)
             {
@@ -85,15 +85,15 @@ namespace StellaServerLib.Animation.Drawing
             }
         }
 
-        private List<PixelInstruction> ConvertToDelta(List<PixelInstructionWithoutDelta> originalFrames)
+        private List<PixelInstructionWithDelta> ConvertToDelta(List<PixelInstructionWithoutDelta> originalFrames)
         {
             int width = Math.Min(originalFrames.Count, _stripLength);
-            List<PixelInstruction> frames = new List<PixelInstruction>();
+            List<PixelInstructionWithDelta> frames = new List<PixelInstructionWithDelta>();
             for (int i = 0; i < width; i++)
             {
                 PixelInstructionWithoutDelta instruction = originalFrames[i];
 
-                frames.Add(new PixelInstruction(_startIndex+i, instruction.R, instruction.G, instruction.B));
+                frames.Add(new PixelInstructionWithDelta(_startIndex+i, instruction.R, instruction.G, instruction.B));
             }
 
             return frames;

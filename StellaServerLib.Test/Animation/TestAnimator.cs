@@ -28,7 +28,7 @@ namespace StellaServerLib.Test.Animation
             {
                 new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
                 {
-                    new PixelInstruction(0,1,2,3),
+                    new PixelInstructionWithDelta(0,1,2,3),
                 }
             };
 
@@ -80,9 +80,9 @@ namespace StellaServerLib.Test.Animation
             {
                 new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
                 {
-                    new PixelInstruction(0,1,2,3),
-                    new PixelInstruction(1,4,5,6),
-                    new PixelInstruction(2,7,8,9),
+                    new PixelInstructionWithDelta(0,1,2,3),
+                    new PixelInstructionWithDelta(1,4,5,6),
+                    new PixelInstructionWithDelta(2,7,8,9),
                 }
             };
 
@@ -152,9 +152,9 @@ namespace StellaServerLib.Test.Animation
                 new Frame(1,2),
                 new Frame(expectedFrameIndex,expectedRelativeTimeStamp)
                 {
-                    new PixelInstruction(0,1,2,3),
-                    new PixelInstruction(1,4,5,6),
-                    new PixelInstruction(2,7,8,9),
+                    new PixelInstructionWithDelta(0,1,2,3),
+                    new PixelInstructionWithDelta(1,4,5,6),
+                    new PixelInstructionWithDelta(2,7,8,9),
                 }
             };
 
