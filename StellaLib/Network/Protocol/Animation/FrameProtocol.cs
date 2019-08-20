@@ -6,7 +6,7 @@ using StellaLib.Network.Packages;
 
 namespace StellaLib.Network.Protocol.Animation
 {
-    public class FrameWithoutDeltaProtocol
+    public class FrameProtocol
     {
         // Timestamp (absolute), number of frames OR number of Pixelinstructions, Has FrameSections
         private const int HEADER_BYTES_NEEDED = sizeof(long) + sizeof(int) + sizeof(bool);

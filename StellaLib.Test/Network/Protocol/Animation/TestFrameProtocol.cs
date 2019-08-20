@@ -39,7 +39,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             expectedBytes[startIndex += 1] = 8;
             expectedBytes[startIndex += 1] = 9;
 
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, maxPackageSize);
+            byte[][] packages = FrameProtocol.SerializeFrame(frame, maxPackageSize);
 
             Assert.AreEqual(1, packages.Length);
             Assert.AreEqual(expectedBytes, packages[0]);
@@ -58,14 +58,14 @@ namespace StellaLib.Test.Network.Protocol.Animation
             }
 
             // RUN
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, maxPackageSize);
+            byte[][] packages = FrameProtocol.SerializeFrame(frame, maxPackageSize);
 
             // Deserialize
-            FrameWithoutDeltaProtocol frameWithoutDeltaProtocol = new FrameWithoutDeltaProtocol();
+            FrameProtocol frameProtocol = new FrameProtocol();
             FrameWithoutDelta deserializedFrame = null;
             foreach (byte[] package in packages)
             {
-                if(frameWithoutDeltaProtocol.TryDeserialize(package, out FrameWithoutDelta returnFrame))
+                if(frameProtocol.TryDeserialize(package, out FrameWithoutDelta returnFrame))
                 {
                     deserializedFrame = returnFrame;
                 }
@@ -106,7 +106,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             bytes[startIndex += 1] = 8;
             bytes[startIndex += 1] = 9;
 
-            FrameWithoutDeltaProtocol protocol = new FrameWithoutDeltaProtocol();
+            FrameProtocol protocol = new FrameProtocol();
             FrameWithoutDelta frame;
             Assert.AreEqual(true, protocol.TryDeserialize(bytes, out frame));
             Assert.IsNotNull(frame);
@@ -129,11 +129,11 @@ namespace StellaLib.Test.Network.Protocol.Animation
             }
 
             // RUN
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(expectedFrame, maxPackageSize);
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame, maxPackageSize);
 
             Assert.AreEqual(3, packages.Length);
 
-            FrameWithoutDeltaProtocol protocol = new FrameWithoutDeltaProtocol();
+            FrameProtocol protocol = new FrameProtocol();
             FrameWithoutDelta frame;
             Assert.AreEqual(false, protocol.TryDeserialize(packages[0], out frame));
             Assert.AreEqual(false, protocol.TryDeserialize(packages[1], out frame));
@@ -158,11 +158,11 @@ namespace StellaLib.Test.Network.Protocol.Animation
             }
 
             // RUN
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(expectedFrame, maxPackageSize);
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame, maxPackageSize);
 
             Assert.AreEqual(3, packages.Length);
 
-            FrameWithoutDeltaProtocol protocol = new FrameWithoutDeltaProtocol();
+            FrameProtocol protocol = new FrameProtocol();
             FrameWithoutDelta frame;
             Assert.AreEqual(false, protocol.TryDeserialize(packages[0], out frame));
             Assert.AreEqual(false, protocol.TryDeserialize(packages[2], out frame));
@@ -188,12 +188,12 @@ namespace StellaLib.Test.Network.Protocol.Animation
             }
 
             // RUN
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(expectedFrame, maxPackageSize);
+            byte[][] packages = FrameProtocol.SerializeFrame(expectedFrame, maxPackageSize);
 
             Assert.AreEqual(3, packages.Length);
-            Assert.AreEqual(frameIndex, FrameWithoutDeltaProtocol.GetFrameIndex(packages[0]));
-            Assert.AreEqual(frameIndex, FrameWithoutDeltaProtocol.GetFrameIndex(packages[1]));
-            Assert.AreEqual(frameIndex, FrameWithoutDeltaProtocol.GetFrameIndex(packages[2]));
+            Assert.AreEqual(frameIndex, FrameProtocol.GetFrameIndex(packages[0]));
+            Assert.AreEqual(frameIndex, FrameProtocol.GetFrameIndex(packages[1]));
+            Assert.AreEqual(frameIndex, FrameProtocol.GetFrameIndex(packages[2]));
         }
     }
 }

@@ -27,14 +27,14 @@ namespace StellaClientLib.Network
         private UdpSocketConnectionController<MessageType> _udpSocketConnectionController;
         private object _resourceLock = new object();
 
-        private Dictionary<int, FrameWithoutDeltaProtocol> _frameSectionBuffer; // int = frame index, 
+        private Dictionary<int, FrameProtocol> _frameSectionBuffer; // int = frame index, 
 
         public event EventHandler<FrameWithoutDelta> RenderFrameReceived;
 
 
         public StellaServer()
         {
-            _frameSectionBuffer = new Dictionary<int, FrameWithoutDeltaProtocol>();
+            _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
         }
 
         public void Start(IPEndPoint serverAdress, int udpPort, int Id)
@@ -157,18 +157,18 @@ namespace StellaClientLib.Network
             // The frame might be split up into multiple packages. 
             // We keep a buffer (FrameProtocol for each frame) to wait for all packages.
             // When the frame is complete, we call FrameReceived.
-            int frameIndex = FrameWithoutDeltaProtocol.GetFrameIndex(message);
+            int frameIndex = FrameProtocol.GetFrameIndex(message);
             FrameWithoutDelta frame = null;
             lock (_resourceLock)
             {
                 if (_frameSectionBuffer == null)
                 {
-                    _frameSectionBuffer = new Dictionary<int, FrameWithoutDeltaProtocol>();
+                    _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
                 }
 
                 if (!_frameSectionBuffer.ContainsKey(frameIndex))
                 {
-                    _frameSectionBuffer.Add(frameIndex, new FrameWithoutDeltaProtocol());
+                    _frameSectionBuffer.Add(frameIndex, new FrameProtocol());
                 }
 
                 if (_frameSectionBuffer[frameIndex].TryDeserialize(message, out frame))
