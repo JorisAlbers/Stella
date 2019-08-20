@@ -16,9 +16,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
             int frameWaitMS = 100;
             int frameIndex = 9;
             FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS, 3);
-            frame[0] = new PixelInstructionWithoutDelta(1,2,3);
-            frame[1] = new PixelInstructionWithoutDelta(4, 5, 6);
-            frame[2] = new PixelInstructionWithoutDelta(7, 8, 9);
+            frame[0] = new PixelInstruction(1,2,3);
+            frame[1] = new PixelInstruction(4, 5, 6);
+            frame[2] = new PixelInstruction(7, 8, 9);
 
             byte[] expectedBytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + 3 + 3 + 3];
             int startIndex = 0;
@@ -54,7 +54,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                frame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
+                frame[i] = new PixelInstruction(1, 2, 3);
             }
 
             // RUN
@@ -83,9 +83,9 @@ namespace StellaLib.Test.Network.Protocol.Animation
         {
             int frameWaitMS = 100;
             FrameWithoutDelta expectedFrame = new FrameWithoutDelta(1, frameWaitMS, 3);
-            expectedFrame[0] = new PixelInstructionWithoutDelta (1, 2, 3) ;
-            expectedFrame[1] = new PixelInstructionWithoutDelta (4, 5, 6) ;
-            expectedFrame[2] = new PixelInstructionWithoutDelta (7, 8, 9) ;
+            expectedFrame[0] = new PixelInstruction (1, 2, 3) ;
+            expectedFrame[1] = new PixelInstruction (4, 5, 6) ;
+            expectedFrame[2] = new PixelInstruction (7, 8, 9) ;
 
             byte[] bytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + PixelInstructionProtocol.BYTES_NEEDED * 3];
             int startIndex = 0;
@@ -125,7 +125,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                expectedFrame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
+                expectedFrame[i] = new PixelInstruction(1, 2, 3);
             }
 
             // RUN
@@ -154,7 +154,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                expectedFrame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
+                expectedFrame[i] = new PixelInstruction(1, 2, 3);
             }
 
             // RUN
@@ -184,7 +184,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, frameWaitMS,900);
             for (int i = 0; i < 900; i++)
             {
-                expectedFrame[i] = new PixelInstructionWithoutDelta(1, 2, 3);
+                expectedFrame[i] = new PixelInstruction(1, 2, 3);
             }
 
             // RUN

@@ -30,7 +30,7 @@ namespace StellaLib.Network.Protocol.Animation
             package.Index = BitConverter.ToInt32(buffer, startIndex + 4);
             int numberOfPixelInstructions = BitConverter.ToInt32(buffer, startIndex + 8);
             //Content
-            package.pixelInstructions = new List<PixelInstructionWithoutDelta>(numberOfPixelInstructions);
+            package.pixelInstructions = new List<PixelInstruction>(numberOfPixelInstructions);
             int pixelInstructionsStartIndex = startIndex + 12;
             for (int i = 0; i < numberOfPixelInstructions; i++)
             {

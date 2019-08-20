@@ -14,7 +14,7 @@ namespace StellaServerLib.Animation
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
 
-        private readonly PixelInstructionWithoutDelta[][] _currentFrame;
+        private readonly PixelInstruction[][] _currentFrame;
         public TransformationController TransformationController { get; private set; }
 
         /// <summary>
@@ -32,10 +32,10 @@ namespace StellaServerLib.Animation
             TransformationController = transformationController;
             _numberOfPis = _stripLengthPerPi.Length;
 
-            _currentFrame = new PixelInstructionWithoutDelta[stripLengthPerPi.Sum()][];
+            _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
             for (int i = 0; i < stripLengthPerPi.Length; i++)
             {
-                _currentFrame[i] = new PixelInstructionWithoutDelta[stripLengthPerPi[i]];
+                _currentFrame[i] = new PixelInstruction[stripLengthPerPi[i]];
             }
         }
 
@@ -87,15 +87,15 @@ namespace StellaServerLib.Animation
                     // Overlay in current frame 
                     foreach (PixelInstructionWithDelta pixelInstruction in framePerPi[index])
                     {
-                        _currentFrame[index][pixelInstruction.Index] = new PixelInstructionWithoutDelta(pixelInstruction.R, pixelInstruction.G, pixelInstruction.B);
+                        _currentFrame[index][pixelInstruction.Index] = new PixelInstruction(pixelInstruction.R, pixelInstruction.G, pixelInstruction.B);
                     }
 
                     // Copy all frames from the current frame to the frameWithoutDelta
                     overlayFramePerPi[index] = new FrameWithoutDelta(frame.Index, frame.TimeStampRelative, _currentFrame[index].Length);
                     for (int i = 0; i < _currentFrame[index].Length; i++)
                     {
-                        PixelInstructionWithoutDelta instruction = _currentFrame[index][i];
-                        overlayFramePerPi[index][i] = new PixelInstructionWithoutDelta(instruction.R, instruction.G, instruction.B);
+                        PixelInstruction instruction = _currentFrame[index][i];
+                        overlayFramePerPi[index][i] = new PixelInstruction(instruction.R, instruction.G, instruction.B);
                     }
                     
                 }

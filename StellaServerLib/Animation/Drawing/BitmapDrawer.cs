@@ -18,12 +18,12 @@ namespace StellaServerLib.Animation.Drawing
         private readonly int _startIndex;
         private readonly int _stripLength;
         private readonly bool _wrap;
-        private readonly List<PixelInstructionWithoutDelta>[] _imageFrames;
+        private readonly List<PixelInstruction>[] _imageFrames;
 
-        public static List<PixelInstructionWithoutDelta>[] CreateFrames(Bitmap bitmap)
+        public static List<PixelInstruction>[] CreateFrames(Bitmap bitmap)
         {
             // Convert the bitmap to frames
-            List<PixelInstructionWithoutDelta>[] frames = new List<PixelInstructionWithoutDelta>[bitmap.Height];
+            List<PixelInstruction>[] frames = new List<PixelInstruction>[bitmap.Height];
             
             unsafe
             {
@@ -35,7 +35,7 @@ namespace StellaServerLib.Animation.Drawing
 
                 for (int y = 0; y < heightInPixels; y++)
                 {
-                    List<PixelInstructionWithoutDelta> frame = new List<PixelInstructionWithoutDelta>();
+                    List<PixelInstruction> frame = new List<PixelInstruction>();
 
                     byte* currentLine = ptrFirstPixel + (y * bitmapData.Stride);
                     for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
@@ -44,7 +44,7 @@ namespace StellaServerLib.Animation.Drawing
                         int oldGreen = currentLine[x + 1];
                         int oldRed = currentLine[x + 2];
 
-                        frame.Add(new PixelInstructionWithoutDelta((byte) oldRed,(byte) oldGreen,(byte) oldBlue));
+                        frame.Add(new PixelInstruction((byte) oldRed,(byte) oldGreen,(byte) oldBlue));
                     }
 
                     frames[y] = frame;
@@ -56,7 +56,7 @@ namespace StellaServerLib.Animation.Drawing
         }
 
         /// <param name="wrap">If the bitmap drawer should draw the first line after the last line</param>
-        public BitmapDrawer(int startIndex, int stripLength, bool wrap, List<PixelInstructionWithoutDelta>[] imageFrames)
+        public BitmapDrawer(int startIndex, int stripLength, bool wrap, List<PixelInstruction>[] imageFrames)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
@@ -85,13 +85,13 @@ namespace StellaServerLib.Animation.Drawing
             }
         }
 
-        private List<PixelInstructionWithDelta> ConvertToDelta(List<PixelInstructionWithoutDelta> originalFrames)
+        private List<PixelInstructionWithDelta> ConvertToDelta(List<PixelInstruction> originalFrames)
         {
             int width = Math.Min(originalFrames.Count, _stripLength);
             List<PixelInstructionWithDelta> frames = new List<PixelInstructionWithDelta>();
             for (int i = 0; i < width; i++)
             {
-                PixelInstructionWithoutDelta instruction = originalFrames[i];
+                PixelInstruction instruction = originalFrames[i];
 
                 frames.Add(new PixelInstructionWithDelta(_startIndex+i, instruction.R, instruction.G, instruction.B));
             }

@@ -74,7 +74,7 @@ namespace StellaLib.Network.Protocol.Animation
             FrameSectionPackage package = new FrameSectionPackage();
             package.FrameSequenceIndex = frameIndex;
             package.Index = sectionIndex;
-            package.pixelInstructions = new List<PixelInstructionWithoutDelta>();
+            package.pixelInstructions = new List<PixelInstruction>();
             for (int i = instructionStartIndex; i < instructionStartIndex + numberOfInstructions; i++)
             {
                 package.pixelInstructions.Add(frame[i]);

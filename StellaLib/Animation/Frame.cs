@@ -75,14 +75,14 @@ namespace StellaLib.Animation
         /// <summary>
         /// The pixelInstructions in this list.
         /// </summary>
-        public PixelInstructionWithoutDelta[] Items { get; }
+        public PixelInstruction[] Items { get; }
 
         /// <summary>
         /// The number of pixelInstructions in this list
         /// </summary>
         public int Count => Items.Length;
 
-        public PixelInstructionWithoutDelta this[int index]
+        public PixelInstruction this[int index]
         {
             get => Items[index];
             set => Items[index] = value;
@@ -94,7 +94,7 @@ namespace StellaLib.Animation
         {
             Index = index;
             TimeStampRelative = timeStampRelative;
-            Items = new PixelInstructionWithoutDelta[capacity];
+            Items = new PixelInstruction[capacity];
         }
 
         public bool Equals(FrameWithoutDelta other)

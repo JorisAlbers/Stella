@@ -11,7 +11,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void Serialize_PixelInStructionWithoutDelta_CorrectlyConvertedToByteArray()
         {
-            PixelInstructionWithoutDelta pi = new PixelInstructionWithoutDelta(1,2,3);
+            PixelInstruction pi = new PixelInstruction(1,2,3);
 
             byte[] expectedBytes = new byte[1 + 1 + 1]; // Red, green , blue 
             expectedBytes[0] = pi.R;
@@ -26,14 +26,14 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void Deserialize_BytesArray_CorrectlyDeserializesByteArray()
         {
-            PixelInstructionWithoutDelta expectedPixelInstruction = new PixelInstructionWithoutDelta(1,2,3);
+            PixelInstruction expectedPixelInstruction = new PixelInstruction(1,2,3);
 
             byte[] bytes = new byte[1 + 1 + 1]; // Red, green , blue 
             bytes[0] = expectedPixelInstruction.R;
             bytes[1] = expectedPixelInstruction.G;
             bytes[2] = expectedPixelInstruction.B;
 
-            PixelInstructionWithoutDelta pi = PixelInstructionProtocol.Deserialize(bytes, 0);
+            PixelInstruction pi = PixelInstructionProtocol.Deserialize(bytes, 0);
             Assert.AreEqual(expectedPixelInstruction, pi);
         }
 

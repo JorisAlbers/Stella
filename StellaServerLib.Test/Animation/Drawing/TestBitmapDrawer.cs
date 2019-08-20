@@ -32,7 +32,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2,0,expectedColor3);
             
             // ACT
-            List<PixelInstructionWithoutDelta>[] frames = BitmapDrawer.CreateFrames(bitmap);
+            List<PixelInstruction>[] frames = BitmapDrawer.CreateFrames(bitmap);
 
             // ASSERT
             Assert.AreEqual(1,frames.Length);
@@ -71,7 +71,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 1, expectedColor6);
 
             // ACT
-            List<PixelInstructionWithoutDelta>[] frames = BitmapDrawer.CreateFrames(bitmap);
+            List<PixelInstruction>[] frames = BitmapDrawer.CreateFrames(bitmap);
 
             // ASSERT
             Assert.AreEqual(2,frames.Length);

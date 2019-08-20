@@ -17,10 +17,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             {
                 FrameSequenceIndex = 100,
                 Index = 10,
-                pixelInstructions = new List<PixelInstructionWithoutDelta>
+                pixelInstructions = new List<PixelInstruction>
                 {
-                    new PixelInstructionWithoutDelta(10,20,30),
-                    new PixelInstructionWithoutDelta(40,50,60)
+                    new PixelInstruction(10,20,30),
+                    new PixelInstruction(40,50,60)
                 }
             };
 
@@ -46,10 +46,10 @@ namespace StellaLib.Test.Network.Protocol.Animation
             {
                 FrameSequenceIndex = 100,
                 Index = 10,
-                pixelInstructions = new List<PixelInstructionWithoutDelta>
+                pixelInstructions = new List<PixelInstruction>
                 {
-                    new PixelInstructionWithoutDelta(10,20,30),
-                    new PixelInstructionWithoutDelta(40,50,60)
+                    new PixelInstruction(10,20,30),
+                    new PixelInstruction(40,50,60)
                 }
             };
 

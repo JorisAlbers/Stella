@@ -53,7 +53,7 @@ namespace StellaServerLib.Animation
                 int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
 
                 // Dirty check
-                Dictionary<string, List<PixelInstructionWithoutDelta>[]> bitmapToFramesDictionary = new Dictionary<string, List<PixelInstructionWithoutDelta>[]>();
+                Dictionary<string, List<PixelInstruction>[]> bitmapToFramesDictionary = new Dictionary<string, List<PixelInstruction>[]>();
 
                 for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
                 {

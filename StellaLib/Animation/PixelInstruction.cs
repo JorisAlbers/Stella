@@ -38,7 +38,7 @@ namespace StellaLib.Animation
         }
     }
 
-    public struct PixelInstructionWithoutDelta
+    public struct PixelInstruction
     {
         public byte R;
 
@@ -47,7 +47,7 @@ namespace StellaLib.Animation
         public byte B;
 
         [DebuggerStepThrough]
-        public PixelInstructionWithoutDelta(byte red, byte green, byte blue)
+        public PixelInstruction(byte red, byte green, byte blue)
         {
             R = red;
             G = green;
