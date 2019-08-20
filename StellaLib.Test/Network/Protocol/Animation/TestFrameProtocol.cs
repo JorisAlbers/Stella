@@ -87,7 +87,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             expectedFrame[1] = new PixelInstructionWithoutDelta (4, 5, 6) ;
             expectedFrame[2] = new PixelInstructionWithoutDelta (7, 8, 9) ;
 
-            byte[] bytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED * 3];
+            byte[] bytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + PixelInstructionProtocol.BYTES_NEEDED * 3];
             int startIndex = 0;
             BitConverter.GetBytes(1).CopyTo(bytes, startIndex); // Frame index
             BitConverter.GetBytes(frameWaitMS).CopyTo(bytes, startIndex += 4); // Timestamp (relative)

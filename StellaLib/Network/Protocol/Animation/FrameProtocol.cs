@@ -13,7 +13,7 @@ namespace StellaLib.Network.Protocol.Animation
 
         public static byte[][] SerializeFrame(FrameWithoutDelta frame, int maxSizePerPackage)
         {
-            int bytesNeeded = HEADER_BYTES_NEEDED + frame.Items.Length * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
+            int bytesNeeded = HEADER_BYTES_NEEDED + frame.Items.Length * PixelInstructionProtocol.BYTES_NEEDED;
             byte[][] packages;
 
             if (bytesNeeded <= maxSizePerPackage) 
@@ -29,8 +29,8 @@ namespace StellaLib.Network.Protocol.Animation
 
                 for (int i = 0; i < frame.Count; i++)
                 {
-                    int bufferStartIndex = HEADER_BYTES_NEEDED + i * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
-                    PixelInstructionWithoutDeltaProtocol.Serialize(frame[i], packages[0], bufferStartIndex);
+                    int bufferStartIndex = HEADER_BYTES_NEEDED + i * PixelInstructionProtocol.BYTES_NEEDED;
+                    PixelInstructionProtocol.Serialize(frame[i], packages[0], bufferStartIndex);
                 }
                 return packages;
             }
@@ -40,16 +40,16 @@ namespace StellaLib.Network.Protocol.Animation
 
             // First, calculate the inital package
             int headerBytesNeeded = HEADER_BYTES_NEEDED + FrameSectionProtocol.HEADER_BYTES_NEEDED;
-            int instructionsInFirstSection = (maxSizePerPackage - headerBytesNeeded) / PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
+            int instructionsInFirstSection = (maxSizePerPackage - headerBytesNeeded) / PixelInstructionProtocol.BYTES_NEEDED;
 
             // Second, calculate how many FrameSections are needed
-            int instructionsThatFitInOtherSections = (maxSizePerPackage - FrameSectionProtocol.HEADER_BYTES_NEEDED) / PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
+            int instructionsThatFitInOtherSections = (maxSizePerPackage - FrameSectionProtocol.HEADER_BYTES_NEEDED) / PixelInstructionProtocol.BYTES_NEEDED;
             int frameSectionsNeeded = (int)Math.Ceiling((double)(frame.Count - instructionsInFirstSection) / instructionsThatFitInOtherSections) + 1; // +1 for the first section
 
             packages = new byte[frameSectionsNeeded][];
 
             // Third, create the Frame header and its first section
-            packages[0] = new byte[headerBytesNeeded + instructionsInFirstSection * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED];
+            packages[0] = new byte[headerBytesNeeded + instructionsInFirstSection * PixelInstructionProtocol.BYTES_NEEDED];
 
             BitConverter.GetBytes(frame.Index).CopyTo(packages[0], 0);           // Sequence index
             BitConverter.GetBytes(frame.TimeStampRelative).CopyTo(packages[0], 4);           // TimeStamp (relative)
@@ -62,7 +62,7 @@ namespace StellaLib.Network.Protocol.Animation
             {
                 int instructionStartIndex = instructionsInFirstSection + i * instructionsThatFitInOtherSections;
                 int instructionsInThisSection = Math.Min(instructionsThatFitInOtherSections, frame.Count - instructionStartIndex);
-                packages[i + 1] = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED * instructionsInThisSection];
+                packages[i + 1] = new byte[FrameSectionProtocol.HEADER_BYTES_NEEDED + PixelInstructionProtocol.BYTES_NEEDED * instructionsInThisSection];
                 CreateFrameSection(packages[i + 1], 0, frame, frame.Index, i + 1, instructionStartIndex, instructionsInThisSection);
             }
             return packages;
@@ -134,8 +134,8 @@ namespace StellaLib.Network.Protocol.Animation
                     // The rest of the package contains PixelInstructions
                     for (int i = 0; i < itemCount; i++)
                     {
-                        int instructionStartIndex = startIndex + i * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED;
-                        frame[i] = PixelInstructionWithoutDeltaProtocol.Deserialize(bytes, instructionStartIndex);
+                        int instructionStartIndex = startIndex + i * PixelInstructionProtocol.BYTES_NEEDED;
+                        frame[i] = PixelInstructionProtocol.Deserialize(bytes, instructionStartIndex);
                     }
                     return true;
                 }

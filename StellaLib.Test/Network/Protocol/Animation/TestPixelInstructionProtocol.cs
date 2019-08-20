@@ -18,8 +18,8 @@ namespace StellaLib.Test.Network.Protocol.Animation
             expectedBytes[1] = pi.G;
             expectedBytes[2] = pi.B;
 
-            byte[] buffer = new byte[PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED];
-            PixelInstructionWithoutDeltaProtocol.Serialize(pi, buffer, 0);
+            byte[] buffer = new byte[PixelInstructionProtocol.BYTES_NEEDED];
+            PixelInstructionProtocol.Serialize(pi, buffer, 0);
             Assert.AreEqual(expectedBytes, buffer);
         }
 
@@ -33,7 +33,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             bytes[1] = expectedPixelInstruction.G;
             bytes[2] = expectedPixelInstruction.B;
 
-            PixelInstructionWithoutDelta pi = PixelInstructionWithoutDeltaProtocol.Deserialize(bytes, 0);
+            PixelInstructionWithoutDelta pi = PixelInstructionProtocol.Deserialize(bytes, 0);
             Assert.AreEqual(expectedPixelInstruction, pi);
         }
 

@@ -17,7 +17,7 @@ namespace StellaLib.Network.Protocol.Animation
             int pixelInstructionsStartIndex = startIndex + 12;
             for (int i = 0; i < package.pixelInstructions.Count; i++)
             {
-                PixelInstructionWithoutDeltaProtocol.Serialize(package.pixelInstructions[i], buffer, pixelInstructionsStartIndex + i * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED);
+                PixelInstructionProtocol.Serialize(package.pixelInstructions[i], buffer, pixelInstructionsStartIndex + i * PixelInstructionProtocol.BYTES_NEEDED);
             }
             return buffer;
         }
@@ -34,7 +34,7 @@ namespace StellaLib.Network.Protocol.Animation
             int pixelInstructionsStartIndex = startIndex + 12;
             for (int i = 0; i < numberOfPixelInstructions; i++)
             {
-                package.pixelInstructions.Add(PixelInstructionWithoutDeltaProtocol.Deserialize(buffer, pixelInstructionsStartIndex + i * PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED));
+                package.pixelInstructions.Add(PixelInstructionProtocol.Deserialize(buffer, pixelInstructionsStartIndex + i * PixelInstructionProtocol.BYTES_NEEDED));
             }
 
             if (package.pixelInstructions.Count != numberOfPixelInstructions)

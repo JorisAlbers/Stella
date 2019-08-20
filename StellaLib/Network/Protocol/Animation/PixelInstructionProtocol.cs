@@ -3,7 +3,7 @@ using StellaLib.Animation;
 
 namespace StellaLib.Network.Protocol.Animation
 {
-    public class PixelInstructionWithoutDeltaProtocol
+    public class PixelInstructionProtocol
     {
         public const int BYTES_NEEDED = 3; // Red, Green, Blue
 
