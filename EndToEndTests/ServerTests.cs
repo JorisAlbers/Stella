@@ -57,7 +57,7 @@ namespace EndToEndTests
             List<PiMapping> piMappings = new List<PiMapping>();
             for (int i = 0; i < numberOfPis; i++)
             {
-                piMappings.Add(new PiMapping(i,lengthPerPi,0,new int[]{lengthPerPi/2},false));
+                piMappings.Add(new PiMapping(i,lengthPerPi,0,false));
             }
             PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
             List<PiMaskItem> mask = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
