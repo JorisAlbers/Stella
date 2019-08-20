@@ -1,4 +1,4 @@
-﻿namespace StellaServerLib.Animation
+﻿namespace StellaServerLib.Animation.Drawing
 {
     /// <summary>
     /// The different draw methods available.
