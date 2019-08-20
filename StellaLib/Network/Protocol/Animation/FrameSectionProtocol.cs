@@ -9,7 +9,7 @@ namespace StellaLib.Network.Protocol.Animation
     {
         public const int HEADER_BYTES_NEEDED = sizeof(int) + sizeof(int) + sizeof(int); // frameSequenceIndex + Index + number of pixelinstructions;
 
-        public static byte[] Serialize(FrameSectionPackageWithoutDelta package, byte[] buffer, int startIndex)
+        public static byte[] Serialize(FrameSectionPackage package, byte[] buffer, int startIndex)
         {
             BitConverter.GetBytes(package.FrameSequenceIndex).CopyTo(buffer, startIndex);
             BitConverter.GetBytes(package.Index).CopyTo(buffer, startIndex + 4);
@@ -22,9 +22,9 @@ namespace StellaLib.Network.Protocol.Animation
             return buffer;
         }
 
-        public static FrameSectionPackageWithoutDelta Deserialize(byte[] buffer, int startIndex)
+        public static FrameSectionPackage Deserialize(byte[] buffer, int startIndex)
         {
-            FrameSectionPackageWithoutDelta package = new FrameSectionPackageWithoutDelta();
+            FrameSectionPackage package = new FrameSectionPackage();
             //Header
             package.FrameSequenceIndex = BitConverter.ToInt32(buffer, startIndex);
             package.Index = BitConverter.ToInt32(buffer, startIndex + 4);

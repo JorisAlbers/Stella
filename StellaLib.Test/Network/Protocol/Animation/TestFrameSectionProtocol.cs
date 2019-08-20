@@ -13,7 +13,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void Serialize_FrameSectionPackage_CorrectlySerialized()
         {
-            FrameSectionPackageWithoutDelta package = new FrameSectionPackageWithoutDelta()
+            FrameSectionPackage package = new FrameSectionPackage()
             {
                 FrameSequenceIndex = 100,
                 Index = 10,
@@ -42,7 +42,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void Deserialize_bytes_CorrectlyDeserializes()
         {
-            FrameSectionPackageWithoutDelta expectedPackage = new FrameSectionPackageWithoutDelta()
+            FrameSectionPackage expectedPackage = new FrameSectionPackage()
             {
                 FrameSequenceIndex = 100,
                 Index = 10,
@@ -63,7 +63,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
             PixelInstructionWithoutDeltaProtocol.Serialize(expectedPackage.pixelInstructions[0], expectedBytes, 12);
             PixelInstructionWithoutDeltaProtocol.Serialize(expectedPackage.pixelInstructions[1], expectedBytes, 12 + PixelInstructionWithoutDeltaProtocol.BYTES_NEEDED);
 
-            FrameSectionPackageWithoutDelta package = FrameSectionProtocol.Deserialize(expectedBytes, 0);
+            FrameSectionPackage package = FrameSectionProtocol.Deserialize(expectedBytes, 0);
             Assert.AreEqual(expectedPackage.FrameSequenceIndex, package.FrameSequenceIndex);
             Assert.AreEqual(expectedPackage.Index, package.Index);
             Assert.AreEqual(expectedPackage.NumberOfPixelInstructions, package.NumberOfPixelInstructions);

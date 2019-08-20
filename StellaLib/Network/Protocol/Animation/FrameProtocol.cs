@@ -71,7 +71,7 @@ namespace StellaLib.Network.Protocol.Animation
         private static void CreateFrameSection(byte[] buffer, int bufferStartIndex, FrameWithoutDelta frame,
          int frameIndex, int sectionIndex, int instructionStartIndex, int numberOfInstructions)
         {
-            FrameSectionPackageWithoutDelta package = new FrameSectionPackageWithoutDelta();
+            FrameSectionPackage package = new FrameSectionPackage();
             package.FrameSequenceIndex = frameIndex;
             package.Index = sectionIndex;
             package.pixelInstructions = new List<PixelInstructionWithoutDelta>();
@@ -93,7 +93,7 @@ namespace StellaLib.Network.Protocol.Animation
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        private FrameSectionPackageWithoutDelta[] _frameSectionPackages;
+        private FrameSectionPackage[] _frameSectionPackages;
         private bool[] _frameSectionsReceived;
         private int _frameIndex = -1;
         private int _timeStampRelative = -1;
@@ -121,7 +121,7 @@ namespace StellaLib.Network.Protocol.Animation
 
                 if (hasFrameSections)
                 {
-                    _frameSectionPackages = new FrameSectionPackageWithoutDelta[itemCount];
+                    _frameSectionPackages = new FrameSectionPackage[itemCount];
                     _frameSectionsReceived = new bool[itemCount];
                     _frameSectionsReceived[0] = true;
                     // The rest of the package is a FrameSection
@@ -143,7 +143,7 @@ namespace StellaLib.Network.Protocol.Animation
             else
             {
                 // Subsequent package. Always starts with a FrameSection.
-                FrameSectionPackageWithoutDelta package = FrameSectionProtocol.Deserialize(bytes, 0);
+                FrameSectionPackage package = FrameSectionProtocol.Deserialize(bytes, 0);
                 if (package.FrameSequenceIndex != _frameIndex)
                 {
                     throw new System.Net.ProtocolViolationException(
