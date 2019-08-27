@@ -30,7 +30,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
         }
 
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             Random random = new Random();
             LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
@@ -44,7 +44,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                 }
 
                 // draw existing FadePoints
-                List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                 DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
 
                 // remove FadePoints that have elapsed
@@ -57,7 +57,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
         }
 
-        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstruction> pixelInstructions)
+        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstructionWithDelta> pixelInstructions)
         {
             foreach (List<FadePoint> fadePoints in fadePointsPerFadeStep)
             {
@@ -73,7 +73,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                         {
                             continue;
                         }
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, color.R,color.G,color.B));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R,color.G,color.B));
                     }
 
                     fadePoint.Step++;

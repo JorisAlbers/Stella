@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using StellaLib.Animation;
-using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Animation.Transformation;
@@ -16,7 +14,7 @@ namespace StellaServerLib.Animation
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
 
-        private readonly PixelInstructionWithoutDelta[][] _currentFrame;
+        private readonly PixelInstruction[][] _currentFrame;
         public TransformationController TransformationController { get; private set; }
 
         /// <summary>
@@ -34,10 +32,10 @@ namespace StellaServerLib.Animation
             TransformationController = transformationController;
             _numberOfPis = _stripLengthPerPi.Length;
 
-            _currentFrame = new PixelInstructionWithoutDelta[stripLengthPerPi.Sum()][];
+            _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
             for (int i = 0; i < stripLengthPerPi.Length; i++)
             {
-                _currentFrame[i] = new PixelInstructionWithoutDelta[stripLengthPerPi[i]];
+                _currentFrame[i] = new PixelInstruction[stripLengthPerPi[i]];
             }
         }
 
@@ -69,10 +67,10 @@ namespace StellaServerLib.Animation
             // Disperse the instructions over each pi frame
             for (int i = 0; i < combinedFrame.Count; i++)
             {
-                PixelInstruction instruction = combinedFrame[i];
+                PixelInstructionWithDelta instructionWithDelta = combinedFrame[i];
 
-                PiMaskItem maskItem = mask[(int)instruction.Index];
-                framePerPi[maskItem.PiIndex].Add(new PixelInstruction(maskItem.PixelIndex, instruction.R, instruction.G,instruction.B));
+                PiMaskItem maskItem = mask[instructionWithDelta.Index];
+                framePerPi[maskItem.PiIndex].Add(new PixelInstructionWithDelta(maskItem.PixelIndex, instructionWithDelta.R, instructionWithDelta.G,instructionWithDelta.B));
             }
 
             return framePerPi;
@@ -87,17 +85,17 @@ namespace StellaServerLib.Animation
                 if (frame != null && frame.Count > 0)
                 {
                     // Overlay in current frame 
-                    foreach (PixelInstruction pixelInstruction in framePerPi[index])
+                    foreach (PixelInstructionWithDelta pixelInstruction in framePerPi[index])
                     {
-                        _currentFrame[index][pixelInstruction.Index] = new PixelInstructionWithoutDelta(pixelInstruction.R, pixelInstruction.G, pixelInstruction.B);
+                        _currentFrame[index][pixelInstruction.Index] = new PixelInstruction(pixelInstruction.R, pixelInstruction.G, pixelInstruction.B);
                     }
 
                     // Copy all frames from the current frame to the frameWithoutDelta
                     overlayFramePerPi[index] = new FrameWithoutDelta(frame.Index, frame.TimeStampRelative, _currentFrame[index].Length);
                     for (int i = 0; i < _currentFrame[index].Length; i++)
                     {
-                        PixelInstructionWithoutDelta instruction = _currentFrame[index][i];
-                        overlayFramePerPi[index][i] = new PixelInstructionWithoutDelta(instruction.R, instruction.G, instruction.B);
+                        PixelInstruction instruction = _currentFrame[index][i];
+                        overlayFramePerPi[index][i] = new PixelInstruction(instruction.R, instruction.G, instruction.B);
                     }
                     
                 }

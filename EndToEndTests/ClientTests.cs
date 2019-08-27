@@ -1,15 +1,8 @@
 using rpi_ws281x;
-using StellaLib.Animation;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Threading;
 using StellaClientLib.Light;
 using StellaClientLib.Network;
-using StellaServerLib.Animation.Drawing;
-using StellaServerLib.Animation.Drawing.Fade;
 
 namespace EndToEndTests
 {

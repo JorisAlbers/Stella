@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
 namespace StellaServerLib.Test.Animation.Drawing
@@ -33,7 +32,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2,0,expectedColor3);
             
             // ACT
-            List<PixelInstructionWithoutDelta>[] frames = BitmapDrawer.CreateFrames(bitmap);
+            List<PixelInstruction>[] frames = BitmapDrawer.CreateFrames(bitmap);
 
             // ASSERT
             Assert.AreEqual(1,frames.Length);
@@ -72,7 +71,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             bitmap.SetPixel(2, 1, expectedColor6);
 
             // ACT
-            List<PixelInstructionWithoutDelta>[] frames = BitmapDrawer.CreateFrames(bitmap);
+            List<PixelInstruction>[] frames = BitmapDrawer.CreateFrames(bitmap);
 
             // ASSERT
             Assert.AreEqual(2,frames.Length);
@@ -112,7 +111,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             // ACT
             BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
 
-            List<PixelInstruction> frame = drawer.First();
+            List<PixelInstructionWithDelta> frame = drawer.First();
 
             // ASSERT
             Assert.AreEqual(expectedIndex1, frame[0].Index);
@@ -143,7 +142,7 @@ namespace StellaServerLib.Test.Animation.Drawing
 
             // ACT
             BitmapDrawer drawer = new BitmapDrawer(startIndex, stripLength, true, BitmapDrawer.CreateFrames(bitmap));
-            List<List<PixelInstruction>> frames = drawer.Take(4).ToList();
+            List<List<PixelInstructionWithDelta>> frames = drawer.Take(4).ToList();
 
             // ASSERT
             // row 1

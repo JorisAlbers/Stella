@@ -12,8 +12,6 @@ namespace StellaServerLib.Serialization.Mapping
 
         public int StartIndexOnPi { get; set; }
 
-        public int[] SectionStarts { get; set; }
-
-        public bool FirstSectionIsInverted { get; set; }
+        public bool InverseDirection { get; set; }
     }
 }

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
 namespace StellaServerLib.Test.Animation.Drawing
@@ -29,11 +28,11 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMS = 100;
             int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, pattern);
-            List<List<PixelInstruction>> frames = drawer.Take(framesToTake).ToList();
+            List<List<PixelInstructionWithDelta>> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
             //Frame 1, slide in
-            List<PixelInstruction> frame = frames[0];
+            List<PixelInstructionWithDelta> frame = frames[0];
             Assert.AreEqual(1, frame.Count);
             Assert.AreEqual(expectedColor3, frame[0].ToColor());
             //Frame 2, slide in
@@ -96,11 +95,11 @@ namespace StellaServerLib.Test.Animation.Drawing
             int frameWaitMS = 100;
             int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip,  pattern);
-            List<List<PixelInstruction>> frames = drawer.Take(framesToTake).ToList();
+            List<List<PixelInstructionWithDelta>> frames = drawer.Take(framesToTake).ToList();
 
             //Assert
             //Frame 1, slide in
-            List<PixelInstruction> frame = frames[0];
+            List<PixelInstructionWithDelta> frame = frames[0];
             Assert.AreEqual(1, frame.Count);
             Assert.AreEqual(expectedColor3, frame[0].ToColor());
             //Frame 2, slide in

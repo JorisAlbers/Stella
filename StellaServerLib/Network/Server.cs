@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using StellaLib.Animation;
 using StellaLib.Network;
-using StellaLib.Network.Protocol;
 using StellaLib.Network.Protocol.Animation;
 
 namespace StellaServerLib.Network
@@ -69,7 +67,7 @@ namespace StellaServerLib.Network
 
         public void SendToClient(int clientId, FrameWithoutDelta frame)
         {
-            byte[][] packages = FrameWithoutDeltaProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE); // TODO move the switch between UDP and TCP send from Client to here.
+            byte[][] packages = FrameProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE); // TODO move the switch between UDP and TCP send from Client to here.
             for (int i = 0; i < packages.Length; i++)
             {
                 SendToClient(clientId, MessageType.AnimationRenderFrame, packages[i]);

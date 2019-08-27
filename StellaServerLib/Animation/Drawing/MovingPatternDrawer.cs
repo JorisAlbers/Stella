@@ -30,18 +30,18 @@ namespace StellaServerLib.Animation.Drawing
 
 
         /// <inheritdoc />
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             while (true)
             {
                 // Slide into view
                 for (int i = 0; i < _pattern.Length - 1; i++)
                 {
-                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                     for (int j = 0; j < i + 1; j++)
                     {
                         Color color = _pattern[_pattern.Length - 1 - i + j];
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, color.R, color.G, color.B ));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R, color.G, color.B ));
                     }
                     yield return pixelInstructions;
                 }
@@ -49,11 +49,11 @@ namespace StellaServerLib.Animation.Drawing
                 // Normal
                 for (int i = 0; i < _stripLength - _pattern.Length + 1; i++)
                 {
-                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                     for (int j = 0; j < _pattern.Length; j++)
                     {
                         Color color = _pattern[j];
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + i + j, color.R, color.G, color.B));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + i + j, color.R, color.G, color.B));
                     }
 
                     yield return pixelInstructions;
@@ -62,11 +62,11 @@ namespace StellaServerLib.Animation.Drawing
                 // Slide out of view
                 for (int i = 0; i < _pattern.Length - 1; i++)
                 {
-                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                     for (int j = 0; j < _pattern.Length - 1 - i; j++)
                     {
                         Color color = _pattern[j];
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), color.R, color.G, color.B));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + (_stripLength - (_pattern.Length - 1 - j - i)), color.R, color.G, color.B));
                     }
 
                     yield return pixelInstructions;

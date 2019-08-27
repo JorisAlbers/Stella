@@ -2,8 +2,6 @@
 using StellaClientLib;
 using StellaClientLib.Serialization;
 using StellaLib.Network;
-using StellaServerLib;
-using StellaServerLib.Animation;
 using StellaVisualizer.Model.Client;
 using StellaVisualizer.Model.Server;
 

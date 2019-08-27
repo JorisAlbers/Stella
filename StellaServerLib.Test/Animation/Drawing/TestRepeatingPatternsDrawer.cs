@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
 using StellaLib.Animation;
-using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 
 namespace StellaServerLib.Test.Animation.Drawing
@@ -29,7 +28,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            List<PixelInstruction> frame = drawer.First();
+            List<PixelInstructionWithDelta> frame = drawer.First();
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
@@ -65,7 +64,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int expectedIndex6 = 105;
             int expectedIndex7 = 106;
 
-            List<PixelInstruction> frame = drawer.First();
+            List<PixelInstructionWithDelta> frame = drawer.First();
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
@@ -97,13 +96,13 @@ namespace StellaServerLib.Test.Animation.Drawing
             Color expectedColor1 =  Color.FromArgb(1,2,3);
             Color expectedColor2 =  Color.FromArgb(4,5,6);
 
-            List<List<PixelInstruction>> frames = drawer.Take(2).ToList();
+            List<List<PixelInstructionWithDelta>> frames = drawer.Take(2).ToList();
 
 
             //Assert
-            List<PixelInstruction> frame1 = frames[0];
+            List<PixelInstructionWithDelta> frame1 = frames[0];
             Assert.AreEqual(frame1[0].ToColor(), expectedColor1);
-            List<PixelInstruction> frame2 = frames[1];
+            List<PixelInstructionWithDelta> frame2 = frames[1];
             Assert.AreEqual(frame2[0].ToColor(), expectedColor2);
         }
     }

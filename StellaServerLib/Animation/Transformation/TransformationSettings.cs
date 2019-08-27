@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace StellaServerLib.Animation.Transformation
 {

@@ -14,7 +14,7 @@ namespace StellaClient.Test.Light
         public void PrepareFrame_Frame_FrameGetsDrawnToStrip()
         {
             FrameWithoutDelta frame = new FrameWithoutDelta(0,100,1);
-            frame[0] = new PixelInstructionWithoutDelta(10, 20, 30);
+            frame[0] = new PixelInstruction(10, 20, 30);
 
             var mock = new Mock<ILEDStrip>();
 
@@ -36,7 +36,7 @@ namespace StellaClient.Test.Light
         public void Render__LedStripRenderGetsCalled()
         {
             FrameWithoutDelta frame = new FrameWithoutDelta(0, 100, 1);
-            frame[0] = new PixelInstructionWithoutDelta(10, 20, 30);
+            frame[0] = new PixelInstruction(10, 20, 30);
             var mock = new Mock<ILEDStrip>();
             mock.Setup(x => x.Render());
 

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Text;
 using rpi_ws281x;
 using StellaClientLib.Light;
 using StellaClientLib.Network;

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing.Fade
@@ -26,7 +25,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             _fadePatterns = FadeCalculation.CalculateFadedPatterns(_pattern, _fadeSteps);
         }
 
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             Random random = new Random();
             LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
@@ -41,7 +40,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
         }
 
-        private List<PixelInstruction> CreateFrame(int fadePointsToAdd,Random random, LinkedList<List<FadePoint>> fadePointsPerFadeStep)
+        private List<PixelInstructionWithDelta> CreateFrame(int fadePointsToAdd,Random random, LinkedList<List<FadePoint>> fadePointsPerFadeStep)
         {
             if (fadePointsToAdd > 0)
             {
@@ -49,7 +48,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
 
             // draw existing FadePoints
-            List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+            List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
             DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
 
             // remove FadePoints that have elapsed
@@ -74,7 +73,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             return fadePoints;
         }
         
-        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstruction> pixelInstructions )
+        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstructionWithDelta> pixelInstructions )
         {
             foreach (List<FadePoint> fadePoints in fadePointsPerFadeStep)
             {
@@ -92,7 +91,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                             continue;
                         }
 
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + pixelIndex, pattern[i].R, pattern[i].G, pattern[i].B));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + pixelIndex, pattern[i].R, pattern[i].G, pattern[i].B));
                     }
                     fadePoint.Step++;
                 }

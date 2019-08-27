@@ -14,7 +14,7 @@ namespace StellaServerLib.Animation.FrameProviding
     /// </summary>
     public class FrameProvider : IFrameProvider
     {
-        private readonly IEnumerator<List<PixelInstruction>>[] _framesPerDrawer;
+        private readonly IEnumerator<List<PixelInstructionWithDelta>>[] _framesPerDrawer;
         private readonly TransformationController _transformationController;
         private readonly int[] _relativeStartingTimestamps;
         private readonly int _firstTimestamp;
@@ -78,16 +78,16 @@ namespace StellaServerLib.Animation.FrameProviding
                 // Add the frames of each drawer
                 foreach (int providerIndex in providersInNextFrame)
                 {
-                    List<PixelInstruction> instructions = _framesPerDrawer[providerIndex].Current;
+                    List<PixelInstructionWithDelta> instructions = _framesPerDrawer[providerIndex].Current;
                     for (int j = 0; j < instructions.Count; j++)
                     {
-                        PixelInstruction pixelInstruction = instructions[j];
-                        (byte red, byte green, byte blue) = animationTransformation.AdjustColor(providerIndex, pixelInstruction.R,
-                            pixelInstruction.G, pixelInstruction.B);
-                        pixelInstruction.R = red;
-                        pixelInstruction.G = green;
-                        pixelInstruction.B = blue;
-                        frame.Add(pixelInstruction);
+                        PixelInstructionWithDelta pixelInstructionWithDelta = instructions[j];
+                        (byte red, byte green, byte blue) = animationTransformation.AdjustColor(providerIndex, pixelInstructionWithDelta.R,
+                            pixelInstructionWithDelta.G, pixelInstructionWithDelta.B);
+                        pixelInstructionWithDelta.R = red;
+                        pixelInstructionWithDelta.G = green;
+                        pixelInstructionWithDelta.B = blue;
+                        frame.Add(pixelInstructionWithDelta);
                     }
                 }
                 
