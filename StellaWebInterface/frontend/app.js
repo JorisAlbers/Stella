@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import {MuiThemeProvider} from '@material-ui/core/styles/index';
 import {SocketProvider} from 'socket.io-react';
 import io from 'socket.io-client';
+import dotnetify from 'dotnetify'
 
 import './styles/styles.css';
 import AppRouter from './routers/AppRouter';
