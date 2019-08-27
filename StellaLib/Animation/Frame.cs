@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -12,7 +11,7 @@ namespace StellaLib.Animation
     /// 
     /// </summary>
     [DebuggerDisplay("Index = {Index}, TSR = {TimeStampRelative}, Count = {Count}")]
-    public class Frame : List<PixelInstruction> , IEquatable<Frame>
+    public class Frame : List<PixelInstructionWithDelta> , IEquatable<Frame>
     {   
         /// <summary>
         /// The index of the Frame in the frameSet.
@@ -76,14 +75,14 @@ namespace StellaLib.Animation
         /// <summary>
         /// The pixelInstructions in this list.
         /// </summary>
-        public PixelInstructionWithoutDelta[] Items { get; }
+        public PixelInstruction[] Items { get; }
 
         /// <summary>
         /// The number of pixelInstructions in this list
         /// </summary>
         public int Count => Items.Length;
 
-        public PixelInstructionWithoutDelta this[int index]
+        public PixelInstruction this[int index]
         {
             get => Items[index];
             set => Items[index] = value;
@@ -95,7 +94,7 @@ namespace StellaLib.Animation
         {
             Index = index;
             TimeStampRelative = timeStampRelative;
-            Items = new PixelInstructionWithoutDelta[capacity];
+            Items = new PixelInstruction[capacity];
         }
 
         public bool Equals(FrameWithoutDelta other)

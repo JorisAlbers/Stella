@@ -1,5 +1,6 @@
 ﻿using SharpYaml.Serialization;
 using StellaServerLib.Animation;
+using StellaServerLib.Animation.Drawing;
 
 namespace StellaServerLib.Serialization.Animation
 {

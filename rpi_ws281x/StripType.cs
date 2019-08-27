@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace rpi_ws281x
+﻿namespace rpi_ws281x
 {
 	/// <summary>
 	/// The type of the LED strip defines the ordering of the colors (e. g. RGB, GRB, ...).

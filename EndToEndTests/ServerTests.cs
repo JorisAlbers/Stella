@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using StellaLib.Animation;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
+using StellaServerLib.Animation.Transformation;
 using StellaServerLib.Network;
 
 namespace EndToEndTests
@@ -49,15 +49,15 @@ namespace EndToEndTests
             int port = 20055;
             int udpPort = 20056;
             Console.Out.WriteLine("Starting StellaServer instance");
-            Server server = new Server(Program.SERVER_IP,port, udpPort);
-            server.Start();
+            Server server = new Server();
+            server.Start(Program.SERVER_IP, port, udpPort);
             ClientController clientController = new ClientController(server);
 
             // Set mapping and create mask
             List<PiMapping> piMappings = new List<PiMapping>();
             for (int i = 0; i < numberOfPis; i++)
             {
-                piMappings.Add(new PiMapping(i,lengthPerPi,0,new int[]{lengthPerPi/2},false));
+                piMappings.Add(new PiMapping(i,lengthPerPi,0,false));
             }
             PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
             List<PiMaskItem> mask = piMaskCalculator.Calculate(out int[] stripLengthPerPi);
@@ -76,8 +76,13 @@ namespace EndToEndTests
                 Color.FromArgb(0, 0, 225),
                 Color.FromArgb(0, 0, 250),
             };
+
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0,0,new float[3]), new TransformationSettings[1]
+            {
+                new TransformationSettings(0,0,new float[3])
+            });
             IFrameProvider repeatingPatternsFrameProvider = new FrameProvider(
-                new RepeatingPatternsDrawer(0, 300, new AnimationTransformation(100), new Color[][]
+                new RepeatingPatternsDrawer(0, 300,  new Color[][]
                 {
                     new Color[2]
                     {
@@ -92,10 +97,10 @@ namespace EndToEndTests
                         Color.FromArgb(0, 0, 0)
                     }
 
-                }), new AnimationTransformation(100));
-            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300,new AnimationTransformation(100), pattern), new AnimationTransformation(100));
-            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300, new AnimationTransformation(30), pattern), new AnimationTransformation(30));
-            AnimationTransformation[] animationTransformations = new AnimationTransformation[]{new AnimationTransformation(0), };
+                }), transformationController);
+            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), transformationController);
+
+            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), transformationController);
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
@@ -112,13 +117,13 @@ namespace EndToEndTests
                 switch (input)
                 {
                     case "r":
-                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
+                        clientController.StartAnimation(new Animator(repeatingPatternsFrameProvider, stripLengthPerPi, mask, transformationController), Environment.TickCount);
                         break;
                     case "s":
-                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
+                        clientController.StartAnimation(new Animator(slidingPatternFrameProvider, stripLengthPerPi, mask, transformationController), Environment.TickCount);
                         break;
                     case "m":
-                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, animationTransformations), DateTime.Now);
+                        clientController.StartAnimation(new Animator(movingPatternFrameProvider, stripLengthPerPi, mask, transformationController), Environment.TickCount);
                         break;
                     default:
                         Console.Out.WriteLine("Unknown command.");
@@ -131,9 +136,9 @@ namespace EndToEndTests
 
         private static void StartServerInstance()
         {
-            Server server = new Server(Program.SERVER_IP,20055, 20056);
+            Server server = new Server();
             Console.WriteLine("Starting server instance, press enter to quit");
-            server.Start();
+            server.Start(Program.SERVER_IP, 20055, 20056);
             Console.ReadLine();
             server.Dispose();
         }

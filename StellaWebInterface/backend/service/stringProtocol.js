@@ -9,16 +9,16 @@ class StringProtocol {
 
   // Convert the string to an array of byte arrays
   serialize(message, maxPackageSize) {
-    const data = new Buffer(message, 'ascii');
+    const data = new Buffer.from(message, 'ascii');
 
     const bytesAvailablePerPackage = maxPackageSize - this.PACKAGE_HEADER_BYTES;
-    const packagesNeeded = (data.length + bytesAvailablePerPackage - 1) / bytesAvailablePerPackage;
+    const packagesNeeded = Math.floor((data.length + bytesAvailablePerPackage - 1) / bytesAvailablePerPackage);
 
     const returnData = [];
     // Create first package
-    returnData.push(this.createPackage(data, 0, maxPackageSize, packagesNeeded));
+    returnData.push(this.createPackage(data, 0, bytesAvailablePerPackage, packagesNeeded));
     for (let i = 1; i < packagesNeeded; i++) {
-      returnData.push(this.createPackage(data, i * bytesAvailablePerPackage, maxPackageSize, i));
+      returnData.push(this.createPackage(data, i * bytesAvailablePerPackage, bytesAvailablePerPackage, i));
     }
     return returnData;
   }
@@ -26,12 +26,12 @@ class StringProtocol {
   /// <summary>
   ///  Create a subsequent package with a normal package header
   /// </summary>
-  createPackage(data, startIndex, maxPackageSize, headerCounter) {
-    const buffer = new Buffer([Math.min(data.length - startIndex + this.PACKAGE_HEADER_BYTES, maxPackageSize + this.PACKAGE_HEADER_BYTES)]);
+  createPackage(data, startIndex, maxBodySize, headerCounter) {
+    const packageSize = Math.min(maxBodySize + this.PACKAGE_HEADER_BYTES, data.length - startIndex + this.PACKAGE_HEADER_BYTES);
+    const buffer = new Buffer.alloc(packageSize);
 
     buffer.writeInt32LE(headerCounter, 0);
-
-    data.copy(buffer, 4, 0, buffer.length);
+    data.copy(buffer, 4, startIndex, buffer.length - 4);
     return buffer;
   }
 

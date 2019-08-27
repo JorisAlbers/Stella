@@ -22,7 +22,7 @@ namespace StellaServerLib.Serialization.Mapping
             List<PiMapping> mappings = new List<PiMapping>();
             foreach (PiMappingSettings piMapping in mappingSettings.Mappings)
             {
-                mappings.Add(new PiMapping(piMapping.PiIndex, piMapping.Length, piMapping.StartIndexOnPi, piMapping.SectionStarts, piMapping.FirstSectionIsInverted));
+                mappings.Add(new PiMapping(piMapping.PiIndex, piMapping.Length, piMapping.StartIndexOnPi, piMapping.InverseDirection));
             }
 
             return mappings;

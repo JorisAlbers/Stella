@@ -45,39 +45,13 @@ namespace StellaServerLib.Animation.Mapping
 
         private void AppendPiMapping(PiMapping piMapping, List<PiMaskItem> mask)
         {
-            // Check if there is just one section.
-            if (piMapping.SectionStarts == null || piMapping.SectionStarts.Length == 0)
+            if (piMapping.InverseDirection)
             {
-                AppendSection(piMapping.FirstSectionIsInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
+                AppendBackwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
             }
             else
             {
-                // Append first item
-                AppendSection(piMapping.FirstSectionIsInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.SectionStarts[0]);
-
-                // Iterate sections in the middle
-                bool currentlyInverted = !piMapping.FirstSectionIsInverted;
-                for (int i = 1; i < piMapping.SectionStarts.Length; i++)
-                {
-                    AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[i - 1], piMapping.SectionStarts[i] - piMapping.SectionStarts[i - 1]);
-                    currentlyInverted = !currentlyInverted;
-                }
-
-                // Append last item
-                int lastSectionStart = piMapping.SectionStarts[piMapping.SectionStarts.Length - 1];
-                AppendSection(currentlyInverted, mask, piMapping.PiIndex, piMapping.StartIndexOnPi + piMapping.SectionStarts[piMapping.SectionStarts.Length - 1], piMapping.Length - lastSectionStart);
-            }
-        }
-
-        private void AppendSection(bool invertedDirection, List<PiMaskItem> mask, int piIndex, int startIndexOnPi, int length)
-        {
-            if (invertedDirection)
-            {
-                AppendBackwardsSection(mask, piIndex, startIndexOnPi, length);
-            }
-            else
-            {
-                AppendForwardsSection(mask, piIndex, startIndexOnPi, length);
+                AppendForwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using StellaLib.Network.Protocol;
 
 namespace StellaServerAPI.Protocol
 {

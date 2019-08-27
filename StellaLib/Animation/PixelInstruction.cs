@@ -6,52 +6,65 @@ namespace StellaLib.Animation
     /// <summary>
     /// Struct that contains the index of the pixel to change and its new rgb value.
     /// </summary>
-    public struct PixelInstruction
+    public struct PixelInstructionWithDelta
     {
         /// <summary>
         /// The index of the pixel to change
         /// </summary>
         public int Index;
+        
+        public byte R;
 
-        /// <summary>
-        /// The color to set the pixel to
-        /// </summary>
-        public Color Color;
+        public byte G;
+
+        public byte B;
 
         [DebuggerStepThrough]
-        public PixelInstruction(int index, Color color)
+        public PixelInstructionWithDelta(int index, byte red, byte green, byte blue)
         {
             Index = index;
-            Color = color;
+            R = red;
+            G = green;
+            B = blue;
         }
 
-        [DebuggerStepThrough]
-        public PixelInstruction(int index, byte red, byte green, byte blue)
+        /// <summary>
+        /// Do not use when time efficiency is an issue!
+        /// </summary>
+        /// <returns></returns>
+        public Color ToColor()
         {
-            Index = index;
-            Color = Color.FromArgb(red,green,blue);
+            return Color.FromArgb(R, G, B);
         }
     }
 
-    public struct PixelInstructionWithoutDelta
+    public struct PixelInstruction
     {
-        /// <summary>
-        /// The color to set the pixel to
-        /// </summary>
-        public Color Color;
+        public byte R;
+
+        public byte G;
+
+        public byte B;
 
         [DebuggerStepThrough]
-        public PixelInstructionWithoutDelta(Color color)
+        public PixelInstruction(byte red, byte green, byte blue)
         {
-            Color = color;
+            R = red;
+            G = green;
+            B = blue;
         }
 
-        [DebuggerStepThrough]
-        public PixelInstructionWithoutDelta(byte red, byte green, byte blue)
+        /// <summary>
+        /// Do not use when time efficiency is an issue!
+        /// </summary>
+        /// <returns></returns>
+        public Color ToColor()
         {
-            Color = Color.FromArgb(red, green, blue);
+            return Color.FromArgb(R, G, B);
         }
     }
+
+    
 
 
 }

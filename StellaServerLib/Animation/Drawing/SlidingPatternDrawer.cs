@@ -14,27 +14,26 @@ namespace StellaServerLib.Animation.Drawing
         private Color[] _pattern;
         private readonly int _startIndex;
         private int _stripLength;
-        private readonly AnimationTransformation _animationTransformation;
 
-        public SlidingPatternDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color[] pattern)
+        public SlidingPatternDrawer(int startIndex, int stripLength, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _animationTransformation = animationTransformation;
             _pattern = pattern;
         }
 
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             while (true)
             {
                 for (int i = 0; i < _pattern.Length; i++)
                 {
-                    List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                     int patternStart = i;
                     for (int j = 0; j < _stripLength; j++)
                     {
-                        pixelInstructions.Add(new PixelInstruction() { Index = _startIndex + j, Color = _pattern[(j + patternStart) % (_pattern.Length)] });
+                        Color color = _pattern[(j + patternStart) % (_pattern.Length)];
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R,color.G,color.B));
                     }
 
                     yield return pixelInstructions;

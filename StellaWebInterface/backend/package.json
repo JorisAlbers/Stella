@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node app",
-    "watcher": "nodemon app --ignore savedData/*"
+    "watcher": "nodemon app --ignore savedData/*",
+    "debug": "nodemon --inspect app --ignore savedData/*"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -12,12 +13,14 @@
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-session": "^1.16.1",
+    "ffmpeg": "0.0.4",
     "http-errors": "~1.6.2",
     "js-yaml": "^3.13.1",
     "morgan": "~1.9.0",
     "net": "^1.0.2",
     "pureimage": "^0.1.6",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "socketio-file-upload": "^0.7.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"

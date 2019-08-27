@@ -1,14 +1,8 @@
 using rpi_ws281x;
-using StellaClient.Light;
-using StellaLib.Animation;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Threading;
-using StellaServerLib.Animation.Drawing;
-using StellaServerLib.Animation.Drawing.Fade;
+using StellaClientLib.Light;
+using StellaClientLib.Network;
 
 namespace EndToEndTests
 {
@@ -56,13 +50,13 @@ namespace EndToEndTests
             Settings settings = Settings.CreateDefaultSettings();
             settings.Channels[0] = new Channel(ledCount, 18, 255, false, StripType.WS2812_STRIP);
             WS281x ledstrip = new WS281x(settings);
-            LedController ledController = new LedController(ledstrip);
+            LedController ledController = new LedController(ledstrip,50);
 
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint,20056, id);
+            StellaClientLib.Network.StellaServer stellaServer = new StellaClientLib.Network.StellaServer();
             stellaServer.RenderFrameReceived += (sender, frame) => ledController.RenderFrame(frame);
-            stellaServer.Start();
+            stellaServer.Start(localEndPoint, 20056, id);
             
             string input;
             Console.Out.WriteLine($"Running StellaClient instance with id {id}");
@@ -92,9 +86,9 @@ namespace EndToEndTests
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 20055);
 
-            StellaClient.Network.StellaServer stellaServer = new StellaClient.Network.StellaServer(localEndPoint, 20056, 0);
+            StellaServer stellaServer = new StellaServer();
             Console.WriteLine("Starting Client, press enter to quit");
-            stellaServer.Start();
+            stellaServer.Start(localEndPoint, 20056, 0);
             Console.ReadLine();
             stellaServer.Dispose();
         }

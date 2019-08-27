@@ -5,4 +5,6 @@ Port: 20055
 UdpPort: 20056
 LedCount: 120
 PwmPin: 18
+Brightness: 255
 DmaChannel: 10
+MinimumFrameRate: 24

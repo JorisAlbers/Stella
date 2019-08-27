@@ -7,12 +7,22 @@ class PackageProtocol {
     this.bytesReceived = 0;
 
     this.BUFFER_SIZE = 1024;
-    this.MAX_MESSAGE_SIZE = this.BUFFER_SIZE - 8;
+    this.HEADERSIZE = 8;
+    this.MAX_MESSAGE_SIZE = this.BUFFER_SIZE - this.HEADERSIZE;
   }
 
   wrapGetAvailableStoryboardsMessage() {
-    return new Buffer([5, 0, 0, 0, 1, 0, 0, 0, 1])
+    return new Buffer.from([5, 0, 0, 0, 1, 0, 0, 0, 1])
   };
+
+  wrapMessage(messageType, data) {
+    const buffer = new Buffer.alloc(data.length + this.HEADERSIZE);
+    buffer.writeUInt32LE(data.length + 4, 0);
+    buffer.writeUInt32LE(messageType, 4);
+    data.copy(buffer, this.HEADERSIZE, 0, data.length);
+    if (buffer.length > this.MAX_MESSAGE_SIZE) throw "buffer.length > this.MAX_MESSAGE_SIZE";
+    return buffer
+  }
 
   dataReceived(data) {
     // Process the incoming data in chunks, as the ReadCompleted requests it

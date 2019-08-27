@@ -10,18 +10,16 @@ namespace StellaServerLib.Animation.Drawing.Fade
     {
         private readonly int _startIndex;
         private readonly int _stripLength;
-        private readonly AnimationTransformation _animationTransformation;
         private readonly int _fadeSteps;
         private readonly Color[] _fadeColors; 
 
         private const int MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME = 1;
         
 
-        public FadingPulseDrawer(int startIndex, int stripLength, AnimationTransformation animationTransformation, Color color, int fadeSteps)
+        public FadingPulseDrawer(int startIndex, int stripLength, Color color, int fadeSteps)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _animationTransformation = animationTransformation;
             _fadeSteps = fadeSteps;
 
             Color[][] fadedPatterns = FadeCalculation.CalculateFadedPatterns(new Color[] { color }, _fadeSteps);
@@ -32,7 +30,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
         }
 
-        public IEnumerator<List<PixelInstruction>> GetEnumerator()
+        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             Random random = new Random();
             LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
@@ -46,7 +44,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                 }
 
                 // draw existing FadePoints
-                List<PixelInstruction> pixelInstructions = new List<PixelInstruction>();
+                List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
                 DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
 
                 // remove FadePoints that have elapsed
@@ -59,13 +57,13 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
         }
 
-        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstruction> pixelInstructions)
+        private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstructionWithDelta> pixelInstructions)
         {
             foreach (List<FadePoint> fadePoints in fadePointsPerFadeStep)
             {
                 // All fade points at this index have the same fade step count.
                 int fadeStep = fadePoints[0].Step;
-                Color color = _animationTransformation.AdjustColor(_fadeColors[_fadeColors.Length - 1 - fadeStep]);
+                Color color = _fadeColors[_fadeColors.Length - 1 - fadeStep];
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
@@ -75,7 +73,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                         {
                             continue;
                         }
-                        pixelInstructions.Add(new PixelInstruction(_startIndex + j, color));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R,color.G,color.B));
                     }
 
                     fadePoint.Step++;
