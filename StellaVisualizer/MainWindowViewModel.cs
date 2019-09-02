@@ -31,16 +31,16 @@ namespace StellaVisualizer
             Orientation orientation = Orientation.Horizontal;
 
 
-            ClientViewerViewModel[] ClientViewModels = new ClientViewerViewModel[3];
-            ClientViewModels[0] = new ClientViewerViewModel(1200, orientation);
-            ClientViewModels[1] = new ClientViewerViewModel(1200, orientation);
-            ClientViewModels[2] = new ClientViewerViewModel(1200, orientation);
+            ClientViewerViewModel[] clientViewModels = new ClientViewerViewModel[3];
+            clientViewModels[0] = new ClientViewerViewModel(1200, orientation);
+            clientViewModels[1] = new ClientViewerViewModel(1200, orientation);
+            clientViewModels[2] = new ClientViewerViewModel(1200, orientation);
 
-            _memoryLedStrips[0].RenderRequested += (sender, colors) => ClientViewModels[0].DrawFrame(colors);
-            _memoryLedStrips[1].RenderRequested += (sender, colors) => ClientViewModels[1].DrawFrame(colors);
-            _memoryLedStrips[2].RenderRequested += (sender, colors) => ClientViewModels[2].DrawFrame(colors);
+            _memoryLedStrips[0].RenderRequested += (sender, colors) => clientViewModels[0].DrawFrame(colors);
+            _memoryLedStrips[1].RenderRequested += (sender, colors) => clientViewModels[1].DrawFrame(colors);
+            _memoryLedStrips[2].RenderRequested += (sender, colors) => clientViewModels[2].DrawFrame(colors);
 
-            ClientsControlViewModel = new ClientsControlViewModel(ClientViewModels, orientation);
+            ClientsControlViewModel = new ClientsControlViewModel(clientViewModels, orientation);
         }
     }
 }
