@@ -5,16 +5,16 @@ Mappings:
    StartIndexOnPi:  0
  - PiIndex: 0
    Length:  480
-   StartIndexOnPi:  600
+   StartIndexOnPi:  480
  - PiIndex: 1
    Length:  480
    StartIndexOnPi:  0
  - PiIndex: 1
    Length:  480
-   StartIndexOnPi:  600
+   StartIndexOnPi:  480
  - PiIndex: 2
    Length:  480
    StartIndexOnPi:  0
  - PiIndex: 2
    Length:  480
-   StartIndexOnPi:  600
+   StartIndexOnPi:  480
