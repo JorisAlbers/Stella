@@ -1,0 +1,8 @@
+﻿!Storyboard
+Name: Red Blue Switch
+Animations:
+ - !RepeatingPattern
+   StartIndex:  0
+   StripLength: 1440
+   FrameWaitMs: 55
+   Patterns: [[[255,0,0]],[[200,0,0]],[[150,0,0]],[[0,0,150]],[[0,0,200]],[[0,0,255]],[[0,0,200]],[[0,0,150]],[[150,0,0]],[[200,0,0]]]
