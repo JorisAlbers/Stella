@@ -21,11 +21,14 @@
 
     <Grid Background="Black">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ContentPresenter Grid.Column="0" Content="{Binding ServerViewModel}"/>
+        <Expander Grid.Column="0" >
+            <ContentPresenter Content="{Binding ServerViewModel}"/>
+        </Expander>
+
         
         <ContentPresenter Grid.Column="1" Content="{Binding ClientsControlViewModel}"/>
 
