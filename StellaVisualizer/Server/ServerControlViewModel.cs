@@ -14,8 +14,10 @@ namespace StellaVisualizer.Server
     public class ServerControlViewModel : INotifyPropertyChanged
     {
         private readonly MemoryNetworkController _memoryNetworkController;
+        private readonly int _pixelsPerRow;
         private APIServer _apiServer;
         private StellaServer _stellaServer;
+        private int _totalNumberOfPixels;
 
 
         public ServerConfigurationViewModel ServerConfigurationViewModel { get; set; }
@@ -24,9 +26,11 @@ namespace StellaVisualizer.Server
 
 
 
-        public ServerControlViewModel(MemoryNetworkController memoryNetworkController)
+        public ServerControlViewModel(MemoryNetworkController memoryNetworkController, int pixelsPerRow, int totalNumberOfPixels)
         {
             _memoryNetworkController = memoryNetworkController;
+            _pixelsPerRow = pixelsPerRow;
+            _totalNumberOfPixels = totalNumberOfPixels;
             ServerConfigurationViewModel = new ServerConfigurationViewModel();
             ServerConfigurationViewModel.ApplyRequested += ServerConfigurationViewModel_OnApplyRequested;
         }
@@ -151,7 +155,7 @@ namespace StellaVisualizer.Server
         }
 
 
-        private static void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)
+        private void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)
         {
             DirectoryInfo directory = new DirectoryInfo(bitmapDirectory);
             foreach (FileInfo fileInfo in directory.GetFiles())
@@ -172,7 +176,7 @@ namespace StellaVisualizer.Server
                             {
                                 FrameWaitMs = 10,
                                 ImageName = name,
-                                StripLength = 3600,
+                                StripLength = _totalNumberOfPixels,
                                 Wraps = true
                             }
                         };
@@ -186,47 +190,47 @@ namespace StellaVisualizer.Server
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 600,
+                            StripLength = _pixelsPerRow,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 600,
-                            StartIndex = 600,
+                            StripLength = _pixelsPerRow,
+                            StartIndex = _pixelsPerRow,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 600,
-                            StartIndex = 1200,
+                            StripLength = _pixelsPerRow,
+                            StartIndex = _pixelsPerRow * 2,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 600,
-                            StartIndex = 1800,
+                            StripLength = _pixelsPerRow,
+                            StartIndex = _pixelsPerRow * 3,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 600,
-                            StartIndex = 2400,
+                            StripLength = _pixelsPerRow,
+                            StartIndex = _pixelsPerRow * 4,
                             Wraps = true
                         },
                         new BitmapAnimationSettings
                         {
                             FrameWaitMs = 10,
                             ImageName = name,
-                            StripLength = 600,
-                            StartIndex = 3000,
+                            StripLength = _pixelsPerRow,
+                            StartIndex = _pixelsPerRow * 5,
                             Wraps = true
                         },
                         };

@@ -19,12 +19,12 @@ namespace StellaVisualizer
 
         public MainWindowViewModel()
         {
-            if (true) // Toggle for the cloud setup
+            if (false) // Toggle for the cloud setup
             {
                 InitAsCloudSetup();
             }
 
-            if (false) // Toggle for the Sterk setup
+            if (true) // Toggle for the Sterk setup
             {
                 InitAsSterkSetup();
             }
@@ -34,15 +34,18 @@ namespace StellaVisualizer
         private void InitAsCloudSetup()
         {
             // Start NetworkController which shortcuts the network connection between the server and each client
+            int pixelsPerPi = 1200;
+            int pixelsPerRow = pixelsPerPi / 2;
+            Orientation orientation = Orientation.Vertical;
+
             _memoryLedStrips = new MemoryLedStrip[3];
             _memoryLedStrips[0] = new MemoryLedStrip(1200);
             _memoryLedStrips[1] = new MemoryLedStrip(1200);
             _memoryLedStrips[2] = new MemoryLedStrip(1200);
             _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, 1200, 20, 255);
 
-            ServerViewModel = new ServerControlViewModel(_memoryNetworkController);
+            ServerViewModel = new ServerControlViewModel(_memoryNetworkController, pixelsPerRow, pixelsPerRow * 6);
 
-            Orientation orientation = Orientation.Vertical;
 
             ClientViewerViewModel[] clientViewModels = new ClientViewerViewModel[3];
             clientViewModels[0] = new ClientViewerViewModel(1200, orientation);
@@ -59,21 +62,23 @@ namespace StellaVisualizer
         private void InitAsSterkSetup()
         {
             // Start NetworkController which shortcuts the network connection between the server and each client
+            int pixelsPerPi  = 480;
+            int pixelsPerRow = pixelsPerPi / 2;
+            Orientation orientation = Orientation.Horizontal;
+
+
             _memoryLedStrips = new MemoryLedStrip[3];
             _memoryLedStrips[0] = new MemoryLedStrip(1200);
             _memoryLedStrips[1] = new MemoryLedStrip(1200);
             _memoryLedStrips[2] = new MemoryLedStrip(1200);
-            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, 480, 20, 255);
+            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 20, 255);
 
-            ServerViewModel = new ServerControlViewModel(_memoryNetworkController);
-
-            Orientation orientation = Orientation.Horizontal;
-
+            ServerViewModel = new ServerControlViewModel(_memoryNetworkController, pixelsPerRow, pixelsPerRow * 6);
 
             ClientViewerViewModel[] clientViewModels = new ClientViewerViewModel[3];
-            clientViewModels[0] = new ClientViewerViewModel(480, orientation);
-            clientViewModels[1] = new ClientViewerViewModel(480, orientation);
-            clientViewModels[2] = new ClientViewerViewModel(480, orientation);
+            clientViewModels[0] = new ClientViewerViewModel(pixelsPerPi, orientation);
+            clientViewModels[1] = new ClientViewerViewModel(pixelsPerPi, orientation);
+            clientViewModels[2] = new ClientViewerViewModel(pixelsPerPi, orientation);
 
             _memoryLedStrips[0].RenderRequested += (sender, colors) => clientViewModels[0].DrawFrame(colors);
             _memoryLedStrips[1].RenderRequested += (sender, colors) => clientViewModels[1].DrawFrame(colors);
