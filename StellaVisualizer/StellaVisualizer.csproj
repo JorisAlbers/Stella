@@ -69,6 +69,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ClientsControlViewModel.cs" />
+    <Compile Include="ClientViewers\ClientViewer.xaml.cs">
+      <DependentUpon>ClientViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Client\ClientViewerControl.xaml.cs">
       <DependentUpon>ClientViewerControl.xaml</DependentUpon>
     </Compile>
@@ -90,6 +94,10 @@
     <Compile Include="Server\ServerControlPanelViewModel.cs" />
     <Compile Include="Server\ServerControlViewModel.cs" />
     <Compile Include="Model\MemoryNetworkController.cs" />
+    <Page Include="ClientViewers\ClientViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Client\ClientViewerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

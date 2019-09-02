@@ -7,9 +7,9 @@
              d:DataContext="{d:DesignInstance client:ClientViewerViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <UniformGrid Rows="1" Columns="2" >
+    <UniformGrid Rows="{Binding GridRows}" Columns="{Binding GridColumns}" >
         <!--Child controls are set in code behind-->
-        <UniformGrid Columns="1" Name="Row1"/>
-        <UniformGrid Columns="1" Name="Row2"/>
+        <UniformGrid Rows="{Binding ChildGridRows}" Columns="{Binding ChildGridColumns}" Name="Row1"/>
+        <UniformGrid Rows="{Binding ChildGridRows}" Columns="{Binding ChildGridColumns}" Name="Row2"/>
     </UniformGrid>
 </UserControl>

@@ -35,7 +35,7 @@ namespace StellaVisualizer.Client
                 {
                     Fill = Brushes.Black,
                     Height = 1,
-                    Width = 3,
+                    Width = 1,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch
                 });
@@ -47,7 +47,7 @@ namespace StellaVisualizer.Client
                 {
                     Fill = Brushes.Black,
                     Height = 1,
-                    Width = 3,
+                    Width = 1,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch
                 });

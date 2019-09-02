@@ -6,6 +6,7 @@
         xmlns:stellaVisualizer="clr-namespace:StellaVisualizer"
         xmlns:server="clr-namespace:StellaVisualizer.Server"
         xmlns:client="clr-namespace:StellaVisualizer.Client"
+        xmlns:clientViewers="clr-namespace:StellaVisualizer.ClientViewers"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance stellaVisualizer:MainWindowViewModel}"
         Title="MainWindow" Height="450" Width="800">
@@ -13,8 +14,8 @@
         <DataTemplate DataType="{x:Type server:ServerControlViewModel}">
             <server:ServerControl/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type client:ClientViewerViewModel}">
-            <client:ClientViewerControl/>
+        <DataTemplate DataType="{x:Type stellaVisualizer:ClientsControlViewModel}">
+            <clientViewers:ClientsControl/>
         </DataTemplate>
     </Window.Resources>
 
@@ -25,11 +26,8 @@
         </Grid.ColumnDefinitions>
 
         <ContentPresenter Grid.Column="0" Content="{Binding ServerViewModel}"/>
-        <UniformGrid Grid.Column="1" Rows="1">
-            <ContentPresenter Content="{Binding ClientViewModels[0]}"/>
-            <ContentPresenter Content="{Binding ClientViewModels[1]}"/>
-            <ContentPresenter Content="{Binding ClientViewModels[2]}"/>
-        </UniformGrid>
+        
+        <ContentPresenter Grid.Column="1" Content="{Binding ClientsControlViewModel}"/>
 
     </Grid>
 </Window>
