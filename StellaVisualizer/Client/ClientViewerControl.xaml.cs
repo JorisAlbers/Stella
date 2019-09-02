@@ -28,14 +28,17 @@ namespace StellaVisualizer.Client
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            int rectangleHeight = ViewModel.ChildGridColumns == 0 ? 3 : 1;
+            int rectangleWidth = ViewModel.ChildGridRows    == 0 ? 3 : 1;
+
             // Initialize pixels Row 1
             for (int i = 0; i < ViewModel.NumberOfPixelsPerRow; i++)
             {
                 Row1.Children.Add(new Rectangle()
                 {
                     Fill = Brushes.Black,
-                    Height = 1,
-                    Width = 1,
+                    Height = rectangleHeight,
+                    Width = rectangleWidth,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch
                 });
@@ -46,8 +49,8 @@ namespace StellaVisualizer.Client
                 Row2.Children.Add(new Rectangle()
                 {
                     Fill = Brushes.Black,
-                    Height = 1,
-                    Width = 1,
+                    Height = rectangleHeight,
+                    Width = rectangleWidth,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch
                 });
