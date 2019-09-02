@@ -1,20 +1,20 @@
 ﻿!MappingSettings
 Mappings:
  - PiIndex: 0
-   Length:  480
+   Length:  240
    StartIndexOnPi:  0
  - PiIndex: 0
-   Length:  480
-   StartIndexOnPi:  480
+   Length:  240
+   StartIndexOnPi:  240
  - PiIndex: 1
-   Length:  480
+   Length:  240
    StartIndexOnPi:  0
  - PiIndex: 1
-   Length:  480
-   StartIndexOnPi:  480
+   Length:  240
+   StartIndexOnPi:  240
  - PiIndex: 2
-   Length:  480
+   Length:  240
    StartIndexOnPi:  0
  - PiIndex: 2
-   Length:  480
-   StartIndexOnPi:  480
+   Length:  240
+   StartIndexOnPi:  240
