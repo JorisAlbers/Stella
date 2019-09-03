@@ -155,90 +155,108 @@ namespace StellaVisualizer.Server
         }
 
 
-        private void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)
+        private void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)  // TODO this function could use some recursion
         {
             DirectoryInfo directory = new DirectoryInfo(bitmapDirectory);
+
+            // Iterate folders in directory
+            foreach (DirectoryInfo subDirectory in directory.GetDirectories())
+            {
+                foreach (FileInfo fileInfo in subDirectory.GetFiles())
+                {
+                    if (fileInfo.Extension == ".png")
+                    {
+                        AddBitmapAnimation(storyboards, Path.Combine(subDirectory.Name, Path.GetFileNameWithoutExtension(fileInfo.Name)));
+                    }
+                }
+            }
+
+            // Iterate files in bitmap dir
             foreach (FileInfo fileInfo in directory.GetFiles())
             {
                 if (fileInfo.Extension == ".png")
                 {
-                    Storyboard sb = new Storyboard();
-                    string name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                    sb.Name = name;
-
-                    if (name.Contains("3600"))
-                    {
-                        sb.Name = name;
-                        // Assume we have 2 pi's, each with 1 line of 240 pixels
-                        sb.AnimationSettings = new IAnimationSettings[]
-                        {
-                            new BitmapAnimationSettings
-                            {
-                                FrameWaitMs = 10,
-                                ImageName = name,
-                                StripLength = _totalNumberOfPixels,
-                                Wraps = true
-                            }
-                        };
-                    }
-                    else
-                    {
-                        // Assume we have 2 pi's, each with 1 line of 240 pixels
-                        sb.AnimationSettings = new IAnimationSettings[]
-                        {
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _pixelsPerRow,
-                            Wraps = true
-                        },
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _pixelsPerRow,
-                            StartIndex = _pixelsPerRow,
-                            Wraps = true
-                        },
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _pixelsPerRow,
-                            StartIndex = _pixelsPerRow * 2,
-                            Wraps = true
-                        },
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _pixelsPerRow,
-                            StartIndex = _pixelsPerRow * 3,
-                            Wraps = true
-                        },
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _pixelsPerRow,
-                            StartIndex = _pixelsPerRow * 4,
-                            Wraps = true
-                        },
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _pixelsPerRow,
-                            StartIndex = _pixelsPerRow * 5,
-                            Wraps = true
-                        },
-                        };
-                    }
-
-                    storyboards.Add(sb);
+                    AddBitmapAnimation(storyboards, Path.GetFileNameWithoutExtension(fileInfo.Name));
                 }
             }
+        }
+
+        private void AddBitmapAnimation(List<Storyboard> storyboards, string name)
+        {
+            Storyboard sb = new Storyboard();
+            sb.Name = name;
+
+
+            if (name.Contains("Full_Setup"))
+            {
+                sb.Name = name;
+                sb.AnimationSettings = new IAnimationSettings[]
+                {
+                        new BitmapAnimationSettings
+                        {
+                            FrameWaitMs = 10,
+                            ImageName = name,
+                            StripLength = 1440,
+                            Wraps = true
+                        }
+                };
+            }
+            else
+            {
+                sb.AnimationSettings = new IAnimationSettings[]
+                {
+                    new BitmapAnimationSettings
+                    {
+                        FrameWaitMs = 10,
+                        ImageName = name,
+                        StripLength = _pixelsPerRow,
+                        Wraps = true
+                    },
+                    new BitmapAnimationSettings
+                    {
+                        FrameWaitMs = 10,
+                        ImageName = name,
+                        StripLength = _pixelsPerRow,
+                        StartIndex = _pixelsPerRow,
+                        Wraps = true
+                    },
+                    new BitmapAnimationSettings
+                    {
+                        FrameWaitMs = 10,
+                        ImageName = name,
+                        StripLength = _pixelsPerRow,
+                        StartIndex = _pixelsPerRow * 2,
+                        Wraps = true
+                    },
+                    new BitmapAnimationSettings
+                    {
+                        FrameWaitMs = 10,
+                        ImageName = name,
+                        StripLength = _pixelsPerRow,
+                        StartIndex = _pixelsPerRow * 3,
+                        Wraps = true
+                    },
+                    new BitmapAnimationSettings
+                    {
+                        FrameWaitMs = 10,
+                        ImageName = name,
+                        StripLength = _pixelsPerRow,
+                        StartIndex = _pixelsPerRow * 4,
+                        Wraps = true
+                    },
+                    new BitmapAnimationSettings
+                    {
+                        FrameWaitMs = 10,
+                        ImageName = name,
+                        StripLength = _pixelsPerRow,
+                        StartIndex = _pixelsPerRow * 5,
+                        Wraps = true
+                    },
+                };
+            }
+        
+            storyboards.Add(sb);
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
