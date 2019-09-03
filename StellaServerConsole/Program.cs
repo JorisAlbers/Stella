@@ -88,8 +88,9 @@ namespace StellaServerConsole
             }
 
             // Add animations on the images in the bitmap directory
-            AddBitmapAnimations(storyboards, bitmapDirectory);
-
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(new DirectoryInfo(bitmapDirectory),600,3,2); // TODO get these magic variables from the mapping.
+            bitmapStoryboardCreator.Create(storyboards);
+            
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
 
             // Start stellaServer
@@ -341,112 +342,7 @@ namespace StellaServerConsole
             }
         }
 
-        private static void AddBitmapAnimations(List<Storyboard> storyboards, string bitmapDirectory)  // TODO this function could use some recursion
-        {
-            DirectoryInfo directory = new DirectoryInfo(bitmapDirectory);
-
-            // Iterate folders in directory
-            foreach (DirectoryInfo subDirectory in directory.GetDirectories())
-            {
-                foreach (FileInfo fileInfo in subDirectory.GetFiles())
-                {
-                    if (fileInfo.Extension == ".png")
-                    {
-                        AddBitmapAnimation(storyboards, Path.Combine(subDirectory.Name, Path.GetFileNameWithoutExtension(fileInfo.Name)));
-                    }
-                }
-            }
-
-            // Iterate files in bitmap dir
-            foreach (FileInfo fileInfo in directory.GetFiles())
-            {
-                if (fileInfo.Extension == ".png")
-                {
-                    AddBitmapAnimation(storyboards, Path.GetFileNameWithoutExtension(fileInfo.Name));
-                }
-            }
-        }
-
-        private static void AddBitmapAnimation(List<Storyboard> storyboards, string name)
-        {
-            Storyboard sb = new Storyboard();
-            sb.Name = name;
-
-            // Assumes
-            // - 3 pis
-            // - 2 rows per pi
-            // - 600 pixels per row
-
-            if (name.Contains("Full_Setup"))
-            {
-                sb.Name = name;
-                sb.AnimationSettings = new IAnimationSettings[]
-                {
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = 3600,
-                            Wraps = true
-                        }
-                };
-            }
-            else
-            {
-                sb.AnimationSettings = new IAnimationSettings[]
-                {
-                    new BitmapAnimationSettings
-                    {
-                        FrameWaitMs = 10,
-                        ImageName = name,
-                        StripLength = 600,
-                        Wraps = true
-                    },
-                    new BitmapAnimationSettings
-                    {
-                        FrameWaitMs = 10,
-                        ImageName = name,
-                        StripLength = 600,
-                        StartIndex = 600,
-                        Wraps = true
-                    },
-                    new BitmapAnimationSettings
-                    {
-                        FrameWaitMs = 10,
-                        ImageName = name,
-                        StripLength = 600,
-                        StartIndex = 1200,
-                        Wraps = true
-                    },
-                    new BitmapAnimationSettings
-                    {
-                        FrameWaitMs = 10,
-                        ImageName = name,
-                        StripLength = 600,
-                        StartIndex = 1800,
-                        Wraps = true
-                    },
-                    new BitmapAnimationSettings
-                    {
-                        FrameWaitMs = 10,
-                        ImageName = name,
-                        StripLength = 600,
-                        StartIndex = 2400,
-                        Wraps = true
-                    },
-                    new BitmapAnimationSettings
-                    {
-                        FrameWaitMs = 10,
-                        ImageName = name,
-                        StripLength = 600,
-                        StartIndex = 3000,
-                        Wraps = true
-                    },
-                };
-            }
-            storyboards.Add(sb);
         
-        }
 
         static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory)
         {
