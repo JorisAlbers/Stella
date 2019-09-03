@@ -28,59 +28,48 @@ namespace StellaServerLib.Animation
 
             if (_transformationController != null)
             {
-                masterTransformationSettings =_transformationController.AnimationTransformation.MasterTransformationSettings;
+                masterTransformationSettings = _transformationController.AnimationTransformation.MasterTransformationSettings;
             }
             else
             {
-                masterTransformationSettings = new TransformationSettings(0,0,new float[3]);
+                masterTransformationSettings = new TransformationSettings(0, 0, new float[3]);
             }
 
-            _transformationController = new TransformationController(masterTransformationSettings,animationTransformationSettings);
+            _transformationController = new TransformationController(masterTransformationSettings, animationTransformationSettings);
 
 
-            if (storyboard.AnimationSettings.Length == 1)// TODO remove this redundant if statement
+            // First, get the drawers
+            IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
+            int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
+
+            // Dirty check
+            Dictionary<string, List<PixelInstruction>[]> bitmapToFramesDictionary = new Dictionary<string, List<PixelInstruction>[]>();
+
+            for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
             {
-                // Use a normal drawer 
-                IDrawer drawer = CreateDrawer(storyboard.AnimationSettings[0]);
-                animationTransformationSettings[0] = new TransformationSettings(storyboard.AnimationSettings[0].FrameWaitMs,0,new float[3]);
+                IAnimationSettings settings = storyboard.AnimationSettings[i];
 
-                frameProvider = new FrameProvider(drawer, _transformationController);
-            }
-            else
-            {
-                // First, get the drawers
-                IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
-                int[] relativeTimeStamps = new int[storyboard.AnimationSettings.Length];
-
-                // Dirty check
-                Dictionary<string, List<PixelInstruction>[]> bitmapToFramesDictionary = new Dictionary<string, List<PixelInstruction>[]>();
-
-                for (int i = 0; i < storyboard.AnimationSettings.Length; i++)
+                if (settings is BitmapAnimationSettings bitmapAnimationSettings)
                 {
-                    IAnimationSettings settings = storyboard.AnimationSettings[i];
-
-                    if (settings is BitmapAnimationSettings bitmapAnimationSettings)
+                    if (!bitmapToFramesDictionary.ContainsKey(bitmapAnimationSettings.ImageName))
                     {
-                        if (!bitmapToFramesDictionary.ContainsKey(bitmapAnimationSettings.ImageName))
-                        {
-                            bitmapToFramesDictionary[bitmapAnimationSettings.ImageName] =
-                                BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName));
-                        }
-                        drawers[i] = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
+                        bitmapToFramesDictionary[bitmapAnimationSettings.ImageName] =
+                            BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName));
                     }
-                    else
-                    {
-                        drawers[i] = CreateDrawer(settings);
-                    }
-
-                    animationTransformationSettings[i] = new TransformationSettings(settings.FrameWaitMs, 0, new float[3]);
-                    relativeTimeStamps[i] = settings.RelativeStart;
+                    drawers[i] = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
+                }
+                else
+                {
+                    drawers[i] = CreateDrawer(settings);
                 }
 
-                // Then, create a new FrameProvider with multiple animations
-                frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController);
+                animationTransformationSettings[i] = new TransformationSettings(settings.FrameWaitMs, 0, new float[3]);
+                relativeTimeStamps[i] = settings.RelativeStart;
             }
 
+            // Then, create a new FrameProvider
+            frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController);
+            
             return new Animator(frameProvider, stripLengthPerPi, mask, _transformationController);
         }
 
