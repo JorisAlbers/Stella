@@ -5,6 +5,7 @@ import {socketConnect} from 'socket.io-react';
 import Typography from "@material-ui/core/Typography";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import Stop from "@material-ui/icons/Stop";
+import Input from "@material-ui/core/Input";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -101,6 +102,23 @@ class HomePage extends React.Component {
               <Typography variant={'h6'}>Master control</Typography>
               <div>
                 <div aria-labelledby="slider-label-name" style={{float: 'left', display: 'inline', width: '100px'}}>
+                  <Input
+                    value={this.state.masterControl.frameWaitMs}
+                    margin="dense"
+                    onChange={(e, value) => {
+                      const masterControl = {...this.state.masterControl};
+                      masterControl.frameWaitMs = value;
+                      this.props.socket.emit('setFrameWaitMs', {index: -1, value: masterControl.frameWaitMs});
+                      this.setState({masterControl})
+                    }}
+                    inputProps={{
+                      step: 1,
+                      min: 5,
+                      max: 250,
+                      type: 'number',
+                      'aria-labelledby': 'slider-label-speed',
+                    }}
+                  />
                   <Slider
                     style={{height: '100px', marginTop: '10px'}}
                     orientation="vertical"
@@ -128,6 +146,23 @@ class HomePage extends React.Component {
                 </div>
 
                 <div style={{float: 'left', display: 'inline', width: '100px'}}>
+                  <Input
+                    value={this.state.masterControl.brightness}
+                    margin="dense"
+                    onChange={(e, value) => {
+                      const masterControl = {...this.state.masterControl};
+                      masterControl.brightness = value;
+                      this.props.socket.emit('setBrightnessCorrection', {index: -1, value: masterControl.brightness});
+                      this.setState({masterControl})
+                    }}
+                    inputProps={{
+                      step: 0.1,
+                      min: -1,
+                      max: 1,
+                      type: 'number',
+                      'aria-labelledby': 'slider-label-brightness',
+                    }}
+                  />
                   <Slider
                     style={{height: '100px', marginTop: '10px'}}
                     orientation="vertical"
@@ -159,6 +194,23 @@ class HomePage extends React.Component {
                 </div>
 
                 <div style={{float: 'left', display: 'inline', width: '100px'}}>
+                  <Input
+                    value={this.state.masterControl.rgbValues[0]}
+                    margin="dense"
+                    onChange={(e, value) => {
+                      const masterControl = {...this.state.masterControl};
+                      masterControl.rgbValues[0] = value;
+                      this.props.socket.emit('setRgbFade', {index: -1, value: masterControl.rgbValues});
+                      this.setState({masterControl})
+                    }}
+                    inputProps={{
+                      step: 0.1,
+                      min: -1,
+                      max: 1,
+                      type: 'number',
+                      'aria-labelledby': 'slider-label-red',
+                    }}
+                  />
                   <Slider
                     style={{height: '100px', marginTop: '10px'}}
                     orientation="vertical"
@@ -187,6 +239,23 @@ class HomePage extends React.Component {
                 </div>
 
                 <div style={{float: 'left', display: 'inline', width: '100px'}}>
+                  <Input
+                    value={this.state.masterControl.rgbValues[1]}
+                    margin="dense"
+                    onChange={(e, value) => {
+                      const masterControl = {...this.state.masterControl};
+                      masterControl.rgbValues[1] = value;
+                      this.props.socket.emit('setRgbFade', {index: -1, value: masterControl.rgbValues});
+                      this.setState({masterControl})
+                    }}
+                    inputProps={{
+                      step: 0.1,
+                      min: -1,
+                      max: 1,
+                      type: 'number',
+                      'aria-labelledby': 'slider-label-green',
+                    }}
+                  />
                   <Slider
                     style={{height: '100px', marginTop: '10px'}}
                     orientation="vertical"
@@ -215,6 +284,23 @@ class HomePage extends React.Component {
                 </div>
 
                 <div style={{float: 'left', display: 'inline', width: '100px'}}>
+                  <Input
+                    value={this.state.masterControl.rgbValues[2]}
+                    margin="dense"
+                    onChange={(e, value) => {
+                      const masterControl = {...this.state.masterControl};
+                      masterControl.rgbValues[2] = value;
+                      this.props.socket.emit('setRgbFade', {index: -1, value: masterControl.rgbValues});
+                      this.setState({masterControl})
+                    }}
+                    inputProps={{
+                      step: 0.1,
+                      min: -1,
+                      max: 1,
+                      type: 'number',
+                      'aria-labelledby': 'slider-label-blue',
+                    }}
+                  />
                   <Slider
                     style={{height: '100px', marginTop: '10px'}}
                     orientation="vertical"
