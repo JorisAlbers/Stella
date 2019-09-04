@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaLib", "StellaLib\StellaLib.csproj", "{0A3463FD-CF48-4B70-BE83-6668D052B70F}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaVisualizer", "StellaVisualizer\StellaVisualizer.csproj", "{8CA212E8-08DF-46A0-AA51-D6D884DBF285}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClientLib", "StellaClientLib\StellaClientLib.csproj", "{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaWebInterface", "StellaWebInterface\StellaWebInterface.csproj", "{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,6 +197,30 @@ Global
 		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x64.Build.0 = Release|Any CPU
 		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x86.ActiveCfg = Release|Any CPU
 		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x86.Build.0 = Release|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Debug|x64.Build.0 = Debug|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Debug|x86.Build.0 = Debug|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Release|x64.ActiveCfg = Release|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Release|x64.Build.0 = Release|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Release|x86.ActiveCfg = Release|Any CPU
+		{AAFCD335-A0FF-447E-B8F0-AEBDD4DE415A}.Release|x86.Build.0 = Release|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Debug|x64.Build.0 = Debug|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Debug|x86.Build.0 = Debug|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Release|x64.ActiveCfg = Release|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Release|x64.Build.0 = Release|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Release|x86.ActiveCfg = Release|Any CPU
+		{0C717AE6-A2B0-4B25-8D65-835A5AA68A7C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
