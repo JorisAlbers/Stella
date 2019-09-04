@@ -17,6 +17,8 @@ namespace StellaServerLib
         private readonly int _numberOfPis;
         private readonly int _rowsPerPi;
         private int _totalNumberOfPixels;
+        private int _animationsCount;
+
 
         public BitmapStoryboardCreator(DirectoryInfo bitmapDirectory, int rowSize, int numberOfPis, int rowsPerPi)
         {
@@ -26,6 +28,7 @@ namespace StellaServerLib
             _rowsPerPi = rowsPerPi;
 
             _totalNumberOfPixels = rowSize * rowsPerPi * numberOfPis;
+            _animationsCount = _numberOfPis * _rowsPerPi;
         }
 
         /// <summary>
@@ -58,43 +61,108 @@ namespace StellaServerLib
 
         private void AddBitmapAnimation(List<Storyboard> storyboards, string name)
         {
-            Storyboard sb = new Storyboard();
-            sb.Name = name;
-            
+            // Special case for animation in the Full Setup folder.
             if (name.Contains("Full_Setup"))
             {
+                Storyboard sb = new Storyboard();
                 sb.Name = name;
                 sb.AnimationSettings = new IAnimationSettings[]
                 {
-                        new BitmapAnimationSettings
-                        {
-                            FrameWaitMs = 10,
-                            ImageName = name,
-                            StripLength = _totalNumberOfPixels,
-                            Wraps = true
-                        }
-                };
-            }
-            else
-            {
-                // Add animation per row
-                int animations = _numberOfPis * _rowsPerPi;
-                sb.AnimationSettings = new IAnimationSettings[animations];
-
-                for (int i = 0; i < animations; i++)
-                {
-                    sb.AnimationSettings[i] = new BitmapAnimationSettings
+                    new BitmapAnimationSettings
                     {
                         FrameWaitMs = 10,
                         ImageName = name,
-                        StartIndex = _rowSize * i,
-                        StripLength = _rowSize,
+                        StripLength = _totalNumberOfPixels,
                         Wraps = true
-                    };
-                }
-            }
-            storyboards.Add(sb);
+                    }
+                };
 
+                storyboards.Add(sb);
+                return;
+
+            }
+
+            // Start at the same time
+            storyboards.Add(new Storyboard
+            {
+                Name = name,
+                AnimationSettings = StartAtTheSameTime(name)
+            });
+
+            // Start at the same time no wrap
+            storyboards.Add(new Storyboard
+            {
+                Name = $"{name}_noWrap",
+                AnimationSettings = StartAtTheSameTimeNoWrap(name)
+            });
+
+            // Arrow head
+            storyboards.Add(new Storyboard
+            {
+                Name = $"{name}_arrowHead",
+                AnimationSettings = StartAsArrowHead(name)
+            });
+
+        }
+
+        private IAnimationSettings[] StartAtTheSameTime(string name)
+        {
+            IAnimationSettings[] settings  = new IAnimationSettings[_animationsCount]; 
+
+            for (int i = 0; i < _animationsCount; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    FrameWaitMs = 10,
+                    ImageName = name,
+                    StartIndex = _rowSize * i,
+                    StripLength = _rowSize,
+                    Wraps = true
+                };
+            }
+
+            return settings;
+        }
+
+        private IAnimationSettings[] StartAtTheSameTimeNoWrap(string name)
+        {
+            IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
+
+            for (int i = 0; i < _animationsCount; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    FrameWaitMs = 10,
+                    ImageName = name,
+                    StartIndex = _rowSize * i,
+                    StripLength = _rowSize,
+                };
+            }
+
+            return settings;
+        }
+
+        private IAnimationSettings[] StartAsArrowHead(string name)
+        {
+            IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
+
+            float midpoint = (_animationsCount -1) / 2f;
+            int timeIncrement = 500; // ms
+
+            for (int i = 0; i < _animationsCount; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    FrameWaitMs = 10,
+                    ImageName = name,
+                    StartIndex = _rowSize * i,
+                    StripLength = _rowSize,
+                    RelativeStart = (int) (Math.Abs(midpoint - (i)) * timeIncrement)
+                    
+                };
+            }
+
+            return settings;
         }
     }
 }
