@@ -68,7 +68,7 @@ namespace BitmapScaler
                     }
 
                     string path = Path.Combine(dirpath, fileName);
-                    string pathNonResized = Path.Combine(BitmapOutputDir, nonResizedFileName);
+                    string pathNonResized = Path.Combine(dirpath, nonResizedFileName);
                     
 
                     Console.Out.WriteLine($"Writing to path {path}");
