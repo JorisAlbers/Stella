@@ -1,5 +1,5 @@
 ﻿!Storyboard
-Name: Red Blue Switch
+Name: Red Blue Strobe
 Animations:
  - !RepeatingPattern
    StartIndex:  0
