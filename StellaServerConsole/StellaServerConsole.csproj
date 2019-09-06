@@ -11,83 +11,83 @@
   </ItemGroup>
 
     <ItemGroup>
-    <None Update="Resources\Bitmaps\colorful-images-1.png">
+    <None Update="Resources\Bitmaps\Cloud\colorful-images-1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\joris_zijn_favo.png">
+    <None Update="Resources\Bitmaps\Cloud\joris_zijn_favo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\geel_rood_flicker.png">
+    <None Update="Resources\Bitmaps\Cloud\geel_rood_flicker.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\joris_zijn_favo_geel.png">
+    <None Update="Resources\Bitmaps\Cloud\joris_zijn_favo_geel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\blueFlow.png">
+    <None Update="Resources\Bitmaps\Cloud\blueFlow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\BouncingToMiddle.png">
+    <None Update="Resources\Bitmaps\Cloud\BouncingToMiddle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\BouncingToMiddle_GreenMatrix.png">
+    <None Update="Resources\Bitmaps\Cloud\BouncingToMiddle_GreenMatrix.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\WavyOrangeRed.png">
+    <None Update="Resources\Bitmaps\Cloud\WavyOrangeRed.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\WavyRainbow.png">
+    <None Update="Resources\Bitmaps\Cloud\WavyRainbow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\TilesBluePurple.png">
+    <None Update="Resources\Bitmaps\Cloud\TilesBluePurple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\WavyGreenBlue.png">
+    <None Update="Resources\Bitmaps\Cloud\WavyGreenBlue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\CatterpillarBlue.png">
+    <None Update="Resources\Bitmaps\Cloud\CatterpillarBlue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\ChasingLinesPurple.png">
+    <None Update="Resources\Bitmaps\Cloud\ChasingLinesPurple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\DollyZoomPurple.png">
+    <None Update="Resources\Bitmaps\Cloud\DollyZoomPurple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\PurpleX.png">
+    <None Update="Resources\Bitmaps\Cloud\PurpleX.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\TilesBlueGreen.png">
+    <None Update="Resources\Bitmaps\Cloud\TilesBlueGreen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\TilesBluePink.png">
+    <None Update="Resources\Bitmaps\Cloud\TilesBluePink.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\BluePinkFast.png">
+    <None Update="Resources\Bitmaps\Cloud\BluePinkFast.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\GradientBluePurple.png">
+    <None Update="Resources\Bitmaps\Cloud\GradientBluePurple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Resources\Bitmaps\TilesGradientBluePurple.png">
+    <None Update="Resources\Bitmaps\Cloud\TilesGradientBluePurple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
