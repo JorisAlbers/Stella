@@ -62,7 +62,7 @@ namespace StellaVisualizer
         private void InitAsSterkSetup()
         {
             // Start NetworkController which shortcuts the network connection between the server and each client
-            int pixelsPerPi  = 480;
+            int pixelsPerPi  = 720;
             int pixelsPerRow = pixelsPerPi / 2;
             Orientation orientation = Orientation.Horizontal;
 

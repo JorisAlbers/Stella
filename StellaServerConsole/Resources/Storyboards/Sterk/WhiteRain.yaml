@@ -3,7 +3,7 @@ Name: White rain
 Animations:
  - !FadingPulse
    StartIndex:  0
-   StripLength: 1440
+   StripLength: 2160
    FrameWaitMs: 40
    Color: [255,255,255]
    FadeSteps: 16

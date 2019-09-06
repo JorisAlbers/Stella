@@ -3,7 +3,7 @@ Name: White stars points
 Animations:
  - !RandomFade
    StartIndex:  0
-   StripLength: 1440
+   StripLength: 2160
    FrameWaitMs: 20
    FadeSteps: 16
    Pattern: [[255,255,255]]

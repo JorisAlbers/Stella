@@ -9,8 +9,8 @@ namespace BitmapScaler
     {
         private const string BitmapInputDir = @"..\..\..\..\StellaServerConsole\Resources\Bitmaps";
         private const string BitmapOutputDir = @"\Bitmaps";
-        private const int _MAX_ROW_SIZE = 240;
-        private const int _MAX_TOTAL_SIZE = 1440;
+        private const int _MAX_ROW_SIZE = 360;
+        private const int _MAX_TOTAL_SIZE = 2160;
 
         static void Main(string[] args)
         {
