@@ -1,8 +1,8 @@
 ﻿!Storyboard
-Name: Full length strobo
+Name: Clear
 Animations:
  - !RepeatingPattern
    StartIndex:  0
    StripLength: 2160
    FrameWaitMs: 55
-   Patterns: [[[255,255,255]],[[0,0,0]],[[0,0,0]],[[0,0,0]]]
+   Patterns: [[[0,0,0]]]
