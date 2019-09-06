@@ -26,12 +26,16 @@ namespace BitmapScaler
                 Bitmap original = (Bitmap) Image.FromFile(enumerateFile);
 
                 string fileName = enumerateFile.Split("\\").Last();
+                string nonResizedFileName = fileName.Replace(".png", "_originalSize.png");
                 var resized = new Bitmap(original, new Size(_MAX_ROW_SIZE, original.Height));
                 
 
                 string path = Path.Combine(BitmapOutputDir, fileName);
+                string pathNonResized = Path.Combine(BitmapOutputDir, nonResizedFileName);
                 Console.Out.WriteLine($"Writing to path {path}");
+
                 resized.Save(path);
+                original.Save(pathNonResized);
             }
 
             // Iterate subfolders
@@ -44,6 +48,8 @@ namespace BitmapScaler
 
                     Bitmap resized;
                     string fileName = enumerateFile.Split("\\").Last();
+                    string nonResizedFileName = fileName.Replace(".png", "_originalSize.png");
+
                     if (enumerateDirectory.Contains("Full_Setup"))
                     {
                         resized = new Bitmap(original, new Size(_MAX_TOTAL_SIZE, original.Height));
@@ -62,10 +68,12 @@ namespace BitmapScaler
                     }
 
                     string path = Path.Combine(dirpath, fileName);
-
+                    string pathNonResized = Path.Combine(BitmapOutputDir, nonResizedFileName);
+                    
 
                     Console.Out.WriteLine($"Writing to path {path}");
                     resized.Save(path);
+                    original.Save(pathNonResized);
                 }
             }
         }
