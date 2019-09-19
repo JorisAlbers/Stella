@@ -2,11 +2,6 @@ body {
     margin: 0;
 }
 
-form {
-    padding: 30px;
-    padding-top: 60px;
-}
-
 a {
     text-decoration: none;
     color: inherit;
@@ -29,45 +24,16 @@ p, h1, h2, h3, h4, h5, h6 {
     border-color: #1565c0;
 }
 
-.ide-editor {
-    padding: 0;
-}
-
-.iconbuttonsyle {
-    margin-left: -12px;
-    margin-right: 20px
-}
-
-.headertypoclass {
-    flex: 1;
-}
-
 .sidelistwrapper {
-
     width: 250px;
-    /*// background-color: white !important;*/
-
-
 }
 
 .appbarwrapper {
     flex-grow: 1;
 }
 
-.drawerclass {
-    /*// background-color: white;*/
-}
-
-
 .NavLinkItem {
-
     max-width: 360px;
-
-
-}
-
-.NavLinkItem nav:hover {
-    /*// background-color:#cbcbdc !important;*/
 }
 
 .innernavitem {
@@ -77,7 +43,6 @@ p, h1, h2, h3, h4, h5, h6 {
 .innernavitem h3 {
     color: black !important;
 }
-
 
 .footer-container-box {
     background-color: #f1f3f4;

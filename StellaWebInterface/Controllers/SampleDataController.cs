@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace StellaWebInterface.Controllers
 {
+//    https://localhost:5001/api/SampleData/WeatherForecasts
     [Route("api/[controller]")]
     public class SampleDataController : Controller
     {

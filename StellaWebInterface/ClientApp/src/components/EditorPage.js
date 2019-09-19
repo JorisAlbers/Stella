@@ -7,9 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-// import {socketConnect} from 'socket.io-react';
 import AceEditor from 'react-ace';
-// import SocketIOFileUpload from 'socketio-file-upload';
 
 // import * as rapydscript from 'rapydscript-ng';
 // Import tools
