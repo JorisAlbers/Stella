@@ -5,20 +5,19 @@ import Slider from "@material-ui/core/Slider";
 import Typography from "@material-ui/core/Typography";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import Stop from "@material-ui/icons/Stop";
+import Status from "./Blocks/Status";
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = {
-      status: null,
       storyboards: [],
       currentSelectedStoryboard: null,
       currentPlayingStoryboard: null,
       masterControl: {frameWaitMs: 10, brightness: 0, rgbValues: [0, 0, 0],},
     };
 
-    // this.props.socket.on('returnStatus', (status) => this.setState({status}));
     // this.props.socket.on('returnAvailableStoryboards', (data) => {
     //   this.setState({storyboards: data.storyboards})
     // });
@@ -31,7 +30,6 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.socket.emit('getStatus');
     // this.props.socket.emit('getAvailableStoryboards');
     // this.props.socket.emit('getCurrentPlayingStoryboard');
     // this.props.socket.emit('getMasterControl');
@@ -87,16 +85,7 @@ class HomePage extends React.Component {
 
         <Grid xs item style={{padding: 0}}>
           <Grid container direction={'column'}>
-            <Grid xs item>
-              <Typography variant={'h6'}>Application status</Typography>
-              {this.state.status &&
-              <React.Fragment>
-                <p>clientConnectedToBackend: {this.state.status.clientConnectedToBackend ? 'true' : 'false'}</p>
-                <p>backendConnectedToServer: {this.state.status.backendConnectedToServer ? 'true' : 'false'}</p>
-                <p>connectedClients: {this.state.status.connectedClients}</p>
-              </React.Fragment>
-              }
-            </Grid>
+            <Status/>
             <Grid xs item>
               <Typography variant={'h6'}>Master control</Typography>
               <div>
