@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using StellaWebInterface.GlobalObjects;
 
 namespace StellaWebInterface
 {
@@ -8,20 +7,8 @@ namespace StellaWebInterface
     {
         public static void Main(string[] args)
         {
-            Context context = Context.Instance;
-            CreateWebHostBuilder(args).Build().Run();
+            StellaWebInterface stellaWebInterface = new StellaWebInterface(args);
+            stellaWebInterface.Start();
         }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-       {
-           return WebHost
-               .CreateDefaultBuilder(args)
-               .UseStartup<Startup>();
-       }
-
-        public void SetConnectedRaspberries(int number)
-       {
-           
-       }
     }
 }
