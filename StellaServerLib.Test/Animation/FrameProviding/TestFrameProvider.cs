@@ -33,7 +33,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             {
                 new TransformationSettings(100,0,new float[3]), 
             } );
-            FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, transformationController);
+            FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, transformationController,1);
 
             Frame[] frames = frameProvider.Take(2).ToArray();
             // Frame 1
@@ -44,6 +44,47 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             Assert.AreEqual(1,frames[1].Index);
             Assert.AreEqual(100,frames[1].TimeStampRelative);
             Assert.AreEqual(1,frames[1].Count);
+
+        }
+
+        /// <summary>
+        /// Tests that a different timeUnitMs also increases the timeStampRelative of a frame
+        /// </summary>
+        [Test]
+        public void GetEnumerator_TimeUnitMsOf5_CorrectlyCreatesFrames()
+        {
+            int timeUnitMs = 10;
+            int frameWaitMs = 100;
+            int expectedTimeStampRelative = timeUnitMs * frameWaitMs;
+            List<Frame> drawerFrames = new List<Frame>
+            {
+                new Frame(0,0)
+                {
+                    new PixelInstructionWithDelta(0,255,0,0),
+                },
+                new Frame(0,0)
+                {
+                    new PixelInstructionWithDelta(1,0,0,255),
+                }
+            };
+
+            var drawerMock = new Mock<IDrawer>();
+            drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
+            TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
+            {
+                new TransformationSettings(frameWaitMs, 0 , new float[3]),
+            });
+            FrameProvider frameProvider = new FrameProvider(drawerMock.Object, transformationController, timeUnitMs);
+
+            Frame[] frames = frameProvider.Take(2).ToArray();
+            // Frame 1. TimeStampRelative is always 0.
+            Assert.AreEqual(0, frames[0].Index);
+            Assert.AreEqual(0, frames[0].TimeStampRelative);
+            Assert.AreEqual(1, frames[0].Count);
+            // Frame 2
+            Assert.AreEqual(1, frames[1].Index);
+            Assert.AreEqual(expectedTimeStampRelative, frames[1].TimeStampRelative);
+            Assert.AreEqual(1, frames[1].Count);
 
         }
 
@@ -102,7 +143,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
                 new TransformationSettings(100,0,new float[3]),
                 new TransformationSettings(100,0,new float[3]),
             });
-            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController);
+            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
 
 
             List<Frame> receivedFrames = sectionDrawer.Take(4).ToList();
@@ -166,7 +207,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
                 new TransformationSettings(100,0,new float[3]),
             });
 
-            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController);
+            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
 
             List<Frame> receivedFrames = sectionDrawer.Take(2).ToList();
 

@@ -68,7 +68,7 @@ namespace StellaServerLib.Animation
             }
 
             // Then, create a new FrameProvider
-            frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController);
+            frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController, 1);
             
             return new Animator(frameProvider, stripLengthPerPi, mask, _transformationController);
         }

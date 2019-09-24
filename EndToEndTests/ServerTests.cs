@@ -97,10 +97,10 @@ namespace EndToEndTests
                         Color.FromArgb(0, 0, 0)
                     }
 
-                }), transformationController);
-            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), transformationController);
+                }), transformationController,1);
+            IFrameProvider slidingPatternFrameProvider = new FrameProvider(new SlidingPatternDrawer(0,300, pattern), transformationController,1);
 
-            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), transformationController);
+            IFrameProvider movingPatternFrameProvider = new FrameProvider(new MovingPatternDrawer(0,300,  pattern), transformationController,1);
 
             string input;
             Console.Out.WriteLine($"Started StellaServer instance on port {port}");
