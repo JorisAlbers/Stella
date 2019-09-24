@@ -27,6 +27,7 @@ namespace StellaServerConsole
             int port = 0, udpPort = 0;
             string apiIp = null;
             int apiPort= 0;
+            int millisecondsPerTimeUnit = 1;
             string bitmapDirectory = null;
 
             for (int i = 0; i < args.Length; i++)
@@ -63,6 +64,9 @@ namespace StellaServerConsole
                         case "-b":
                             bitmapDirectory = args[++i];
                             break;
+                        case "-t":
+                            millisecondsPerTimeUnit = int.Parse(args[++i]);
+                            break;
 
                         default:
                             Console.Out.WriteLine($"Unknown flag {args[i]}");
@@ -70,7 +74,7 @@ namespace StellaServerConsole
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort, bitmapDirectory))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort, bitmapDirectory, millisecondsPerTimeUnit))
             {
                 return;
             }
@@ -94,7 +98,7 @@ namespace StellaServerConsole
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new Server(), new AnimatorFactory(_bitmapRepository));
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new Server(), new AnimatorFactory(_bitmapRepository, 1));
 
             try
             {
@@ -344,7 +348,8 @@ namespace StellaServerConsole
 
         
 
-        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory)
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory,
+            int millisecondsPerTimeUnit)
         {
             // TODO path and file exist validation
             if (mappingFilePath == null)
@@ -403,6 +408,11 @@ namespace StellaServerConsole
             {
                 Console.Out.WriteLine("The bitmap directory path does not point to an existing directory");
                 return false;
+            }
+
+            if (millisecondsPerTimeUnit < 1)
+            {
+                Console.Out.WriteLine("The milliseconds per time unit must be larger than 0");
             }
 
             return true;

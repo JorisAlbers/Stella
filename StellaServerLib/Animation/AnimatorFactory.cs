@@ -13,11 +13,13 @@ namespace StellaServerLib.Animation
     public class AnimatorFactory
     {
         private readonly BitmapRepository _bitmapRepository;
+        private readonly int _millisecondsPerTimeUnit;
         private TransformationController _transformationController;
 
-        public AnimatorFactory(BitmapRepository bitmapRepository)
+        public AnimatorFactory(BitmapRepository bitmapRepository, int millisecondsPerTimeUnit)
         {
             _bitmapRepository = bitmapRepository;
+            _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
         }
 
         public IAnimator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
@@ -68,7 +70,7 @@ namespace StellaServerLib.Animation
             }
 
             // Then, create a new FrameProvider
-            frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController, 1);
+            frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController, _millisecondsPerTimeUnit);
             
             return new Animator(frameProvider, stripLengthPerPi, mask, _transformationController);
         }
