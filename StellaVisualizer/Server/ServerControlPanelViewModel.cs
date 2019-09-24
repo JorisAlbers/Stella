@@ -34,7 +34,7 @@ namespace StellaVisualizer.Server
                     StartStoryboard(SelectedStoryboard);
                     break;
                 case nameof(MasterWaitMs):
-                    _stellaServer.Animator.TransformationController.SetFrameWaitMs(MasterWaitMs);
+                    _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(MasterWaitMs);
                     break;
                 case nameof(MasterRedCorrection):
                 case nameof(MasterBlueCorrection):

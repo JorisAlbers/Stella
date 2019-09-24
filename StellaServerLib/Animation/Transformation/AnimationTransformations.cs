@@ -43,10 +43,10 @@
         /// </summary>
         /// <param name="animationIndex"></param>
         /// <returns></returns>
-        public int GetCorrectedFrameWaitMs(int animationIndex)
+        public int GetCorrectedTimeUnitsPerFrame(int animationIndex)
         {
-            return MasterTransformationSettings.FrameWaitMs +
-                   AnimationsTransformationSettings[animationIndex].FrameWaitMs;
+            return MasterTransformationSettings.TimeUnitsPerFrame +
+                   AnimationsTransformationSettings[animationIndex].TimeUnitsPerFrame;
         }
     }
 }

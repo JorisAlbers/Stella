@@ -21,7 +21,6 @@ namespace StellaServerLib.Test.Animation.Drawing
                 Color.FromArgb(7,8,9)
             };
             int lengthStrip = 7;
-            int frameWaitMS = 100;
             int framesToTake = 3;
             SlidingPatternDrawer drawer = new SlidingPatternDrawer(0,lengthStrip,pattern);
 
@@ -74,7 +73,6 @@ namespace StellaServerLib.Test.Animation.Drawing
                 Color.FromArgb(1,2,3),
             };
             int lengthStrip = 3;
-            int frameWaitMS = 100;
             int framesToTake = 1;
             int startIndex = 100;
             SlidingPatternDrawer drawer = new SlidingPatternDrawer(startIndex,lengthStrip, pattern);

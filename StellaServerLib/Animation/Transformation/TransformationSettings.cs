@@ -4,7 +4,7 @@ namespace StellaServerLib.Animation.Transformation
 {
     public class TransformationSettings
     {
-        public int FrameWaitMs { get; }
+        public int TimeUnitsPerFrame { get; }
 
         /// <summary>
         /// The brightness to correct each pixel to. Must be between -1 (black) and 1 (white).
@@ -17,14 +17,14 @@ namespace StellaServerLib.Animation.Transformation
         public float[] RgbFadeCorrection { get; }
 
         
-        public TransformationSettings(int frameWaitMs, float brightnessCorrection, float[] rgbFadeCorrection)
+        public TransformationSettings(int timeUnitsPerFrame, float brightnessCorrection, float[] rgbFadeCorrection)
         {
             if (rgbFadeCorrection.Length != 3)
             {
                 throw new ArgumentException($"Length of {nameof(rgbFadeCorrection)} must be 3");
             }
 
-            FrameWaitMs = frameWaitMs;
+            TimeUnitsPerFrame = timeUnitsPerFrame;
             BrightnessCorrection = brightnessCorrection;
             RgbFadeCorrection = rgbFadeCorrection;
         }

@@ -25,7 +25,7 @@ namespace StellaServerLib.Test.Animation.Drawing
                 expectedColor3,
             };
             int lengthStrip = 4;
-            int frameWaitMS = 100;
+            int timeUnitsPerFrame = 100;
             int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(0,lengthStrip, pattern);
             List<List<PixelInstructionWithDelta>> frames = drawer.Take(framesToTake).ToList();
@@ -92,7 +92,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             };
             int startIndex = 10;
             int lengthStrip = 4;
-            int frameWaitMS = 100;
+            int timeUnitsPerFrame = 100;
             int framesToTake = 6;
             MovingPatternDrawer drawer = new MovingPatternDrawer(startIndex, lengthStrip,  pattern);
             List<List<PixelInstructionWithDelta>> frames = drawer.Take(framesToTake).ToList();

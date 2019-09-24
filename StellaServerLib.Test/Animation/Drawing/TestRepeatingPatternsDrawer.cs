@@ -20,7 +20,7 @@ namespace StellaServerLib.Test.Animation.Drawing
                  Color.FromArgb(7,8,9)
                  };
             int lengthStrip = 7;
-            int frameWaitMS = 100;
+            int timeUnitsPerFrame = 100;
             RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip,new Color[][]{pattern});
 
             // Expected
@@ -52,7 +52,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             };
             int startIndex = 100;
             int lengthStrip = 7;
-            int frameWaitMS = 100;
+            int timeUnitsPerFrame = 100;
             RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(startIndex,lengthStrip,  new Color[][] { pattern });
 
             // Expected
@@ -89,7 +89,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             };
 
             int lengthStrip = 7;
-            int frameWaitMS = 100;
+            int timeUnitsPerFrame = 100;
             RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip, patterns);
 
             // Expected

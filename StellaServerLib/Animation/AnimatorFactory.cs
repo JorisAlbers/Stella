@@ -63,7 +63,7 @@ namespace StellaServerLib.Animation
                     drawers[i] = CreateDrawer(settings);
                 }
 
-                animationTransformationSettings[i] = new TransformationSettings(settings.FrameWaitMs, 0, new float[3]);
+                animationTransformationSettings[i] = new TransformationSettings(settings.TimeUnitsPerFrame, 0, new float[3]);
                 relativeTimeStamps[i] = settings.RelativeStart;
             }
 

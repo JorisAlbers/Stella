@@ -4,6 +4,6 @@ Animations:
  - !RandomFade
    StartIndex:  0
    StripLength: 3600
-   FrameWaitMs: 20
+   TimeUnitsPerFrame: 20
    FadeSteps: 16
    Pattern: [[255,255,255]]

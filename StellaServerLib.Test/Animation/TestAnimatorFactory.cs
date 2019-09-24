@@ -16,7 +16,7 @@ namespace StellaServerLib.Test.Animation
 
             MovingPatternAnimationSettings animationSettings = new MovingPatternAnimationSettings
             {
-                FrameWaitMs = 10,
+                TimeUnitsPerFrame = 10,
                 Pattern = new Color[] {Color.Red},
                 RelativeStart = 10,
                 StartIndex = 0,

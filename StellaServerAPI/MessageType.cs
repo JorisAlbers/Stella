@@ -11,10 +11,10 @@
         StartStoryboard,
         /// <summary> Store a bitmap on StellaServer </summary>
         StoreBitmap,
-        /// <summary> Get the frameWaitMs of a certain animation. </summary>
-        GetFrameWaitMs,
-        /// <summary> Set the frameWaitMs of a certain animation. </summary>
-        SetFrameWaitMs,
+        /// <summary> Get the timeUnitsPerFrame of a certain animation. </summary>
+        GetTimeUnitsPerFrame,
+        /// <summary> Set the timeUnitsPerFrame of a certain animation. </summary>
+        SetTimeUnitsPerFrame,
         /// <summary> Get the rgb fade of a certain animation </summary>
         GetRgbFade,
         /// <summary> Set the rgb fade of a certain animation </summary>

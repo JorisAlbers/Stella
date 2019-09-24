@@ -113,8 +113,8 @@ namespace StellaServerConsole
                 try
                 {
                     _apiServer = new APIServer(apiIp, apiPort, storyboards);
-                    _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
-                    _apiServer.FrameWaitMsSet += ApiServerOnFrameWaitMsSet;
+                    _apiServer.TimeUnitsPerFrameRequested += ApiServerOnTimeUnitsPerFrameRequested;
+                    _apiServer.TimeUnitsPerFrameSet += ApiServerOnTimeUnitsPerFrameSet;
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
                     _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
@@ -206,16 +206,16 @@ namespace StellaServerConsole
             _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
-        private static void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
+        private static void ApiServerOnTimeUnitsPerFrameSet(int animationIndex, int timeUnitsPerFrame)
         {
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetFrameWaitMs(frameWaitMs);
+                _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetFrameWaitMs(animationIndex, frameWaitMs);
+            _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(animationIndex, timeUnitsPerFrame);
         }
 
         private static float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
@@ -228,9 +228,9 @@ namespace StellaServerConsole
             return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].RgbFadeCorrection;
         }
 
-        private static int ApiServerOnFrameWaitMsRequested(int animationIndex)
+        private static int ApiServerOnTimeUnitsPerFrameRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].FrameWaitMs;
+            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].TimeUnitsPerFrame;
         }
 
         private static void GetTransformationInput()
@@ -252,7 +252,7 @@ namespace StellaServerConsole
                 // Animation speed
                 if (key.KeyChar == 's' || key.KeyChar == 'S')
                 {
-                    int currentWaitms = _stellaServer.Animator.TransformationController.AnimationTransformation.MasterTransformationSettings.FrameWaitMs;
+                    int currentWaitms = _stellaServer.Animator.TransformationController.AnimationTransformation.MasterTransformationSettings.TimeUnitsPerFrame;
                     int newWaitMs;
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
@@ -265,7 +265,7 @@ namespace StellaServerConsole
                         newWaitMs = Math.Max(1, currentWaitms - 1);
                     }
 
-                    _stellaServer.Animator.TransformationController.SetFrameWaitMs(newWaitMs);
+                    _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(newWaitMs);
                     Console.Out.WriteLine($"Speed set to {newWaitMs}");
                 }
 

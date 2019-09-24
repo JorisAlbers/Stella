@@ -70,7 +70,7 @@ namespace StellaServerLib
                 {
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _totalNumberOfPixels,
                         Wraps = true
@@ -113,7 +113,7 @@ namespace StellaServerLib
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    FrameWaitMs = 10,
+                    TimeUnitsPerFrame = 10,
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
@@ -132,7 +132,7 @@ namespace StellaServerLib
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    FrameWaitMs = 10,
+                    TimeUnitsPerFrame = 10,
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
@@ -153,7 +153,7 @@ namespace StellaServerLib
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    FrameWaitMs = 10,
+                    TimeUnitsPerFrame = 10,
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,

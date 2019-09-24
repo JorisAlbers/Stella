@@ -18,7 +18,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int height = 1;
 
             int stripLength = 3;
-            int frameWaitMs = 100;
+            int timeUnitsPerFrame = 100;
             int startIndex = 0;
 
             Color expectedColor1 = Color.FromArgb(255, 0, 0);
@@ -50,7 +50,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int height = 2;
 
             int stripLength = 3;
-            int frameWaitMs = 100;
+            int timeUnitsPerFrame = 100;
             int startIndex = 0;
             
             Color expectedColor1 = Color.FromArgb(255, 255, 0, 0);
@@ -96,7 +96,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int height = 1;
 
             int stripLength = 3;
-            int frameWaitMs = 100;
+            int timeUnitsPerFrame = 100;
             int startIndex = 100;
 
             int expectedIndex1 = 100;
@@ -127,7 +127,7 @@ namespace StellaServerLib.Test.Animation.Drawing
             int height = 3;
 
             int stripLength = 3;
-            int frameWaitMs = 100;
+            int timeUnitsPerFrame = 100;
             int startIndex = 0;
 
             Color expectedColor1 = Color.FromArgb(255, 255, 0, 0);

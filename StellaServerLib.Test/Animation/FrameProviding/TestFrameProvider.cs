@@ -54,8 +54,8 @@ namespace StellaServerLib.Test.Animation.FrameProviding
         public void GetEnumerator_TimeUnitMsOf5_CorrectlyCreatesFrames()
         {
             int timeUnitMs = 10;
-            int frameWaitMs = 100;
-            int expectedTimeStampRelative = timeUnitMs * frameWaitMs;
+            int timeUnitsPerFrame = 100;
+            int expectedTimeStampRelative = timeUnitMs * timeUnitsPerFrame;
             List<Frame> drawerFrames = new List<Frame>
             {
                 new Frame(0,0)
@@ -72,7 +72,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
             TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
             {
-                new TransformationSettings(frameWaitMs, 0 , new float[3]),
+                new TransformationSettings(timeUnitsPerFrame, 0 , new float[3]),
             });
             FrameProvider frameProvider = new FrameProvider(drawerMock.Object, transformationController, timeUnitMs);
 

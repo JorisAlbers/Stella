@@ -71,8 +71,8 @@ namespace StellaVisualizer.Server
                 try
                 {
                     _apiServer = new APIServer(viewmodel.ApiServerIpAddress, 20060, storyboards);
-                    _apiServer.FrameWaitMsRequested += ApiServerOnFrameWaitMsRequested;
-                    _apiServer.FrameWaitMsSet += ApiServerOnFrameWaitMsSet;
+                    _apiServer.TimeUnitsPerFrameRequested += ApiServerOnTimeUnitsPerFrameRequested;
+                    _apiServer.TimeUnitsPerFrameSet += ApiServerOnTimeUnitsPerFrameSet;
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
                     _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
@@ -126,16 +126,16 @@ namespace StellaVisualizer.Server
             _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
-        private void ApiServerOnFrameWaitMsSet(int animationIndex, int frameWaitMs)
+        private void ApiServerOnTimeUnitsPerFrameSet(int animationIndex, int timeUnitsPerFrame)
         {
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetFrameWaitMs(frameWaitMs);
+                _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetFrameWaitMs(frameWaitMs, animationIndex);
+            _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame, animationIndex);
         }
 
         private float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
@@ -149,10 +149,10 @@ namespace StellaVisualizer.Server
                 .AnimationsTransformationSettings[animationIndex].RgbFadeCorrection;
         }
 
-        private int ApiServerOnFrameWaitMsRequested(int animationIndex)
+        private int ApiServerOnTimeUnitsPerFrameRequested(int animationIndex)
         {
             return _stellaServer.Animator.TransformationController.AnimationTransformation
-                .AnimationsTransformationSettings[animationIndex].FrameWaitMs;
+                .AnimationsTransformationSettings[animationIndex].TimeUnitsPerFrame;
         }
 
 
@@ -195,7 +195,7 @@ namespace StellaVisualizer.Server
                 {
                         new BitmapAnimationSettings
                         {
-                            FrameWaitMs = 10,
+                            TimeUnitsPerFrame = 10,
                             ImageName = name,
                             StripLength = 1440,
                             Wraps = true
@@ -208,14 +208,14 @@ namespace StellaVisualizer.Server
                 {
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _pixelsPerRow,
                         Wraps = true
                     },
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _pixelsPerRow,
                         StartIndex = _pixelsPerRow,
@@ -223,7 +223,7 @@ namespace StellaVisualizer.Server
                     },
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _pixelsPerRow,
                         StartIndex = _pixelsPerRow * 2,
@@ -231,7 +231,7 @@ namespace StellaVisualizer.Server
                     },
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _pixelsPerRow,
                         StartIndex = _pixelsPerRow * 3,
@@ -239,7 +239,7 @@ namespace StellaVisualizer.Server
                     },
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _pixelsPerRow,
                         StartIndex = _pixelsPerRow * 4,
@@ -247,7 +247,7 @@ namespace StellaVisualizer.Server
                     },
                     new BitmapAnimationSettings
                     {
-                        FrameWaitMs = 10,
+                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _pixelsPerRow,
                         StartIndex = _pixelsPerRow * 5,

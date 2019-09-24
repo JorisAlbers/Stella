@@ -7,7 +7,7 @@
     {
         int StartIndex { get; set; }
         int StripLength { get; set; }
-        int FrameWaitMs { get; set; }
+        int TimeUnitsPerFrame { get; set; }
         /// <summary> The time at which this animation will start. In milliseconds.  </summary>
         int RelativeStart { get; set; }
     }

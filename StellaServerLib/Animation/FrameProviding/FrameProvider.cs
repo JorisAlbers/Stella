@@ -100,7 +100,7 @@ namespace StellaServerLib.Animation.FrameProviding
                 // Get the next frames of the used drawers
                 foreach (int sectionIndex in providersInNextFrame)
                 {
-                    timestamps[sectionIndex] += animationTransformation.GetCorrectedFrameWaitMs(sectionIndex) * _timeUnitMs;
+                    timestamps[sectionIndex] += animationTransformation.GetCorrectedTimeUnitsPerFrame(sectionIndex) * _timeUnitMs;
                     _framesPerDrawer[sectionIndex].MoveNext();
                 }
 

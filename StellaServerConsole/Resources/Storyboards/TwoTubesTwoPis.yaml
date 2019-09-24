@@ -4,11 +4,11 @@ Animations:
  - !Bitmap
    StartIndex:  0
    StripLength: 240
-   FrameWaitMs: 15
+   TimeUnitsPerFrame: 15
    ImageName: test-04-circle08
    Wraps: true
  - !Bitmap	
    StartIndex:  240
    StripLength: 240
-   FrameWaitMs: 15
+   TimeUnitsPerFrame: 15
    ImageName: test-04-circle08

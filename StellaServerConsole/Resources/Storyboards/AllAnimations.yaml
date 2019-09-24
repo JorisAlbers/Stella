@@ -4,29 +4,29 @@ Animations:
   - !Bitmap
     StartIndex:  0
     StripLength: 120
-    FrameWaitMs: 10
+    TimeUnitsPerFrame: 10
     ImageName: test-04-circle08
   - !Bitmap
     StartIndex:  120
     StripLength: 120
-    FrameWaitMs: 10
+    TimeUnitsPerFrame: 10
     RelativeStart: 100
     ImageName: test-04-circle08
   - !MovingPattern
     StartIndex:  0
     StripLength: 15
-    FrameWaitMs: 50
+    TimeUnitsPerFrame: 50
     Pattern: [[0,0,0], [255,0,0], [0,0,0]]
   - !MovingPattern
     StartIndex:  15
     StripLength: 15
-    FrameWaitMs: 50
+    TimeUnitsPerFrame: 50
     RelativeStart: 1000
     Pattern: [[0,0,0], [0,0,255], [0,0,0]]
   - !CachedAnimation
     StartIndex:  0
     StripLength: 1200
-    FrameWaitMs: 50
+    TimeUnitsPerFrame: 50
     Frames: [
       [
         [255,0,0],
@@ -50,6 +50,6 @@ Animations:
   - !FadingPulse
     StartIndex:  1200
     StripLength: 1200
-    FrameWaitMs: 50
+    TimeUnitsPerFrame: 50
     Color: [0,255,0]
     FadeSteps: 6

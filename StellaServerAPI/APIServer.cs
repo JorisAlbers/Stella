@@ -38,8 +38,8 @@ namespace StellaServerAPI
         public EventHandler<BitmapReceivedEventArgs> BitmapReceived;
         
         // Transform events
-        public event Func<int, int> FrameWaitMsRequested; 
-        public event Action<int,int> FrameWaitMsSet;
+        public event Func<int, int> TimeUnitsPerFrameRequested; 
+        public event Action<int,int> TimeUnitsPerFrameSet;
 
         public event Func<int, float[]> RgbFadeRequested;
         public event Action<int, float[]> RgbFadeSet;
@@ -134,11 +134,11 @@ namespace StellaServerAPI
                case MessageType.StoreBitmap:
                     ParseStoreBitmapMessage(e.Message);
                     break;
-                case MessageType.GetFrameWaitMs:
-                    ParseGetFrameWaitMs(e.Message);
+                case MessageType.GetTimeUnitsPerFrame:
+                    ParseGetTimeUnitsPerFrame(e.Message);
                     break;
-                case MessageType.SetFrameWaitMs:
-                    ParseSetFrameWaitMs(e.Message);
+                case MessageType.SetTimeUnitsPerFrame:
+                    ParseSetTimeUnitsPerFrame(e.Message);
                     break;
                 case MessageType.GetRgbFade:
                     ParseGetRgbFadeMessage(e.Message);
@@ -178,42 +178,42 @@ namespace StellaServerAPI
             }
         }
 
-        private void ParseGetFrameWaitMs(byte[] data)
+        private void ParseGetTimeUnitsPerFrame(byte[] data)
         {
             try
             {
                 int animationIndex = BitConverter.ToInt32(data,0);
-                if (FrameWaitMsRequested != null)
+                if (TimeUnitsPerFrameRequested != null)
                 {
-                    int frameWaitMs = FrameWaitMsRequested(animationIndex);
+                    int timeUnitsPerFrame = TimeUnitsPerFrameRequested(animationIndex);
                     byte[] returnData = new byte[8];
                     BitConverter.GetBytes(animationIndex).CopyTo(returnData,0);
-                    BitConverter.GetBytes(frameWaitMs).CopyTo(returnData,4);
-                    Send(MessageType.GetFrameWaitMs, returnData);
+                    BitConverter.GetBytes(timeUnitsPerFrame).CopyTo(returnData,4);
+                    Send(MessageType.GetTimeUnitsPerFrame, returnData);
                 }
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("APIServer: Failed to retrieve the FrameWaitMs.");
+                Console.Out.WriteLine("APIServer: Failed to retrieve the TimeUnitsPerFrame.");
                 Console.Out.WriteLine(e);
                 return;
             }
         }
 
-        private void ParseSetFrameWaitMs(byte[] data)
+        private void ParseSetTimeUnitsPerFrame(byte[] data)
         {
             try
             {
                 int animationIndex = BitConverter.ToInt32(data,0);
-                int frameWaitMs    = BitConverter.ToInt32(data,4);
-                if (FrameWaitMsSet != null)
+                int timeUnitsPerFrame    = BitConverter.ToInt32(data,4);
+                if (TimeUnitsPerFrameSet != null)
                 {
-                    FrameWaitMsSet.Invoke(animationIndex,frameWaitMs);
+                    TimeUnitsPerFrameSet.Invoke(animationIndex,timeUnitsPerFrame);
                 }
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("APIServer: Failed to set the FrameWaitMs.");
+                Console.Out.WriteLine("APIServer: Failed to set the TimeUnitsPerFrame.");
                 Console.Out.WriteLine(e);
                 return;
             }
