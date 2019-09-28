@@ -10,7 +10,6 @@ namespace StellaServerLib.Animation
     public class Animator : IAnimator
     {
         private readonly IFrameProvider _frameProvider;
-        private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
 
@@ -27,10 +26,9 @@ namespace StellaServerLib.Animation
         public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, TransformationController transformationController)
         {
             _frameProvider = frameProvider;
-            _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
             TransformationController = transformationController;
-            _numberOfPis = _stripLengthPerPi.Length;
+            _numberOfPis = stripLengthPerPi.Length;
 
             _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
             for (int i = 0; i < stripLengthPerPi.Length; i++)
