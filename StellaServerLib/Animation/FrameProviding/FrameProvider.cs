@@ -155,7 +155,10 @@ namespace StellaServerLib.Animation.FrameProviding
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            foreach (IDrawer drawer in _drawers)
+            {
+                drawer.Dispose();
+            }
         }
     }
 }
