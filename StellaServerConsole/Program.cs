@@ -6,7 +6,6 @@ using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Network;
-using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerConsole
 {
@@ -18,8 +17,13 @@ namespace StellaServerConsole
         
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting StellaServer");
-
+            const int numberOfRequiredArguments = 6;
+            if (args.Length < numberOfRequiredArguments)
+            {
+                Console.Out.WriteLine(_HELP_TEXT);
+                return;
+            }
+            
             // Parse args
             string mappingFilePath = null;
             string storyboardDirPath = null;
@@ -38,7 +42,7 @@ namespace StellaServerConsole
                     switch (args[i])
                     {
                         case "-h":
-                            OutputHelp();
+                            Console.WriteLine(_HELP_TEXT);
                             return;
                         case "-m":
                             mappingFilePath = args[++i];
@@ -78,6 +82,8 @@ namespace StellaServerConsole
             {
                 return;
             }
+
+            Console.WriteLine("Starting StellaServer");
 
             // Start Repositories
             StoryboardRepository storyboardRepository = new StoryboardRepository(storyboardDirPath);
@@ -418,16 +424,6 @@ namespace StellaServerConsole
             return true;
         }
 
-        static void OutputHelp()
-        {
-            Console.Out.WriteLine("StellaServer");
-            Console.Out.WriteLine("To run: StellaServer -m <mapping_filepath>");
-            Console.Out.WriteLine("Optional:");
-            Console.Out.WriteLine("-b <bitmap_directory_path> : creates animations with bitmap drawers ");
-            Console.Out.WriteLine("                             for each image in the dir.");
-            Console.Out.WriteLine();
-        }
-
         static void OutputMenu(string[] storyboardNames)
         {
             Console.Out.WriteLine("Exit program = q");
@@ -450,5 +446,25 @@ namespace StellaServerConsole
                 Console.Out.WriteLine(e.InnerException.StackTrace);
             }
         }
+
+        private const string _HELP_TEXT = @"
+StellaServer
+[Usage]
+    StellaServer -ip <ip> -port <port> -udp_port <udp port> -m <mapping file path> -s <storyboard directory path> -b <bitmap directory path>
+
+[Required]
+    -ip         Ip address of this machine. The pi's will connect to this address.
+    -port       Tcp port the pi's will connect to.
+    -udp_port   Udp port the pi's will connect to.
+    -m          Path to mapping configuration file.
+    -s          Path to the directory containig storyboards.
+    -b          Path to the directory containig bitmaps, which will be converted to storyboards.
+
+[Optional]
+    -api_ip     Ip adress of this machine. The webserver will connect to this address.  Default = null.
+    -api_port   Port of this machine. The webserver will connect to this port. Default = null.
+    -t          The number of miliseconds each time unit takes. Default = 1ms.
+    -h          Print this help page.
+";
     }
 }
