@@ -6,7 +6,7 @@ namespace StellaServerLib.Animation.Drawing
     /// <summary>
     /// A Drawer creates a list of frames
     /// </summary>
-    public interface IDrawer : IEnumerable<List<PixelInstructionWithDelta>>
+    public interface IDrawer : IEnumerator<List<PixelInstructionWithDelta>>
     {
     }
 }

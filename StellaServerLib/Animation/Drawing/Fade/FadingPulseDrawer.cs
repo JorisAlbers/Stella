@@ -8,13 +8,15 @@ namespace StellaServerLib.Animation.Drawing.Fade
 {
     public class FadingPulseDrawer : IDrawer
     {
+        private const int MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME = 1;
         private readonly int _startIndex;
         private readonly int _stripLength;
         private readonly int _fadeSteps;
-        private readonly Color[] _fadeColors; 
+        private readonly Color[] _fadeColors;
+        private Random _random;
+        private LinkedList<List<FadePoint>> _fadePointsPerFadeStep;
 
-        private const int MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME = 1;
-        
+
 
         public FadingPulseDrawer(int startIndex, int stripLength, Color color, int fadeSteps)
         {
@@ -28,33 +30,8 @@ namespace StellaServerLib.Animation.Drawing.Fade
             {
                 _fadeColors[i] = fadedPatterns[i][0];
             }
-        }
-
-        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
-        {
-            Random random = new Random();
-            LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
-            while (true)
-            {
-                // Create new FadePoints
-                int fadePointsToAdd = random.Next(MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME, 5);
-                if (fadePointsToAdd > 0)
-                {
-                    fadePointsPerFadeStep.AddLast(CreateNewFadePoints(random, fadePointsToAdd));
-                }
-
-                // draw existing FadePoints
-                List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
-                DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
-
-                // remove FadePoints that have elapsed
-                if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
-                {
-                    fadePointsPerFadeStep.RemoveFirst();
-                }
-
-                yield return pixelInstructions;
-            }
+            _random = new Random();
+            _fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
         }
 
         private void DrawFadePoints(LinkedList<List<FadePoint>> fadePointsPerFadeStep, List<PixelInstructionWithDelta> pixelInstructions)
@@ -92,11 +69,43 @@ namespace StellaServerLib.Animation.Drawing.Fade
 
             return fadePoints;
         }
-
-
-        IEnumerator IEnumerable.GetEnumerator()
+       
+        public bool MoveNext()
         {
-            return GetEnumerator();
+            // Create new FadePoints
+            int fadePointsToAdd = _random.Next(MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME, 5);
+            if (fadePointsToAdd > 0)
+            {
+                _fadePointsPerFadeStep.AddLast(CreateNewFadePoints(_random, fadePointsToAdd));
+            }
+
+            // draw existing FadePoints
+            List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
+            DrawFadePoints(_fadePointsPerFadeStep, pixelInstructions);
+
+            // remove FadePoints that have elapsed
+            if (_fadePointsPerFadeStep.First != null && _fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+            {
+                _fadePointsPerFadeStep.RemoveFirst();
+            }
+
+            Current = pixelInstructions;
+            return true;
+
+        }
+
+        public void Reset()
+        {
+            _fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
+        }
+
+        public List<PixelInstructionWithDelta> Current { get; private set; }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+            ;
         }
     }
 }

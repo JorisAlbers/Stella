@@ -10,27 +10,45 @@ namespace StellaServerLib.Animation.Drawing
     /// </summary>
     public class MovingPatternDrawer : IDrawer
     {
-        private Color[] _pattern;
+        private readonly Color[] _pattern;
         private readonly int _startIndex;
-        private int _stripLength;
+        private readonly int _stripLength;
+        private readonly IEnumerator<List<PixelInstructionWithDelta>> _internalEnumerator;
 
         /// <summary>
         /// Ctor
         /// </summary>
         /// <param name="startIndex">The start index on the led strip</param>
         /// <param name="stripLength">The length of the section to draw</param>
-        /// <param name="animationTransformation"></param>
         /// <param name="pattern">The pattern to move</param>
         public MovingPatternDrawer(int startIndex, int stripLength, Color[] pattern)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
             _pattern = pattern;
+            _internalEnumerator = GetEnumerator();
         }
 
+        public bool MoveNext()
+        {
+            return _internalEnumerator.MoveNext();
+        }
 
-        /// <inheritdoc />
-        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
+        public void Reset()
+        {
+            _internalEnumerator.Reset();
+        }
+
+        public List<PixelInstructionWithDelta> Current => _internalEnumerator.Current;
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+           _internalEnumerator.Dispose();
+        }
+
+        private IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
         {
             while (true)
             {
@@ -72,11 +90,6 @@ namespace StellaServerLib.Animation.Drawing
                     yield return pixelInstructions;
                 }
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -28,7 +29,11 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             };
 
             var drawerMock = new Mock<IDrawer>();
-            drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
+            int index = -1;
+            drawerMock.Setup(x => x.Current).Returns(() => drawerFrames[index]);
+            drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
+
+
             TransformationController transformationController = new TransformationController(new TransformationSettings(0,0,new float[3]),new TransformationSettings[]
             {
                 new TransformationSettings(100,0,new float[3]), 
@@ -69,7 +74,9 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             };
 
             var drawerMock = new Mock<IDrawer>();
-            drawerMock.Setup(x => x.GetEnumerator()).Returns(drawerFrames.GetEnumerator());
+            int index = -1;
+            drawerMock.Setup(x => x.Current).Returns(()=>drawerFrames[index]);
+            drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             TransformationController transformationController = new TransformationController(new TransformationSettings(0, 0, new float[3]), new TransformationSettings[]
             {
                 new TransformationSettings(timeUnitsPerFrame, 0 , new float[3]),
@@ -131,10 +138,18 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
 
             var mockDrawer1 = new Mock<IDrawer>();
-            mockDrawer1.Setup(x => x.GetEnumerator()).Returns(frames1.GetEnumerator());
+            int index1 = -1;
+            mockDrawer1.Setup(x => x.Current).Returns(()=>frames1[index1]);
+            mockDrawer1.Setup(x => x.MoveNext()).Returns(true).Callback(() => index1++);
+
 
             var mockDrawer2 = new Mock<IDrawer>();
-            mockDrawer2.Setup(x => x.GetEnumerator()).Returns(frames2.GetEnumerator());
+            int index2 = -1;
+            mockDrawer2.Setup(x => x.Current).Returns(()=>frames2[index2]);
+            mockDrawer2.Setup(x => x.MoveNext()).Returns(true).Callback(() => index2++);
+
+
+
 
             int start1 = 0;
             int start2 = 50; // 50ms to make sure they get out of frame
@@ -194,10 +209,15 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             Frame expectedFrame2 = new Frame(1, 100) { frames1[1][0], frames2[1][0] };
 
             var mockDrawer1 = new Mock<IDrawer>();
-            mockDrawer1.Setup(x => x.GetEnumerator()).Returns(frames1.GetEnumerator());
+            int index1 = -1;
+            mockDrawer1.Setup(x => x.Current).Returns(()=>frames1[index1]);
+            mockDrawer1.Setup(x => x.MoveNext()).Returns(true).Callback(() => index1++);
 
             var mockDrawer2 = new Mock<IDrawer>();
-            mockDrawer2.Setup(x => x.GetEnumerator()).Returns(frames2.GetEnumerator());
+            int index2 = -1;
+            mockDrawer2.Setup(x => x.Current).Returns(()=>frames2[index2]);
+            mockDrawer2.Setup(x => x.MoveNext()).Returns(true).Callback(() => index2++);
+
 
             int start1 = 0;
             int start2 = 0; // Both are in frame

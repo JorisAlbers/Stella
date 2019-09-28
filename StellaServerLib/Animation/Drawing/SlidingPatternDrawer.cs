@@ -11,9 +11,10 @@ namespace StellaServerLib.Animation.Drawing
     /// </summary>
     public class SlidingPatternDrawer : IDrawer
     {
-        private Color[] _pattern;
+        private readonly Color[] _pattern;
         private readonly int _startIndex;
-        private int _stripLength;
+        private readonly int _stripLength;
+        private int _index;
 
         public SlidingPatternDrawer(int startIndex, int stripLength, Color[] pattern)
         {
@@ -22,28 +23,32 @@ namespace StellaServerLib.Animation.Drawing
             _pattern = pattern;
         }
 
-        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
+        public bool MoveNext()
         {
-            while (true)
+            List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
+            for (int j = 0; j < _stripLength; j++)
             {
-                for (int i = 0; i < _pattern.Length; i++)
-                {
-                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
-                    int patternStart = i;
-                    for (int j = 0; j < _stripLength; j++)
-                    {
-                        Color color = _pattern[(j + patternStart) % (_pattern.Length)];
-                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R,color.G,color.B));
-                    }
-
-                    yield return pixelInstructions;
-                }
+                Color color = _pattern[(j + _index) % (_pattern.Length)];
+                pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + j, color.R, color.G, color.B));
             }
+
+            _index = ++_index % _pattern.Length;
+            Current = pixelInstructions;
+            return true;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void Reset()
         {
-            return GetEnumerator();
+            _index = 0;
+        }
+
+        public List<PixelInstructionWithDelta> Current { get; private set; }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+            ;
         }
     }
 }

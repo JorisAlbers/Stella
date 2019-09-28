@@ -14,6 +14,7 @@ namespace StellaServerLib.Animation.Drawing
         private readonly int _startIndex;
         private int _lengthStrip;
         private Color[][] _patterns;
+        private int _index;
 
         /// <summary>
         /// Each array of colors in the patterns list will be repeated over the length of the ledstip.
@@ -26,45 +27,52 @@ namespace StellaServerLib.Animation.Drawing
             _patterns = patterns;
         }
 
-        /// <inheritdoc />
-        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
+        
+        public bool MoveNext()
         {
-            while (true)
+            Color[] currentPattern = _patterns[_index];
+
+            List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
+            int patternsInStrip = _lengthStrip / currentPattern.Length;
+            int leftPixelIndex = 0;
+
+            for (int j = 0; j < patternsInStrip; j++)
             {
-                foreach (Color[] pattern in _patterns)
+                leftPixelIndex = _startIndex + currentPattern.Length * j;
+                for (int k = 0; k < currentPattern.Length; k++)
                 {
-                    List<PixelInstructionWithDelta> pixelInstructions = new List<PixelInstructionWithDelta>();
-                    int patternsInStrip = _lengthStrip / pattern.Length;
-                    int leftPixelIndex = 0;
-
-                    for (int j = 0; j < patternsInStrip; j++)
-                    {
-                        leftPixelIndex = _startIndex + pattern.Length * j;
-                        for (int k = 0; k < pattern.Length; k++)
-                        {
-                            int pixelIndex = leftPixelIndex + k;
-                            pixelInstructions.Add(new PixelInstructionWithDelta(pixelIndex, pattern[k].R, pattern[k].G,
-                                pattern[k].B));
-                        }
-                    }
-
-                    leftPixelIndex = leftPixelIndex + pattern.Length;
-                    // draw remaining pixels of the pattern that does not completely fit on the end of the led strip
-                    for (int j = 0; j < _lengthStrip % pattern.Length; j++)
-                    {
-                        int pixelIndex = leftPixelIndex + j;
-                        pixelInstructions.Add(
-                            new PixelInstructionWithDelta(pixelIndex, pattern[j].R, pattern[j].G, pattern[j].B));
-                    }
-
-                    yield return pixelInstructions;
+                    int pixelIndex = leftPixelIndex + k;
+                    pixelInstructions.Add(new PixelInstructionWithDelta(pixelIndex, currentPattern[k].R, currentPattern[k].G,
+                        currentPattern[k].B));
                 }
             }
+
+            leftPixelIndex = leftPixelIndex + currentPattern.Length;
+            // draw remaining pixels of the pattern that does not completely fit on the end of the led strip
+            for (int j = 0; j < _lengthStrip % currentPattern.Length; j++)
+            {
+                int pixelIndex = leftPixelIndex + j;
+                pixelInstructions.Add(
+                    new PixelInstructionWithDelta(pixelIndex, currentPattern[j].R, currentPattern[j].G, currentPattern[j].B));
+            }
+
+            Current = pixelInstructions;
+            _index = ++_index % _patterns.Length;
+            return true;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void Reset()
         {
-            return GetEnumerator();
+            _index = 0;
+        }
+
+        public List<PixelInstructionWithDelta> Current { get; private set; }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+            ;
         }
     }
 }

@@ -19,6 +19,7 @@ namespace StellaServerLib.Animation.Drawing
         private readonly int _stripLength;
         private readonly bool _wrap;
         private readonly List<PixelInstruction>[] _imageFrames;
+        private int _index;
 
         public static List<PixelInstruction>[] CreateFrames(Bitmap bitmap)
         {
@@ -63,28 +64,7 @@ namespace StellaServerLib.Animation.Drawing
             _imageFrames = imageFrames;
             _wrap = wrap;
         }
-
-        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
-        {
-            while (true)
-            {
-                // Top to bottom
-                for (int i = 0; i < _imageFrames.Length; i++)
-                {
-                    yield return ConvertToDelta(_imageFrames[i]);
-                }
-
-                if (_wrap)
-                {
-                    // Bottom to top
-                    for (int i = _imageFrames.Length - 1; i >= 0; i--)
-                    {
-                        yield return ConvertToDelta(_imageFrames[i]);
-                    }
-                }
-            }
-        }
-
+        
         private List<PixelInstructionWithDelta> ConvertToDelta(List<PixelInstruction> originalFrames)
         {
             int width = Math.Min(originalFrames.Count, _stripLength);
@@ -99,9 +79,42 @@ namespace StellaServerLib.Animation.Drawing
             return frames;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+      
+        public bool MoveNext()
         {
-            return GetEnumerator();
+            int index = _index;
+            if (_index >= _imageFrames.Length)
+            {
+                // wrap is active, go from bottom to top.
+                index = _imageFrames.Length - (_index - _imageFrames.Length) -1;
+            }
+
+            Current = ConvertToDelta(_imageFrames[index]);
+
+            if (_wrap)
+            {
+                _index = ++_index % (_imageFrames.Length * 2);
+            }
+            else
+            {
+                _index = ++_index % _imageFrames.Length;
+            }
+
+            return true;
+        }
+
+        public void Reset()
+        {
+            _index = 0;
+        }
+
+        public List<PixelInstructionWithDelta> Current { get; private set; }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+            ;
         }
     }
 }

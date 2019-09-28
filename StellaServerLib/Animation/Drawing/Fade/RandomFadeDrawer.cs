@@ -8,36 +8,23 @@ namespace StellaServerLib.Animation.Drawing.Fade
 {
     public class RandomFadeDrawer : IDrawer
     {
-        private readonly Color[] _pattern;
         private readonly Color[][] _fadePatterns;
         private readonly int _startIndex;
         private readonly int _stripLength;
         private readonly int _fadeSteps;
+        private readonly Random _random;
+        private LinkedList<List<FadePoint>> _fadePointsPerFadeStep;
 
 
         public RandomFadeDrawer(int startIndex, int stripLength, Color[] pattern, int fadeSteps)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _pattern = pattern;
             _fadeSteps = fadeSteps;
 
-            _fadePatterns = FadeCalculation.CalculateFadedPatterns(_pattern, _fadeSteps);
-        }
-
-        public IEnumerator<List<PixelInstructionWithDelta>> GetEnumerator()
-        {
-            Random random = new Random();
-            LinkedList<List<FadePoint>> fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
-
-            // The first frame should always start with some points
-            yield return CreateFrame(random.Next(1, 10), random ,fadePointsPerFadeStep);
-
-            while (true)
-            {
-                // Create new FadePoints
-                yield return CreateFrame(random.Next(0, 10), random, fadePointsPerFadeStep);
-            }
+            _fadePatterns = FadeCalculation.CalculateFadedPatterns(pattern, _fadeSteps);
+            _random = new Random();
+            _fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
         }
 
         private List<PixelInstructionWithDelta> CreateFrame(int fadePointsToAdd,Random random, LinkedList<List<FadePoint>> fadePointsPerFadeStep)
@@ -98,9 +85,26 @@ namespace StellaServerLib.Animation.Drawing.Fade
             }
         }
         
-        IEnumerator IEnumerable.GetEnumerator()
+
+        public bool MoveNext()
         {
-            return GetEnumerator();
+            // Create new FadePoints
+            Current = CreateFrame(_random.Next(1, 10), _random, _fadePointsPerFadeStep);
+            return true;
+        }
+
+        public void Reset()
+        {
+            _fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
+        }
+
+        public List<PixelInstructionWithDelta> Current { get; private set; }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+            ;
         }
     }
 }

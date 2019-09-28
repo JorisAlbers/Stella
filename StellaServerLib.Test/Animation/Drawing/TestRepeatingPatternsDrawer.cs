@@ -28,7 +28,8 @@ namespace StellaServerLib.Test.Animation.Drawing
             Color expectedColor2 = Color.FromArgb(4,5,6);
             Color expectedColor3 = Color.FromArgb(7,8,9);
 
-            List<PixelInstructionWithDelta> frame = drawer.First();
+            drawer.MoveNext();
+            List<PixelInstructionWithDelta> frame = drawer.Current;
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
@@ -64,7 +65,8 @@ namespace StellaServerLib.Test.Animation.Drawing
             int expectedIndex6 = 105;
             int expectedIndex7 = 106;
 
-            List<PixelInstructionWithDelta> frame = drawer.First();
+            drawer.MoveNext();
+            List<PixelInstructionWithDelta> frame = drawer.Current;
 
             //Assert
             Assert.AreEqual(lengthStrip, frame.Count);
@@ -89,20 +91,18 @@ namespace StellaServerLib.Test.Animation.Drawing
             };
 
             int lengthStrip = 7;
-            int timeUnitsPerFrame = 100;
             RepeatingPatternsDrawer drawer = new RepeatingPatternsDrawer(0,lengthStrip, patterns);
 
             // Expected
             Color expectedColor1 =  Color.FromArgb(1,2,3);
             Color expectedColor2 =  Color.FromArgb(4,5,6);
 
-            List<List<PixelInstructionWithDelta>> frames = drawer.Take(2).ToList();
-
-
             //Assert
-            List<PixelInstructionWithDelta> frame1 = frames[0];
+            drawer.MoveNext();
+            List<PixelInstructionWithDelta> frame1 = drawer.Current;
             Assert.AreEqual(frame1[0].ToColor(), expectedColor1);
-            List<PixelInstructionWithDelta> frame2 = frames[1];
+            drawer.MoveNext();
+            List<PixelInstructionWithDelta> frame2 = drawer.Current;
             Assert.AreEqual(frame2[0].ToColor(), expectedColor2);
         }
     }
