@@ -9,7 +9,7 @@ namespace StellaServerLib.Animation
 {
     public class Animator : IAnimator
     {
-        private readonly IEnumerator<Frame> frameEnumerator;
+        private readonly IFrameProvider _frameProvider;
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
@@ -26,7 +26,7 @@ namespace StellaServerLib.Animation
         /// <param name="transformationController">Class that provides run time animation changes</param>
         public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, TransformationController transformationController)
         {
-            frameEnumerator = frameProvider.GetEnumerator();
+            _frameProvider = frameProvider;
             _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
             TransformationController = transformationController;
@@ -43,8 +43,8 @@ namespace StellaServerLib.Animation
         public FrameWithoutDelta[] GetNextFramePerPi()
         {
             // Get the combined frame from the FrameProvider
-            frameEnumerator.MoveNext();
-            Frame combinedFrame = frameEnumerator.Current;
+            _frameProvider.MoveNext();
+            Frame combinedFrame = _frameProvider.Current;
 
             // Split the frame over pis
             Frame[] framePerPi = SplitFrameOverPis(combinedFrame, _mask);

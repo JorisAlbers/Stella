@@ -20,6 +20,9 @@ namespace StellaServerLib.Animation.FrameProviding
         private readonly int[] _relativeStartingTimestamps;
         private readonly int _firstTimestamp;
 
+        private int[] _timestamps;
+        private int   _frameIndex;
+
         /// <summary>
         /// Create a new FrameProvider with a single drawer
         /// </summary>
@@ -32,6 +35,8 @@ namespace StellaServerLib.Animation.FrameProviding
             _transformationController = transformationController;
             _timeUnitMs = timeUnitMs;
             _relativeStartingTimestamps = new []{0};
+            _timestamps = new int[1];
+            _drawers[0].MoveNext();
         }
 
         /// <summary>
@@ -47,68 +52,15 @@ namespace StellaServerLib.Animation.FrameProviding
             _relativeStartingTimestamps = relativeStartingTimestamps;
             _firstTimestamp = relativeStartingTimestamps.Min();
             _timeUnitMs = timeUnitMs;
-        }
-
-        public IEnumerator<Frame> GetEnumerator()
-        {
-            int[] timestamps = new int[_drawers.Length];
-            int frameIndex = 0;
+            _timestamps = new int[drawers.Length];
 
             // Initialize frames
             for (int i = 0; i < _drawers.Length; i++)
             {
                 _drawers[i].MoveNext();
             }
-
-            while (true)
-            {
-                // Get the AnimationTransformation
-                AnimationTransformation animationTransformation = _transformationController.AnimationTransformation;
-
-                // Find the section that will start first
-                List<int> providersInNextFrame = GetNextInLineAnimations(timestamps);
-                if (providersInNextFrame.Count == 0)
-                {
-                    throw new Exception("There must always be a next frame");
-                }
-
-                int firstIndex = providersInNextFrame[0];
-
-                // Calculate the timestampRelative
-                int timestampFirstDrawer = _relativeStartingTimestamps[providersInNextFrame[0]] + timestamps[firstIndex];
-                int deltaWithOverallTimestamp = timestampFirstDrawer - _firstTimestamp;
-                Frame frame = new Frame(frameIndex, deltaWithOverallTimestamp);
-
-                // Add the frames of each drawer
-                foreach (int providerIndex in providersInNextFrame)
-                {
-                    List<PixelInstructionWithDelta> instructions = _drawers[providerIndex].Current;
-                    for (int j = 0; j < instructions.Count; j++)
-                    {
-                        PixelInstructionWithDelta pixelInstructionWithDelta = instructions[j];
-                        (byte red, byte green, byte blue) = animationTransformation.AdjustColor(providerIndex, pixelInstructionWithDelta.R,
-                            pixelInstructionWithDelta.G, pixelInstructionWithDelta.B);
-                        pixelInstructionWithDelta.R = red;
-                        pixelInstructionWithDelta.G = green;
-                        pixelInstructionWithDelta.B = blue;
-                        frame.Add(pixelInstructionWithDelta);
-                    }
-                }
-                
-                yield return frame;
-                
-                // Get the next frames of the used drawers
-                foreach (int sectionIndex in providersInNextFrame)
-                {
-                    timestamps[sectionIndex] += animationTransformation.GetCorrectedTimeUnitsPerFrame(sectionIndex) * _timeUnitMs;
-                    _drawers[sectionIndex].MoveNext();
-                }
-
-                // Prepare for the next round
-                frameIndex++;
-            }
         }
-
+        
         /// <summary>
         /// Returns the indexes of the drawers that have a frame starting before the other drawers.
         /// </summary>
@@ -137,9 +89,73 @@ namespace StellaServerLib.Animation.FrameProviding
             return sectionIndexes;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public bool MoveNext()
         {
-            return GetEnumerator();
+            // Get the AnimationTransformation
+            AnimationTransformation animationTransformation = _transformationController.AnimationTransformation;
+
+            // Find the section that will start first
+            List<int> providersInNextFrame = GetNextInLineAnimations(_timestamps);
+            if (providersInNextFrame.Count == 0)
+            {
+                throw new Exception("There must always be a next frame");
+            }
+
+            int firstIndex = providersInNextFrame[0];
+
+            // Calculate the timestampRelative
+            int timestampFirstDrawer = _relativeStartingTimestamps[providersInNextFrame[0]] + _timestamps[firstIndex];
+            int deltaWithOverallTimestamp = timestampFirstDrawer - _firstTimestamp;
+            Frame frame = new Frame(_frameIndex, deltaWithOverallTimestamp);
+
+            // Add the frames of each drawer
+            foreach (int providerIndex in providersInNextFrame)
+            {
+                List<PixelInstructionWithDelta> instructions = _drawers[providerIndex].Current;
+                for (int j = 0; j < instructions.Count; j++)
+                {
+                    PixelInstructionWithDelta pixelInstructionWithDelta = instructions[j];
+                    (byte red, byte green, byte blue) = animationTransformation.AdjustColor(providerIndex, pixelInstructionWithDelta.R,
+                        pixelInstructionWithDelta.G, pixelInstructionWithDelta.B);
+                    pixelInstructionWithDelta.R = red;
+                    pixelInstructionWithDelta.G = green;
+                    pixelInstructionWithDelta.B = blue;
+                    frame.Add(pixelInstructionWithDelta);
+                }
+            }
+
+            Current = frame;
+
+            // Get the next frames of the used drawers
+            foreach (int sectionIndex in providersInNextFrame)
+            {
+                _timestamps[sectionIndex] += animationTransformation.GetCorrectedTimeUnitsPerFrame(sectionIndex) * _timeUnitMs;
+                _drawers[sectionIndex].MoveNext();
+            }
+
+            // Prepare for the next round
+            _frameIndex++;
+            return true;
+        }
+
+        public void Reset()
+        {
+            foreach (IDrawer drawer in _drawers)
+            {
+                drawer.Reset();
+            }
+
+            _frameIndex = 0;
+            _timestamps = new int[_drawers.Length];
+        }
+
+        public Frame Current { get; private set; }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

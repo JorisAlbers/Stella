@@ -33,7 +33,9 @@ namespace StellaServerLib.Test.Animation
             };
 
             var drawerMock = new Mock<IFrameProvider>();
-            drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
+            int index = -1;
+            drawerMock.Setup(x => x.Current).Returns(()=> frames[index]);
+            drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
                 new PiMaskItem(piIndex , expectedPixelIndex)
@@ -87,7 +89,9 @@ namespace StellaServerLib.Test.Animation
             };
 
             var drawerMock = new Mock<IFrameProvider>();
-            drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
+            int index = -1;
+            drawerMock.Setup(x => x.Current).Returns(() => frames[index]);
+            drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
                 new PiMaskItem(piIndex1 , expectedPixelIndex1),
@@ -159,7 +163,9 @@ namespace StellaServerLib.Test.Animation
             };
 
             var drawerMock = new Mock<IFrameProvider>();
-            drawerMock.Setup(x => x.GetEnumerator()).Returns(frames.GetEnumerator());
+            int index = -1;
+            drawerMock.Setup(x => x.Current).Returns(() => frames[index]);
+            drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
                 new PiMaskItem(piIndex1 , expectedPixelIndex1),

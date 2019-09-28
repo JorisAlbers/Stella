@@ -40,15 +40,16 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             } );
             FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, transformationController,1);
 
-            Frame[] frames = frameProvider.Take(2).ToArray();
             // Frame 1
-            Assert.AreEqual(0,frames[0].Index);
-            Assert.AreEqual(0,frames[0].TimeStampRelative);
-            Assert.AreEqual(1,frames[0].Count);
+            frameProvider.MoveNext();
+            Assert.AreEqual(0, frameProvider.Current.Index);
+            Assert.AreEqual(0, frameProvider.Current.TimeStampRelative);
+            Assert.AreEqual(1, frameProvider.Current.Count);
             // Frame 2
-            Assert.AreEqual(1,frames[1].Index);
-            Assert.AreEqual(100,frames[1].TimeStampRelative);
-            Assert.AreEqual(1,frames[1].Count);
+            frameProvider.MoveNext();
+            Assert.AreEqual(1,   frameProvider.Current.Index);
+            Assert.AreEqual(100, frameProvider.Current.TimeStampRelative);
+            Assert.AreEqual(1,   frameProvider.Current.Count);
 
         }
 
@@ -83,15 +84,16 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             });
             FrameProvider frameProvider = new FrameProvider(drawerMock.Object, transformationController, timeUnitMs);
 
-            Frame[] frames = frameProvider.Take(2).ToArray();
+            frameProvider.MoveNext();
             // Frame 1. TimeStampRelative is always 0.
-            Assert.AreEqual(0, frames[0].Index);
-            Assert.AreEqual(0, frames[0].TimeStampRelative);
-            Assert.AreEqual(1, frames[0].Count);
+            Assert.AreEqual(0, frameProvider.Current.Index);
+            Assert.AreEqual(0, frameProvider.Current.TimeStampRelative);
+            Assert.AreEqual(1, frameProvider.Current.Count);
             // Frame 2
-            Assert.AreEqual(1, frames[1].Index);
-            Assert.AreEqual(expectedTimeStampRelative, frames[1].TimeStampRelative);
-            Assert.AreEqual(1, frames[1].Count);
+            frameProvider.MoveNext();
+            Assert.AreEqual(1, frameProvider.Current.Index);
+            Assert.AreEqual(expectedTimeStampRelative, frameProvider.Current.TimeStampRelative);
+            Assert.AreEqual(1, frameProvider.Current.Count);
 
         }
 
@@ -158,15 +160,17 @@ namespace StellaServerLib.Test.Animation.FrameProviding
                 new TransformationSettings(100,0,new float[3]),
                 new TransformationSettings(100,0,new float[3]),
             });
-            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
+            FrameProvider frameProvider = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
 
 
-            List<Frame> receivedFrames = sectionDrawer.Take(4).ToList();
-
-            Assert.AreEqual(expectedFrame1, receivedFrames[0]);
-            Assert.AreEqual(expectedFrame2, receivedFrames[1]);
-            Assert.AreEqual(expectedFrame3, receivedFrames[2]);
-            Assert.AreEqual(expectedFrame4, receivedFrames[3]);
+            frameProvider.MoveNext();
+            Assert.AreEqual(expectedFrame1, frameProvider.Current);
+            frameProvider.MoveNext();
+            Assert.AreEqual(expectedFrame2, frameProvider.Current);
+            frameProvider.MoveNext();
+            Assert.AreEqual(expectedFrame3, frameProvider.Current);
+            frameProvider.MoveNext();
+            Assert.AreEqual(expectedFrame4, frameProvider.Current);
         }
 
         [Test]
@@ -227,12 +231,12 @@ namespace StellaServerLib.Test.Animation.FrameProviding
                 new TransformationSettings(100,0,new float[3]),
             });
 
-            FrameProvider sectionDrawer = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
+            FrameProvider frameProvider = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
 
-            List<Frame> receivedFrames = sectionDrawer.Take(2).ToList();
-
-            Assert.AreEqual(expectedFrame1, receivedFrames[0]);
-            Assert.AreEqual(expectedFrame2, receivedFrames[1]);
+            frameProvider.MoveNext();
+            Assert.AreEqual(expectedFrame1, frameProvider.Current);
+            frameProvider.MoveNext();
+            Assert.AreEqual(expectedFrame2, frameProvider.Current);
         }
     }
 }
