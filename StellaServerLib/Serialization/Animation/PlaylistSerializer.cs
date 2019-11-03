@@ -22,7 +22,6 @@ namespace StellaServerLib.Serialization.Animation
             _settings = new SerializerSettings();
             _settings.EmitDefaultValues = true;
             _settings.RegisterAssembly(typeof(PlayListSettings).Assembly);
-            _settings.RegisterTagMapping("Storyboards", typeof(PlayListItemSettings[]));
             _serializer = new Serializer(_settings);
         }
 
@@ -37,25 +36,49 @@ namespace StellaServerLib.Serialization.Animation
             }
 
             List<PlayListItem> items = new List<PlayListItem>();
-          
-            // Retrieve the storyboards by name
-            for (var index = 0; index < settings.StoryboardSettings.Length; index++)
+            
+            // Validate storyboards and convert to PlayListItems
+            List<string> errors = new List<string>();
+            for (int i = 0; i < settings.StoryboardSettings.Length; i++)
             {
-                PlayListItemSettings setting = settings.StoryboardSettings[index];
-                Storyboard storyboard = _storyboards.FirstOrDefault(x => x.Name == setting.Name);
-                if (storyboard == null)
+                Storyboard storyboard = null;
+
+                if (settings.StoryboardSettings[i].Duration < 1)
                 {
-                    throw new InvalidDataException($"The storyboard {setting.Name} of item {index} does not exist");
+                    errors.Add($"The duration of item {i} must be 0 or more.");
+                }
+                
+                if (settings.StoryboardSettings[i].Name == null)
+                {
+                    // Validate storyboard settings
+                    if (StoryboardSerializer.AnimationsAreValid(settings.StoryboardSettings[i].AnimationSettings, out List<string> storyboardErrors))
+                    {
+                        storyboard = new Storyboard(){AnimationSettings = settings.StoryboardSettings[i].AnimationSettings, Name = $"{settings.Name} storyboard {i}"};
+                    }
+                    else
+                    {
+                        errors.Add($"Failed to create storyboard of item {i}. Errors: {string.Join("\n", storyboardErrors)}");
+                    }
+                }
+                else
+                {
+                    // Validate that the storyboard exists
+                    storyboard = _storyboards.FirstOrDefault(x => x.Name == settings.StoryboardSettings[i].Name);
+                    if (storyboard == null)
+                    {
+                        errors.Add($"The storyboard {settings.StoryboardSettings[i].Name} of item {i} does not exist");
+                    }
                 }
 
-                if (setting.Duration < 1)
-                {
-                    throw new InvalidDataException($"The storyboard {setting.Name} of item {index} does not exist");
-                }
-
-                items.Add(new PlayListItem(storyboard, setting.Duration));
+                items.Add(new PlayListItem(storyboard, settings.StoryboardSettings[i].Duration));
             }
 
+            // Throw if any errors occured
+            if (errors.Count > 0)
+            {
+                throw new FormatException($"Failed to load the playlist. Errors that occured:\n {String.Join("\n",errors)}");
+            }
+            
             return new PlayList(settings.Name, items.ToArray());
         }
     }
