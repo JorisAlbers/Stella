@@ -104,7 +104,7 @@ namespace StellaServerConsole
             string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new Server(), new AnimatorFactory(_bitmapRepository, 1));
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , new Server(), new AnimatorCreator(new FrameProviderCreator(_bitmapRepository, 1)));
 
             try
             {

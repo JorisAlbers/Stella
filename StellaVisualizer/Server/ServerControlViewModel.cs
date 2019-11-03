@@ -57,7 +57,7 @@ namespace StellaVisualizer.Server
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
             _memoryNetworkController.SetServer(memoryServer);
-            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, memoryServer, new AnimatorFactory(bitmapRepository, 1));
+            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, memoryServer, new AnimatorCreator(new FrameProviderCreator(bitmapRepository, 1)));
             _stellaServer.Start();
 
             // Store in the ServerControlPanelViewModel

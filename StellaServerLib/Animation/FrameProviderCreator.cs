@@ -4,41 +4,26 @@ using StellaLib.Animation;
 using StellaServerLib.Animation.Drawing;
 using StellaServerLib.Animation.Drawing.Fade;
 using StellaServerLib.Animation.FrameProviding;
-using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Animation.Transformation;
 using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Animation
-{// Creates an Animator
-    public class AnimatorFactory
+{// Creates an FrameProvider
+    public class FrameProviderCreator
     {
         private readonly BitmapRepository _bitmapRepository;
         private readonly int _millisecondsPerTimeUnit;
-        private TransformationController _transformationController;
 
-        public AnimatorFactory(BitmapRepository bitmapRepository, int millisecondsPerTimeUnit)
+        public FrameProviderCreator(BitmapRepository bitmapRepository, int millisecondsPerTimeUnit)
         {
             _bitmapRepository = bitmapRepository;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
         }
 
-        public IAnimator Create(Storyboard storyboard, int[] stripLengthPerPi, List<PiMaskItem> mask)
+        public IFrameProvider Create(Storyboard storyboard, TransformationSettings masterTransformationSettings, out TransformationController transformationController)
         {
-            IFrameProvider frameProvider;
-            TransformationSettings masterTransformationSettings;
             TransformationSettings[] animationTransformationSettings = new TransformationSettings[storyboard.AnimationSettings.Length];
-
-            if (_transformationController != null)
-            {
-                masterTransformationSettings = _transformationController.AnimationTransformation.MasterTransformationSettings;
-            }
-            else
-            {
-                masterTransformationSettings = new TransformationSettings(0, 0, new float[3]);
-            }
-
-            _transformationController = new TransformationController(masterTransformationSettings, animationTransformationSettings);
-
+            transformationController = new TransformationController(masterTransformationSettings, animationTransformationSettings);
 
             // First, get the drawers
             IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
@@ -70,9 +55,7 @@ namespace StellaServerLib.Animation
             }
 
             // Then, create a new FrameProvider
-            frameProvider = new FrameProvider(drawers, relativeTimeStamps, _transformationController, _millisecondsPerTimeUnit);
-            
-            return new Animator(frameProvider, stripLengthPerPi, mask, _transformationController);
+            return new FrameProvider(drawers, relativeTimeStamps, transformationController, _millisecondsPerTimeUnit);
         }
 
         private IDrawer CreateDrawer(IAnimationSettings animationSetting)
