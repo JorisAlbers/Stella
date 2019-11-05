@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
@@ -10,6 +12,8 @@ namespace StellaServerLib.Animation
     public class Animator : IAnimator
     {
         private readonly IFrameProvider _frameProvider;
+        private readonly PlayList _playList;
+        private readonly IFrameProviderCreator _frameProviderCreator;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
 
@@ -19,21 +23,34 @@ namespace StellaServerLib.Animation
         /// <summary>
         /// CTOR
         /// </summary>s
-        /// <param name="frameProvider">The drawer to get frames from.</param>
+        /// <param name="playList"></param>
+        /// <param name="frameProviderCreator"></param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
-        /// <param name="transformationController">Class that provides run time animation changes</param>
-        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, TransformationController transformationController)
+        /// <param name="masterTransformationSettings"></param>
+        public Animator(PlayList playList, IFrameProviderCreator frameProviderCreator, int[] stripLengthPerPi, List<PiMaskItem> mask, TransformationSettings masterTransformationSettings)
         {
-            _frameProvider = frameProvider;
+            _playList = playList;
+            _frameProviderCreator = frameProviderCreator;
             _mask = mask;
-            TransformationController = transformationController;
             _numberOfPis = stripLengthPerPi.Length;
 
             _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
             for (int i = 0; i < stripLengthPerPi.Length; i++)
             {
                 _currentFrame[i] = new PixelInstruction[stripLengthPerPi[i]];
+            }
+
+            if (playList.Items.Length == 1)
+            {
+                // There is just a single item in the playlist. This item will always be on display.
+                _frameProvider = frameProviderCreator.Create(playList.Items[0].Storyboard, masterTransformationSettings, out TransformationController controller);
+                TransformationController = controller;
+            }
+            else
+            {
+                // Loop through the items.
+                throw new NotImplementedException();
             }
         }
 

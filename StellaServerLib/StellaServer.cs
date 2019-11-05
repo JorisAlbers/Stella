@@ -16,10 +16,10 @@ namespace StellaServerLib
         private readonly string _ip;
         private readonly int _port;
         private readonly int _udpPort;
-        private readonly AnimatorCreator _animatorCreator;
+        private readonly int _millisecondsPerTimeUnit;
+        private readonly BitmapRepository _bitmapRepository;
 
-        private List<PiMaskItem> _mask;
-        private int[] _stripLengthPerPi;
+        private AnimatorCreator _animatorCreator;
         private IServer _server;
         private ClientController _clientController;
 
@@ -27,20 +27,24 @@ namespace StellaServerLib
 
         public IAnimator Animator { get; private set; }
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, IServer server, AnimatorCreator animatorCreator)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit, BitmapRepository bitmapRepository, IServer server)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
+            _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
+            _bitmapRepository = bitmapRepository;
             _server = server;
-            _animatorCreator = animatorCreator;
         }
 
         public void Start()
         {
             // Read mapping
-            _mask = LoadMask(_mappingFilePath);
+            List<PiMaskItem> mask = LoadMask(_mappingFilePath, out int[] stripLengthPerPi);
+            // Create animatorCreator
+            _animatorCreator = new AnimatorCreator(new FrameProviderCreator(_bitmapRepository, _millisecondsPerTimeUnit), stripLengthPerPi, mask);
+
             // Start Server
             _server = StartServer(_ip, _port, _udpPort, _server);
             // Start ClientController
@@ -50,6 +54,8 @@ namespace StellaServerLib
         public async void StartStoryboard(Storyboard storyboard)
         {
             Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
+            // TODO Play a playlist instead of a storyboard
+            PlayList playList = new PlayList("temp", new PlayListItem[]{new PlayListItem(storyboard, 0)});
 
             try
             {
@@ -57,7 +63,7 @@ namespace StellaServerLib
                 if (0 == Interlocked.Exchange(ref _loadingAnimation, 1))
                 {
                     // Create the animation on a new task
-                    Animator = await Task.Factory.StartNew(() => _animatorCreator.Create(storyboard, _stripLengthPerPi, _mask)); 
+                    Animator = await Task.Run(() => _animatorCreator.Create(playList)); 
                     // Release the lock
                     Interlocked.Exchange(ref _loadingAnimation, 0);
                 }
@@ -76,7 +82,7 @@ namespace StellaServerLib
 
         }
 
-        private List<PiMaskItem> LoadMask(string mappingFilePath)
+        private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)
         {
             try
             {
@@ -86,7 +92,7 @@ namespace StellaServerLib
 
                 // Convert them to a mask
                 PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
-                return piMaskCalculator.Calculate(out _stripLengthPerPi);
+                return piMaskCalculator.Calculate(out stripLengthPerPi);
             }
             catch (Exception e)
             {

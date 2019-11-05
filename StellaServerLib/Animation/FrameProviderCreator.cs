@@ -9,7 +9,7 @@ using StellaServerLib.Serialization.Animation;
 
 namespace StellaServerLib.Animation
 {// Creates an FrameProvider
-    public class FrameProviderCreator
+    public class FrameProviderCreator : IFrameProviderCreator
     {
         private readonly BitmapRepository _bitmapRepository;
         private readonly int _millisecondsPerTimeUnit;
@@ -90,6 +90,4 @@ namespace StellaServerLib.Animation
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");
         }
     }
-
-
 }

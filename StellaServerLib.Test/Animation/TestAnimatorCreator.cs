@@ -12,7 +12,7 @@ namespace StellaServerLib.Test.Animation
         [Test]
         public void MasterTransformationSettingsIsPreserved()
         {
-            AnimatorCreator creator = new AnimatorCreator(new FrameProviderCreator(null,1));
+            AnimatorCreator creator = new AnimatorCreator(new FrameProviderCreator(null,1), new int[] { 100 }, null);
 
             MovingPatternAnimationSettings animationSettings = new MovingPatternAnimationSettings
             {
@@ -23,15 +23,14 @@ namespace StellaServerLib.Test.Animation
                 StripLength = 100
             };
 
+            PlayList playList1 = new PlayList("playList1", new PlayListItem[] {new PlayListItem(new Storyboard{AnimationSettings = new IAnimationSettings[] { animationSettings } }, 0) });
+            PlayList playList2 = new PlayList("playList2", new PlayListItem[] {new PlayListItem(new Storyboard{AnimationSettings = new IAnimationSettings[] { animationSettings } }, 0) });
 
-            Storyboard sb1 = new Storyboard {AnimationSettings = new IAnimationSettings[] {animationSettings}};
-            Storyboard sb2 = new Storyboard {AnimationSettings = new IAnimationSettings[] {animationSettings}};
-
-            IAnimator animator = creator.Create(sb1, new int[]{100}, null);
+            IAnimator animator = creator.Create(playList1);
             TransformationSettings expectedSettings =
                 animator.TransformationController.AnimationTransformation.MasterTransformationSettings;
 
-            animator = creator.Create(sb2, new int[] { 100 }, null);
+            animator = creator.Create(playList2);
             Assert.IsTrue(ReferenceEquals(expectedSettings, animator.TransformationController.AnimationTransformation.MasterTransformationSettings));
             
         }

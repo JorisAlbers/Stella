@@ -1,4 +1,5 @@
-﻿using StellaLib.Animation;
+﻿using System.Threading.Tasks;
+using StellaLib.Animation;
 using StellaServerLib.Animation.Transformation;
 
 namespace StellaServerLib.Animation

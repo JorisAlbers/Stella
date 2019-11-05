@@ -53,11 +53,11 @@ namespace StellaVisualizer.Server
             // Add animations on the images in the bitmap directory
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(new DirectoryInfo(viewmodel.BitmapDirectory),_pixelsPerRow,3,2);
             bitmapStoryboardCreator.Create(storyboards);
-
+            
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
             _memoryNetworkController.SetServer(memoryServer);
-            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, memoryServer, new AnimatorCreator(new FrameProviderCreator(bitmapRepository, 1)));
+            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, 1, bitmapRepository, memoryServer);
             _stellaServer.Start();
 
             // Store in the ServerControlPanelViewModel
