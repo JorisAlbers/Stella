@@ -129,7 +129,7 @@ namespace StellaServerConsole
                     _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
                     _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
-                    _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartStoryboard(storyboard);
+                    _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartAnimation(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {
                         if (_bitmapRepository.BitmapExists(eventArgs.Name))
@@ -179,7 +179,7 @@ namespace StellaServerConsole
 
                     try
                     {
-                        _stellaServer.StartStoryboard(storyboards[storyboardToPlay]);
+                        _stellaServer.StartAnimation(storyboards[storyboardToPlay]);
                     }
                     catch (Exception e)
                     {

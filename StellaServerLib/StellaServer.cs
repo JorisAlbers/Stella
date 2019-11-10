@@ -51,19 +51,37 @@ namespace StellaServerLib
             _clientController = StartClientController(_server);
         }
 
-        public async void StartStoryboard(Storyboard storyboard)
+        /// <summary>
+        /// Start a storyboard
+        /// </summary>
+        /// <param name="storyboard"></param>
+        public void StartAnimation(Storyboard storyboard)
         {
             Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
-            // TODO Play a playlist instead of a storyboard
-            PlayList playList = new PlayList("temp", new PlayListItem[]{new PlayListItem(storyboard, 0)});
+            PlayList playList = new PlayList(storyboard.Name, new PlayListItem[] {new PlayListItem(storyboard, 0)});
+            StartPlayList(playList);
+        }
+        
+        /// <summary>
+        /// Start a playlist
+        /// </summary>
+        /// <param name="playList"></param>
+        public void StartAnimation(PlayList playList)
+        {
+            Console.Out.WriteLine($"Starting playList {playList.Name}");
+            StartPlayList(playList);
+        }
 
+        private async void StartPlayList(PlayList playList)
+        {
+            IAnimator oldAnimator = Animator;
             try
             {
                 // Check if we are already loading an animation. If so, skip.
                 if (0 == Interlocked.Exchange(ref _loadingAnimation, 1))
                 {
                     // Create the animation on a new task
-                    Animator = await Task.Run(() => _animatorCreator.Create(playList)); 
+                    Animator = await Task.Run(() => _animatorCreator.Create(playList));
                     // Release the lock
                     Interlocked.Exchange(ref _loadingAnimation, 0);
                 }
@@ -75,11 +93,11 @@ namespace StellaServerLib
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to create new animator.",e);
+                throw new Exception("Failed to create new animator.", e);
             }
 
             _clientController.StartAnimation(Animator, Environment.TickCount); // TODO variable startAT
-
+            oldAnimator.Dispose();
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)

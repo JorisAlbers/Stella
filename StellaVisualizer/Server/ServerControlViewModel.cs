@@ -77,7 +77,7 @@ namespace StellaVisualizer.Server
                     _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
                     _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
-                    _apiServer.StartStoryboard += (s, storyboard) => _stellaServer.StartStoryboard(storyboard);
+                    _apiServer.StartStoryboard += (s, storyboard) => _stellaServer.StartAnimation(storyboard);
                     _apiServer.BitmapReceived += (s, eventArgs) =>
                     {
                         if (bitmapRepository.BitmapExists(eventArgs.Name))
@@ -100,7 +100,7 @@ namespace StellaVisualizer.Server
 
         private void ServerControlPanelViewModel_OnStartStoryboardRequested(object sender, Storyboard e)
         {
-            _stellaServer.StartStoryboard(e);
+            _stellaServer.StartAnimation(e);
         }
         private void ApiServerOnBrightnessCorrectionSet(int animationIndex, float brightnessCorrection)
         {
