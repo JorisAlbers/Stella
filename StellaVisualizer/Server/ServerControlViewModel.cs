@@ -55,7 +55,6 @@ namespace StellaVisualizer.Server
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(new DirectoryInfo(viewmodel.BitmapDirectory),_pixelsPerRow,3,2);
             bitmapStoryboardCreator.Create(storyboards);
 
-            List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
 
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
@@ -63,11 +62,15 @@ namespace StellaVisualizer.Server
             _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, 1, bitmapRepository, memoryServer);
             _stellaServer.Start();
 
+            List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
+            // Create play lists
+            animations.Add(PlaylistCreator.Create("All combined", storyboards, 5));
+            animations.AddRange(PlaylistCreator.CreateFromCategory(storyboards, 5));
+
             // Store in the ServerControlPanelViewModel
             ServerControlPanelViewModel = new ServerControlPanelViewModel(_stellaServer, animations);
-            ServerControlPanelViewModel.StartStoryboardRequested += ServerControlPanelViewModel_OnStartStoryboardRequested;
+            ServerControlPanelViewModel.StartAnimationRequested += ServerControlPanelViewModelOnStartAnimationRequested;
             
-
             // Start API server
             if (!string.IsNullOrWhiteSpace(viewmodel.ApiServerIpAddress))
             {
@@ -101,7 +104,7 @@ namespace StellaVisualizer.Server
             }
         }
 
-        private void ServerControlPanelViewModel_OnStartStoryboardRequested(object sender, Storyboard e)
+        private void ServerControlPanelViewModelOnStartAnimationRequested(object sender, IAnimation e)
         {
             _stellaServer.StartAnimation(e);
         }

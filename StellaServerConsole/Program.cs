@@ -102,8 +102,12 @@ namespace StellaServerConsole
             bitmapStoryboardCreator.Create(storyboards);
             
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
-            string[] animationNames = animations.Select(x => x.Name).ToArray();
+            
+            // Create play lists
+            animations.Add(PlaylistCreator.Create("All combined", storyboards, 120));
+            animations.AddRange(PlaylistCreator.CreateFromCategory(storyboards, 120));
 
+            string[] animationNames = animations.Select(x => x.Name).ToArray();
 
             // Start stellaServer
             _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , millisecondsPerTimeUnit, _bitmapRepository, new Server());
