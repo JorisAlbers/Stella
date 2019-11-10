@@ -12,9 +12,9 @@ namespace StellaServerLib.Test.Animation.Transformation
         public void GetCorrectedTimeUnitsPerFrame_Index_CorrectValue(int masterTimeUnitsPerFrame, int animationTimeUnitsPerFrame)
         {
             int expected = masterTimeUnitsPerFrame + animationTimeUnitsPerFrame;
-            AnimationTransformation animationTransformation = new AnimationTransformation(new TransformationSettings(masterTimeUnitsPerFrame, 0,new float[3]), new TransformationSettings[]
+            AnimationTransformation animationTransformation = new AnimationTransformation(new AnimationTransformationSettings(masterTimeUnitsPerFrame, 0,new float[3]), new AnimationTransformationSettings[]
             {
-                new TransformationSettings(animationTimeUnitsPerFrame,0,new float[3]), 
+                new AnimationTransformationSettings(animationTimeUnitsPerFrame,0,new float[3]), 
             });
             
             Assert.AreEqual(expected, animationTransformation.GetCorrectedTimeUnitsPerFrame(0));

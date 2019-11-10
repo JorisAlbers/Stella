@@ -8,21 +8,21 @@ namespace StellaServerLib.Animation.Transformation
     /// </summary>
     public class TransformationController
     {
-        private TransformationSettings _masterTransformationSettings;
-        private TransformationSettings[] _animationTransformationSettings;
+        private AnimationTransformationSettings _masterAnimationTransformationSettings;
+        private AnimationTransformationSettings[] _animationTransformationSettings;
 
         public AnimationTransformation AnimationTransformation { get; private set; }
 
 
 
-        public TransformationController(TransformationSettings masterTransformationSettings, TransformationSettings[] animationTransformationSettings)
+        public TransformationController(AnimationTransformationSettings masterAnimationTransformationSettings, AnimationTransformationSettings[] animationTransformationSettings)
         {
             // Keep track of the setting
-            _masterTransformationSettings = masterTransformationSettings;
+            _masterAnimationTransformationSettings = masterAnimationTransformationSettings;
             _animationTransformationSettings = animationTransformationSettings;
 
             // Create a new public AnimationTransformation
-            AnimationTransformation = new AnimationTransformation(masterTransformationSettings, animationTransformationSettings);
+            AnimationTransformation = new AnimationTransformation(masterAnimationTransformationSettings, animationTransformationSettings);
         }
         
         /// <summary>
@@ -35,8 +35,8 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The master timeUnitsPerFrame must be at least 0 ms.");
             }
 
-            _masterTransformationSettings = new TransformationSettings(timeUnitsPerFrame, _masterTransformationSettings.BrightnessCorrection, _masterTransformationSettings.RgbFadeCorrection);
-            AnimationTransformation = new AnimationTransformation(_masterTransformationSettings, _animationTransformationSettings.ToArray());
+            _masterAnimationTransformationSettings = new AnimationTransformationSettings(timeUnitsPerFrame, _masterAnimationTransformationSettings.BrightnessCorrection, _masterAnimationTransformationSettings.RgbFadeCorrection);
+            AnimationTransformation = new AnimationTransformation(_masterAnimationTransformationSettings, _animationTransformationSettings.ToArray());
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The master timeUnitsPerFrame must be at least 0 ms.");
             }
 
-            TransformationSettings old = _animationTransformationSettings[animationIndex];
-            _animationTransformationSettings[animationIndex] = new TransformationSettings(timeUnitsPerFrame, old.BrightnessCorrection, old.RgbFadeCorrection);
-            AnimationTransformation = new AnimationTransformation(_masterTransformationSettings, _animationTransformationSettings.ToArray());
+            AnimationTransformationSettings old = _animationTransformationSettings[animationIndex];
+            _animationTransformationSettings[animationIndex] = new AnimationTransformationSettings(timeUnitsPerFrame, old.BrightnessCorrection, old.RgbFadeCorrection);
+            AnimationTransformation = new AnimationTransformation(_masterAnimationTransformationSettings, _animationTransformationSettings.ToArray());
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The brightness correction must in the range of -1 and 1");
             }
 
-            _masterTransformationSettings = new TransformationSettings(_masterTransformationSettings.TimeUnitsPerFrame, brightnessCorrection, _masterTransformationSettings.RgbFadeCorrection);
-            AnimationTransformation = new AnimationTransformation(_masterTransformationSettings, _animationTransformationSettings.ToArray());
+            _masterAnimationTransformationSettings = new AnimationTransformationSettings(_masterAnimationTransformationSettings.TimeUnitsPerFrame, brightnessCorrection, _masterAnimationTransformationSettings.RgbFadeCorrection);
+            AnimationTransformation = new AnimationTransformation(_masterAnimationTransformationSettings, _animationTransformationSettings.ToArray());
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The brightness correction must in the range of -1 and 1");
             }
 
-            TransformationSettings old = _animationTransformationSettings[animationIndex];
-            _animationTransformationSettings[animationIndex] = new TransformationSettings(old.TimeUnitsPerFrame, brightnessCorrection, old.RgbFadeCorrection);
-            AnimationTransformation = new AnimationTransformation(_masterTransformationSettings, _animationTransformationSettings.ToArray());
+            AnimationTransformationSettings old = _animationTransformationSettings[animationIndex];
+            _animationTransformationSettings[animationIndex] = new AnimationTransformationSettings(old.TimeUnitsPerFrame, brightnessCorrection, old.RgbFadeCorrection);
+            AnimationTransformation = new AnimationTransformation(_masterAnimationTransformationSettings, _animationTransformationSettings.ToArray());
         }
         
         /// <summary>
@@ -95,8 +95,8 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
             }
 
-            _masterTransformationSettings = new TransformationSettings(_masterTransformationSettings.TimeUnitsPerFrame, _masterTransformationSettings.BrightnessCorrection, rgbFadeCorrection);
-            AnimationTransformation = new AnimationTransformation(_masterTransformationSettings, _animationTransformationSettings.ToArray());
+            _masterAnimationTransformationSettings = new AnimationTransformationSettings(_masterAnimationTransformationSettings.TimeUnitsPerFrame, _masterAnimationTransformationSettings.BrightnessCorrection, rgbFadeCorrection);
+            AnimationTransformation = new AnimationTransformation(_masterAnimationTransformationSettings, _animationTransformationSettings.ToArray());
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
             }
 
-            TransformationSettings old = _animationTransformationSettings[animationIndex];
-            _animationTransformationSettings[animationIndex] = new TransformationSettings(old.TimeUnitsPerFrame, old.BrightnessCorrection, rgbFadeCorrection);
-            AnimationTransformation = new AnimationTransformation(_masterTransformationSettings, _animationTransformationSettings.ToArray());
+            AnimationTransformationSettings old = _animationTransformationSettings[animationIndex];
+            _animationTransformationSettings[animationIndex] = new AnimationTransformationSettings(old.TimeUnitsPerFrame, old.BrightnessCorrection, rgbFadeCorrection);
+            AnimationTransformation = new AnimationTransformation(_masterAnimationTransformationSettings, _animationTransformationSettings.ToArray());
         }
       
 

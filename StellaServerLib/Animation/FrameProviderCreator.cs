@@ -20,10 +20,10 @@ namespace StellaServerLib.Animation
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
         }
 
-        public IFrameProvider Create(Storyboard storyboard, TransformationSettings masterTransformationSettings, out TransformationController transformationController)
+        public IFrameProvider Create(Storyboard storyboard, AnimationTransformationSettings masterAnimationTransformationSettings, out TransformationController transformationController)
         {
-            TransformationSettings[] animationTransformationSettings = new TransformationSettings[storyboard.AnimationSettings.Length];
-            transformationController = new TransformationController(masterTransformationSettings, animationTransformationSettings);
+            AnimationTransformationSettings[] animationTransformationSettings = new AnimationTransformationSettings[storyboard.AnimationSettings.Length];
+            transformationController = new TransformationController(masterAnimationTransformationSettings, animationTransformationSettings);
 
             // First, get the drawers
             IDrawer[] drawers = new IDrawer[storyboard.AnimationSettings.Length];
@@ -50,7 +50,7 @@ namespace StellaServerLib.Animation
                     drawers[i] = CreateDrawer(settings);
                 }
 
-                animationTransformationSettings[i] = new TransformationSettings(settings.TimeUnitsPerFrame, 0, new float[3]);
+                animationTransformationSettings[i] = new AnimationTransformationSettings(settings.TimeUnitsPerFrame, 0, new float[3]);
                 relativeTimeStamps[i] = settings.RelativeStart;
             }
 

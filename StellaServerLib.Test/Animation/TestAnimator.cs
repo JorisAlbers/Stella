@@ -43,11 +43,11 @@ namespace StellaServerLib.Test.Animation
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
             TransformationController transformationController;
-            frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), It.IsAny<TransformationSettings>(),
+            frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), It.IsAny<AnimationTransformationSettings>(),
                 out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[]{new PlayListItem(new Storyboard(), 10)});
-            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new TransformationSettings(10,1,new float[3]));
+            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(10,1,new float[3]));
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(1, framePerPi.Length);
@@ -102,11 +102,11 @@ namespace StellaServerLib.Test.Animation
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
             TransformationController transformationController;
-            frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), It.IsAny<TransformationSettings>(),
+            frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), It.IsAny<AnimationTransformationSettings>(),
                 out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
-            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new TransformationSettings(5, 1, new float[3]));
+            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3]));
             FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
 
             Assert.AreEqual(3,framePerPi.Length);
@@ -176,11 +176,11 @@ namespace StellaServerLib.Test.Animation
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
             TransformationController transformationController;
-            frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), It.IsAny<TransformationSettings>(),
+            frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), It.IsAny<AnimationTransformationSettings>(),
                 out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
-            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new TransformationSettings(5, 1, new float[3]));
+            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3]));
             // Flush first two frames
             animator.GetNextFramePerPi();
             animator.GetNextFramePerPi();

@@ -13,7 +13,7 @@ namespace StellaServerLib.Animation
     public class Animator : IAnimator
     {
         private readonly List<PiMaskItem> _mask;
-        private readonly TransformationSettings _masterTransformationSettings;
+        private readonly AnimationTransformationSettings _masterAnimationTransformationSettings;
         private readonly int _numberOfPis;
         private readonly PixelInstruction[][] _currentFrame;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -30,11 +30,11 @@ namespace StellaServerLib.Animation
         /// <param name="frameProviderCreator"></param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
-        /// <param name="masterTransformationSettings"></param>
-        public Animator(PlayList playList, IFrameProviderCreator frameProviderCreator, int[] stripLengthPerPi, List<PiMaskItem> mask, TransformationSettings masterTransformationSettings)
+        /// <param name="masterAnimationTransformationSettings"></param>
+        public Animator(PlayList playList, IFrameProviderCreator frameProviderCreator, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformationSettings masterAnimationTransformationSettings)
         {
             _mask = mask;
-            _masterTransformationSettings = masterTransformationSettings;
+            _masterAnimationTransformationSettings = masterAnimationTransformationSettings;
             _numberOfPis = stripLengthPerPi.Length;
 
             _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
@@ -43,7 +43,7 @@ namespace StellaServerLib.Animation
                 _currentFrame[i] = new PixelInstruction[stripLengthPerPi[i]];
             }
 
-            _frameProvider = frameProviderCreator.Create(playList.Items[0].Storyboard, masterTransformationSettings, out TransformationController controller);
+            _frameProvider = frameProviderCreator.Create(playList.Items[0].Storyboard, masterAnimationTransformationSettings, out TransformationController controller);
             
             // Start the first animation
             TransformationController = controller;
@@ -61,7 +61,7 @@ namespace StellaServerLib.Animation
                     {
                         // Load the next animation
                         IFrameProvider nextFrameProvider = frameProviderCreator.Create(playList.Items[i].Storyboard,
-                            _masterTransformationSettings, out controller);
+                            _masterAnimationTransformationSettings, out controller);
 
                         // Wait
                         await Task.Delay(playList.Items[i].Duration * 1000, _cancellationTokenSource.Token);

@@ -5,7 +5,7 @@ namespace StellaServerLib.Animation
 {
     public interface IFrameProviderCreator
     {
-        IFrameProvider Create(Storyboard storyboard, TransformationSettings masterTransformationSettings,
+        IFrameProvider Create(Storyboard storyboard, AnimationTransformationSettings masterAnimationTransformationSettings,
             out TransformationController transformationController);
     }
 }

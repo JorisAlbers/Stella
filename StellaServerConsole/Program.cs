@@ -268,7 +268,7 @@ namespace StellaServerConsole
                 // Animation speed
                 if (key.KeyChar == 's' || key.KeyChar == 'S')
                 {
-                    int currentWaitms = _stellaServer.Animator.TransformationController.AnimationTransformation.MasterTransformationSettings.TimeUnitsPerFrame;
+                    int currentWaitms = _stellaServer.Animator.TransformationController.AnimationTransformation.MasterAnimationTransformationSettings.TimeUnitsPerFrame;
                     int newWaitMs;
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {

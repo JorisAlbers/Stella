@@ -6,14 +6,14 @@
     /// </summary>
     public class AnimationTransformation
     {
-        public TransformationSettings MasterTransformationSettings { get;  }
+        public AnimationTransformationSettings MasterAnimationTransformationSettings { get;  }
 
-        public TransformationSettings[] AnimationsTransformationSettings { get;  }
+        public AnimationTransformationSettings[] AnimationsTransformationSettings { get;  }
 
 
-        public AnimationTransformation(TransformationSettings masterTransformationSettings, TransformationSettings[] animationTransformationSettings)
+        public AnimationTransformation(AnimationTransformationSettings masterAnimationTransformationSettings, AnimationTransformationSettings[] animationTransformationSettings)
         {
-            MasterTransformationSettings = masterTransformationSettings;
+            MasterAnimationTransformationSettings = masterAnimationTransformationSettings;
             AnimationsTransformationSettings = animationTransformationSettings;
         }
 
@@ -27,11 +27,11 @@
             float f_blue = blue;
 
             // Adjust RGB
-            (f_red, f_green, f_blue) = MasterTransformationSettings.AdjustColor(f_red, f_green, f_blue);
+            (f_red, f_green, f_blue) = MasterAnimationTransformationSettings.AdjustColor(f_red, f_green, f_blue);
             (f_red, f_green, f_blue) = AnimationsTransformationSettings[index].AdjustColor(f_red, f_green, f_blue);
 
             // Adjust Brightness
-            (f_red, f_green, f_blue) = MasterTransformationSettings.AdjustBrightness(f_red, f_green, f_blue);
+            (f_red, f_green, f_blue) = MasterAnimationTransformationSettings.AdjustBrightness(f_red, f_green, f_blue);
             (f_red, f_green, f_blue) = AnimationsTransformationSettings[index].AdjustBrightness(f_red, f_green, f_blue);
 
             return ((byte red, byte green, byte blue)) (f_red, f_green, f_blue);
@@ -45,7 +45,7 @@
         /// <returns></returns>
         public int GetCorrectedTimeUnitsPerFrame(int animationIndex)
         {
-            return MasterTransformationSettings.TimeUnitsPerFrame +
+            return MasterAnimationTransformationSettings.TimeUnitsPerFrame +
                    AnimationsTransformationSettings[animationIndex].TimeUnitsPerFrame;
         }
     }

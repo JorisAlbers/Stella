@@ -27,11 +27,11 @@ namespace StellaServerLib.Test.Animation
             PlayList playList2 = new PlayList("playList2", new PlayListItem[] {new PlayListItem(new Storyboard{AnimationSettings = new IAnimationSettings[] { animationSettings } }, 0) });
 
             IAnimator animator = creator.Create(playList1);
-            TransformationSettings expectedSettings =
-                animator.TransformationController.AnimationTransformation.MasterTransformationSettings;
+            AnimationTransformationSettings expectedSettings =
+                animator.TransformationController.AnimationTransformation.MasterAnimationTransformationSettings;
 
             animator = creator.Create(playList2);
-            Assert.IsTrue(ReferenceEquals(expectedSettings, animator.TransformationController.AnimationTransformation.MasterTransformationSettings));
+            Assert.IsTrue(ReferenceEquals(expectedSettings, animator.TransformationController.AnimationTransformation.MasterAnimationTransformationSettings));
             
         }
     }
