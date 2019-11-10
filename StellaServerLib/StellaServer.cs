@@ -97,7 +97,7 @@ namespace StellaServerLib
             }
 
             _clientController.StartAnimation(Animator, Environment.TickCount); // TODO variable startAT
-            oldAnimator.Dispose();
+            oldAnimator?.Dispose();
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)
