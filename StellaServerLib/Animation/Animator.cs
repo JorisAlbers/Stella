@@ -66,7 +66,6 @@ namespace StellaServerLib.Animation
                         // Wait
                         await Task.Delay(playList.Items[i].Duration * 1000, _cancellationTokenSource.Token);
 
-                        Console.WriteLine($"Index on display: {i}");
                         // Play
                         // TODO race condition
                         OnTimeResetRequested();
