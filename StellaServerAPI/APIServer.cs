@@ -24,7 +24,7 @@ namespace StellaServerAPI
 
         private readonly string _ip;
         private readonly int _port;
-        private readonly List<Storyboard> _storyboards;
+        private readonly List<IAnimation> _animations;
         private bool _isShuttingDown = false;
         private object _isShuttingDownLock = new object();
 
@@ -34,7 +34,7 @@ namespace StellaServerAPI
 
         public List<Client> ConnectedClients { get; set; }
 
-        public EventHandler<Storyboard> StartStoryboard;
+        public EventHandler<IAnimation> StartAnimation;
         public EventHandler<BitmapReceivedEventArgs> BitmapReceived;
         
         // Transform events
@@ -49,11 +49,11 @@ namespace StellaServerAPI
 
 
 
-        public APIServer(string ip, int port, List<Storyboard> storyboards)
+        public APIServer(string ip, int port, List<IAnimation> animations)
         {
             _ip = ip;
             _port = port;
-            _storyboards = storyboards;
+            _animations = animations;
             _stringProtocol = new StringProtocol();
             _bitmapProtocol = new BitmapProtocol();
         }
@@ -163,7 +163,8 @@ namespace StellaServerAPI
             StreamWriter streamWriter = new StreamWriter(memoryStream);
             StoryboardSerializer serializer = new StoryboardSerializer();
 
-            serializer.Save(_storyboards.ToArray(), streamWriter);
+            // TODO also send playlists
+            serializer.Save(_animations.OfType<Storyboard>().ToArray(), streamWriter);
            
             // send
             streamWriter.Flush();
@@ -333,7 +334,7 @@ namespace StellaServerAPI
                 }
 
                 // Bubble up
-                EventHandler<Storyboard> handler = StartStoryboard;
+                EventHandler<IAnimation> handler = StartAnimation;
                 if (handler != null)
                 {
                     handler.Invoke(this, storyboard);
@@ -343,24 +344,24 @@ namespace StellaServerAPI
 
         private void ParseStartPreloadedStoryboardMessage(byte[] data)
         {
-            if (_stringProtocol.TryDeserialize(data, out string storyboardName))
+            if (_stringProtocol.TryDeserialize(data, out string animationName))
             {
                 // Reset StringProtocol
                 _stringProtocol = new StringProtocol();
 
                 // Get the storyboard
-                Storyboard storyboard = _storyboards.FirstOrDefault(x => x.Name == storyboardName);
-                if (storyboard == null)
+                IAnimation animation = _animations.FirstOrDefault(x => x.Name == animationName);
+                if (animation == null)
                 {
-                    Console.Out.WriteLine($"API: failed to start storyboard. Storyboard {storyboardName} does not exist");
+                    Console.Out.WriteLine($"API: failed to start animation. Animation {animationName} does not exist");
                     return;
                 }
 
                 // Bubble up
-                EventHandler <Storyboard> handler = StartStoryboard;
+                EventHandler <IAnimation> handler = StartAnimation;
                 if (handler != null)
                 {
-                    handler.Invoke(this,storyboard);
+                    handler.Invoke(this,animation);
                 }
             }
         }

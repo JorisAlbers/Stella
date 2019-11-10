@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
@@ -53,7 +54,9 @@ namespace StellaVisualizer.Server
             // Add animations on the images in the bitmap directory
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(new DirectoryInfo(viewmodel.BitmapDirectory),_pixelsPerRow,3,2);
             bitmapStoryboardCreator.Create(storyboards);
-            
+
+            List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
+
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
             _memoryNetworkController.SetServer(memoryServer);
@@ -61,7 +64,7 @@ namespace StellaVisualizer.Server
             _stellaServer.Start();
 
             // Store in the ServerControlPanelViewModel
-            ServerControlPanelViewModel = new ServerControlPanelViewModel(_stellaServer, storyboards);
+            ServerControlPanelViewModel = new ServerControlPanelViewModel(_stellaServer, animations);
             ServerControlPanelViewModel.StartStoryboardRequested += ServerControlPanelViewModel_OnStartStoryboardRequested;
             
 
@@ -70,14 +73,14 @@ namespace StellaVisualizer.Server
             {
                 try
                 {
-                    _apiServer = new APIServer(viewmodel.ApiServerIpAddress, 20060, storyboards);
+                    _apiServer = new APIServer(viewmodel.ApiServerIpAddress, 20060, animations);
                     _apiServer.TimeUnitsPerFrameRequested += ApiServerOnTimeUnitsPerFrameRequested;
                     _apiServer.TimeUnitsPerFrameSet += ApiServerOnTimeUnitsPerFrameSet;
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
                     _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
                     _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
-                    _apiServer.StartStoryboard += (s, storyboard) => _stellaServer.StartAnimation(storyboard);
+                    _apiServer.StartAnimation += (s, storyboard) => _stellaServer.StartAnimation(storyboard);
                     _apiServer.BitmapReceived += (s, eventArgs) =>
                     {
                         if (bitmapRepository.BitmapExists(eventArgs.Name))

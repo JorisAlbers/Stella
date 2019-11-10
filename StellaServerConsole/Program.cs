@@ -101,7 +101,9 @@ namespace StellaServerConsole
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(new DirectoryInfo(bitmapDirectory),360,3,2); // TODO get these magic variables from the mapping.
             bitmapStoryboardCreator.Create(storyboards);
             
-            string[] storyboardNames = storyboards.Select(x => x.Name).ToArray();
+            List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
+            string[] animationNames = animations.Select(x => x.Name).ToArray();
+
 
             // Start stellaServer
             _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , millisecondsPerTimeUnit, _bitmapRepository, new Server());
@@ -122,14 +124,14 @@ namespace StellaServerConsole
             {
                 try
                 {
-                    _apiServer = new APIServer(apiIp, apiPort, storyboards);
+                    _apiServer = new APIServer(apiIp, apiPort, animations);
                     _apiServer.TimeUnitsPerFrameRequested += ApiServerOnTimeUnitsPerFrameRequested;
                     _apiServer.TimeUnitsPerFrameSet += ApiServerOnTimeUnitsPerFrameSet;
                     _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
                     _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
                     _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
                     _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
-                    _apiServer.StartStoryboard += (sender, storyboard) => _stellaServer.StartAnimation(storyboard);
+                    _apiServer.StartAnimation += (sender, storyboard) => _stellaServer.StartAnimation(storyboard);
                     _apiServer.BitmapReceived += (sender, eventArgs) =>
                     {
                         if (_bitmapRepository.BitmapExists(eventArgs.Name))
@@ -154,7 +156,7 @@ namespace StellaServerConsole
 
             while (true)
             {
-                OutputMenu(storyboardNames);
+                OutputMenu(animationNames);
                 string input = Console.ReadLine();
                 if (input == "q")
                 {

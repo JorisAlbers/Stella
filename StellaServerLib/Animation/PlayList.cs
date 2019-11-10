@@ -7,7 +7,7 @@ namespace StellaServerLib.Animation
     /// <summary>
     /// Stores data to loop a set of storyboards. 
     /// </summary>
-    public class PlayList
+    public class PlayList : IAnimation
     {
         public string Name { get; }
 

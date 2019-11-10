@@ -9,7 +9,7 @@ namespace StellaVisualizer.Server
     public class ServerControlPanelViewModel : INotifyPropertyChanged
     {
         private readonly StellaServer _stellaServer;
-        public List<Storyboard> Storyboards { get; private set; }
+        public List<IAnimation> Animations { get; private set; }
 
         public Storyboard SelectedStoryboard { get; set; }
 
@@ -19,10 +19,10 @@ namespace StellaVisualizer.Server
         public float MasterGreenCorrection { get; set; }
         public float MasterBlueCorrection { get; set; }
         
-        public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<Storyboard> storyboards)
+        public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<IAnimation> animations)
         {
             _stellaServer = stellaServer;
-            Storyboards = storyboards;
+            Animations = animations;
             PropertyChanged += OnPropertyChanged;
         }
 

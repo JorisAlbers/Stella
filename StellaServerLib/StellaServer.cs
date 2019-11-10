@@ -51,27 +51,19 @@ namespace StellaServerLib
             _clientController = StartClientController(_server);
         }
 
-        /// <summary>
-        /// Start a storyboard
-        /// </summary>
-        /// <param name="storyboard"></param>
-        public void StartAnimation(Storyboard storyboard)
+        public void StartAnimation(IAnimation animation)
         {
-            Console.Out.WriteLine($"Starting storyboard {storyboard.Name}");
-            PlayList playList = new PlayList(storyboard.Name, new PlayListItem[] {new PlayListItem(storyboard, 0)});
+            Console.Out.WriteLine($"Starting animation {animation.Name}");
+
+            PlayList playList = animation as PlayList;
+            if (animation is Storyboard storyboard)
+            {
+                playList = new PlayList(storyboard.Name, new PlayListItem[] { new PlayListItem(storyboard, 0) });
+            }
+
             StartPlayList(playList);
         }
         
-        /// <summary>
-        /// Start a playlist
-        /// </summary>
-        /// <param name="playList"></param>
-        public void StartAnimation(PlayList playList)
-        {
-            Console.Out.WriteLine($"Starting playList {playList.Name}");
-            StartPlayList(playList);
-        }
-
         private async void StartPlayList(PlayList playList)
         {
             IAnimator oldAnimator = Animator;

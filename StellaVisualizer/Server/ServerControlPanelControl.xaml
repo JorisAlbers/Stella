@@ -13,7 +13,7 @@
             <RowDefinition Height="4*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" ItemsSource="{Binding Storyboards}" SelectedItem="{Binding SelectedStoryboard}">
+        <ListView Grid.Row="0" ItemsSource="{Binding Animations}" SelectedItem="{Binding SelectedStoryboard}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
