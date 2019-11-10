@@ -152,7 +152,7 @@ namespace StellaServerLib.Animation
 
         public void Dispose()
         {
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
         }
     }
 }
