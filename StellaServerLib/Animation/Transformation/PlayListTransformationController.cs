@@ -9,14 +9,16 @@ namespace StellaServerLib.Animation.Transformation
     /// </summary>
     public class PlayListTransformationController
     {
+        private readonly AnimationTransformationSettings _masterSettings;
         private AnimationTransformationController _masterController;
 
         public PlayListTransformationSettings Settings { get; }
 
-        public PlayListTransformationController(AnimationTransformationController masterController)
+        public PlayListTransformationController(AnimationTransformationSettings masterSettings)
         {
-            _masterController = masterController;
+            _masterSettings = masterSettings;
         }
 
     }
 }
+ 

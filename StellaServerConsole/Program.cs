@@ -203,11 +203,11 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection);
+                _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection, animationIndex);
+            _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection, animationIndex);
         }
 
         private static void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
@@ -215,11 +215,11 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade);
+                _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(rgbFade);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
+            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
         private static void ApiServerOnTimeUnitsPerFrameSet(int animationIndex, int timeUnitsPerFrame)
@@ -227,26 +227,26 @@ namespace StellaServerConsole
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
+                _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(animationIndex, timeUnitsPerFrame);
+            _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(animationIndex, timeUnitsPerFrame);
         }
 
         private static float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].BrightnessCorrection;
+            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].BrightnessCorrection;
         }
 
         private static float[] ApiServerOnRgbFadeRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].RgbFadeCorrection;
+            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].RgbFadeCorrection;
         }
 
         private static int ApiServerOnTimeUnitsPerFrameRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].TimeUnitsPerFrame;
+            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].TimeUnitsPerFrame;
         }
 
         private static void GetTransformationInput()
@@ -268,7 +268,7 @@ namespace StellaServerConsole
                 // Animation speed
                 if (key.KeyChar == 's' || key.KeyChar == 'S')
                 {
-                    int currentWaitms = _stellaServer.Animator.TransformationController.AnimationTransformation.MasterAnimationTransformationSettings.TimeUnitsPerFrame;
+                    int currentWaitms = _stellaServer.Animator.StoryboardTransformationController.Settings.MasterSettings.TimeUnitsPerFrame;
                     int newWaitMs;
                     if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
                     {
@@ -281,7 +281,7 @@ namespace StellaServerConsole
                         newWaitMs = Math.Max(1, currentWaitms - 1);
                     }
 
-                    _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(newWaitMs);
+                    _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(newWaitMs);
                     Console.Out.WriteLine($"Speed set to {newWaitMs}");
                 }
 
@@ -302,7 +302,7 @@ namespace StellaServerConsole
                         if (brightnessCorrection > 1)
                             brightnessCorrection = 1;
                     }
-                    _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection);
+                    _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection);
                 }
 
                 // Color
@@ -320,7 +320,7 @@ namespace StellaServerConsole
                         if (transformationFactor[0] > 0)
                             transformationFactor[0] = 0;
                     }
-                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(transformationFactor);
                 }
                 if (key.KeyChar == 'g' || key.KeyChar == 'G')
                 {
@@ -336,7 +336,7 @@ namespace StellaServerConsole
                         if (transformationFactor[1] > 0)
                             transformationFactor[1] = 0;
                     }
-                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(transformationFactor);
                 }
                 if (key.KeyChar == 'b' || key.KeyChar == 'B')
                 {
@@ -352,7 +352,7 @@ namespace StellaServerConsole
                         if (transformationFactor[2] > 0)
                             transformationFactor[2] = 0;
                     }
-                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(transformationFactor);
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(transformationFactor);
                 }
                
             }

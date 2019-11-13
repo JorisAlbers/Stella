@@ -34,12 +34,12 @@ namespace StellaVisualizer.Server
                     StartStoryboard(SelectedAnimation);
                     break;
                 case nameof(MasterWaitMs):
-                    _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(MasterWaitMs);
+                    _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(MasterWaitMs);
                     break;
                 case nameof(MasterRedCorrection):
                 case nameof(MasterBlueCorrection):
                 case nameof(MasterGreenCorrection):
-                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
                     break;
             }
         }

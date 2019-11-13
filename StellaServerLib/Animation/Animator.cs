@@ -13,14 +13,13 @@ namespace StellaServerLib.Animation
     public class Animator : IAnimator
     {
         private readonly List<PiMaskItem> _mask;
-        private readonly AnimationTransformationSettings _masterAnimationTransformationSettings;
         private readonly int _numberOfPis;
         private readonly PixelInstruction[][] _currentFrame;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         private IFrameProvider _frameProvider;
 
-        public TransformationController TransformationController { get; private set; }
+        public StoryboardTransformationController StoryboardTransformationController { get; private set; }
         public event EventHandler TimeResetRequested;
 
         /// <summary>
@@ -34,7 +33,6 @@ namespace StellaServerLib.Animation
         public Animator(PlayList playList, IFrameProviderCreator frameProviderCreator, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformationSettings masterAnimationTransformationSettings)
         {
             _mask = mask;
-            _masterAnimationTransformationSettings = masterAnimationTransformationSettings;
             _numberOfPis = stripLengthPerPi.Length;
 
             _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
@@ -43,11 +41,11 @@ namespace StellaServerLib.Animation
                 _currentFrame[i] = new PixelInstruction[stripLengthPerPi[i]];
             }
 
-            _frameProvider = frameProviderCreator.Create(playList.Items[0].Storyboard, masterAnimationTransformationSettings, out TransformationController controller);
-            
-            // Start the first animation
-            TransformationController = controller;
+            _frameProvider = frameProviderCreator.Create(playList.Items[0].Storyboard, out StoryboardTransformationController controller);
+            controller.Init(masterAnimationTransformationSettings);
 
+            // Start the first animation
+            StoryboardTransformationController = controller;
             
             if (playList.Items.Length > 1)
             {
@@ -60,17 +58,19 @@ namespace StellaServerLib.Animation
                     while (!_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         // Load the next animation
-                        IFrameProvider nextFrameProvider = frameProviderCreator.Create(playList.Items[i].Storyboard,
-                            _masterAnimationTransformationSettings, out controller);
+                        IFrameProvider nextFrameProvider = frameProviderCreator.Create(playList.Items[i].Storyboard, out controller);
 
                         // Wait
                         await Task.Delay(playList.Items[i].Duration * 1000, _cancellationTokenSource.Token);
+
+                        // Initialize the storyboard controller
+                        controller.Init(StoryboardTransformationController.Settings.MasterSettings);
 
                         // Play
                         // TODO race condition
                         OnTimeResetRequested();
                         _frameProvider = nextFrameProvider;
-                        TransformationController = controller;
+                        StoryboardTransformationController = controller;
 
                         i = (i + 1 ) % playList.Items.Length;
                     }

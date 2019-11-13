@@ -28,10 +28,10 @@ namespace StellaServerLib.Test.Animation
 
             IAnimator animator = creator.Create(playList1);
             AnimationTransformationSettings expectedSettings =
-                animator.TransformationController.AnimationTransformation.MasterAnimationTransformationSettings;
+                animator.StoryboardTransformationController.Settings.MasterSettings;
 
             animator = creator.Create(playList2);
-            Assert.IsTrue(ReferenceEquals(expectedSettings, animator.TransformationController.AnimationTransformation.MasterAnimationTransformationSettings));
+            Assert.IsTrue(ReferenceEquals(expectedSettings, animator.StoryboardTransformationController.Settings.MasterSettings));
             
         }
     }

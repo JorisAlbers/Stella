@@ -15,7 +15,7 @@ namespace StellaServerLib.Animation.FrameProviding
     public class FrameProvider : IFrameProvider
     {
         private readonly IDrawer[] _drawers;
-        private readonly TransformationController _transformationController;
+        private readonly StoryboardTransformationController _transformationController;
         private readonly int _timeUnitMs;
         private readonly int[] _relativeStartingTimestamps;
         private readonly int _firstTimestamp;
@@ -29,7 +29,7 @@ namespace StellaServerLib.Animation.FrameProviding
         /// <param name="drawer"></param>
         /// <param name="transformationController"></param>
         /// <param name="timeUnitMs">The number of milliseconds each time unit takes.</param>
-        public FrameProvider(IDrawer drawer, TransformationController transformationController, int timeUnitMs)
+        public FrameProvider(IDrawer drawer, StoryboardTransformationController transformationController, int timeUnitMs)
         {
             _drawers = new[] { drawer };
             _transformationController = transformationController;
@@ -45,7 +45,7 @@ namespace StellaServerLib.Animation.FrameProviding
         /// <param name="drawers"></param>
         /// <param name="relativeStartingTimestamps">The time to start each frame relative to each other, in milliseconds</param>
         /// <param name="transformationController"></param>
-        public FrameProvider(IDrawer[] drawers, int[] relativeStartingTimestamps, TransformationController transformationController, int timeUnitMs)
+        public FrameProvider(IDrawer[] drawers, int[] relativeStartingTimestamps, StoryboardTransformationController transformationController, int timeUnitMs)
         {
             _drawers = drawers;
             _transformationController = transformationController;
@@ -91,8 +91,8 @@ namespace StellaServerLib.Animation.FrameProviding
 
         public bool MoveNext()
         {
-            // Get the AnimationTransformation
-            AnimationTransformation animationTransformation = _transformationController.AnimationTransformation;
+            // Get the storyboard animation transformation
+            StoryboardTransformationSettings animationTransformation = _transformationController.Settings;
 
             // Find the section that will start first
             List<int> providersInNextFrame = GetNextInLineAnimations(_timestamps);

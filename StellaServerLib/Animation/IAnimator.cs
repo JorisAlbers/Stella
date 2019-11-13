@@ -14,7 +14,7 @@ namespace StellaServerLib.Animation
         /// <returns>A frame for each pi.</returns>
         FrameWithoutDelta[] GetNextFramePerPi();
 
-        TransformationController TransformationController { get; }
+        StoryboardTransformationController StoryboardTransformationController { get; }
 
         /// <summary>
         /// Fired when the next storyboard starts an the startAt time needs to be reset. // TODO should no be needed, put the startAt inside the Animator

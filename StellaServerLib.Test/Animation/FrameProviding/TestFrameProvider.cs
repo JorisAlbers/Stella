@@ -34,7 +34,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
 
 
-            TransformationController transformationController = new TransformationController(new AnimationTransformationSettings(0,0,new float[3]),new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0,0,new float[3]),new AnimationTransformationSettings[]
             {
                 new AnimationTransformationSettings(100,0,new float[3]), 
             } );
@@ -78,7 +78,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             int index = -1;
             drawerMock.Setup(x => x.Current).Returns(()=>drawerFrames[index]);
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
-            TransformationController transformationController = new TransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
             {
                 new AnimationTransformationSettings(timeUnitsPerFrame, 0 , new float[3]),
             });
@@ -155,7 +155,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 50; // 50ms to make sure they get out of frame
-            TransformationController transformationController = new TransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
             {
                 new AnimationTransformationSettings(100,0,new float[3]),
                 new AnimationTransformationSettings(100,0,new float[3]),
@@ -225,7 +225,7 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 0; // Both are in frame
-            TransformationController transformationController = new TransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
             {
                 new AnimationTransformationSettings(100,0,new float[3]),
                 new AnimationTransformationSettings(100,0,new float[3]),

@@ -113,11 +113,11 @@ namespace StellaVisualizer.Server
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection);
+                _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetBrightnessCorrection(brightnessCorrection, animationIndex);
+            _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection, animationIndex);
         }
 
         private void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
@@ -125,11 +125,11 @@ namespace StellaVisualizer.Server
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade);
+                _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(rgbFade);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
+            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
         }
 
         private void ApiServerOnTimeUnitsPerFrameSet(int animationIndex, int timeUnitsPerFrame)
@@ -137,28 +137,26 @@ namespace StellaVisualizer.Server
             if (animationIndex == -1)
             {
                 // Set for all
-                _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
+                _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
                 return;
             }
 
-            _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame, animationIndex);
+            _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame, animationIndex);
         }
 
         private float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation.AnimationsTransformationSettings[animationIndex].BrightnessCorrection;
+            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].BrightnessCorrection;
         }
 
         private float[] ApiServerOnRgbFadeRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation
-                .AnimationsTransformationSettings[animationIndex].RgbFadeCorrection;
+            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].RgbFadeCorrection;
         }
 
         private int ApiServerOnTimeUnitsPerFrameRequested(int animationIndex)
         {
-            return _stellaServer.Animator.TransformationController.AnimationTransformation
-                .AnimationsTransformationSettings[animationIndex].TimeUnitsPerFrame;
+            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].TimeUnitsPerFrame;
         }
 
 
