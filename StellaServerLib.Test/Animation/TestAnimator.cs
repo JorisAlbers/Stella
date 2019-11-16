@@ -42,7 +42,7 @@ namespace StellaServerLib.Test.Animation
             };
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
-            StoryboardTransformationController transformationController;
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[]{new AnimationTransformationSettings(0,0,new float[3])});
             frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(),out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[]{new PlayListItem(new Storyboard(), 10)});
@@ -100,7 +100,7 @@ namespace StellaServerLib.Test.Animation
             };
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
-            StoryboardTransformationController transformationController;
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[] { new AnimationTransformationSettings(0, 0, new float[3]) });
             frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>() ,out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
@@ -173,7 +173,7 @@ namespace StellaServerLib.Test.Animation
             };
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
-            StoryboardTransformationController transformationController;
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[] { new AnimationTransformationSettings(0, 0, new float[3]) });
             frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
