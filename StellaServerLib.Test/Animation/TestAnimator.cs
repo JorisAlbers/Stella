@@ -47,7 +47,7 @@ namespace StellaServerLib.Test.Animation
 
             PlayList playList = new PlayList("test", new PlayListItem[]{new PlayListItem(new Storyboard(), 10)});
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(10,1,new float[3]));
-            FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
+            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
 
             Assert.AreEqual(1, framePerPi.Length);
 
@@ -105,7 +105,7 @@ namespace StellaServerLib.Test.Animation
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3]));
-            FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
+            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
 
             Assert.AreEqual(3,framePerPi.Length);
             // Pi1
@@ -179,11 +179,11 @@ namespace StellaServerLib.Test.Animation
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3]));
             // Flush first two frames
-            animator.GetNextFramePerPi();
-            animator.GetNextFramePerPi();
+            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] _);
+            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] _);
 
             // Assert
-            FrameWithoutDelta[] framePerPi = animator.GetNextFramePerPi();
+            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
 
             Assert.AreEqual(3, framePerPi.Length);
             // Pi1

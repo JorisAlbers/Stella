@@ -78,13 +78,7 @@ namespace StellaServerLib.Animation
             }
         }
 
-        private void OnTimeResetRequested()
-        {
-            TimeResetRequested?.Invoke(this,new EventArgs());
-        }
-
-        /// <inheritdoc />
-        public FrameWithoutDelta[] GetNextFramePerPi()
+        public bool TryGetNextFramePerPi(out FrameWithoutDelta[] frames)
         {
             // Get the combined frame from the FrameProvider
             IFrameProvider frameProvider = _frameProvider;
@@ -94,12 +88,16 @@ namespace StellaServerLib.Animation
 
             // Split the frame over pis
             Frame[] framePerPi = SplitFrameOverPis(combinedFrame, _mask);
-            
+
             // Overlay with the previous frame
-            return OverlayWithCurrentFrame(framePerPi);
+            frames = OverlayWithCurrentFrame(framePerPi);
+            return true;
         }
 
-
+        private void OnTimeResetRequested()
+        {
+            TimeResetRequested?.Invoke(this,new EventArgs());
+        }
 
         private Frame[] SplitFrameOverPis(Frame combinedFrame, List<PiMaskItem> mask)
         {

@@ -43,7 +43,7 @@ namespace StellaServerLib
                 // Prepare if the animation is about to start
                 if (renderNextFrameAt == 0)
                 {
-                    frames = animationWithStartingTime.Animator.GetNextFramePerPi();
+                    animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
                     renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
                 }
 
@@ -59,7 +59,7 @@ namespace StellaServerLib
                 SendRenderFrame(frames);
 
                 // Prepare
-                frames = animationWithStartingTime.Animator.GetNextFramePerPi();
+                animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
                 renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
             }
         }
