@@ -9,7 +9,7 @@ namespace StellaServerLib.Animation
         private readonly FrameProviderCreator _frameProviderCreator;
         private readonly int[] _stripLengthPerPi;
         private readonly List<PiMaskItem> _mask;
-        private readonly AnimationTransformationSettings _masterAnimationTransformationSettings;
+        private Animator _previousAnimator;
 
 
         public AnimatorCreator(FrameProviderCreator frameProviderCreator, int[] stripLengthPerPi, List<PiMaskItem> mask)
@@ -17,12 +17,24 @@ namespace StellaServerLib.Animation
             _frameProviderCreator = frameProviderCreator;
             _stripLengthPerPi = stripLengthPerPi;
             _mask = mask;
-            _masterAnimationTransformationSettings = new AnimationTransformationSettings(0,0, new float[3]);
+            
         }
 
         public IAnimator Create(PlayList playList)
         {
-            return new Animator(playList, _frameProviderCreator, _stripLengthPerPi, _mask, _masterAnimationTransformationSettings);
+            AnimationTransformationSettings masterTransformationSettings;
+            if (_previousAnimator == null)
+            {
+                masterTransformationSettings = new AnimationTransformationSettings(0, 0, new float[3]);
+            }
+            else
+            {
+                masterTransformationSettings =
+                    _previousAnimator.StoryboardTransformationController.Settings.MasterSettings;
+            }
+
+            _previousAnimator = new Animator(playList, _frameProviderCreator, _stripLengthPerPi, _mask, masterTransformationSettings);
+            return _previousAnimator;
         }
     }
 }
