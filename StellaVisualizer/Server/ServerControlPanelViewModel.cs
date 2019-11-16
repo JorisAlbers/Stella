@@ -9,9 +9,9 @@ namespace StellaVisualizer.Server
     public class ServerControlPanelViewModel : INotifyPropertyChanged
     {
         private readonly StellaServer _stellaServer;
-        public List<Storyboard> Storyboards { get; private set; }
+        public List<IAnimation> Animations { get; private set; }
 
-        public Storyboard SelectedStoryboard { get; set; }
+        public IAnimation SelectedAnimation { get; set; }
 
         public int MasterWaitMs { get; set; }
 
@@ -19,10 +19,10 @@ namespace StellaVisualizer.Server
         public float MasterGreenCorrection { get; set; }
         public float MasterBlueCorrection { get; set; }
         
-        public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<Storyboard> storyboards)
+        public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<IAnimation> animations)
         {
             _stellaServer = stellaServer;
-            Storyboards = storyboards;
+            Animations = animations;
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -30,35 +30,35 @@ namespace StellaVisualizer.Server
         {
             switch (e.PropertyName)
             {
-                case nameof(SelectedStoryboard):
-                    StartStoryboard(SelectedStoryboard);
+                case nameof(SelectedAnimation):
+                    StartStoryboard(SelectedAnimation);
                     break;
                 case nameof(MasterWaitMs):
-                    _stellaServer.Animator.TransformationController.SetTimeUnitsPerFrame(MasterWaitMs);
+                    _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(MasterWaitMs);
                     break;
                 case nameof(MasterRedCorrection):
                 case nameof(MasterBlueCorrection):
                 case nameof(MasterGreenCorrection):
-                    _stellaServer.Animator.TransformationController.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
                     break;
             }
         }
 
-        private void StartStoryboard(Storyboard selectedStoryboard)
+        private void StartStoryboard(IAnimation selectedAnimation)
         {
-            if (selectedStoryboard == null)
+            if (selectedAnimation == null)
             {
                 return;
             }
 
-            var eventHandler = StartStoryboardRequested;
+            var eventHandler = StartAnimationRequested;
             if (eventHandler != null)
             {
-                eventHandler.Invoke(this,selectedStoryboard);
+                eventHandler.Invoke(this,selectedAnimation);
             }
         }
 
-        public event EventHandler<Storyboard> StartStoryboardRequested;
+        public event EventHandler<IAnimation> StartAnimationRequested;
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

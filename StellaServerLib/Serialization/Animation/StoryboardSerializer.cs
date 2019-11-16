@@ -63,10 +63,8 @@ namespace StellaServerLib.Serialization.Animation
         {
             _serializer.Serialize(writer, storyboard, typeof(Storyboard));
         }
-
-
-
-        private bool AnimationsAreValid(IAnimationSettings[] storyboardAnimationSettings, out List<string> errors)
+        
+        public static bool AnimationsAreValid(IAnimationSettings[] storyboardAnimationSettings, out List<string> errors)
         {
             errors = new List<string>();
 
@@ -105,7 +103,7 @@ namespace StellaServerLib.Serialization.Animation
             return errors.Count == 0;
         }
         
-        private void ValidateAnimationSetting(IAnimationSettings animationSettings, int animationIndex, string typeName, ref List<string> errors)
+        private static void ValidateAnimationSetting(IAnimationSettings animationSettings, int animationIndex, string typeName, ref List<string> errors)
         {
             if (animationSettings.StripLength < 1)
             {
@@ -125,7 +123,7 @@ namespace StellaServerLib.Serialization.Animation
             }
         }
 
-        private void ValidateMovingPattern(MovingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
+        private static void ValidateMovingPattern(MovingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
             if (animationSetting.InternalPattern == null || animationSetting.Pattern == null || animationSetting.Pattern.Length == 0)
             {
@@ -133,7 +131,7 @@ namespace StellaServerLib.Serialization.Animation
             }
         }
 
-        private void ValidateSlidingPattern(SlidingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
+        private static void ValidateSlidingPattern(SlidingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
             if (animationSetting.InternalPattern == null || animationSetting.Pattern == null || animationSetting.Pattern.Length == 0)
             {
@@ -141,7 +139,7 @@ namespace StellaServerLib.Serialization.Animation
             }
         }
 
-        private void ValidateRepeatingPatternAnimationSettings(RepeatingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
+        private static void ValidateRepeatingPatternAnimationSettings(RepeatingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
             if (animationSetting.InternalPatterns == null || animationSetting.Patterns == null || animationSetting.Patterns.Length == 0)
             {
@@ -160,7 +158,7 @@ namespace StellaServerLib.Serialization.Animation
             }
         }
 
-        private void ValidateRandomFadeAnimationSettings(RandomFadeAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
+        private static void ValidateRandomFadeAnimationSettings(RandomFadeAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
             if (animationSetting.InternalPattern == null || animationSetting.Pattern == null || animationSetting.Pattern.Length == 0)
             {
@@ -173,7 +171,7 @@ namespace StellaServerLib.Serialization.Animation
             }
         }
 
-        private void ValidateFadingPulseAnimationSettings(FadingPulseAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
+        private static void ValidateFadingPulseAnimationSettings(FadingPulseAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
             if (animationSetting.InternalColor == null || animationSetting.InternalColor.Length < 1 || animationSetting.Color == Color.Empty)
             {
@@ -186,7 +184,7 @@ namespace StellaServerLib.Serialization.Animation
             }
         }
 
-        private void ValidateBitmapAnimationSettings(BitmapAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
+        private static void ValidateBitmapAnimationSettings(BitmapAnimationSettings animationSetting, int animationIndex, ref List<string> errors)
         {
             if (String.IsNullOrWhiteSpace(animationSetting.ImageName))
             {

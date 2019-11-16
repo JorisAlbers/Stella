@@ -84,10 +84,21 @@ namespace StellaServerLib
         {
             lock(_frameSetLock)
             {
+                if (_animationWithStartingTime != null)
+                {
+                    _animationWithStartingTime.Animator.TimeResetRequested -= AnimatorOnTimeResetRequested;
+                }
+
+                animator.TimeResetRequested += AnimatorOnTimeResetRequested;
                 _animationWithStartingTime = new AnimationWithStartingTime(animator, startAtTicks);
             }
         }
-        
+
+        private void AnimatorOnTimeResetRequested(object sender, EventArgs e)
+        {
+            _animationWithStartingTime = new AnimationWithStartingTime(_animationWithStartingTime.Animator, Environment.TickCount);
+        }
+
         public void Dispose()
         {
             _isDisposed = true;

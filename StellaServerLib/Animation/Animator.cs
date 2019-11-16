@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
@@ -9,25 +12,27 @@ namespace StellaServerLib.Animation
 {
     public class Animator : IAnimator
     {
-        private readonly IFrameProvider _frameProvider;
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
-
         private readonly PixelInstruction[][] _currentFrame;
-        public TransformationController TransformationController { get; private set; }
+        private readonly CancellationTokenSource _cancellationTokenSource;
+
+        private IFrameProvider _frameProvider;
+
+        public StoryboardTransformationController StoryboardTransformationController { get; private set; }
+        public event EventHandler TimeResetRequested;
 
         /// <summary>
         /// CTOR
         /// </summary>s
-        /// <param name="frameProvider">The drawer to get frames from.</param>
+        /// <param name="playList"></param>
+        /// <param name="frameProviderCreator"></param>
         /// <param name="stripLengthPerPi">The length of the strip of each pi</param>
         /// <param name="mask">The mask to convert the indexes over the pis</param>
-        /// <param name="transformationController">Class that provides run time animation changes</param>
-        public Animator(IFrameProvider frameProvider, int[] stripLengthPerPi, List<PiMaskItem> mask, TransformationController transformationController)
+        /// <param name="masterAnimationTransformationSettings"></param>
+        public Animator(PlayList playList, IFrameProviderCreator frameProviderCreator, int[] stripLengthPerPi, List<PiMaskItem> mask, AnimationTransformationSettings masterAnimationTransformationSettings)
         {
-            _frameProvider = frameProvider;
             _mask = mask;
-            TransformationController = transformationController;
             _numberOfPis = stripLengthPerPi.Length;
 
             _currentFrame = new PixelInstruction[stripLengthPerPi.Sum()][];
@@ -35,14 +40,57 @@ namespace StellaServerLib.Animation
             {
                 _currentFrame[i] = new PixelInstruction[stripLengthPerPi[i]];
             }
+
+            _frameProvider = frameProviderCreator.Create(playList.Items[0].Storyboard, out StoryboardTransformationController controller);
+            controller.Init(masterAnimationTransformationSettings);
+
+            // Start the first animation
+            StoryboardTransformationController = controller;
+            
+            if (playList.Items.Length > 1)
+            {
+                _cancellationTokenSource = new CancellationTokenSource();
+
+                // Start a timer to display the next item
+                Task.Run(async () =>
+                {
+                    int i = 1;
+                    while (!_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        // Load the next animation
+                        IFrameProvider nextFrameProvider = frameProviderCreator.Create(playList.Items[i].Storyboard, out controller);
+
+                        // Wait
+                        await Task.Delay(playList.Items[i].Duration * 1000, _cancellationTokenSource.Token);
+
+                        // Initialize the storyboard controller
+                        controller.Init(StoryboardTransformationController.Settings.MasterSettings);
+
+                        // Play
+                        // TODO race condition
+                        OnTimeResetRequested();
+                        _frameProvider = nextFrameProvider;
+                        StoryboardTransformationController = controller;
+
+                        i = (i + 1 ) % playList.Items.Length;
+                    }
+                });
+            }
+        }
+
+        private void OnTimeResetRequested()
+        {
+            TimeResetRequested?.Invoke(this,new EventArgs());
         }
 
         /// <inheritdoc />
         public FrameWithoutDelta[] GetNextFramePerPi()
         {
             // Get the combined frame from the FrameProvider
-            _frameProvider.MoveNext();
-            Frame combinedFrame = _frameProvider.Current;
+            IFrameProvider frameProvider = _frameProvider;
+
+            frameProvider.MoveNext();
+            Frame combinedFrame = frameProvider.Current;
 
             // Split the frame over pis
             Frame[] framePerPi = SplitFrameOverPis(combinedFrame, _mask);
@@ -100,6 +148,11 @@ namespace StellaServerLib.Animation
             }
 
             return overlayFramePerPi;
+        }
+
+        public void Dispose()
+        {
+            _cancellationTokenSource?.Cancel();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace StellaServerLib.Animation
     /// Collection of animations.
     /// </summary>
     [YamlTag(nameof(Storyboard))]
-    public class Storyboard
+    public class Storyboard : IAnimation
     {
         public string Name { get; set; }
 

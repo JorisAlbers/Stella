@@ -2,7 +2,7 @@
 
 namespace StellaServerLib.Animation.Transformation
 {
-    public class TransformationSettings
+    public class AnimationTransformationSettings
     {
         public int TimeUnitsPerFrame { get; }
 
@@ -17,7 +17,7 @@ namespace StellaServerLib.Animation.Transformation
         public float[] RgbFadeCorrection { get; }
 
         
-        public TransformationSettings(int timeUnitsPerFrame, float brightnessCorrection, float[] rgbFadeCorrection)
+        public AnimationTransformationSettings(int timeUnitsPerFrame, float brightnessCorrection, float[] rgbFadeCorrection)
         {
             if (rgbFadeCorrection.Length != 3)
             {
