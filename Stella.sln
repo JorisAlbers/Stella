@@ -29,7 +29,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaVisualizer", "StellaV
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClientLib", "StellaClientLib\StellaClientLib.csproj", "{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitmapScaler", "BitmapScaler\BitmapScaler.csproj", "{92C6FA91-E7E2-4049-9740-14172D3B65AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitmapScaler", "BitmapScaler\BitmapScaler.csproj", "{92C6FA91-E7E2-4049-9740-14172D3B65AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StellaServer", "StellaServer\StellaServer.csproj", "{14A85FA5-CD47-4EFA-8F21-A94423465AAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,6 +211,18 @@ Global
 		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x64.Build.0 = Release|Any CPU
 		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x86.ActiveCfg = Release|Any CPU
 		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x86.Build.0 = Release|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Debug|x64.Build.0 = Debug|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Debug|x86.Build.0 = Debug|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Release|x64.ActiveCfg = Release|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Release|x64.Build.0 = Release|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Release|x86.ActiveCfg = Release|Any CPU
+		{14A85FA5-CD47-4EFA-8F21-A94423465AAA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
