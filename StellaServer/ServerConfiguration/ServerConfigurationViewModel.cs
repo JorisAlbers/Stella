@@ -19,6 +19,7 @@ namespace StellaServer.ServerConfiguration
         public string IpAddress { get; set; }
 
         public int Port { get; set; }
+        public int UdpPort { get; set; }
 
         public string MappingFilePath { get; set; }
 

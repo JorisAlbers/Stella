@@ -42,38 +42,50 @@
                            Grid.Row="1"/>
                 <TextBox Text="{Binding Port}"
                          Grid.Column="1"
-                         Grid.Row="1"/>
+                         Grid.Row="1"                        
+                         Width="50"
+                         HorizontalAlignment="Left"/>
+
+                <TextBlock Text="Udp port"
+                           Grid.Column="0"
+                           Grid.Row="2"/>
+                <TextBox Text="{Binding UdpPort}"
+                         Grid.Column="1"
+                         Grid.Row="2"
+                         Width="50"
+                         HorizontalAlignment="Left"/>
+
 
                 <TextBlock Text="Mapping file"
                        Grid.Column="0"
-                       Grid.Row="2"/>
+                       Grid.Row="3"/>
                 <TextBox Text="{Binding MappingFilePath}"
-                         Grid.Column="1"
-                         Grid.Row="2"/>
-                <Button Grid.Column="2"
-                        Grid.Row="2"
-                        Content="Browse"
-                        Command="{Binding BrowseToMappingFileCommand}"/>
-
-                <TextBlock Text="Storyboard folder"
-                           Grid.Column="0"
-                           Grid.Row="3"/>
-                <TextBox Text="{Binding StoryboardFolderPath}"
                          Grid.Column="1"
                          Grid.Row="3"/>
                 <Button Grid.Column="2"
                         Grid.Row="3"
                         Content="Browse"
-                        Command="{Binding BrowseToStoryboardFolderPathCommand}"/>
+                        Command="{Binding BrowseToMappingFileCommand}"/>
 
-                <TextBlock Text="Bitmap folder"
+                <TextBlock Text="Storyboard folder"
                            Grid.Column="0"
                            Grid.Row="4"/>
-                <TextBox Text="{Binding BitmapFolderPath}"
+                <TextBox Text="{Binding StoryboardFolderPath}"
                          Grid.Column="1"
                          Grid.Row="4"/>
                 <Button Grid.Column="2"
                         Grid.Row="4"
+                        Content="Browse"
+                        Command="{Binding BrowseToStoryboardFolderPathCommand}"/>
+
+                <TextBlock Text="Bitmap folder"
+                           Grid.Column="0"
+                           Grid.Row="5"/>
+                <TextBox Text="{Binding BitmapFolderPath}"
+                         Grid.Column="1"
+                         Grid.Row="5"/>
+                <Button Grid.Column="2"
+                        Grid.Row="5"
                         Content="Browse"
                         Command="{Binding BrowseToBitmapFolderPathCommand}"/>
             </Grid>
