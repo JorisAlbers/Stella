@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="StellaServer.ServerConfiguration.ServerConfigurationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StellaServer.ServerConfiguration"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="500"
+             d:DataContext="{d:DesignInstance local:ServerConfigurationViewModel}"
+             Background="Gray">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock Text="Server configuration" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center"/>
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Ip address"
+                           Grid.Column="0"
+                           Grid.Row="0"/>
+                <TextBox Text="{Binding IpAddress}"
+                         Grid.Column="1"
+                         Grid.Row="0"/>
+
+                <TextBlock Text="port"
+                           Grid.Column="0"
+                           Grid.Row="1"/>
+                <TextBox Text="{Binding Port}"
+                         Grid.Column="1"
+                         Grid.Row="1"/>
+
+                <TextBlock Text="Mapping file"
+                       Grid.Column="0"
+                       Grid.Row="2"/>
+                <TextBox Text="{Binding MappingFilePath}"
+                         Grid.Column="1"
+                         Grid.Row="2"/>
+
+                <TextBlock Text="Storyboard folder"
+                           Grid.Column="0"
+                           Grid.Row="3"/>
+                <TextBox Text="{Binding StoryboardFolderPath}"
+                         Grid.Column="1"
+                         Grid.Row="3"/>
+
+                <TextBlock Text="Bitmap folder"
+                           Grid.Column="0"
+                           Grid.Row="4"/>
+                <TextBox Text="{Binding BitmapFolderPath}"
+                         Grid.Column="1"
+                         Grid.Row="4"/>
+            </Grid>
+        </StackPanel>
+
+        <Button Content="Ok"
+                DockPanel.Dock="Bottom"
+                Height="30"
+                Width="50"
+                VerticalAlignment="Bottom"
+                Command="{Binding SaveCommand}"/>
+
+    </DockPanel>
+    
+</UserControl>
