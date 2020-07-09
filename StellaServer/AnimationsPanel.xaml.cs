@@ -33,7 +33,7 @@ namespace StellaServer
 
                 this.OneWayBind(ViewModel,
                     viewmodel => viewmodel.Bitmaps,
-                    view => view.BitmapsListBox.ItemsSource
+                    view => view.BitmapsPanel.ItemsSource
                 ).DisposeWith(disposableRegistration);
             });
         }
