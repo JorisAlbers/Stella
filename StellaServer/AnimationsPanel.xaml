@@ -11,12 +11,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
         <UniformGrid>
             <TextBox x:Name="BitmapFolderTextBox"/>
-            <ListBox x:Name="BitmapsListBox">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Background="Red" Text="{Binding}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <ListView x:Name="BitmapsListBox"/>
         </UniformGrid>
 </reactiveUi:ReactiveUserControl>
