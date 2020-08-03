@@ -8,16 +8,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServer.Setup;
 
 namespace StellaServer
 {
     public class MainWindowViewModel : ReactiveObject
     {
-        [Reactive] public AnimationsPanelViewModel AnimationsPanelViewModel { get; set; }
+        [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
         public MainWindowViewModel(string bitmapFolder)
         {
-            AnimationsPanelViewModel = new AnimationsPanelViewModel(bitmapFolder);
+            //AnimationsPanelViewModel = new AnimationsPanelViewModel(bitmapFolder);
+            SelectedViewModel = new SetupPanelViewModel();
         }
     }
 }

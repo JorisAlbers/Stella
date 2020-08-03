@@ -8,12 +8,18 @@
     <Compile Update="BitmapControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Setup\SetupPanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="AnimationsPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="BitmapControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Setup\SetupPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

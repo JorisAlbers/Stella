@@ -31,8 +31,8 @@ namespace StellaServer
             this.WhenActivated(disposableRegistration =>
             {
                 this.Bind(ViewModel,
-                        viewmodel => viewmodel.AnimationsPanelViewModel,
-                        view => view.AnimationsPanel.ViewModel)
+                        viewmodel => viewmodel.SelectedViewModel,
+                        view => view.ViewModelViewHost.ViewModel)
                     .DisposeWith(disposableRegistration);
             });
         }

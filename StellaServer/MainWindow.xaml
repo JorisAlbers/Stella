@@ -9,13 +9,16 @@
         xmlns:reactiveUi="http://reactiveui.net"
         mc:Ignorable="d"
        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+       xmlns:setup="clr-namespace:StellaServer.Setup"
        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
        Background="{DynamicResource MaterialDesignPaper}"
        TextElement.FontWeight="Medium"
-       TextElement.FontSize="14"
+       TextElement.FontSize="20"
        FontFamily="{materialDesign:MaterialDesignFont}"
         Title="MainWindow" Height="450" Width="800">
-    <UniformGrid>
-        <local:AnimationsPanel x:Name="AnimationsPanel"/>
-    </UniformGrid>
+    <reactiveUi:ViewModelViewHost x:Name="ViewModelViewHost"
+                                  HorizontalAlignment="Stretch" 
+                                  VerticalAlignment="Stretch"
+                                  VerticalContentAlignment="Stretch"
+                                  HorizontalContentAlignment="Stretch"/>
 </reactiveUi:ReactiveWindow>

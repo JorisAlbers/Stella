@@ -1,0 +1,46 @@
+﻿<reactiveUi:ReactiveUserControl
+    x:Class="StellaServer.Setup.SetupPanel"
+    x:TypeArguments="setup:SetupPanelViewModel" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:reactiveUi="http://reactiveui.net"
+    xmlns:setup="clr-namespace:StellaServer.Setup"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <GroupBox Header="Setup" HorizontalAlignment="Stretch">
+        <StackPanel>
+            <ListView>
+                <ListViewItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Server ip:"/>
+                        <TextBox x:Name="ServerIpTextBox" 
+                                 Margin="10,0,0,0" 
+                                 Width="100" ></TextBox>
+                        <TextBlock Text="tcp port:"
+                                   Margin="10,0,0,0"/>
+                        <TextBox x:Name="ServerPortTextBox" 
+                                 Width="50" 
+                                 Margin="10,0,0,0"></TextBox>
+                        <TextBlock Text="udp port:" 
+                                   Margin="10,0,0,0"/>
+                        <TextBox x:Name="UdpPortTextBox" 
+                                 Width="50" 
+                                 Margin="10,0,0,0"></TextBox>
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem>
+                    <StackPanel>
+                        <TextBlock Text="Mapping file:"/>
+                        <TextBox x:Name="MappingFilePathTextBox" 
+                                 Width="200"></TextBox>
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+            <Button Content="Start" HorizontalAlignment="Center" ></Button>
+        </StackPanel>
+    </GroupBox>
+</reactiveUi:ReactiveUserControl>
