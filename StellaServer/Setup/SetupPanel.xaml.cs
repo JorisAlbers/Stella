@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Text;
 using System.Windows;
@@ -50,14 +51,14 @@ namespace StellaServer.Setup
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.ErrorText,
-                        view => view.ErrorTextBlock.Text)
+                        viewmodel => viewmodel.Errors,
+                        view => view.ErrorsListBox.ItemsSource)
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.ErrorText,
+                        viewmodel => viewmodel.Errors,
                         view => view.ErrorCard.Visibility,
-                        value => String.IsNullOrEmpty(value) ? Visibility.Collapsed: Visibility.Visible)
+                        value => value == null || value.Count == 0 ? Visibility.Collapsed: Visibility.Visible)
                     .DisposeWith(disposableRegistration);
             });
         }

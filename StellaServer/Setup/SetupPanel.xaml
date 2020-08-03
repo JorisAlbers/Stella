@@ -45,7 +45,13 @@
 
      
            <materialDesign:Card x:Name="ErrorCard" Margin="10">
-               <TextBlock x:Name="ErrorTextBlock" TextWrapping="Wrap"></TextBlock>
+               <ListView x:Name="ErrorsListBox">
+                       <ListBox.ItemTemplate>
+                           <DataTemplate>
+                               <TextBlock Text="{Binding}" />
+                           </DataTemplate>
+                       </ListBox.ItemTemplate>
+                    </ListView>
            </materialDesign:Card>
 
            

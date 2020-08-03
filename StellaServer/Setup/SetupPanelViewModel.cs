@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -13,7 +14,7 @@ namespace StellaServer.Setup
         [Reactive] public int ServerTcpPort { get; set; }
         [Reactive] public int ServerUdpPort { get; set; }
         [Reactive] public string MappingFilePath { get; set; }
-        [Reactive] public string ErrorText { get; set; }
+        [Reactive] public List<string> Errors { get; set; }
        
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         
@@ -40,7 +41,19 @@ namespace StellaServer.Setup
                 stellaServer.Start();
             }, canStartServer);
 
-            StartCommand.ThrownExceptions.Subscribe(error => ErrorText = $"Failed to start server: {error.Message}");
+            StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
+        }
+
+        private List<string> GetAllErrorMessages(Exception e)
+        {
+            List<string> errorMessages = new List<string>();
+            do
+            {
+                errorMessages.Add(e.Message);
+                e = e.InnerException;
+            } while (e != null);
+
+            return errorMessages;
         }
     }
 }
