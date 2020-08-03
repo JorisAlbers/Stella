@@ -25,10 +25,10 @@
             <TextBlock Grid.Column="0" Grid.Row="1" Text="Available bitmaps:"/>
 
 
-            <ListView Grid.Column="1" Grid.Row="1" x:Name="BitmapsPanel" >
+            <ListView Grid.Column="1" Grid.Row="1" x:Name="BitmapsPanel">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid ClipToBounds="True" />
+                            <UniformGrid Columns="3"/>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
             </ListView>
