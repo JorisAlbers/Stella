@@ -33,7 +33,7 @@
                     </StackPanel>
                 </ListViewItem>
                 <ListViewItem>
-                    <StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Mapping file:"/>
                         <TextBox x:Name="MappingFilePathTextBox" 
                                  Width="200"></TextBox>
