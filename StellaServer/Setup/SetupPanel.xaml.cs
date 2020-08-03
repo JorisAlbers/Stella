@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,10 +22,44 @@ namespace StellaServer.Setup
         public SetupPanel()
         {
             InitializeComponent();
-        }
-    }
+            this.WhenActivated(disposableRegistration =>
+            {
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.ServerIp,
+                        view => view.IpTextBox.Text)
+                    .DisposeWith(disposableRegistration);
 
-    public class SetupPanelViewModel : ReactiveObject
-    {
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.ServerTcpPort,
+                        view => view.TcpPortTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.ServerUdpPort,
+                        view => view.UdpPortTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.MappingFilePath,
+                        view => view.MappingFilePathTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                        viewmodel => viewmodel.StartCommand,
+                        view => view.StartButton)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.ErrorText,
+                        view => view.ErrorTextBlock.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.ErrorText,
+                        view => view.ErrorCard.Visibility,
+                        value => String.IsNullOrEmpty(value) ? Visibility.Collapsed: Visibility.Visible)
+                    .DisposeWith(disposableRegistration);
+            });
+        }
     }
 }

@@ -8,6 +8,7 @@
     xmlns:reactiveUi="http://reactiveui.net"
     xmlns:setup="clr-namespace:StellaServer.Setup"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -17,12 +18,12 @@
                 <ListViewItem>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Server ip:"/>
-                        <TextBox x:Name="ServerIpTextBox" 
+                        <TextBox x:Name="IpTextBox" 
                                  Margin="10,0,0,0" 
                                  Width="100" ></TextBox>
                         <TextBlock Text="tcp port:"
                                    Margin="10,0,0,0"/>
-                        <TextBox x:Name="ServerPortTextBox" 
+                        <TextBox x:Name="TcpPortTextBox" 
                                  Width="50" 
                                  Margin="10,0,0,0"></TextBox>
                         <TextBlock Text="udp port:" 
@@ -40,7 +41,17 @@
                     </StackPanel>
                 </ListViewItem>
             </ListView>
-            <Button Content="Start" HorizontalAlignment="Center" ></Button>
+            <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" ></Button>
+
+     
+           <materialDesign:Card x:Name="ErrorCard" Margin="10">
+               <TextBlock x:Name="ErrorTextBlock" TextWrapping="Wrap"></TextBlock>
+           </materialDesign:Card>
+
+           
         </StackPanel>
+
+        
+
     </GroupBox>
 </reactiveUi:ReactiveUserControl>

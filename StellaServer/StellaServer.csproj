@@ -15,4 +15,8 @@
     <PackageReference Include="ReactiveUI.WPF" Version="11.4.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj" />
+  </ItemGroup>
+
 </Project>
