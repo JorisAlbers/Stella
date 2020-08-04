@@ -13,7 +13,7 @@
        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
        Background="{DynamicResource MaterialDesignPaper}"
        TextElement.FontWeight="Medium"
-       TextElement.FontSize="20"
+       TextElement.FontSize="14"
        FontFamily="{materialDesign:MaterialDesignFont}"
         Title="MainWindow" Height="450" Width="800">
     <reactiveUi:ViewModelViewHost x:Name="ViewModelViewHost"

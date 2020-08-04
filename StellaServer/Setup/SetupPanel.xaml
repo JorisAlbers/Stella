@@ -37,14 +37,16 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Mapping file:"/>
                         <TextBox x:Name="MappingFilePathTextBox" 
-                                 Width="200"></TextBox>
+                                 Width="500"
+                                 Margin="10,0,0,0"/>
                     </StackPanel>
                 </ListViewItem>
                 <ListViewItem>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Bitmap folder:"/>
                         <TextBox x:Name="BitmapFolderTextBox" 
-                                 Width="200"></TextBox>
+                                 Width="500"
+                                 Margin="10,0,0,0"/>
                     </StackPanel>
                 </ListViewItem>
             </ListView>
