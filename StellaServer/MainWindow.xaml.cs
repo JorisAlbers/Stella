@@ -26,7 +26,7 @@ namespace StellaServer
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowViewModel("bitmap folder");
+            ViewModel = new MainWindowViewModel();
 
             this.WhenActivated(disposableRegistration =>
             {

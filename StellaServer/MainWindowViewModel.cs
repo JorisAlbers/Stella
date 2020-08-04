@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Setup;
@@ -14,12 +15,75 @@ namespace StellaServer
 {
     public class MainWindowViewModel : ReactiveObject
     {
+        private readonly string UserSettingsFilePath =
+            Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "StellaServer","Settings.xml");
+
+        private UserSettings _userSettings;
+
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
-        public MainWindowViewModel(string bitmapFolder)
+        public MainWindowViewModel()
         {
+            _userSettings = LoadUserSettings(UserSettingsFilePath);
+            
             //AnimationsPanelViewModel = new AnimationsPanelViewModel(bitmapFolder);
-            SelectedViewModel = new SetupPanelViewModel();
+            var setupViewModel = new SetupPanelViewModel(_userSettings?.ServerSetup);
+            setupViewModel.ServerCreated += ServerCreated;
+            SelectedViewModel = setupViewModel;
+        }
+
+        private void ServerCreated(object sender, ServerCreatedEventArgs args)
+        {
+           // Save user settings as there might be new settings
+            _userSettings.ServerSetup = args.Settings;
+            SaveUserSettings(UserSettingsFilePath, _userSettings);
+
+            // Todo switch selected viewmodel to control panel
+        }
+
+        private UserSettings LoadUserSettings(string userSettingsFilePath)
+        {
+            FileInfo file = new FileInfo(userSettingsFilePath);
+            
+            if (file.Exists)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
+                try
+                {
+                    using StreamReader reader = new StreamReader(file.FullName);
+                    return (UserSettings) serializer.Deserialize(reader);
+                }
+                catch (Exception e)
+                {
+                    Console.Out.WriteLine("Failed to load user settings");
+                    Console.Out.WriteLine(e.Message);
+                }
+            }
+
+            return new UserSettings();
+        }
+
+        private void SaveUserSettings(string userSettingsFilePath, UserSettings userSettings)
+        {
+            FileInfo file = new FileInfo(userSettingsFilePath);
+
+            if (!file.Directory.Exists)
+            {
+                file.Directory.Create();
+            }
+
+            XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
+            try
+            {
+                using StreamWriter writer = new StreamWriter(userSettingsFilePath);
+                serializer.Serialize(writer, userSettings);
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("Failed to load user settings");
+                Console.Out.WriteLine(e.Message);
+            }
         }
     }
 }

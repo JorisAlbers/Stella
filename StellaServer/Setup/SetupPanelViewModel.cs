@@ -16,12 +16,23 @@ namespace StellaServer.Setup
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public List<string> Errors { get; set; }
+
+        public EventHandler<ServerCreatedEventArgs> ServerCreated;
        
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         
         
-        public SetupPanelViewModel()
+        public SetupPanelViewModel(ServerSetupSettings settings)
         {
+            if (settings != null)
+            {
+                ServerIp = settings.ServerIp;
+                ServerTcpPort = settings.ServerTcpPort;
+                ServerUdpPort = settings.ServerUdpPort;
+                MappingFilePath = settings.MappingFilePath;
+                BitmapFolder = settings.BitmapFolder;
+            }
+
             var canStartServer = this.WhenAnyValue(
                 x => x.ServerIp,
                 x => x.ServerTcpPort,
@@ -43,8 +54,14 @@ namespace StellaServer.Setup
                     new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, bitmapRepository, new Server());
                 stellaServer.Start();
                 
-
-
+                ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
+                {
+                    ServerIp = ServerIp,
+                    ServerTcpPort = ServerTcpPort,
+                    ServerUdpPort = ServerUdpPort,
+                    MappingFilePath = MappingFilePath,
+                    BitmapFolder = BitmapFolder
+                }, stellaServer));
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
@@ -60,6 +77,18 @@ namespace StellaServer.Setup
             } while (e != null);
 
             return errorMessages;
+        }
+    }
+
+    public class ServerCreatedEventArgs: EventArgs
+    {
+        public ServerSetupSettings Settings { get; }
+        public StellaServerLib.StellaServer StellaServer { get; }
+
+        public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer)
+        {
+            Settings = settings;
+            StellaServer = stellaServer;
         }
     }
 }
