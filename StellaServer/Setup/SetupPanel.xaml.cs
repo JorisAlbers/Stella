@@ -45,6 +45,11 @@ namespace StellaServer.Setup
                         view => view.MappingFilePathTextBox.Text)
                     .DisposeWith(disposableRegistration);
 
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.BitmapFolder,
+                        view => view.BitmapFolderTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
                 this.BindCommand(ViewModel,
                         viewmodel => viewmodel.StartCommand,
                         view => view.StartButton)

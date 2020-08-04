@@ -40,6 +40,13 @@
                                  Width="200"></TextBox>
                     </StackPanel>
                 </ListViewItem>
+                <ListViewItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Bitmap folder:"/>
+                        <TextBox x:Name="BitmapFolderTextBox" 
+                                 Width="200"></TextBox>
+                    </StackPanel>
+                </ListViewItem>
             </ListView>
             <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" ></Button>
 

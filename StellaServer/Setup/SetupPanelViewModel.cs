@@ -14,6 +14,7 @@ namespace StellaServer.Setup
         [Reactive] public int ServerTcpPort { get; set; }
         [Reactive] public int ServerUdpPort { get; set; }
         [Reactive] public string MappingFilePath { get; set; }
+        [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public List<string> Errors { get; set; }
        
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
@@ -26,19 +27,24 @@ namespace StellaServer.Setup
                 x => x.ServerTcpPort,
                 x => x.ServerUdpPort,
                 x => x.MappingFilePath,
-                (serverIp, tcp, udp, configFile) =>
+                x => x.BitmapFolder,
+                (serverIp, tcp, udp, configFile, bitmapFolder) =>
                     !String.IsNullOrWhiteSpace(serverIp) &&
                     !String.IsNullOrWhiteSpace(MappingFilePath) &&
                     tcp != 0 &&
-                    udp != 0
+                    udp != 0 &&
+                    !String.IsNullOrWhiteSpace(bitmapFolder) 
                 );
 
             StartCommand = ReactiveCommand.Create(() =>
             {
-                BitmapRepository bitmapRepository = new BitmapRepository("fake_path");
+                BitmapRepository bitmapRepository = new BitmapRepository(BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
                     new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, bitmapRepository, new Server());
                 stellaServer.Start();
+                
+
+
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
