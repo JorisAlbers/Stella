@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Windows.Media.Imaging;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServerLib;
 
 namespace StellaServer.Animation
 {
     public class AnimationsPanelViewModel : ReactiveObject
     {
+        private readonly BitmapRepository _bitmapRepository;
 
         [Reactive] public string BitmapFolder { get; set; }
+        [Reactive] public IEnumerable<BitmapViewModel> Bitmaps { get; private set; }
         
-        public extern IEnumerable<BitmapViewModel> Bitmaps { [ObservableAsProperty] get; }
-        
-        public AnimationsPanelViewModel(string bitmapFolder)
+        public AnimationsPanelViewModel(BitmapRepository bitmapRepository)
         {
-            BitmapFolder = bitmapFolder;
+            _bitmapRepository = bitmapRepository;
+            BitmapFolder = bitmapRepository.FolderPath;
+            Bitmaps = CreateBitmapViewModels(bitmapRepository);
 
-            this.WhenAnyValue(x => x.BitmapFolder)
+            // TODO make bitmap folder settable after server started
+            /*this.WhenAnyValue(x => x.BitmapFolder)
                 .Throttle(TimeSpan.FromMilliseconds(1000))
                 .Select(x => x?.Trim())
                 .DistinctUntilChanged()
@@ -29,55 +30,12 @@ namespace StellaServer.Animation
                 .Where(x=> x!=null)
                 .Select(CreateBitmapViewModels)
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Bitmaps);
+                .ToPropertyEx(this, x => x.Bitmaps);*/
         }
-
-        private FileInfo[] ScanFolderForBitmaps(string folderPath)
+        
+        private IEnumerable<BitmapViewModel> CreateBitmapViewModels(BitmapRepository bitmapRepository)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
-            if (!directoryInfo.Exists)
-            {
-                //throw new ArgumentException($"folder does not exist");
-                Console.Beep();
-                return null;
-            }
-
-            return directoryInfo.EnumerateFiles("*.png").ToArray();
-        }
-
-        private IEnumerable<BitmapViewModel> CreateBitmapViewModels(FileInfo[] bitmapFiles)
-        {
-            return bitmapFiles.Select(x => new BitmapViewModel(x.Name, new Bitmap(Bitmap.FromFile(x.FullName))));
-        }
-    }
-
-    public class BitmapViewModel : ReactiveObject
-    {
-        public string Name { get; }
-        public BitmapImage Bitmap { get; }
-
-
-
-        public BitmapViewModel(string name, Bitmap bitmap)
-        {
-            Name = name;
-            Bitmap = BitmapToImageSource(bitmap);
-        }
-
-        private BitmapImage BitmapToImageSource(Bitmap bitmap)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-
-                return bitmapImage;
-            }
+            return bitmapRepository.ListAllBitmaps().Select(x => new BitmapViewModel(x, bitmapRepository.Load(x)));
         }
     }
 }

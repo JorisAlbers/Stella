@@ -17,7 +17,6 @@ namespace StellaServerLib
         private readonly int _port;
         private readonly int _udpPort;
         private readonly int _millisecondsPerTimeUnit;
-        private readonly BitmapRepository _bitmapRepository;
 
         private AnimatorCreator _animatorCreator;
         private IServer _server;
@@ -26,6 +25,7 @@ namespace StellaServerLib
         private int _loadingAnimation;
 
         public IAnimator Animator { get; private set; }
+        public BitmapRepository BitmapRepository { get; }
 
         public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit, BitmapRepository bitmapRepository, IServer server)
         {
@@ -34,7 +34,7 @@ namespace StellaServerLib
             _port = port;
             _udpPort = udpPort;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
-            _bitmapRepository = bitmapRepository;
+            BitmapRepository = bitmapRepository;
             _server = server;
         }
 
@@ -43,7 +43,7 @@ namespace StellaServerLib
             // Read mapping
             List<PiMaskItem> mask = LoadMask(_mappingFilePath, out int[] stripLengthPerPi);
             // Create animatorCreator
-            _animatorCreator = new AnimatorCreator(new FrameProviderCreator(_bitmapRepository, _millisecondsPerTimeUnit), stripLengthPerPi, mask);
+            _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit), stripLengthPerPi, mask);
 
             // Start Server
             _server = StartServer(_ip, _port, _udpPort, _server);

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServer.Animation;
 using StellaServer.Setup;
 
 namespace StellaServer
@@ -27,7 +28,6 @@ namespace StellaServer
         {
             _userSettings = LoadUserSettings(UserSettingsFilePath);
             
-            //AnimationsPanelViewModel = new AnimationsPanelViewModel(bitmapFolder);
             var setupViewModel = new SetupPanelViewModel(_userSettings?.ServerSetup);
             setupViewModel.ServerCreated += ServerCreated;
             SelectedViewModel = setupViewModel;
@@ -39,6 +39,7 @@ namespace StellaServer
             _userSettings.ServerSetup = args.Settings;
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
+            SelectedViewModel = new AnimationsPanelViewModel(args.StellaServer.BitmapRepository);
             // Todo switch selected viewmodel to control panel
         }
 

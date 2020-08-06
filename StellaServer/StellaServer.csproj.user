@@ -5,7 +5,7 @@
     <Compile Update="Animation\AnimationsPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="BitmapControl.xaml.cs">
+    <Compile Update="Animation\BitmapControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Setup\SetupPanel.xaml.cs">
@@ -16,7 +16,7 @@
     <Page Update="Animation\AnimationsPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="BitmapControl.xaml">
+    <Page Update="Animation\BitmapControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Setup\SetupPanel.xaml">

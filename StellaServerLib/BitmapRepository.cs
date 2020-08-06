@@ -26,6 +26,8 @@ namespace StellaServerLib
             _directory = fileSystem.Directory.CreateDirectory(directoryPath);
         }
 
+        public string FolderPath => _directory.FullName;
+
         public bool BitmapExists(string name)
         {
             string fullName = GetFullName(name);
