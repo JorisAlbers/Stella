@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using StellaServerAPI;
 using StellaServerLib;
@@ -42,7 +43,7 @@ namespace StellaVisualizer.Server
 
             // Start Repositories
             StoryboardRepository storyboardRepository = new StoryboardRepository(viewmodel.StoryboardDirectory);
-            BitmapRepository bitmapRepository = new BitmapRepository(viewmodel.BitmapDirectory);
+            BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), viewmodel.BitmapDirectory);
 
             // Load animations from disc
             List<Storyboard> storyboards = storyboardRepository.LoadStoryboards();

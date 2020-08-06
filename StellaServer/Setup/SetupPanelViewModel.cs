@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Reactive;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -49,7 +50,7 @@ namespace StellaServer.Setup
 
             StartCommand = ReactiveCommand.Create(() =>
             {
-                BitmapRepository bitmapRepository = new BitmapRepository(BitmapFolder);
+                BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
                     new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, bitmapRepository, new Server());
                 stellaServer.Start();

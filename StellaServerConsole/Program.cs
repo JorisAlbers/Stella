@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using StellaServerAPI;
 using StellaServerLib;
@@ -87,7 +88,7 @@ namespace StellaServerConsole
 
             // Start Repositories
             StoryboardRepository storyboardRepository = new StoryboardRepository(storyboardDirPath);
-            _bitmapRepository = new BitmapRepository(bitmapDirectory);
+            _bitmapRepository = new BitmapRepository(new FileSystem(), bitmapDirectory);
 
             // Load animations from disc
             List<Storyboard> storyboards = storyboardRepository.LoadStoryboards();

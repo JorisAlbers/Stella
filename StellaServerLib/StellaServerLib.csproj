@@ -3,6 +3,7 @@
   <ItemGroup>
     <PackageReference Include="SharpYaml" Version="1.6.5" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Abstractions;
 
 namespace StellaServerLib
 {
@@ -10,15 +11,17 @@ namespace StellaServerLib
     /// </summary>
     public class BitmapRepository
     {
+        private readonly IFileSystem _fileSystem;
         private readonly string _directoryPath;
 
-        public BitmapRepository(string directoryPath)
+        public BitmapRepository(IFileSystem fileSystem, string directoryPath)
         {
-            if (!Directory.Exists(directoryPath))
+            if (!fileSystem.Directory.Exists(directoryPath))
             {
                 throw new ArgumentException($"The directory at {directoryPath} does not exist.");
             }
 
+            _fileSystem = fileSystem;
             _directoryPath = directoryPath;
         }
 
@@ -27,7 +30,7 @@ namespace StellaServerLib
             string fullName = GetFullName(name);
             string path = Path.Combine(_directoryPath, fullName);
 
-            return File.Exists(GetFullName(path));
+            return _fileSystem.File.Exists(GetFullName(path));
         }
 
         public void Save(Bitmap bitmap, string name)
@@ -48,7 +51,7 @@ namespace StellaServerLib
             string fullName = GetFullName(name);
             string path = Path.Combine(_directoryPath, fullName);
 
-            if (!File.Exists(path))
+            if (!_fileSystem.File.Exists(path))
             {
                 throw new Exception($"There is no bitmap present at path {fullName}");
             }
