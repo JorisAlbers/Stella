@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace StellaServer
+namespace StellaServer.Animation
 {
     public class AnimationsPanelViewModel : ReactiveObject
     {
