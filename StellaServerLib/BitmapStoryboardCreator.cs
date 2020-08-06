@@ -12,7 +12,7 @@ namespace StellaServerLib
     /// </summary>
     public class BitmapStoryboardCreator
     {
-        private readonly DirectoryInfo _bitmapDirectory;
+        private readonly BitmapRepository _bitmapRepository;
         private readonly int _rowSize;
         private readonly int _numberOfPis;
         private readonly int _rowsPerPi;
@@ -20,9 +20,9 @@ namespace StellaServerLib
         private int _animationsCount;
 
 
-        public BitmapStoryboardCreator(DirectoryInfo bitmapDirectory, int rowSize, int numberOfPis, int rowsPerPi)
+        public BitmapStoryboardCreator(BitmapRepository bitmapRepository, int rowSize, int numberOfPis, int rowsPerPi)
         {
-            _bitmapDirectory = bitmapDirectory;
+            _bitmapRepository = bitmapRepository;
             _rowSize = rowSize;
             _numberOfPis = numberOfPis;
             _rowsPerPi = rowsPerPi;
@@ -38,24 +38,9 @@ namespace StellaServerLib
         public void Create(List<Storyboard> storyboards)
         {
             // Iterate folders in directory
-            foreach (DirectoryInfo subDirectory in _bitmapDirectory.GetDirectories())
+            foreach (string bitmap in _bitmapRepository.ListAllBitmaps())
             {
-                foreach (FileInfo fileInfo in subDirectory.GetFiles())
-                {
-                    if (fileInfo.Extension == ".png")
-                    {
-                        AddBitmapAnimation(storyboards, Path.Combine(subDirectory.Name, Path.GetFileNameWithoutExtension(fileInfo.Name)));
-                    }
-                }
-            }
-
-            // Iterate files in bitmap dir
-            foreach (FileInfo fileInfo in _bitmapDirectory.GetFiles())
-            {
-                if (fileInfo.Extension == ".png")
-                {
-                    AddBitmapAnimation(storyboards, Path.GetFileNameWithoutExtension(fileInfo.Name));
-                }
+                AddBitmapAnimation(storyboards, bitmap);
             }
         }
 

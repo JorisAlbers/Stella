@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -12,7 +13,7 @@ namespace StellaServerLib
     public class BitmapRepository
     {
         private readonly IFileSystem _fileSystem;
-        private readonly string _directoryPath;
+        private readonly IDirectoryInfo _directory;
 
         public BitmapRepository(IFileSystem fileSystem, string directoryPath)
         {
@@ -22,13 +23,13 @@ namespace StellaServerLib
             }
 
             _fileSystem = fileSystem;
-            _directoryPath = directoryPath;
+            _directory = fileSystem.Directory.CreateDirectory(directoryPath);
         }
 
         public bool BitmapExists(string name)
         {
             string fullName = GetFullName(name);
-            string path = Path.Combine(_directoryPath, fullName);
+            string path = Path.Combine(_directory.FullName, fullName);
 
             return _fileSystem.File.Exists(GetFullName(path));
         }
@@ -36,7 +37,7 @@ namespace StellaServerLib
         public void Save(Bitmap bitmap, string name)
         {
             string fullName = GetFullName(name);
-            string path = Path.Combine(_directoryPath, fullName);
+            string path = Path.Combine(_directory.FullName, fullName);
 
             if (File.Exists(path))
             {
@@ -49,7 +50,7 @@ namespace StellaServerLib
         public Bitmap Load(string name)
         {
             string fullName = GetFullName(name);
-            string path = Path.Combine(_directoryPath, fullName);
+            string path = Path.Combine(_directory.FullName, fullName);
 
             if (!_fileSystem.File.Exists(path))
             {
@@ -62,6 +63,34 @@ namespace StellaServerLib
         private string GetFullName(string name)
         {
             return $"{name}.png";
+        }
+
+        public List<string> ListAllBitmaps()
+        {
+            List<string> bitmapList = new List<string>();
+            
+            // Iterate folders in directory
+            foreach (IDirectoryInfo subDirectory in _directory.GetDirectories())
+            {
+                foreach (IFileInfo fileInfo in subDirectory.GetFiles())
+                {
+                    if (fileInfo.Extension == ".png")
+                    {
+                        bitmapList.Add(Path.Combine(subDirectory.Name, Path.GetFileNameWithoutExtension(fileInfo.Name)));
+                    }
+                }
+            }
+
+            // Iterate files in bitmap dir
+            foreach (IFileInfo fileInfo in _directory.GetFiles())
+            {
+                if (fileInfo.Extension == ".png")
+                {
+                    bitmapList.Add(Path.GetFileNameWithoutExtension(fileInfo.Name));
+                }
+            }
+
+            return bitmapList;
         }
     }
 }
