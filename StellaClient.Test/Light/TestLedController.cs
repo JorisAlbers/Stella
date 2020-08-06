@@ -19,7 +19,7 @@ namespace StellaClient.Test.Light
             var mock = new Mock<ILEDStrip>();
 
             int index = -1;
-            Color color;
+            Color color = new Color();
             mock.Setup(x => x.SetLEDColor(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Color>())).Callback<int, int, Color>((i, j, c) =>
             {
                 index = j;
