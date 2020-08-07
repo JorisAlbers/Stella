@@ -8,14 +8,14 @@ using StellaServerLib;
 
 namespace StellaServer.Animation
 {
-    public class AnimationsPanelViewModel : ReactiveObject
+    public class BitmapSelectionViewModel : ReactiveObject
     {
         private readonly BitmapRepository _bitmapRepository;
 
         [Reactive] public string BitmapFolder { get; set; }
         [Reactive] public IEnumerable<BitmapViewModel> Bitmaps { get; private set; }
         
-        public AnimationsPanelViewModel(BitmapRepository bitmapRepository)
+        public BitmapSelectionViewModel(BitmapRepository bitmapRepository)
         {
             _bitmapRepository = bitmapRepository;
             BitmapFolder = bitmapRepository.FolderPath;

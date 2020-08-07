@@ -39,7 +39,7 @@ namespace StellaServer
             _userSettings.ServerSetup = args.Settings;
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
-            SelectedViewModel = new AnimationsPanelViewModel(args.StellaServer.BitmapRepository);
+            SelectedViewModel = new BitmapSelectionViewModel(args.StellaServer.BitmapRepository);
             // Todo switch selected viewmodel to control panel
         }
 

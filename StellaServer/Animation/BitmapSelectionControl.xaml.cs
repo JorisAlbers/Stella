@@ -6,9 +6,9 @@ namespace StellaServer.Animation
     /// <summary>
     /// Interaction logic for AnimationsPanel.xaml
     /// </summary>
-    public partial class AnimationsPanel : ReactiveUserControl<AnimationsPanelViewModel>
+    public partial class BitmapSelectionControl : ReactiveUserControl<BitmapSelectionViewModel>
     {
-        public AnimationsPanel()
+        public BitmapSelectionControl()
         {
             InitializeComponent();
             
