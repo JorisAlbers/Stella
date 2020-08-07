@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
 using StellaServer.Setup;
+using StellaServerLib;
 
 namespace StellaServer
 {
@@ -39,8 +41,11 @@ namespace StellaServer
             _userSettings.ServerSetup = args.Settings;
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
-            SelectedViewModel = new BitmapSelectionViewModel(args.StellaServer.BitmapRepository);
-            // Todo switch selected viewmodel to control panel
+            BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  360, 3, 2); // TODO get these magic values from the config
+            StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
+
+            SelectedViewModel = new MainControlPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

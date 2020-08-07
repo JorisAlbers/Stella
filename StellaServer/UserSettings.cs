@@ -21,5 +21,7 @@ namespace StellaServer
         public string MappingFilePath { get; set; }
         [XmlElement]
         public string BitmapFolder { get; set; }
+        [XmlElement]
+        public string StoryboardFolder { get; set; }
     }
 }

@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup>
+    <ShowAllFiles>true</ShowAllFiles>
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Animation\AnimationPanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Animation\AnimationPanelItem.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Animation\BitmapSelectionControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -13,10 +21,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Animation\AnimationPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Animation\AnimationPanelItem.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Animation\BitmapSelectionControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Animation\BitmapControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MainControlpanel.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Setup\SetupPanel.xaml">

@@ -9,7 +9,6 @@
         xmlns:reactiveUi="http://reactiveui.net"
         mc:Ignorable="d"
        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-       xmlns:setup="clr-namespace:StellaServer.Setup"
        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
        Background="{DynamicResource MaterialDesignPaper}"
        TextElement.FontWeight="Medium"
