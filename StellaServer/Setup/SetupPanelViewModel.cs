@@ -16,6 +16,7 @@ namespace StellaServer.Setup
         [Reactive] public int ServerUdpPort { get; set; }
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
+        [Reactive] public string StoryboardFolder { get; set; }                                                                                                                        
         [Reactive] public List<string> Errors { get; set; }
 
         public EventHandler<ServerCreatedEventArgs> ServerCreated;
@@ -32,6 +33,7 @@ namespace StellaServer.Setup
                 ServerUdpPort = settings.ServerUdpPort;
                 MappingFilePath = settings.MappingFilePath;
                 BitmapFolder = settings.BitmapFolder;
+                StoryboardFolder = settings.StoryboardFolder;
             }
 
             var canStartServer = this.WhenAnyValue(
@@ -40,12 +42,14 @@ namespace StellaServer.Setup
                 x => x.ServerUdpPort,
                 x => x.MappingFilePath,
                 x => x.BitmapFolder,
-                (serverIp, tcp, udp, configFile, bitmapFolder) =>
+                x=> x.StoryboardFolder,
+                (serverIp, tcp, udp, configFile, bitmapFolder, storyboardFolder) =>
                     !String.IsNullOrWhiteSpace(serverIp) &&
                     !String.IsNullOrWhiteSpace(MappingFilePath) &&
                     tcp != 0 &&
                     udp != 0 &&
-                    !String.IsNullOrWhiteSpace(bitmapFolder) 
+                    !String.IsNullOrWhiteSpace(bitmapFolder) &&
+                    !String.IsNullOrWhiteSpace(storyboardFolder) 
                 );
 
             StartCommand = ReactiveCommand.Create(() =>
@@ -61,7 +65,8 @@ namespace StellaServer.Setup
                     ServerTcpPort = ServerTcpPort,
                     ServerUdpPort = ServerUdpPort,
                     MappingFilePath = MappingFilePath,
-                    BitmapFolder = BitmapFolder
+                    BitmapFolder = BitmapFolder,
+                    StoryboardFolder = StoryboardFolder
                 }, stellaServer));
             }, canStartServer);
 
