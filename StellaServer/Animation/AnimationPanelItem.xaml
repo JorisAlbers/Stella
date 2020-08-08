@@ -10,11 +10,12 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" >
     <DockPanel LastChildFill="True">
-        <TextBlock x:Name="NameTextBlock" DockPanel.Dock="Left" VerticalAlignment="Center"/>
         <Button x:Name="StartButton" Content="{materialDesign:PackIcon Play}"
                 ToolTip="Icon"
-                DockPanel.Dock="Right"
-                Margin="5,0,0,0"/>
+                DockPanel.Dock="Left" Height="25"/>
+        <TextBlock x:Name="NameTextBlock" DockPanel.Dock="Right" VerticalAlignment="Center"
+                   Margin="5,0,0,0"/>
+       
        
     </DockPanel>
 </reactiveUi:ReactiveUserControl>
