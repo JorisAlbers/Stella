@@ -7,6 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:reactiveUi="http://reactiveui.net"
     xmlns:local="clr-namespace:StellaServer.Animation"
+    xmlns:details="clr-namespace:StellaServer.Animation.Details"
     mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -15,9 +16,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-        <ListView x:Name="StoryboardListView">
+        <ListView x:Name="StoryboardListView"
+                  Grid.Column="0"/>
 
-        </ListView>
+        <reactiveUi:ViewModelViewHost Grid.Column="1" x:Name="StoryboardDetailsControl"
+                                      HorizontalAlignment="Stretch" 
+                                      VerticalAlignment="Stretch"
+                                      VerticalContentAlignment="Stretch"
+                                      HorizontalContentAlignment="Stretch"/>
 
     </Grid>
 </reactiveUi:ReactiveUserControl >

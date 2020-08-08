@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
@@ -34,7 +36,7 @@ namespace StellaServer
             setupViewModel.ServerCreated += ServerCreated;
             SelectedViewModel = setupViewModel;
         }
-
+        
         private void ServerCreated(object sender, ServerCreatedEventArgs args)
         {
            // Save user settings as there might be new settings

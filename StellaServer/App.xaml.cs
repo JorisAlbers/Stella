@@ -19,6 +19,10 @@ namespace StellaServer
         public App()
         {
             Locator.CurrentMutable.RegisterViewsForViewModels(Assembly.GetCallingAssembly());
+            Locator.CurrentMutable.RegisterConstant(
+                new SystemDrawingColorToSolidColorBrushConverter(),
+                typeof(IBindingTypeConverter)
+            );
         }
     }
 }

@@ -19,4 +19,44 @@
     <ProjectReference Include="..\StellaServerLib\StellaServerLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Animation\Settings\FadingPulseAnimationSettingsControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Animation\Settings\SlidingPatternAnimationSettingsControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Animation\Settings\RepeatingPatternsSettingsControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Animation\Settings\RandomFadeAnimationSettingsControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Animation\Settings\MovingPatternAnimationSettingsControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Animation\Settings\FadingPulseAnimationSettingsControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Animation\Settings\SlidingPatternAnimationSettingsControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Animation\Settings\RepeatingPatternsSettingsControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Animation\Settings\RandomFadeAnimationSettingsControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Animation\Settings\MovingPatternAnimationSettingsControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Animation\NewFolder\" />
+  </ItemGroup>
+
 </Project>

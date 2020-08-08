@@ -13,32 +13,28 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ReactiveUI;
 
-namespace StellaServer.Animation
+namespace StellaServer.Animation.Details
 {
     /// <summary>
-    /// Interaction logic for AnimationPanel.xaml
+    /// Interaction logic for StoryboardDetailsControl.xaml
     /// </summary>
-    public partial class AnimationPanel : ReactiveUserControl<AnimationsPanelViewModel>
+    public partial class StoryboardDetailsControl : ReactiveUserControl<StoryboardDetailsControlViewModel>
     {
-        public AnimationPanel()
+        public StoryboardDetailsControl()
         {
             InitializeComponent();
 
             this.WhenActivated(disposableRegistration =>
             {
-                this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.StoryboardViewModels,
-                        view => view.StoryboardListView.ItemsSource)
-                    .DisposeWith(disposableRegistration);
-
+                
                 this.Bind(ViewModel,
-                        viewmodel => viewmodel.SelectedAnimation,
-                        view => view.StoryboardListView.SelectedItem)
+                        viewmodel => viewmodel.Name,
+                        view => view.NameTextBlock.Text)
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.StoryboardDetails,
-                        view => view.StoryboardDetailsControl.ViewModel)
+                        viewmodel => viewmodel.AnimationSettings,
+                        view => view.AnimationSettingsListView.ItemsSource)
                     .DisposeWith(disposableRegistration);
             });
         }
