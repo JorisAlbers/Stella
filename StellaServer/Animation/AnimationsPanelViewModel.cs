@@ -52,7 +52,7 @@ namespace StellaServer.Animation
             {
                 if (SelectedAnimation != null)
                 {
-                    StoryboardDetails = new StoryboardDetailsControlViewModel(SelectedAnimation.Storyboard);
+                    StoryboardDetails = new StoryboardDetailsControlViewModel(SelectedAnimation.Storyboard, _bitmapRepository);
                 }
             }
         }

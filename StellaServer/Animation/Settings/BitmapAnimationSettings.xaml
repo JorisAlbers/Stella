@@ -8,38 +8,45 @@
              xmlns:reactiveUi="http://reactiveui.net"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ListView>
-        <ListViewItem>
-            <StackPanel>
-                <TextBlock Text="StartIndex:"></TextBlock>
-                <TextBlock x:Name="StartIndexTextBlock"></TextBlock>
-            </StackPanel>
-        </ListViewItem>
-        <ListViewItem>
-            <StackPanel>
-                <TextBlock Text="StripLength:"></TextBlock>
-            <TextBlock x:Name="StripLengthTextBlock"></TextBlock>
-            </StackPanel>
-        </ListViewItem>
-        <ListViewItem>
-            <StackPanel>
-                <TextBlock Text="RelativeStart:"></TextBlock>
-                <TextBlock x:Name="RelativeStartTextBlock"></TextBlock>
-            </StackPanel>
-        </ListViewItem>
-<!--BitmapAnimation specific-->
-        <ListViewItem>
-            <StackPanel>
-                <TextBlock Text="ImageName:"></TextBlock>
-                <TextBlock x:Name="ImageNameTextBlock"></TextBlock>
-            </StackPanel>
-        </ListViewItem>
+    <DockPanel>
+        <ListView DockPanel.Dock="Left">
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock Text="StartIndex:"></TextBlock>
+                    <TextBlock x:Name="StartIndexTextBlock"></TextBlock>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock Text="StripLength:"></TextBlock>
+                    <TextBlock x:Name="StripLengthTextBlock"></TextBlock>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock Text="RelativeStart:"></TextBlock>
+                    <TextBlock x:Name="RelativeStartTextBlock"></TextBlock>
+                </StackPanel>
+            </ListViewItem>
+            <!--BitmapAnimation specific-->
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock Text="ImageName:"></TextBlock>
+                    <TextBlock x:Name="ImageNameTextBlock"></TextBlock>
+                </StackPanel>
+            </ListViewItem>
 
-        <ListViewItem>
-            <StackPanel>
-                <TextBlock Text="Wraps:"></TextBlock>
-                <CheckBox x:Name="WrapsCheckBlock"></CheckBox>
-            </StackPanel>
-        </ListViewItem>
-    </ListView>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock Text="Wraps:"></TextBlock>
+                    <CheckBox x:Name="WrapsCheckBlock"></CheckBox>
+                </StackPanel>
+            </ListViewItem>
+        </ListView>
+
+        <Image x:Name="ImageControl" 
+               Margin="10,0,0,0"
+               MaxWidth="200" MaxHeight="200"/>
+    </DockPanel>
+    
 </reactiveUi:ReactiveUserControl>
