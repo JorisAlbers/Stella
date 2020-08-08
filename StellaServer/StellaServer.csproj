@@ -55,8 +55,4 @@
     </Page>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Animation\NewFolder\" />
-  </ItemGroup>
-
 </Project>
