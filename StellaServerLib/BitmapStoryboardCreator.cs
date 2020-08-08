@@ -35,13 +35,16 @@ namespace StellaServerLib
         /// Appends the bitmap storyboards to the list of storyboards
         /// </summary>
         /// <param name="storyboards"></param>
-        public void Create(List<Storyboard> storyboards)
+        public List<Storyboard> Create()
         {
+            List<Storyboard> storyboards = new List<Storyboard>();
             // Iterate folders in directory
             foreach (string bitmap in _bitmapRepository.ListAllBitmaps())
             {
                 AddBitmapAnimation(storyboards, bitmap);
             }
+
+            return storyboards;
         }
 
         private void AddBitmapAnimation(List<Storyboard> storyboards, string name)

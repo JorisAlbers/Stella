@@ -32,8 +32,10 @@ namespace StellaServer.Animation
             _bitmapStoryboardCreator = bitmapStoryboardCreator;
             _bitmapRepository = bitmapRepository;
 
-            StoryboardViewModels = storyboardRepository.LoadStoryboards().Select(x=> new AnimationPanelItemViewModel(x)).ToList();
-
+            StoryboardViewModels = storyboardRepository.LoadStoryboards()
+                .Select(x=> new AnimationPanelItemViewModel(x))
+                .Union(_bitmapStoryboardCreator.Create().Select(x=> new AnimationPanelItemViewModel(x))).ToList();
+            
             /*// TODO why is this not working?
             this.WhenAnyValue(x => x.SelectedAnimation)
                 .Where(x=> x!=null)
