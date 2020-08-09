@@ -25,6 +25,8 @@ namespace StellaServer.Animation
 
         [Reactive] public StoryboardDetailsControlViewModel StoryboardDetails { get; set; }
 
+        //TODO use observable
+        public event EventHandler<IAnimation> StartAnimationRequested;
 
         public AnimationsPanelViewModel(StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
         {
@@ -32,10 +34,19 @@ namespace StellaServer.Animation
             _bitmapStoryboardCreator = bitmapStoryboardCreator;
             _bitmapRepository = bitmapRepository;
 
-            StoryboardViewModels = storyboardRepository.LoadStoryboards()
-                .Select(x=> new AnimationPanelItemViewModel(x))
-                .Union(_bitmapStoryboardCreator.Create().Select(x=> new AnimationPanelItemViewModel(x))).ToList();
+            StoryboardViewModels = storyboardRepository
+                .LoadStoryboards().Select(x=> new AnimationPanelItemViewModel(x))
+                .Union(_bitmapStoryboardCreator.Create().Select(x=> new AnimationPanelItemViewModel(x)))
+                .Select(vm =>
+                {
+                    vm.StartCommand.Subscribe(onNext =>
+                    {
+                        StartAnimationRequested?.Invoke(this, vm.Storyboard);
+                    });
+                    return vm;
+                } ).ToList();
             
+
             /*// TODO why is this not working?
             this.WhenAnyValue(x => x.SelectedAnimation)
                 .Where(x=> x!=null)
@@ -45,6 +56,7 @@ namespace StellaServer.Animation
             // TODO how to implement this properly with reactiveUi?
             PropertyChanged += OnPropertyChanged;
         }
+
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
