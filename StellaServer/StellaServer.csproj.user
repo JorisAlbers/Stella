@@ -29,6 +29,12 @@
     <Compile Update="Setup\SetupPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Status\ClientStatusControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Status\StatusControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Animation\AnimationPanel.xaml">
@@ -68,6 +74,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Setup\SetupPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Status\ClientStatusControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Status\StatusControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
