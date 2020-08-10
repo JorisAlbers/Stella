@@ -11,17 +11,15 @@
         
 
         <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-        <WrapPanel Grid.Row="0">
+        <StackPanel Margin="0,0,5,0">
             <TextBlock  Text="Currently playing:"/>
             <TextBlock  x:Name="CurrentlyPlayingTextBlock"/>
-        </WrapPanel>
-       
-
-
+        </StackPanel>
+        
         <ListView Grid.Row="1" x:Name="ClientsListView"/>
 
     </Grid>
