@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,14 @@ namespace StellaServer.Status
         public StatusControl()
         {
             InitializeComponent();
+
+            this.WhenActivated(disposableRegistration =>
+            {
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.CurrentlyPlaying,
+                        view => view.CurrentlyPlayingTextBlock.Text)
+                    .DisposeWith(disposableRegistration);
+            });
         }
     }
 }

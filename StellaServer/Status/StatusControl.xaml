@@ -8,6 +8,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        
+
+        <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0">
+            <TextBlock  Text="Currently playing:"/>
+            <TextBlock  x:Name="CurrentlyPlayingTextBlock"/>
+        </WrapPanel>
+       
+
+
+        <ListView Grid.Row="1" x:Name="ClientsListView"/>
+
     </Grid>
 </reactiveUi:ReactiveUserControl>

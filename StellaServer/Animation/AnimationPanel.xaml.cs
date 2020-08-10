@@ -35,11 +35,6 @@ namespace StellaServer.Animation
                         viewmodel => viewmodel.SelectedAnimation,
                         view => view.StoryboardListView.SelectedItem)
                     .DisposeWith(disposableRegistration);
-
-                this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.StoryboardDetails,
-                        view => view.StoryboardDetailsControl.ViewModel)
-                    .DisposeWith(disposableRegistration);
             });
         }
     }

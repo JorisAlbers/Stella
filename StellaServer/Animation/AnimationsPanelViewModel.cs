@@ -23,29 +23,26 @@ namespace StellaServer.Animation
 
         [Reactive] public AnimationPanelItemViewModel SelectedAnimation { get; set; }
 
-        [Reactive] public StoryboardDetailsControlViewModel StoryboardDetails { get; set; }
-
+        
         //TODO use observable
         public event EventHandler<IAnimation> StartAnimationRequested;
 
-        public AnimationsPanelViewModel(StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
+        public AnimationsPanelViewModel(StoryboardRepository storyboardRepository,
+            BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
         {
             _storyboardRepository = storyboardRepository;
             _bitmapStoryboardCreator = bitmapStoryboardCreator;
             _bitmapRepository = bitmapRepository;
 
             StoryboardViewModels = storyboardRepository
-                .LoadStoryboards().Select(x=> new AnimationPanelItemViewModel(x))
-                .Union(_bitmapStoryboardCreator.Create().Select(x=> new AnimationPanelItemViewModel(x)))
+                .LoadStoryboards().Select(x => new AnimationPanelItemViewModel(x))
+                .Union(_bitmapStoryboardCreator.Create().Select(x => new AnimationPanelItemViewModel(x)))
                 .Select(vm =>
                 {
-                    vm.StartCommand.Subscribe(onNext =>
-                    {
-                        StartAnimationRequested?.Invoke(this, vm.Storyboard);
-                    });
+                    vm.StartCommand.Subscribe(onNext => { StartAnimationRequested?.Invoke(this, vm.Storyboard); });
                     return vm;
-                } ).ToList();
-            
+                }).ToList();
+
 
             /*// TODO why is this not working?
             this.WhenAnyValue(x => x.SelectedAnimation)
@@ -53,20 +50,6 @@ namespace StellaServer.Animation
                 .Select(x => new StoryboardDetailsControlViewModel(SelectedAnimation.Storyboard))
                 .ToProperty(this, x=> x.StoryboardDetails);*/
 
-            // TODO how to implement this properly with reactiveUi?
-            PropertyChanged += OnPropertyChanged;
-        }
-
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(SelectedAnimation))
-            {
-                if (SelectedAnimation != null)
-                {
-                    StoryboardDetails = new StoryboardDetailsControlViewModel(SelectedAnimation.Storyboard, _bitmapRepository);
-                }
-            }
         }
     }
 }

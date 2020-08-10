@@ -11,19 +11,6 @@
     mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.3*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-        <ListView x:Name="StoryboardListView"
-                  Grid.Column="0"/>
-
-        <reactiveUi:ViewModelViewHost Grid.Column="1" x:Name="StoryboardDetailsControl"
-                                      HorizontalAlignment="Stretch" 
-                                      VerticalAlignment="Stretch"
-                                      VerticalContentAlignment="Stretch"
-                                      HorizontalContentAlignment="Stretch"/>
-
+        <ListView x:Name="StoryboardListView"/>
     </Grid>
 </reactiveUi:ReactiveUserControl >
