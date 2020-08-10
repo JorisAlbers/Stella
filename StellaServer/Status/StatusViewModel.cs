@@ -4,6 +4,7 @@ using System.Text;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServerLib.Animation;
+using StellaServerLib.Network;
 
 namespace StellaServer.Status
 {
@@ -21,6 +22,14 @@ namespace StellaServer.Status
             {
                 Clients.Add(new ClientStatusViewModel($"client {i}"));
             }
+
+            _stellaServer.ClientStatusChanged += StellaServerOnClientStatusChanged; 
+        }
+
+        private void StellaServerOnClientStatusChanged(object sender, ClientStatusChangedEventArgs e)
+        {
+            // id is index
+            Clients[e.Id].IsConnected = e.Status == ClientStatus.Connected;
         }
 
         public void AnimationStarted(IAnimation animation)

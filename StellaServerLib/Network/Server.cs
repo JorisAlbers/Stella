@@ -30,6 +30,8 @@ namespace StellaServerLib.Network
         private ISocketConnection _listenerSocket;
         private ISocketConnection _udpSocketConnection;
 
+        public event EventHandler<ClientStatusChangedEventArgs> ClientChanged;
+
         public Server()
         {
             _newConnections =  new List<Client>();
@@ -164,7 +166,7 @@ namespace StellaServerLib.Network
             {
                 Console.WriteLine($"Client {client.ID} disconnected, {exception.SocketErrorCode}"); // TODO add intended disconnect, not just on SocketException
             }
-
+            ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(client.ID, ClientStatus.Disconnected));
             DisposeClient(client);
         }
 
@@ -189,6 +191,7 @@ namespace StellaServerLib.Network
             });
 
             Console.Out.WriteLine(logMessage);
+            ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(id ,ClientStatus.Connected));
 
             lock(_newConnections)
             {

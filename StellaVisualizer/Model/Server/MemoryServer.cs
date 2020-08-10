@@ -35,6 +35,8 @@ namespace StellaVisualizer.Model.Server
             }
         }
 
+        public event EventHandler<ClientStatusChangedEventArgs> ClientChanged;
+
         public void Dispose()
         {
             ;

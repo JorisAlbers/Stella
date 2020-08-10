@@ -27,6 +27,8 @@ namespace StellaServerLib
         public IAnimator Animator { get; private set; }
         public BitmapRepository BitmapRepository { get; }
 
+        public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;
+
         public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit, BitmapRepository bitmapRepository, IServer server)
         {
             _mappingFilePath = mappingFilePath;
