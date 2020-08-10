@@ -6,6 +6,7 @@ using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
 using StellaServer.Animation.Details;
 using StellaServer.Status;
+using StellaServer.Transformations;
 using StellaServerLib;
 using StellaServerLib.Animation;
 
@@ -18,6 +19,8 @@ namespace StellaServer
         [Reactive] public AnimationsPanelViewModel AnimationsPanelViewModel { get; set; }
 
         [Reactive] public StatusViewModel StatusViewModel { get; set; }
+
+        [Reactive] public TransformationViewModel TransformationViewModel { get; set; }
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
         public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer, StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
@@ -38,10 +41,7 @@ namespace StellaServer
                         SelectedViewModel = vm;
                     });
 
-
-
             StatusViewModel = new StatusViewModel(stellaServer, 3); //TODO insert number of clients
-            
             
         }
 
@@ -50,6 +50,10 @@ namespace StellaServer
             Console.WriteLine($"Starting {e.Name}");
             _stellaServer.StartAnimation(e);
             StatusViewModel.AnimationStarted(e);
+            if (TransformationViewModel == null)
+            {
+                TransformationViewModel = new TransformationViewModel(_stellaServer);
+            }
         }
     }
 }

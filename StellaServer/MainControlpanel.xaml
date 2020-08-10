@@ -43,6 +43,14 @@
                                       VerticalContentAlignment="Stretch"
                                       HorizontalContentAlignment="Stretch"/>
 
+
+        <reactiveUi:ViewModelViewHost x:Name="TransformationHost"
+                                      Grid.Row="1" Grid.Column="1"
+                                      HorizontalAlignment="Stretch" 
+                                      VerticalAlignment="Stretch"
+                                      VerticalContentAlignment="Stretch"
+                                      HorizontalContentAlignment="Stretch"/>
+
     </Grid>
 
 

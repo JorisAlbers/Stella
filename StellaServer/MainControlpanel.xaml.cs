@@ -44,6 +44,11 @@ namespace StellaServer
                         viewmodel => viewmodel.SelectedViewModel,
                         view => view.ViewModelViewHost.ViewModel)
                     .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.TransformationViewModel,
+                        view => view.TransformationHost.ViewModel)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }

@@ -22,13 +22,13 @@ namespace StellaServer.Transformations
         /// <param name="stellaServer"></param>
         public TransformationViewModel(StellaServerLib.StellaServer stellaServer)
         {
-            this.WhenAnyValue(x => RedCorrection,
+            /*this.WhenAnyValue(x => RedCorrection,
                 x => x.GreenCorrection,
                 x => x.BlueCorrection,
                 (r, g, b) => new float[] {r, g, b})
                 .Throttle(TimeSpan.FromMilliseconds(100))
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(onNext => stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(onNext));
+                .Subscribe(onNext => stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(onNext));*/
 
             this.WhenAnyValue(x => x.TimeUnitsPerFrame)
                 .Throttle(TimeSpan.FromMilliseconds(100))
