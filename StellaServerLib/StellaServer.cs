@@ -117,6 +117,7 @@ namespace StellaServerLib
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
+                server.ClientChanged += ServerOnClientChanged;
                 server.Start(ip, port, udpPort);
                 return server;
             }
@@ -124,6 +125,11 @@ namespace StellaServerLib
             {
                 throw new Exception("Failed to start the server.",e);
             }
+        }
+
+        private void ServerOnClientChanged(object sender, ClientStatusChangedEventArgs e)
+        {
+            ClientStatusChanged?.Invoke(sender, e);
         }
 
         private ClientController StartClientController(IServer server)
