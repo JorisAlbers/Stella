@@ -39,7 +39,7 @@
         <reactiveUi:ViewModelViewHost x:Name="StatusControlHost"
                                       Grid.Row="1" Grid.Column="2"
                                       HorizontalAlignment="Left" 
-                                      VerticalAlignment="Top"
+                                      VerticalAlignment="Bottom"
                                       VerticalContentAlignment="Stretch"
                                       HorizontalContentAlignment="Stretch"/>
 

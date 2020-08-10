@@ -8,19 +8,23 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        
-
         <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition />
+                <RowDefinition/>
             </Grid.RowDefinitions>
 
-        <StackPanel Margin="0,0,5,0">
+        <StackPanel Margin="0,0,5,10">
             <TextBlock  Text="Currently playing:"/>
-            <TextBlock  x:Name="CurrentlyPlayingTextBlock"/>
+            <TextBlock  x:Name="CurrentlyPlayingTextBlock" TextWrapping="Wrap"/>
         </StackPanel>
         
-        <ListView Grid.Row="1" x:Name="ClientsListView"/>
+        <ListView Grid.Row="1" x:Name="ClientsListView">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"></StackPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
 
     </Grid>
 </reactiveUi:ReactiveUserControl>

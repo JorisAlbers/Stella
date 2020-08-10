@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,20 @@ namespace StellaServer.Status
         public ClientStatusControl()
         {
             InitializeComponent();
+
+            this.WhenActivated(disposableRegistration =>
+            {
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.IsConnected,
+                        view => view.OnlineIndicator.Foreground,
+                        x=> x ? Brushes.Green : Brushes.Red)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.Name,
+                        view => view.NameTextBlock.Text)
+                    .DisposeWith(disposableRegistration);
+            });
         }
     }
 }

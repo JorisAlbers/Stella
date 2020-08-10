@@ -30,6 +30,10 @@ namespace StellaServer.Status
                         viewmodel => viewmodel.CurrentlyPlaying,
                         view => view.CurrentlyPlayingTextBlock.Text)
                     .DisposeWith(disposableRegistration);
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.Clients,
+                        view => view.ClientsListView.ItemsSource)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }
