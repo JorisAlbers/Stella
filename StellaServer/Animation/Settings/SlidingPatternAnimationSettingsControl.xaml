@@ -11,6 +11,12 @@
     <ListView>
         <ListViewItem>
             <StackPanel>
+                <TextBlock Text="Draw method:"/>
+                <TextBlock Text="Sliding pattern"/>
+            </StackPanel>
+        </ListViewItem>
+        <ListViewItem>
+            <StackPanel>
                 <TextBlock Text="StartIndex:"></TextBlock>
                 <TextBlock x:Name="StartIndexTextBlock"></TextBlock>
             </StackPanel>

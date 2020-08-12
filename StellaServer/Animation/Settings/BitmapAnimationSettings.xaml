@@ -12,6 +12,12 @@
         <ListView DockPanel.Dock="Left">
             <ListViewItem>
                 <StackPanel>
+                    <TextBlock Text="Draw method:"/>
+                    <TextBlock Text="Bitmap"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem>
+                <StackPanel>
                     <TextBlock Text="StartIndex:"></TextBlock>
                     <TextBlock x:Name="StartIndexTextBlock"></TextBlock>
                 </StackPanel>
