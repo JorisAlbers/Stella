@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using ReactiveUI;
@@ -16,6 +17,8 @@ namespace StellaServer.Transformations
         [Reactive] public int BrightnessCorrection { get; set; }
 
         [Reactive] public int TimeUnitsPerFrame { get; set; }
+
+        public ReactiveCommand<Unit,Unit> Reset { get; } 
 
         /// <summary>
         /// TODO this one only adjust the master now, also add other animations
@@ -43,6 +46,15 @@ namespace StellaServer.Transformations
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(onNext =>
                     stellaServer.Animator?.StoryboardTransformationController.SetBrightnessCorrection(IntegerCorrectionToFloatCorrection(onNext)));
+
+            this.Reset = ReactiveCommand.Create(() =>
+            {
+                RedCorrection = 0;
+                GreenCorrection = 0;
+                BlueCorrection = 0;
+                BrightnessCorrection = 0;
+                TimeUnitsPerFrame = 0;
+            });
         }
 
         private float[] IntegerCorrectionToFloatCorrection(int[] i)

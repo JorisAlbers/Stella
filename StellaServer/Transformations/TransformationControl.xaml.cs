@@ -51,11 +51,9 @@ namespace StellaServer.Transformations
                         view => view.TimeUnitsPerFrameSlider.Value)
                     .DisposeWith(disposableRegistration);
 
-                this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.TimeUnitsPerFrame,
-                        view => view.TimeUnitsPerFrameTextBlock.Text,
-                        x=> $"{TimeUnitsPerFrameSlider.Maximum - x}" )
-                    .DisposeWith(disposableRegistration);
+                this.BindCommand(ViewModel,
+                    viewmodel => viewmodel.Reset,
+                    view => view.ResetButton);
             });
         }
     }
