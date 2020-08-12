@@ -34,6 +34,10 @@ namespace StellaServer.Status
                         viewmodel => viewmodel.Clients,
                         view => view.ClientsListView.ItemsSource)
                     .DisposeWith(disposableRegistration);
+                this.BindCommand(ViewModel,
+                        viewmodel => viewmodel.OpenLog,
+                        view => view.OpenLogButton)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }

@@ -5,6 +5,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
 using StellaServer.Animation.Details;
+using StellaServer.Log;
 using StellaServer.Status;
 using StellaServer.Transformations;
 using StellaServerLib;
@@ -23,7 +24,9 @@ namespace StellaServer
         [Reactive] public TransformationViewModel TransformationViewModel { get; set; }
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
-        public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer, StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
+        public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer,
+            StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator,
+            BitmapRepository bitmapRepository, LogViewModel logViewModel)
         {
             _stellaServer = stellaServer;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
@@ -41,7 +44,7 @@ namespace StellaServer
                         SelectedViewModel = vm;
                     });
 
-            StatusViewModel = new StatusViewModel(stellaServer, 3); //TODO insert number of clients
+            StatusViewModel = new StatusViewModel(stellaServer, 3, logViewModel); //TODO insert number of clients
             
         }
 

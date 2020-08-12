@@ -26,6 +26,9 @@
     <Compile Update="Animation\Settings\BitmapAnimationSettings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Log\LogWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Setup\SetupPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -71,6 +74,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Animation\Settings\BitmapAnimationSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Log\LogWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainControlpanel.xaml">

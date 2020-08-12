@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,27 +12,24 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ReactiveUI;
-using Splat;
 
-namespace StellaServer
+namespace StellaServer.Log
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LogWindow.xaml
     /// </summary>
-    public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+    public partial class LogWindow : ReactiveWindow<LogViewModel>
     {
-        public MainWindow()
+        public LogWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowViewModel();
 
             this.WhenActivated(disposableRegistration =>
             {
-                this.Bind(ViewModel,
-                        viewmodel => viewmodel.SelectedViewModel,
-                        view => view.ViewModelViewHost.ViewModel)
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.Messages,
+                        view => view.LogMessagesListView.ItemsSource)
                     .DisposeWith(disposableRegistration);
-
             });
         }
     }

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
+using StellaServer.Log;
 using StellaServer.Setup;
 using StellaServerLib;
 
@@ -27,9 +27,11 @@ namespace StellaServer
         private UserSettings _userSettings;
 
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
-
+        [Reactive] public LogViewModel LogViewModel { get; set; }
+        
         public MainWindowViewModel()
         {
+            LogViewModel = new LogViewModel();
             _userSettings = LoadUserSettings(UserSettingsFilePath);
             
             var setupViewModel = new SetupPanelViewModel(_userSettings?.ServerSetup);
@@ -47,7 +49,7 @@ namespace StellaServer
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  360, 3, 2); // TODO get these magic values from the config
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
-            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
+            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, LogViewModel);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

@@ -5,11 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StellaServer.Status"
              xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:log="clr-namespace:StellaServer.Log"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid VerticalAlignment="Stretch" Margin="5" >
         <Grid.RowDefinitions>
                 <RowDefinition />
+                <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
@@ -25,6 +28,12 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
         </ListView>
+
+        <Button x:Name="OpenLogButton" Content="{materialDesign:PackIcon Notifications }"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Grid.Row="2"
+                ToolTip="Show log"/>
 
     </Grid>
 </reactiveUi:ReactiveUserControl>
