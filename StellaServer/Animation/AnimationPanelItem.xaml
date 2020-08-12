@@ -12,7 +12,7 @@
     <DockPanel LastChildFill="True">
         <Button x:Name="StartButton" Content="{materialDesign:PackIcon Play}"
                 ToolTip="Icon"
-                DockPanel.Dock="Left" Height="25"/>
+                DockPanel.Dock="Left" Height="25" Width="30" Padding="0"/>
         <TextBlock x:Name="NameTextBlock" DockPanel.Dock="Right" VerticalAlignment="Center"
                    Margin="5,0,0,0"/>
        
