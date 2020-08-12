@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -27,8 +29,16 @@ namespace StellaServer.Status
             {
                 Clients.Add(new ClientStatusViewModel($"client {i}"));
             }
-
-            _stellaServer.ClientStatusChanged += StellaServerOnClientStatusChanged;
+            
+            Observable.FromEventPattern<EventHandler<ClientStatusChangedEventArgs>, ClientStatusChangedEventArgs>(
+                    handler => _stellaServer.ClientStatusChanged += handler,
+                    handler => _stellaServer.ClientStatusChanged -= handler)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(onNext =>
+                {
+                    // id is index
+                    Clients[onNext.EventArgs.Id].IsConnected = onNext.EventArgs.Status == ClientStatus.Connected;
+                });
 
              OpenLog   = ReactiveCommand.Create(() =>
             {
@@ -36,12 +46,6 @@ namespace StellaServer.Status
                 window.ViewModel = logViewModel;
                 window.Show();
             });
-        }
-
-        private void StellaServerOnClientStatusChanged(object sender, ClientStatusChangedEventArgs e)
-        {
-            // id is index
-            Clients[e.Id].IsConnected = e.Status == ClientStatus.Connected;
         }
 
         public void AnimationStarted(IAnimation animation)
