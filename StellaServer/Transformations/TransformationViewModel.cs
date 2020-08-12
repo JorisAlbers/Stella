@@ -47,14 +47,14 @@ namespace StellaServer.Transformations
 
         private float[] IntegerCorrectionToFloatCorrection(int[] i)
         {
-            // i ranges between 10 and -10
+            // i ranges between 100 and -100
             return i.Select(IntegerCorrectionToFloatCorrection).ToArray();
         }
 
         private float IntegerCorrectionToFloatCorrection(int i)
         {
-            // i ranges between 10 and -10
-            return (float) (i / 10.0);
+            // i ranges between 0 and -100
+            return (float) (i / 100.0);
         }
 
 

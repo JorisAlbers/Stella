@@ -25,11 +25,11 @@
             <Grid.Resources>
                 <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource {x:Type Slider}}">
                     <Setter Property="TickPlacement" Value="Both"/>
-                    <Setter Property="TickFrequency" Value="1"/>
+                    <Setter Property="TickFrequency" Value="5"/>
                     <Setter Property="Interval" Value="1"/>
                     <Setter Property="IsSnapToTickEnabled" Value="True"/>
                     <Setter Property="Maximum" Value="0"/>
-                    <Setter Property="Minimum" Value="-10"/>
+                    <Setter Property="Minimum" Value="-100"/>
                     <Setter Property="Orientation" Value="Vertical"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
                     <Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -59,8 +59,8 @@
             <Slider x:Name="BrightnessCorrectionSlider"
                     Foreground="White"
                     Grid.Column="3" Grid.Row="0"
-                    Minimum="-10"
-                    Maximum="10"/>
+                    Minimum="-100"
+                    Maximum="100"/>
             <TextBlock Text="{Binding ElementName=BrightnessCorrectionSlider, Path=Value}"
                        Grid.Column="3" Grid.Row="1"
                        VerticalAlignment="Top" HorizontalAlignment="Center"/>
