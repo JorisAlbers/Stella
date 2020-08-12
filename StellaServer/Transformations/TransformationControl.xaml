@@ -9,8 +9,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800">
     <Grid Margin="50,10">
-        <Grid Width="200" ShowGridLines="True">
+        <Grid Width="200">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -26,7 +28,7 @@
                     <Setter Property="TickFrequency" Value="1"/>
                     <Setter Property="Interval" Value="1"/>
                     <Setter Property="IsSnapToTickEnabled" Value="True"/>
-                    <Setter Property="Maximum" Value="10"/>
+                    <Setter Property="Maximum" Value="0"/>
                     <Setter Property="Minimum" Value="-10"/>
                     <Setter Property="Orientation" Value="Vertical"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -54,7 +56,28 @@
                        Grid.Column="2" Grid.Row="1"
                        VerticalAlignment="Top" HorizontalAlignment="Center"/>
 
+            <Slider x:Name="BrightnessCorrectionSlider"
+                    Foreground="White"
+                    Grid.Column="3" Grid.Row="0"
+                    Minimum="-10"
+                    Maximum="10"/>
+            <TextBlock Text="{Binding ElementName=BrightnessCorrectionSlider, Path=Value}"
+                       Grid.Column="3" Grid.Row="1"
+                       VerticalAlignment="Top" HorizontalAlignment="Center"/>
+
+            <Slider x:Name="TimeUnitsPerFrameSlider"
+                    Grid.Column="4" Grid.Row="0"
+                    Maximum="1000" Minimum="0"
+                    TickPlacement="Both"
+                    TickFrequency="10"
+                    SmallChange="1"
+                    LargeChange="100"/>
+            <TextBlock x:Name="TimeUnitsPerFrameTextBlock"
+                       Grid.Column="4" Grid.Row="1"
+                       VerticalAlignment="Top" HorizontalAlignment="Center"/>
+
         </Grid>
-            
+
+
     </Grid>
 </reactiveUi:ReactiveUserControl>

@@ -26,19 +26,35 @@ namespace StellaServer.Transformations
 
             this.WhenActivated(disposableRegistration =>
             {
-                this.OneWayBind(ViewModel,
+                this.Bind(ViewModel,
                         viewmodel => viewmodel.RedCorrection,
                         view => view.RedCorrectionSlider.Value)
                     .DisposeWith(disposableRegistration);
 
-                this.OneWayBind(ViewModel,
+                this.Bind(ViewModel,
                         viewmodel => viewmodel.GreenCorrection,
                         view => view.GreenCorrectionSlider.Value)
                     .DisposeWith(disposableRegistration);
 
-                this.OneWayBind(ViewModel,
+                this.Bind(ViewModel,
                         viewmodel => viewmodel.BlueCorrection,
                         view => view.BlueCorrectionSlider.Value)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.BrightnessCorrection,
+                        view => view.BrightnessCorrectionSlider.Value)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.TimeUnitsPerFrame,
+                        view => view.TimeUnitsPerFrameSlider.Value)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.TimeUnitsPerFrame,
+                        view => view.TimeUnitsPerFrameTextBlock.Text,
+                        x=> $"{TimeUnitsPerFrameSlider.Maximum - x}" )
                     .DisposeWith(disposableRegistration);
             });
         }
