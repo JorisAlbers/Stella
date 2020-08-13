@@ -70,29 +70,26 @@ namespace StellaServerLib
         public List<string> ListAllBitmaps()
         {
             List<string> bitmapList = new List<string>();
-            
-            // Iterate folders in directory
-            foreach (IDirectoryInfo subDirectory in _directory.GetDirectories())
-            {
-                foreach (IFileInfo fileInfo in subDirectory.GetFiles())
-                {
-                    if (fileInfo.Extension == ".png")
-                    {
-                        bitmapList.Add(Path.Combine(subDirectory.Name, Path.GetFileNameWithoutExtension(fileInfo.Name)));
-                    }
-                }
-            }
+            InternalListAllBitmaps(_directory, bitmapList);
+            return bitmapList;
+        }
 
+        private void InternalListAllBitmaps(IDirectoryInfo directory, List<string> bitmapList)
+        {
             // Iterate files in bitmap dir
-            foreach (IFileInfo fileInfo in _directory.GetFiles())
+            foreach (IFileInfo fileInfo in directory.GetFiles())
             {
                 if (fileInfo.Extension == ".png")
                 {
-                    bitmapList.Add(Path.GetFileNameWithoutExtension(fileInfo.Name));
+                    bitmapList.Add(fileInfo.FullName.Replace(_directory.FullName + "\\", "").Replace(".png",""));
                 }
             }
 
-            return bitmapList;
+            // Iterate folders in directory
+            foreach (IDirectoryInfo subDirectory in directory.GetDirectories())
+            {
+                InternalListAllBitmaps(subDirectory, bitmapList);
+            }
         }
     }
 }
