@@ -33,7 +33,7 @@ namespace StellaServer.Transformations
                 (r, g, b) => new int[] {r, g, b})
                 .Throttle(TimeSpan.FromMilliseconds(100))
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(onNext => stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(IntegerCorrectionToFloatCorrection(onNext)));
+                .Subscribe(onNext => stellaServer.Animator?.StoryboardTransformationController.SetRgbFadeCorrection(IntegerCorrectionToFloatCorrection(onNext)));
 
             this.WhenAnyValue(x => x.TimeUnitsPerFrame)
                 .Throttle(TimeSpan.FromMilliseconds(100))
