@@ -1,0 +1,8 @@
+﻿!MappingSettings
+Mappings:
+ - PiIndex: 0
+   Length:  30
+   StartIndexOnPi:  0
+   FirstSectionIsInverted:  False
+   SectionStarts:
+    - 15

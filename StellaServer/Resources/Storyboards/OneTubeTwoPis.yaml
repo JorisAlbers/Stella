@@ -1,0 +1,14 @@
+﻿!Storyboard
+Name: One tube two pis
+Animations:
+ - !Bitmap
+   StartIndex:  0
+   StripLength: 120
+   TimeUnitsPerFrame: 10
+   ImageName: test-04-circle08
+ - !Bitmap	
+   StartIndex:  120
+   StripLength: 120
+   TimeUnitsPerFrame: 10
+   RelativeStart: 100
+   ImageName: test-04-circle08

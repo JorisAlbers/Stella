@@ -1,0 +1,10 @@
+﻿!MappingSettings
+Mappings:
+ - PiIndex: 0
+   Length:  120
+   StartIndexOnPi:  0
+   FirstSectionIsInverted:  False
+ - PiIndex: 1
+   Length:  120
+   StartIndexOnPi:  0
+   FirstSectionIsInverted:  False

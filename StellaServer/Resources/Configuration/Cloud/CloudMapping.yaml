@@ -1,0 +1,20 @@
+﻿!MappingSettings
+Mappings:
+ - PiIndex: 0
+   Length:  600
+   StartIndexOnPi:  0
+ - PiIndex: 0
+   Length:  600
+   StartIndexOnPi:  600
+ - PiIndex: 1
+   Length:  600
+   StartIndexOnPi:  0
+ - PiIndex: 1
+   Length:  600
+   StartIndexOnPi:  600
+ - PiIndex: 2
+   Length:  600
+   StartIndexOnPi:  0
+ - PiIndex: 2
+   Length:  600
+   StartIndexOnPi:  600

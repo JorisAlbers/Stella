@@ -1,0 +1,14 @@
+﻿!Storyboard
+Name: Example
+Animations:
+ - !MovingPattern
+   StartIndex:  0
+   StripLength: 1200
+   TimeUnitsPerFrame: 50
+   Pattern: [[255,0,0]]
+ - !FadingPulse
+   StartIndex:  1200
+   StripLength: 1200
+   TimeUnitsPerFrame: 50
+   Color: [0,255,0]
+   FadeSteps: 6

@@ -1,0 +1,8 @@
+﻿!Storyboard
+Name: Full length strobo
+Animations:
+ - !RepeatingPattern
+   StartIndex:  0
+   StripLength: 2160
+   TimeUnitsPerFrame: 55
+   Patterns: [[[255,255,255]],[[0,0,0]],[[0,0,0]],[[0,0,0]]]
