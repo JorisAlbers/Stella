@@ -39,9 +39,21 @@ namespace StellaServer
                             SelectedViewModel = null;
                             return;
                         }
+                        
+                        if (onNext.Animation is Storyboard storyboard)
+                        {
+                            SelectedViewModel = new StoryboardDetailsControlViewModel(storyboard, bitmapRepository);
+                            return;
+                        }
 
-                        var vm = new StoryboardDetailsControlViewModel(onNext.Storyboard, bitmapRepository);
-                        SelectedViewModel = vm;
+                        if(onNext.Animation is PlayList playList)
+                        {
+                            SelectedViewModel = new PlaylistDetailsContolViewModel(playList, bitmapRepository);
+                            return;
+                        }
+
+                        throw new NotImplementedException("Unknown animation type");
+                        
                     });
 
             StatusViewModel = new StatusViewModel(stellaServer, 3, logViewModel); //TODO insert number of clients

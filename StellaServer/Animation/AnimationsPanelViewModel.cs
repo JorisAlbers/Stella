@@ -19,7 +19,7 @@ namespace StellaServer.Animation
         private readonly BitmapStoryboardCreator _bitmapStoryboardCreator;
         private readonly BitmapRepository _bitmapRepository;
 
-        [Reactive] public List<AnimationPanelItemViewModel> StoryboardViewModels { get; set; }
+        [Reactive] public List<AnimationPanelItemViewModel> AnimationViewModels { get; set; }
 
         [Reactive] public AnimationPanelItemViewModel SelectedAnimation { get; set; }
 
@@ -33,21 +33,27 @@ namespace StellaServer.Animation
             _storyboardRepository = storyboardRepository;
             _bitmapStoryboardCreator = bitmapStoryboardCreator;
             _bitmapRepository = bitmapRepository;
+            
+            // Load storyboards animations
+            List<Storyboard> storyboards = storyboardRepository.LoadStoryboards();
+            // Load bitmap animations
+            storyboards.AddRange(_bitmapStoryboardCreator.Create());
+            // Create play lists
+            List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
+            animations.Add(PlaylistCreator.Create("All combined", storyboards, 120));
+            animations.AddRange(PlaylistCreator.CreateFromCategory(storyboards, 120));
+            
 
-            StoryboardViewModels = storyboardRepository
-                .LoadStoryboards().Select(x => new AnimationPanelItemViewModel(x))
-                .Union(_bitmapStoryboardCreator.Create().Select(x => new AnimationPanelItemViewModel(x)))
-                .Select(vm =>
+            AnimationViewModels = animations.Select(x=> new AnimationPanelItemViewModel(x)).Select(vm =>
                 {
-                    vm.StartCommand.Subscribe(onNext => { StartAnimationRequested?.Invoke(this, vm.Storyboard); });
+                    vm.StartCommand.Subscribe(onNext => { StartAnimationRequested?.Invoke(this, vm.Animation); });
                     return vm;
                 }).ToList();
-
-
+            
             /*// TODO why is this not working?
             this.WhenAnyValue(x => x.SelectedAnimation)
                 .Where(x=> x!=null)
-                .Select(x => new StoryboardDetailsControlViewModel(SelectedAnimation.Storyboard))
+                .Select(x => new StoryboardDetailsControlViewModel(SelectedAnimation.Animation))
                 .ToProperty(this, x=> x.StoryboardDetails);*/
 
         }

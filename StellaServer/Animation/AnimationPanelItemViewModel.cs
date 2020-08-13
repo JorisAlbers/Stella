@@ -9,16 +9,19 @@ namespace StellaServer.Animation
 {
     public class AnimationPanelItemViewModel : ReactiveObject
     {
-        public Storyboard Storyboard { get; }
+        public IAnimation Animation { get; }
 
         public string Name { get; set; }
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; } = ReactiveCommand.Create(() => { });
+
+        public bool IsPlayList { get; set; }
             
-        public AnimationPanelItemViewModel(Storyboard storyboard)
+        public AnimationPanelItemViewModel(IAnimation animation)
         {
-            Storyboard = storyboard;
-            Name = storyboard.Name;
+            Animation = animation;
+            Name = animation.Name;
+            IsPlayList = animation is PlayList;
         }
     }
 }
