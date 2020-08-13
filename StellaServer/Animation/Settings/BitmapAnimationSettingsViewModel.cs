@@ -11,11 +11,21 @@ namespace StellaServer.Animation.Settings
         [Reactive] public Bitmap Bitmap { get; set; }
         [Reactive] public bool Wraps { get; set; }
 
-        public BitmapAnimationSettingsViewModel(BitmapAnimationSettings animationSettings, BitmapRepository bitmapRepository) : base(animationSettings)
+        public BitmapAnimationSettingsViewModel(BitmapAnimationSettings animationSettings,
+            BitmapRepository bitmapRepository) : base(animationSettings)
         {
             BitmapName = animationSettings.ImageName;
             Wraps = animationSettings.Wraps;
             Bitmap = bitmapRepository.Load(animationSettings.ImageName);
+        }
+
+
+        public BitmapAnimationSettingsViewModel(BitmapAnimationSettings animationSettings, Bitmap bitmap) : base(
+            animationSettings)
+        {
+            BitmapName = animationSettings.ImageName;
+            Wraps = animationSettings.Wraps;
+            Bitmap = bitmap;
         }
     }
 }

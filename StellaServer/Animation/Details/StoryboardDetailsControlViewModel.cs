@@ -25,13 +25,23 @@ namespace StellaServer.Animation.Details
             _storyboard = storyboard;
             _bitmapRepository = bitmapRepository;
             Name = storyboard.Name;
-            AnimationSettings = storyboard.AnimationSettings.Select(x=> CreateAnimationSettingViewModel(x,_bitmapRepository)).ToList();
+            AnimationSettings = new List<AnimationSettingViewModel>();
+            foreach (IAnimationSettings animationSetting in storyboard.AnimationSettings)
+            {
+                AnimationSettings.Add(CreateAnimationSettingViewModel(animationSetting,_bitmapRepository));
+            }
         }
 
         private AnimationSettingViewModel CreateAnimationSettingViewModel(IAnimationSettings settings, BitmapRepository bitmapRepository)
         {
             if (settings is BitmapAnimationSettings bitmapAnimation)
             {
+                foreach (BitmapAnimationSettingsViewModel viewmodel in AnimationSettings.OfType<BitmapAnimationSettingsViewModel>().Where(x=>x.BitmapName == bitmapAnimation.ImageName))
+                {
+                    // Use this image for mem efficiency
+                    return new BitmapAnimationSettingsViewModel(bitmapAnimation, viewmodel.Bitmap);
+                }
+                
                 return new BitmapAnimationSettingsViewModel(bitmapAnimation, bitmapRepository);
             }
             if (settings is MovingPatternAnimationSettings movingPatternSetting)
