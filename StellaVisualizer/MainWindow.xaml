@@ -9,7 +9,7 @@
         xmlns:clientViewers="clr-namespace:StellaVisualizer.ClientViewers"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance stellaVisualizer:MainWindowViewModel}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Stella Server" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type server:ServerControlViewModel}">
             <server:ServerControl/>
