@@ -99,7 +99,7 @@ namespace StellaServerConsole
             }
 
             // Add animations on the images in the bitmap directory
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(_bitmapRepository,360,3,2); // TODO get these magic variables from the mapping.
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(_bitmapRepository,480,3,2); // TODO get these magic variables from the mapping.
             storyboards.AddRange(bitmapStoryboardCreator.Create());
             
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();

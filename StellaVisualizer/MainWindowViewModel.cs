@@ -24,12 +24,45 @@ namespace StellaVisualizer
                 InitAsCloudSetup();
             }
 
-            if (true) // Toggle for the Sterk setup
+            if (false) // Toggle for the Sterk setup
             {
                 InitAsSterkSetup();
             }
+
+            if (true) // Toggle for the Clud 2020 setup (6 rows, 4 tubes per row)
+            {
+                InitAsCloud2020Setup();
+            }
         }
-           
+
+        private void InitAsCloud2020Setup()
+        {
+            // Start NetworkController which shortcuts the network connection between the server and each client
+            int pixelsPerPi = 960;
+            int pixelsPerRow = pixelsPerPi / 2;
+            Orientation orientation = Orientation.Horizontal;
+
+
+            _memoryLedStrips = new MemoryLedStrip[3];
+            _memoryLedStrips[0] = new MemoryLedStrip(pixelsPerPi);
+            _memoryLedStrips[1] = new MemoryLedStrip(pixelsPerPi);
+            _memoryLedStrips[2] = new MemoryLedStrip(pixelsPerPi);
+            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 20, 255);
+
+            ServerViewModel = new ServerControlViewModel(_memoryNetworkController, pixelsPerRow, pixelsPerRow * 6);
+
+            ClientViewerViewModel[] clientViewModels = new ClientViewerViewModel[3];
+            clientViewModels[0] = new ClientViewerViewModel(pixelsPerPi, orientation);
+            clientViewModels[1] = new ClientViewerViewModel(pixelsPerPi, orientation);
+            clientViewModels[2] = new ClientViewerViewModel(pixelsPerPi, orientation);
+
+            _memoryLedStrips[0].RenderRequested += (sender, colors) => clientViewModels[0].DrawFrame(colors);
+            _memoryLedStrips[1].RenderRequested += (sender, colors) => clientViewModels[1].DrawFrame(colors);
+            _memoryLedStrips[2].RenderRequested += (sender, colors) => clientViewModels[2].DrawFrame(colors);
+
+            ClientsControlViewModel = new ClientsControlViewModel(clientViewModels, orientation);
+        }
+
 
         private void InitAsCloudSetup()
         {

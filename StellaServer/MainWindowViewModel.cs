@@ -46,7 +46,7 @@ namespace StellaServer
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
             BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  360, 3, 2); // TODO get these magic values from the config
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  480, 3, 2); // TODO get these magic values from the config
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
             SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, LogViewModel);
