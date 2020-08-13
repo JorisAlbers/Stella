@@ -33,7 +33,7 @@ namespace BitmapScaler
                 string fileName = enumerateFile.Split("\\").Last();
                 string nonResizedFileName = fileName.Replace(".png", "_originalSize.png");
 
-                if (directory.Contains("Full_Setup"))
+                if (directory.Contains("\\F\\"))
                 {
                     resized = new Bitmap(original, new Size(_MAX_TOTAL_SIZE, original.Height));
                 }

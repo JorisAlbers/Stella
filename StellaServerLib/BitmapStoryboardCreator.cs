@@ -50,7 +50,7 @@ namespace StellaServerLib
         private void AddBitmapAnimation(List<Storyboard> storyboards, string name)
         {
             // Special case for animation in the Full Setup folder.
-            if (name.Contains("Full_Setup"))
+            if (name.Contains("\\F\\"))
             {
                 Storyboard sb = new Storyboard();
                 sb.Name = name;

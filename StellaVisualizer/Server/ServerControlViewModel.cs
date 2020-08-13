@@ -193,7 +193,7 @@ namespace StellaVisualizer.Server
             sb.Name = name;
 
 
-            if (name.Contains("Full_Setup"))
+            if (name.Contains("\\F\\"))
             {
                 sb.Name = name;
                 sb.AnimationSettings = new IAnimationSettings[]
