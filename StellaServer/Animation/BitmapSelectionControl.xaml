@@ -1,4 +1,4 @@
-﻿<reactiveUi:ReactiveUserControl 
+﻿<reactiveUi:ReactiveWindow 
     x:TypeArguments="animation:BitmapSelectionViewModel" 
     x:Class="StellaServer.Animation.BitmapSelectionControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,11 +9,18 @@
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:animation="clr-namespace:StellaServer.Animation"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    Background="{DynamicResource MaterialDesignPaper}"
+    TextElement.FontWeight="Medium"
+    TextElement.FontSize="14"
+    FontFamily="{materialDesign:MaterialDesignFont}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
@@ -21,7 +28,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Grid.Row="0" Text="Bitmap folder:"/>
-            <TextBox   Grid.Column="1" Grid.Row="0" x:Name="BitmapFolderTextBox"/>
+            <TextBlock   Grid.Column="1" Grid.Row="0" x:Name="BitmapFolderTextBox"/>
 
             <TextBlock Grid.Column="0" Grid.Row="1" Text="Available bitmaps:"/>
 
@@ -33,5 +40,7 @@
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
             </ListView>
+
+        <Button  Grid.Column="1" Grid.Row="2" Content="Ok" x:Name="OkButton" HorizontalAlignment="Right"/>
         </Grid>
-</reactiveUi:ReactiveUserControl>
+</reactiveUi:ReactiveWindow>

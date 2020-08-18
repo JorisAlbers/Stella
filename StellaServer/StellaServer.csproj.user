@@ -20,6 +20,9 @@
     <Compile Update="Animation\BitmapControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Animation\Creation\AnimationCreationControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Animation\Details\StoryboardDetailsControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -53,6 +56,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Animation\BitmapControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Animation\Creation\AnimationCreationControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Animation\Details\StoryboardDetailsControl.xaml">

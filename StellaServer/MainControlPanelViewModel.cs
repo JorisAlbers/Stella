@@ -4,6 +4,7 @@ using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
+using StellaServer.Animation.Creation;
 using StellaServer.Animation.Details;
 using StellaServer.Log;
 using StellaServer.Status;
@@ -16,7 +17,7 @@ namespace StellaServer
     public class MainControlPanelViewModel : ReactiveObject
     {
         private readonly StellaServerLib.StellaServer _stellaServer;
-        [Reactive] public CurrentlyPlayingViewModel CurrentlyPlayingViewModel { get; set; }
+        [Reactive] public AnimationCreationViewModel AnimationCreationViewModel { get; set; }
         [Reactive] public AnimationsPanelViewModel AnimationsPanelViewModel { get; set; }
 
         [Reactive] public StatusViewModel StatusViewModel { get; set; }
@@ -57,7 +58,9 @@ namespace StellaServer
                     });
 
             StatusViewModel = new StatusViewModel(stellaServer, 3, logViewModel); //TODO insert number of clients
-            
+            AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository, 6, 24); // Todo insert number of rows, number of tubes
+            SelectedViewModel = AnimationCreationViewModel;
+
         }
 
         private void AnimationsPanelViewModelOnStartAnimationRequested(object sender, IAnimation e)

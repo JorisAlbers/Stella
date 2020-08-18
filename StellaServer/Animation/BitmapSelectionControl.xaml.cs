@@ -6,7 +6,7 @@ namespace StellaServer.Animation
     /// <summary>
     /// Interaction logic for AnimationsPanel.xaml
     /// </summary>
-    public partial class BitmapSelectionControl : ReactiveUserControl<BitmapSelectionViewModel>
+    public partial class BitmapSelectionControl : ReactiveWindow<BitmapSelectionViewModel>
     {
         public BitmapSelectionControl()
         {
@@ -14,7 +14,7 @@ namespace StellaServer.Animation
             
             this.WhenActivated(disposableRegistration =>
             {
-                this.Bind(ViewModel,
+                this.OneWayBind(ViewModel,
                         viewmodel => viewmodel.BitmapFolder,
                         view => view.BitmapFolderTextBox.Text)
                     .DisposeWith(disposableRegistration);
