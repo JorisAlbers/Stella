@@ -18,9 +18,9 @@ namespace StellaServer.Animation.Creation
 
         [Reactive] public string Name { get; set; }
 
-        public string BitmapName { get; }
+        [Reactive] public string BitmapName { get; set; }
 
-        public ImageSource BitmapImageSource { get; }
+        [Reactive] public ImageSource BitmapImageSource { get; set; }
 
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
@@ -36,7 +36,7 @@ namespace StellaServer.Animation.Creation
             _bitmapRepository = bitmapRepository;
             _numberOfRows = numberOfRows;
             _numberOfTubes = numberOfTubes;
-
+            
             this.SelectImage = ReactiveCommand.Create(() =>
             {
                 if (_bitmapSelectionViewModel == null)
@@ -46,10 +46,15 @@ namespace StellaServer.Animation.Creation
 
                 BitmapSelectionControl bitmapSelectionControl = new BitmapSelectionControl();
                 bitmapSelectionControl.ViewModel = _bitmapSelectionViewModel;
+
+                _bitmapSelectionViewModel.BitmapSelected.Subscribe(onNext =>
+                {
+                    bitmapSelectionControl.Close();
+                    BitmapName = onNext.Name;
+                    BitmapImageSource = onNext.Bitmap;
+                });
+
                 bitmapSelectionControl.ShowDialog();
-
-                // use selected item
-
             });
 
 

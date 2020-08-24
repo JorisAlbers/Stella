@@ -1,5 +1,12 @@
-﻿using System.Reactive.Disposables;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Input;
 using ReactiveUI;
+using ListViewItem = System.Windows.Controls.ListViewItem;
 
 namespace StellaServer.Animation
 {
@@ -23,6 +30,16 @@ namespace StellaServer.Animation
                     viewmodel => viewmodel.Bitmaps,
                     view => view.BitmapsPanel.ItemsSource
                 ).DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                    viewmodel => viewmodel.SelectedItem,
+                    view => view.BitmapsPanel.SelectedItem
+                ).DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                    viewmodel => viewmodel.BitmapSelected,
+                    view=> view.OkButton);
+                
             });
         }
     }
