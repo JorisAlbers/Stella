@@ -18,9 +18,7 @@ namespace StellaServer.Animation.Creation
 
         [Reactive] public string Name { get; set; }
 
-        [Reactive] public string BitmapName { get; set; }
-
-        [Reactive] public ImageSource BitmapImageSource { get; set; }
+        [Reactive] public BitmapViewModel BitmapViewModel { get; set; }
 
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
@@ -50,8 +48,7 @@ namespace StellaServer.Animation.Creation
                 _bitmapSelectionViewModel.BitmapSelected.Subscribe(onNext =>
                 {
                     bitmapSelectionControl.Close();
-                    BitmapName = onNext.Name;
-                    BitmapImageSource = onNext.Bitmap;
+                    BitmapViewModel = onNext;
                 });
 
                 bitmapSelectionControl.ShowDialog();
@@ -61,10 +58,10 @@ namespace StellaServer.Animation.Creation
 
             var canSave = this.WhenAnyValue(
                 x => x.Name,
-                x => x.BitmapName,
-                (name, bitmapName) =>
+                x => x.BitmapViewModel,
+                (name, bitmapViewModel) =>
                     !String.IsNullOrWhiteSpace(name) &&
-                    !String.IsNullOrWhiteSpace(bitmapName)
+                    bitmapViewModel != null
             );
 
             this.Save = ReactiveCommand.Create(() =>

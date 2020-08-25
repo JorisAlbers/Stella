@@ -31,13 +31,8 @@ namespace StellaServer.Animation.Creation
                     disposableRegistration);
 
                 this.OneWayBind(ViewModel,
-                    vm => vm.BitmapName,
-                    view => view.ImageNameTextBlock.Text,
-                    disposableRegistration);
-
-                this.OneWayBind(ViewModel,
-                    vm => vm.BitmapImageSource,
-                    view => view.BitmapImage.Source,
+                    vm => vm.BitmapViewModel,
+                    view => view.BitmapViewModelHost.ViewModel,
                     disposableRegistration);
 
                 this.BindCommand(ViewModel,
