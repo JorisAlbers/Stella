@@ -8,14 +8,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:stellaServer="clr-namespace:StellaServer"
              xmlns:animation="clr-namespace:StellaServer.Animation"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Image     x:Name="Image" 
-                   HorizontalAlignment="Stretch" 
-                   VerticalAlignment="Stretch"
-                   Height="100"
-                   Width="100"/>
-        <TextBlock x:Name="Name" VerticalAlignment="Bottom" Background="#AFFFFFFF" />
-    </Grid>
+             d:DesignHeight="150" d:DesignWidth="150">
+    <materialDesign:Card>
+        <DockPanel Margin="5">
+            <Image  DockPanel.Dock="Top"   
+                        x:Name="Image" 
+                       HorizontalAlignment="Stretch" 
+                       VerticalAlignment="Stretch"
+                        Width="175"
+                        Height="175"/>
+            <Border Background="White" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+                <TextBlock x:Name="Name"  Foreground="Black" HorizontalAlignment="Center" />
+            </Border>
+        </DockPanel>
+    </materialDesign:Card>
 </reactiveUi:ReactiveUserControl>
