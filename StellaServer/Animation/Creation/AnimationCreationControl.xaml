@@ -22,7 +22,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="220"/>
-                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="100"/>
                     <RowDefinition Height="4*"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
@@ -50,6 +50,7 @@
 
                     <Button x:Name="SelectImageButton"
                             HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
                             Content="{materialDesign:PackIcon Folder}"
                             Margin="10,0,0,0"/>
 
@@ -58,14 +59,24 @@
                 <TextBlock Grid.Column="0"
                            Grid.Row="2"
                            Text="Start as:"
-                           VerticalAlignment="Bottom"/>
-                <WrapPanel Grid.Column="1"
+                           VerticalAlignment="Center"/>
+                <UniformGrid Columns="1" Grid.Column="1"
                              Grid.Row="2"
-                             VerticalAlignment="Bottom">
-                    <Button x:Name="StraightButton" Width="40" />
-                    <Button x:Name="ArrowHeadButton" Width="40" Margin="10,0,0,0"/>
-                    <Button x:Name="InversedArrowHeadButton" Width="40" Margin="10,0,0,0"/>
-                </WrapPanel>
+                             VerticalAlignment="Stretch">
+                    <DockPanel>
+                        <RadioButton x:Name="StraightButton" VerticalAlignment="Center" GroupName="StartAsGroup" />
+                        <TextBlock Text="=" VerticalAlignment="Center" FontSize="30" Margin="5,0,0,0"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <RadioButton x:Name="ArrowHeadButton" VerticalAlignment="Center" GroupName="StartAsGroup" />
+                        <TextBlock Text="&gt;" VerticalAlignment="Center" FontSize="30" Margin="5,0,0,0"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <RadioButton x:Name="InversedArrowHeadButton" VerticalAlignment="Center" GroupName="StartAsGroup" />
+                        <TextBlock Text="&lt;" VerticalAlignment="Center" FontSize="30" Margin="5,0,0,0"/>
+                    </DockPanel>
+
+                </UniformGrid>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="3"
