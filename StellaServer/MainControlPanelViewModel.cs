@@ -1,5 +1,6 @@
 using System;
 using System.Reactive.Linq;
+using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -58,7 +59,12 @@ namespace StellaServer
                     });
 
             StatusViewModel = new StatusViewModel(stellaServer, 3, logViewModel); //TODO insert number of clients
-            AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository, 6, 24); // Todo insert number of rows, number of tubes
+            AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository,bitmapStoryboardCreator, 6, 24); // Todo insert number of rows, number of tubes
+            AnimationCreationViewModel.Save.Subscribe(onNext =>
+            {
+                AnimationsPanelViewModel.AddItem(onNext);
+            });
+
             SelectedViewModel = AnimationCreationViewModel;
 
         }

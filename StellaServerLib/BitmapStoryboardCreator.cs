@@ -47,6 +47,33 @@ namespace StellaServerLib
             return storyboards;
         }
 
+        public Storyboard Create(string name, string imageName, LayoutType layoutType)
+        {
+            // Start at the same time
+            IAnimationSettings[] settings = null;
+            switch (layoutType)
+            {
+                case LayoutType.Straight:
+                    settings = StartAtTheSameTime(imageName);
+                    break;
+                case LayoutType.ArrowHead:
+                    settings = StartAsArrowHead(imageName);
+                    break;
+                case LayoutType.InversedArrowHead:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentException(nameof(layoutType));
+            }
+
+
+            return new Storyboard()
+            {
+                Name = name,
+                AnimationSettings = settings,
+            };
+        }
+
+        
         private void AddBitmapAnimation(List<Storyboard> storyboards, string name)
         {
             // Special case for animation in the Full Setup folder.
@@ -152,5 +179,13 @@ namespace StellaServerLib
 
             return settings;
         }
+    }
+
+    public enum LayoutType
+    {
+        Unknown,
+        Straight,
+        ArrowHead,
+        InversedArrowHead,
     }
 }

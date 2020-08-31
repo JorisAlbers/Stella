@@ -27,7 +27,7 @@ namespace StellaServer.Animation
             this.WhenActivated(disposableRegistration =>
             {
                 this.OneWayBind(ViewModel,
-                        viewmodel => viewmodel.AnimationViewModels,
+                        viewmodel => viewmodel.Items,
                         view => view.StoryboardListView.ItemsSource)
                     .DisposeWith(disposableRegistration);
 

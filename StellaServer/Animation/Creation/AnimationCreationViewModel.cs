@@ -6,12 +6,14 @@ using System.Windows.Media;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServerLib;
+using StellaServerLib.Animation;
 
 namespace StellaServer.Animation.Creation
 {
     public class AnimationCreationViewModel : ReactiveObject
     {
         private readonly BitmapRepository _bitmapRepository;
+        private readonly BitmapStoryboardCreator _creator;
         private readonly int _numberOfRows;
         private readonly int _numberOfTubes;
         private BitmapSelectionViewModel _bitmapSelectionViewModel;
@@ -26,13 +28,14 @@ namespace StellaServer.Animation.Creation
 
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
-        public ReactiveCommand<Unit,Unit> Save { get; set; }
+        public ReactiveCommand<Unit,Storyboard> Save { get; set; }
         public ReactiveCommand<Unit,Unit> Start { get; set; }
 
 
-        public AnimationCreationViewModel(BitmapRepository bitmapRepository, int numberOfRows, int numberOfTubes)
+        public AnimationCreationViewModel(BitmapRepository bitmapRepository, BitmapStoryboardCreator creator, int numberOfRows, int numberOfTubes)
         {
             _bitmapRepository = bitmapRepository;
+            _creator = creator;
             _numberOfRows = numberOfRows;
             _numberOfTubes = numberOfTubes;
 
@@ -67,7 +70,15 @@ namespace StellaServer.Animation.Creation
 
             this.Save = ReactiveCommand.Create(() =>
             {
-                //save;
+                LayoutType layoutType = LayoutType.Unknown;
+                if (IsLayoutArrowHead)
+                    layoutType = LayoutType.ArrowHead;
+                if (IsLayoutInversedArrowHead)
+                    layoutType = LayoutType.InversedArrowHead;
+                if (IsLayoutStraight)
+                    layoutType = LayoutType.Straight;
+
+                return _creator.Create(Name, BitmapViewModel.Name, layoutType);
             }, 
                 canSave);
         }
