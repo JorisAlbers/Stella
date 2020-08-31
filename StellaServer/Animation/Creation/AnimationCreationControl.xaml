@@ -63,18 +63,15 @@
                 <UniformGrid Columns="1" Grid.Column="1"
                              Grid.Row="2"
                              VerticalAlignment="Stretch">
-                    <DockPanel>
-                        <RadioButton x:Name="StraightButton" VerticalAlignment="Center" GroupName="StartAsGroup" />
-                        <TextBlock Text="=" VerticalAlignment="Center" FontSize="30" Margin="5,0,0,0"/>
-                    </DockPanel>
-                    <DockPanel>
-                        <RadioButton x:Name="ArrowHeadButton" VerticalAlignment="Center" GroupName="StartAsGroup" />
-                        <TextBlock Text="&gt;" VerticalAlignment="Center" FontSize="30" Margin="5,0,0,0"/>
-                    </DockPanel>
-                    <DockPanel>
-                        <RadioButton x:Name="InversedArrowHeadButton" VerticalAlignment="Center" GroupName="StartAsGroup" />
-                        <TextBlock Text="&lt;" VerticalAlignment="Center" FontSize="30" Margin="5,0,0,0"/>
-                    </DockPanel>
+                        <RadioButton x:Name="StraightButton"
+                                     Content="=, Straight"
+                                     VerticalAlignment="Center" GroupName="StartAsGroup" />
+                        <RadioButton x:Name="ArrowHeadButton" 
+                                     Content="&gt;, Arrow head"
+                                     VerticalAlignment="Center" GroupName="StartAsGroup" />
+                        <RadioButton x:Name="InversedArrowHeadButton" 
+                                     Content="&lt;, Inversed arrow head"
+                                     VerticalAlignment="Center" GroupName="StartAsGroup" />
 
                 </UniformGrid>
 

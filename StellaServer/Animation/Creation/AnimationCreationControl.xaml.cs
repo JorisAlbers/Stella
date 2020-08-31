@@ -39,17 +39,17 @@ namespace StellaServer.Animation.Creation
                     vm => vm.SelectImage,
                     view => view.SelectImageButton);
 
-                this.BindCommand(ViewModel,
-                    vm => vm.StraightLayout,
-                    view => view.StraightButton);
+                this.Bind(ViewModel,
+                    vm => vm.IsLayoutStraight,
+                    view => view.StraightButton.IsChecked);
 
-                this.BindCommand(ViewModel,
-                    vm => vm.ArrowHeadLayout,
-                    view => view.ArrowHeadButton);
+                this.Bind(ViewModel,
+                    vm => vm.IsLayoutArrowHead,
+                    view => view.ArrowHeadButton.IsChecked);
 
-                this.BindCommand(ViewModel,
-                    vm => vm.InversedArrowHeadLayout,
-                    view => view.InversedArrowHeadButton);
+                this.Bind(ViewModel,
+                    vm => vm.IsLayoutInversedArrowHead,
+                    view => view.InversedArrowHeadButton.IsChecked);
 
                 this.BindCommand(ViewModel,
                     vm => vm.Save,

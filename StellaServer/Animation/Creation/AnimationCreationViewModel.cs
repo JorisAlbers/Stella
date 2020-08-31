@@ -20,11 +20,12 @@ namespace StellaServer.Animation.Creation
 
         [Reactive] public BitmapViewModel BitmapViewModel { get; set; }
 
+        [Reactive] public bool IsLayoutStraight { get; set; } = true;
+        [Reactive] public bool IsLayoutArrowHead { get; set; }
+        [Reactive] public bool IsLayoutInversedArrowHead { get; set; }
+
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
-        public ReactiveCommand<Unit,Unit> ArrowHeadLayout { get; set; }
-        public ReactiveCommand<Unit,Unit> InversedArrowHeadLayout { get; set; }
-        public ReactiveCommand<Unit,Unit> StraightLayout { get; set; }
         public ReactiveCommand<Unit,Unit> Save { get; set; }
         public ReactiveCommand<Unit,Unit> Start { get; set; }
 
@@ -34,7 +35,7 @@ namespace StellaServer.Animation.Creation
             _bitmapRepository = bitmapRepository;
             _numberOfRows = numberOfRows;
             _numberOfTubes = numberOfTubes;
-            
+
             this.SelectImage = ReactiveCommand.Create(() =>
             {
                 if (_bitmapSelectionViewModel == null)
@@ -70,7 +71,6 @@ namespace StellaServer.Animation.Creation
             }, 
                 canSave);
         }
-
 
     }
 }
