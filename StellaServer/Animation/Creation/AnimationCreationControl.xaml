@@ -13,17 +13,17 @@
         <DockPanel Margin="10">
             <TextBlock DockPanel.Dock="Top"
                 Text="Create a new animation"
-                FontSize="20"></TextBlock>
+                FontSize="20"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="220"/>
-                    <RowDefinition Height="100"/>
-                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
