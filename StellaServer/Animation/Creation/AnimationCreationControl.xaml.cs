@@ -59,6 +59,10 @@ namespace StellaServer.Animation.Creation
                     vm => vm.Start,
                     view => view.StartButton);
 
+                this.BindCommand(ViewModel,
+                    vm => vm.Back,
+                    view => view.BackButton);
+
             });
         }
     }

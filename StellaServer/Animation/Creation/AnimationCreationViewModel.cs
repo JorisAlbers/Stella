@@ -30,6 +30,7 @@ namespace StellaServer.Animation.Creation
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
         public ReactiveCommand<Unit,Storyboard> Save { get; set; }
         public ReactiveCommand<Unit,Storyboard> Start { get; set; }
+        public ReactiveCommand<Unit,Unit> Back { get; set; }
 
 
         public AnimationCreationViewModel(BitmapRepository bitmapRepository, BitmapStoryboardCreator creator, int numberOfRows, int numberOfTubes)
@@ -72,6 +73,8 @@ namespace StellaServer.Animation.Creation
             this.Save = ReactiveCommand.Create(CreateStoryboard, canSave);
 
             this.Start = ReactiveCommand.Create(CreateStoryboard, canStart);
+
+            this.Back = ReactiveCommand.Create(() => {});
         }
 
         private Storyboard CreateStoryboard()

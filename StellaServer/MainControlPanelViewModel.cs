@@ -62,6 +62,7 @@ namespace StellaServer
             AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository,bitmapStoryboardCreator, 6, 24); // Todo insert number of rows, number of tubes
             AnimationCreationViewModel.Save.Subscribe(onNext => AnimationsPanelViewModel.AddItem(onNext));
             AnimationCreationViewModel.Start.Subscribe(onNext => StartAnimation(null, onNext));
+            AnimationCreationViewModel.Back.Subscribe(onNext => SelectedViewModel = null);
             
             SelectedViewModel = AnimationCreationViewModel;
 

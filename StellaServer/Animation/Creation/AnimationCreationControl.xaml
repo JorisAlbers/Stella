@@ -11,11 +11,21 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <materialDesign:Card>
         <DockPanel Margin="10">
-            <TextBlock DockPanel.Dock="Top"
-                Text="Create a new animation"
-                FontSize="20"/>
+            <DockPanel DockPanel.Dock="Top">
 
-            <DockPanel LastChildFill="True">
+                <Button DockPanel.Dock="Right" 
+                        x:Name="BackButton"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Content="{materialDesign:PackIcon ArrowBack}"/>
+
+                <TextBlock DockPanel.Dock="Left"
+                           Text="Create a new animation"
+                           FontSize="20"/>
+            </DockPanel>
+           
+
+            <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
