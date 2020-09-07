@@ -14,83 +14,82 @@
             <TextBlock DockPanel.Dock="Top"
                 Text="Create a new animation"
                 FontSize="20"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
 
+            <DockPanel>
+              <ListView DockPanel.Dock="Top">
+                    <ListViewItem>
+                        <DockPanel>
+                            <TextBlock Text="Name"
+                                   DockPanel.Dock="Top"
+                                   VerticalAlignment="Bottom"/>
+                            <TextBox x:Name="NameTextBox"
+                                 VerticalAlignment="Bottom"/>
+                        </DockPanel>
+                    </ListViewItem>
 
-                <TextBlock Grid.Column="0"
-                           Grid.Row="0"
-                           Text="Name:"
-                           VerticalAlignment="Bottom"/>
-                <TextBox Grid.Column="1"
-                         Grid.Row="0"
-                         x:Name="NameTextBox"
-                         VerticalAlignment="Bottom"/>
+                    <ListViewItem>
+                        <DockPanel>
+                            <TextBlock Text="Image"
+                                   DockPanel.Dock="Top"/>
+                            <DockPanel>
+                                <Grid>
+                                    <materialDesign:PackIcon Kind="Image" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="200" Width="200">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=BitmapViewModelHost, Path=ViewModel}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"></Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                    <reactiveUi:ViewModelViewHost x:Name="BitmapViewModelHost" Height="200" Width="200"/>
+                                </Grid>
 
-                <TextBlock Grid.Column="0"
-                           Grid.Row="1"
-                           Text="Image:"
-                           VerticalAlignment="Center"/>
-                <WrapPanel Grid.Column="1"
-                             Grid.Row="1"
-                            VerticalAlignment="Bottom"
-                             Margin="5">
+                                <Button x:Name="SelectImageButton"
+                                    DockPanel.Dock="Left"
+                                    HorizontalAlignment="Left"
+                                    Content="{materialDesign:PackIcon Folder}"/>
+                            </DockPanel>
+                        </DockPanel>
+                    </ListViewItem>
 
-                    <reactiveUi:ViewModelViewHost x:Name="BitmapViewModelHost"/>
+                    <ListViewItem>
+                        <DockPanel>
+                            <TextBlock Text="Start as:"
+                                   VerticalAlignment="Center" 
+                                   DockPanel.Dock="Top"/>
+                            <UniformGrid Columns="1" 
+                                     VerticalAlignment="Stretch">
+                                <RadioButton x:Name="StraightButton"
+                                         Content="=, Straight"
+                                         VerticalAlignment="Center" GroupName="StartAsGroup" />
+                                <RadioButton x:Name="ArrowHeadButton" 
+                                         Content="&gt;, Arrow head"
+                                         VerticalAlignment="Center" GroupName="StartAsGroup" />
+                                <RadioButton x:Name="InversedArrowHeadButton" 
+                                         Content="&lt;, Inversed arrow head"
+                                         VerticalAlignment="Center" GroupName="StartAsGroup" />
 
-                    <Button x:Name="SelectImageButton"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Content="{materialDesign:PackIcon Folder}"
-                            Margin="10,0,0,0"/>
+                            </UniformGrid>
 
-                </WrapPanel>
+                        </DockPanel>
+                    </ListViewItem>
+                </ListView>
 
-                <TextBlock Grid.Column="0"
-                           Grid.Row="2"
-                           Text="Start as:"
-                           VerticalAlignment="Center"/>
-                <UniformGrid Columns="1" Grid.Column="1"
-                             Grid.Row="2"
-                             VerticalAlignment="Stretch">
-                        <RadioButton x:Name="StraightButton"
-                                     Content="=, Straight"
-                                     VerticalAlignment="Center" GroupName="StartAsGroup" />
-                        <RadioButton x:Name="ArrowHeadButton" 
-                                     Content="&gt;, Arrow head"
-                                     VerticalAlignment="Center" GroupName="StartAsGroup" />
-                        <RadioButton x:Name="InversedArrowHeadButton" 
-                                     Content="&lt;, Inversed arrow head"
-                                     VerticalAlignment="Center" GroupName="StartAsGroup" />
-
-                </UniformGrid>
-
-                <TextBlock Grid.Column="0"
-                           Grid.Row="3"
-                           Text="Preview:"
-                           VerticalAlignment="Center"/>
-
-                <StackPanel Grid.Column="1"
-                            Grid.Row="4"
+                <StackPanel DockPanel.Dock="Bottom"
                             Orientation="Horizontal"
-                            HorizontalAlignment="Right">
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom">
                     <Button x:Name="SaveButton" Content="Save" Margin="10,0,0,0"/>
                     <Button x:Name="StartButton" Content="Start" Margin="10,0,0,0"/>
 
                 </StackPanel>
 
-
-            </Grid>
+            </DockPanel>
+            
         </DockPanel>
       
     </materialDesign:Card>
