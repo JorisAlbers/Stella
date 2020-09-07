@@ -32,7 +32,7 @@ namespace StellaServer
         {
             _stellaServer = stellaServer;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
-            AnimationsPanelViewModel.StartAnimationRequested += AnimationsPanelViewModelOnStartAnimationRequested;
+            AnimationsPanelViewModel.StartAnimationRequested += StartAnimation;
             this.WhenAnyValue(x => x.AnimationsPanelViewModel.SelectedAnimation)
                 .Subscribe(onNext =>
                     {
@@ -60,16 +60,14 @@ namespace StellaServer
 
             StatusViewModel = new StatusViewModel(stellaServer, 3, logViewModel); //TODO insert number of clients
             AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository,bitmapStoryboardCreator, 6, 24); // Todo insert number of rows, number of tubes
-            AnimationCreationViewModel.Save.Subscribe(onNext =>
-            {
-                AnimationsPanelViewModel.AddItem(onNext);
-            });
-
+            AnimationCreationViewModel.Save.Subscribe(onNext => AnimationsPanelViewModel.AddItem(onNext));
+            AnimationCreationViewModel.Start.Subscribe(onNext => StartAnimation(null, onNext));
+            
             SelectedViewModel = AnimationCreationViewModel;
 
         }
 
-        private void AnimationsPanelViewModelOnStartAnimationRequested(object sender, IAnimation e)
+        private void StartAnimation(object sender, IAnimation e)
         {
             Console.WriteLine($"Starting {e.Name}");
             _stellaServer.StartAnimation(e);

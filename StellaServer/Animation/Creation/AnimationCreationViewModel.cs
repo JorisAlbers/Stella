@@ -29,7 +29,7 @@ namespace StellaServer.Animation.Creation
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
         public ReactiveCommand<Unit,Storyboard> Save { get; set; }
-        public ReactiveCommand<Unit,Unit> Start { get; set; }
+        public ReactiveCommand<Unit,Storyboard> Start { get; set; }
 
 
         public AnimationCreationViewModel(BitmapRepository bitmapRepository, BitmapStoryboardCreator creator, int numberOfRows, int numberOfTubes)
@@ -57,9 +57,7 @@ namespace StellaServer.Animation.Creation
 
                 bitmapSelectionControl.ShowDialog();
             });
-
-
-
+            
             var canSave = this.WhenAnyValue(
                 x => x.Name,
                 x => x.BitmapViewModel,
@@ -68,20 +66,34 @@ namespace StellaServer.Animation.Creation
                     bitmapViewModel != null
             );
 
-            this.Save = ReactiveCommand.Create(() =>
-            {
-                LayoutType layoutType = LayoutType.Unknown;
-                if (IsLayoutArrowHead)
-                    layoutType = LayoutType.ArrowHead;
-                if (IsLayoutInversedArrowHead)
-                    layoutType = LayoutType.InversedArrowHead;
-                if (IsLayoutStraight)
-                    layoutType = LayoutType.Straight;
+            IObservable<bool> canStart = this.WhenAnyValue(x => x.BitmapViewModel, x=> x.Name, ( bitmapViewModel, name) => bitmapViewModel != null);
 
-                return _creator.Create(Name, BitmapViewModel.Name, layoutType);
-            }, 
-                canSave);
+
+            this.Save = ReactiveCommand.Create(CreateStoryboard, canSave);
+
+            this.Start = ReactiveCommand.Create(CreateStoryboard, canStart);
         }
 
+        private Storyboard CreateStoryboard()
+        {
+            string name = Name;
+
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                name = "Custom animation";
+            }
+            return _creator.Create(name, BitmapViewModel.Name, GetSelectedLayoutType());
+        }
+
+        private LayoutType GetSelectedLayoutType()
+        {
+            if (IsLayoutArrowHead)
+                return LayoutType.ArrowHead;
+            if (IsLayoutInversedArrowHead)
+                return  LayoutType.InversedArrowHead;
+            if (IsLayoutStraight)
+                return  LayoutType.Straight;
+            throw new ArgumentOutOfRangeException();
+        }
     }
 }
