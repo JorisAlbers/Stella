@@ -15,11 +15,20 @@
                 Text="Create a new animation"
                 FontSize="20"/>
 
-            <DockPanel>
-              <ListView DockPanel.Dock="Top">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom">
+                    <Button x:Name="SaveButton" Content="Save" Margin="10,0,0,0"/>
+                    <Button x:Name="StartButton" Content="Start" Margin="10,0,0,0"/>
+
+                </StackPanel>
+
+                <ListView DockPanel.Dock="Top">
                     <ListViewItem>
                         <DockPanel>
-                            <TextBlock Text="Name"
+                            <TextBlock Text="Name:"
                                    DockPanel.Dock="Top"
                                    VerticalAlignment="Bottom"/>
                             <TextBox x:Name="NameTextBox"
@@ -29,7 +38,7 @@
 
                     <ListViewItem>
                         <DockPanel>
-                            <TextBlock Text="Image"
+                            <TextBlock Text="Image:"
                                    DockPanel.Dock="Top"/>
                             <DockPanel>
                                 <Grid>
@@ -78,16 +87,6 @@
                         </DockPanel>
                     </ListViewItem>
                 </ListView>
-
-                <StackPanel DockPanel.Dock="Bottom"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom">
-                    <Button x:Name="SaveButton" Content="Save" Margin="10,0,0,0"/>
-                    <Button x:Name="StartButton" Content="Start" Margin="10,0,0,0"/>
-
-                </StackPanel>
-
             </DockPanel>
             
         </DockPanel>
