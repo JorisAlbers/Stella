@@ -20,10 +20,9 @@ namespace StellaServer
         private readonly StellaServerLib.StellaServer _stellaServer;
         [Reactive] public AnimationCreationViewModel AnimationCreationViewModel { get; set; }
         [Reactive] public AnimationsPanelViewModel AnimationsPanelViewModel { get; set; }
-
         [Reactive] public StatusViewModel StatusViewModel { get; set; }
-
         [Reactive] public TransformationViewModel TransformationViewModel { get; set; }
+        [Reactive] public NavigationViewModel NavigationViewModel { get; set; }
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
         public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer,
@@ -62,10 +61,11 @@ namespace StellaServer
             AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository,bitmapStoryboardCreator, 6, 24); // Todo insert number of rows, number of tubes
             AnimationCreationViewModel.Save.Subscribe(onNext => AnimationsPanelViewModel.AddItem(onNext));
             AnimationCreationViewModel.Start.Subscribe(onNext => StartAnimation(null, onNext));
-            AnimationCreationViewModel.Back.Subscribe(onNext => SelectedViewModel = null);
+            AnimationCreationViewModel.Back.Subscribe(onNext => SelectedViewModel = NavigationViewModel);
             
-            SelectedViewModel = AnimationCreationViewModel;
-
+            NavigationViewModel = new NavigationViewModel();
+            NavigationViewModel.NavigateToCreateAnimation.Subscribe(onNext => SelectedViewModel = AnimationCreationViewModel);
+            SelectedViewModel = NavigationViewModel;
         }
 
         private void StartAnimation(object sender, IAnimation e)
