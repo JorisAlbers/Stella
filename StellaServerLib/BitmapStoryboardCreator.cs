@@ -59,8 +59,9 @@ namespace StellaServerLib
                 case LayoutType.ArrowHead:
                     settings = StartAsArrowHead(imageName);
                     break;
-                case LayoutType.InversedArrowHead:
-                    throw new NotImplementedException();
+                case LayoutType.Dash:
+                    settings = StartAsDash(imageName);
+                    break;
                 default:
                     throw new ArgumentException(nameof(layoutType));
             }
@@ -73,7 +74,6 @@ namespace StellaServerLib
             };
         }
 
-        
         private void AddBitmapAnimation(List<Storyboard> storyboards, string name)
         {
             // Special case for animation in the Full Setup folder.
@@ -179,6 +179,28 @@ namespace StellaServerLib
 
             return settings;
         }
+
+        private IAnimationSettings[] StartAsDash(string imageName)
+        {
+            IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
+
+            float midpoint = (_animationsCount - 1) / 2f;
+            int timeIncrement = 500; // ms
+
+            for (int i = 0; i < _animationsCount; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    TimeUnitsPerFrame = 10,
+                    ImageName = imageName,
+                    StartIndex = _rowSize * i,
+                    StripLength = _rowSize,
+                    RelativeStart = i  * timeIncrement
+                };
+            }
+
+            return settings;
+        }
     }
 
     public enum LayoutType
@@ -186,6 +208,6 @@ namespace StellaServerLib
         Unknown,
         Straight,
         ArrowHead,
-        InversedArrowHead,
+        Dash,
     }
 }

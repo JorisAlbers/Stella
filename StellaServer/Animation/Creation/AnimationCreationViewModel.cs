@@ -24,7 +24,7 @@ namespace StellaServer.Animation.Creation
 
         [Reactive] public bool IsLayoutStraight { get; set; } = true;
         [Reactive] public bool IsLayoutArrowHead { get; set; }
-        [Reactive] public bool IsLayoutInversedArrowHead { get; set; }
+        [Reactive] public bool IsLayoutDash { get; set; }
 
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
@@ -92,8 +92,8 @@ namespace StellaServer.Animation.Creation
         {
             if (IsLayoutArrowHead)
                 return LayoutType.ArrowHead;
-            if (IsLayoutInversedArrowHead)
-                return  LayoutType.InversedArrowHead;
+            if (IsLayoutDash)
+                return  LayoutType.Dash;
             if (IsLayoutStraight)
                 return  LayoutType.Straight;
             throw new ArgumentOutOfRangeException();

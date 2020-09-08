@@ -48,8 +48,8 @@ namespace StellaServer.Animation.Creation
                     view => view.ArrowHeadButton.IsChecked);
 
                 this.Bind(ViewModel,
-                    vm => vm.IsLayoutInversedArrowHead,
-                    view => view.InversedArrowHeadButton.IsChecked);
+                    vm => vm.IsLayoutDash,
+                    view => view.DashButton.IsChecked);
 
                 this.BindCommand(ViewModel,
                     vm => vm.Save,

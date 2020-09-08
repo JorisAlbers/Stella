@@ -8,7 +8,7 @@
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="800">
     <materialDesign:Card>
         <DockPanel Margin="10">
             <DockPanel DockPanel.Dock="Top">
@@ -88,8 +88,8 @@
                                 <RadioButton x:Name="ArrowHeadButton" 
                                          Content="&gt;, Arrow head"
                                          VerticalAlignment="Center" GroupName="StartAsGroup" />
-                                <RadioButton x:Name="InversedArrowHeadButton" 
-                                         Content="&lt;, Inversed arrow head"
+                                <RadioButton x:Name="DashButton" 
+                                         Content="/, Dash"
                                          VerticalAlignment="Center" GroupName="StartAsGroup" />
 
                             </UniformGrid>
