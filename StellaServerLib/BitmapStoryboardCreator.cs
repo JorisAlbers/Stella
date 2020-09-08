@@ -47,7 +47,7 @@ namespace StellaServerLib
             return storyboards;
         }
 
-        public Storyboard Create(string name, string imageName, LayoutType layoutType)
+        public Storyboard Create(string name, string imageName, LayoutType layoutType, int delay)
         {
             // Start at the same time
             IAnimationSettings[] settings = null;
@@ -57,10 +57,10 @@ namespace StellaServerLib
                     settings = StartAtTheSameTime(imageName);
                     break;
                 case LayoutType.ArrowHead:
-                    settings = StartAsArrowHead(imageName);
+                    settings = StartAsArrowHead(imageName, delay);
                     break;
                 case LayoutType.Dash:
-                    settings = StartAsDash(imageName);
+                    settings = StartAsDash(imageName, delay);
                     break;
                 default:
                     throw new ArgumentException(nameof(layoutType));
@@ -115,7 +115,7 @@ namespace StellaServerLib
             storyboards.Add(new Storyboard
             {
                 Name = $"{name}_arrowHead",
-                AnimationSettings = StartAsArrowHead(name)
+                AnimationSettings = StartAsArrowHead(name, 500)
             });
 
         }
@@ -157,12 +157,11 @@ namespace StellaServerLib
             return settings;
         }
 
-        private IAnimationSettings[] StartAsArrowHead(string name)
+        private IAnimationSettings[] StartAsArrowHead(string name, int delay)
         {
             IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
 
             float midpoint = (_animationsCount -1) / 2f;
-            int timeIncrement = 500; // ms
 
             for (int i = 0; i < _animationsCount; i++)
             {
@@ -172,7 +171,7 @@ namespace StellaServerLib
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
-                    RelativeStart = (int) (Math.Abs(midpoint - (i)) * timeIncrement)
+                    RelativeStart = (int) (Math.Abs(midpoint - (i)) * delay)
                     
                 };
             }
@@ -180,12 +179,11 @@ namespace StellaServerLib
             return settings;
         }
 
-        private IAnimationSettings[] StartAsDash(string imageName)
+        private IAnimationSettings[] StartAsDash(string imageName, int delay)
         {
             IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
 
             float midpoint = (_animationsCount - 1) / 2f;
-            int timeIncrement = 500; // ms
 
             for (int i = 0; i < _animationsCount; i++)
             {
@@ -195,7 +193,7 @@ namespace StellaServerLib
                     ImageName = imageName,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
-                    RelativeStart = i  * timeIncrement
+                    RelativeStart = i  * delay
                 };
             }
 

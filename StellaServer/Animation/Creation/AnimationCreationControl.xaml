@@ -32,7 +32,6 @@
                             VerticalAlignment="Bottom">
                     <Button x:Name="SaveButton" Content="Save" Margin="10,0,0,0"/>
                     <Button x:Name="StartButton" Content="Start" Margin="10,0,0,0"/>
-
                 </StackPanel>
 
                 <ListView DockPanel.Dock="Top">
@@ -76,25 +75,40 @@
                     </ListViewItem>
 
                     <ListViewItem>
-                        <DockPanel>
-                            <TextBlock Text="Start as:"
+                        <WrapPanel>
+                            <DockPanel>
+                                <TextBlock Text="Start as:"
                                    VerticalAlignment="Center" 
                                    DockPanel.Dock="Top"/>
-                            <UniformGrid Columns="1" 
-                                     VerticalAlignment="Stretch">
-                                <RadioButton x:Name="StraightButton"
-                                         Content="=, Straight"
-                                         VerticalAlignment="Center" GroupName="StartAsGroup" />
-                                <RadioButton x:Name="ArrowHeadButton" 
-                                         Content="&gt;, Arrow head"
-                                         VerticalAlignment="Center" GroupName="StartAsGroup" />
-                                <RadioButton x:Name="DashButton" 
-                                         Content="/, Dash"
-                                         VerticalAlignment="Center" GroupName="StartAsGroup" />
+                                <UniformGrid DockPanel.Dock="Left"
+                                            Columns="1" 
+                                             VerticalAlignment="Stretch">
+                                    <RadioButton x:Name="StraightButton"
+                                                 Content="=, Straight"
+                                                 VerticalAlignment="Center" GroupName="StartAsGroup" />
+                                    <RadioButton x:Name="ArrowHeadButton" 
+                                                 Content="&gt;, Arrow head"
+                                                 VerticalAlignment="Center" GroupName="StartAsGroup" />
+                                    <RadioButton x:Name="DashButton" 
+                                                 Content="/, Dash"
+                                                 VerticalAlignment="Center" GroupName="StartAsGroup" />
 
-                            </UniformGrid>
+                                </UniformGrid>
 
-                        </DockPanel>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top"
+                                x:Name="DelayPanel"
+                                       Margin="50,0,0,0">
+                                <TextBlock Text="Delay (ms): "
+                                           DockPanel.Dock="Top"
+                                           VerticalAlignment="Center"/>
+                                <TextBox x:Name="DelayTextBox"
+                                         DockPanel.Dock="Left"
+                                         VerticalAlignment="Top"
+                                         MinWidth="20"/>
+                            </DockPanel>
+                        </WrapPanel>
+                      
                     </ListViewItem>
                 </ListView>
             </DockPanel>

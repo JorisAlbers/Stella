@@ -25,6 +25,8 @@ namespace StellaServer.Animation.Creation
         [Reactive] public bool IsLayoutStraight { get; set; } = true;
         [Reactive] public bool IsLayoutArrowHead { get; set; }
         [Reactive] public bool IsLayoutDash { get; set; }
+        [Reactive] public int Delay { get; set; } = 500;
+
 
 
         public ReactiveCommand<Unit,Unit> SelectImage { get; set; }
@@ -62,9 +64,11 @@ namespace StellaServer.Animation.Creation
             var canSave = this.WhenAnyValue(
                 x => x.Name,
                 x => x.BitmapViewModel,
-                (name, bitmapViewModel) =>
+                x=> x.Delay,
+                (name, bitmapViewModel, delay) =>
                     !String.IsNullOrWhiteSpace(name) &&
-                    bitmapViewModel != null
+                    bitmapViewModel != null &&
+                    DelayIsValid(delay)
             );
 
             IObservable<bool> canStart = this.WhenAnyValue(x => x.BitmapViewModel, x=> x.Name, ( bitmapViewModel, name) => bitmapViewModel != null);
@@ -77,6 +81,17 @@ namespace StellaServer.Animation.Creation
             this.Back = ReactiveCommand.Create(() => {});
         }
 
+        private bool DelayIsValid(int delay)
+        {
+            if (IsLayoutStraight)
+            {
+                // no delay required
+                return true;
+            }
+
+            return delay > 0 && delay < int.MaxValue;
+        }
+
         private Storyboard CreateStoryboard()
         {
             string name = Name;
@@ -85,7 +100,7 @@ namespace StellaServer.Animation.Creation
             {
                 name = "Custom animation";
             }
-            return _creator.Create(name, BitmapViewModel.Name, GetSelectedLayoutType());
+            return _creator.Create(name, BitmapViewModel.Name, GetSelectedLayoutType(), Delay);
         }
 
         private LayoutType GetSelectedLayoutType()
