@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using ReactiveUI;
 using StellaServer.Animation.Settings;
 using StellaServerLib;
@@ -19,7 +20,8 @@ namespace StellaServer.Animation.Details
         public string Name { get; set; }
 
         public List<AnimationSettingViewModel> AnimationSettings { get; set; }
-        
+        public ReactiveCommand<Unit, Unit> Back { get; set; } = ReactiveCommand.Create(() => { });
+
         public StoryboardDetailsControlViewModel(Storyboard storyboard, BitmapRepository bitmapRepository)
         {
             _storyboard = storyboard;

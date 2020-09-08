@@ -36,6 +36,10 @@ namespace StellaServer.Animation.Details
                         viewmodel => viewmodel.AnimationSettings,
                         view => view.AnimationSettingsListView.ItemsSource)
                     .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.Back,
+                    view => view.BackButton);
             });
         }
     }

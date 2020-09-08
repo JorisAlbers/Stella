@@ -43,13 +43,17 @@ namespace StellaServer
                         
                         if (onNext.Animation is Storyboard storyboard)
                         {
-                            SelectedViewModel = new StoryboardDetailsControlViewModel(storyboard, bitmapRepository);
+                            var viewmodel = new StoryboardDetailsControlViewModel(storyboard, bitmapRepository);
+                            viewmodel.Back.Subscribe(next => { SelectedViewModel = NavigationViewModel; });
+                            SelectedViewModel = viewmodel;
                             return;
                         }
 
                         if(onNext.Animation is PlayList playList)
                         {
-                            SelectedViewModel = new PlaylistDetailsContolViewModel(playList, bitmapRepository);
+                            var viewmodel = new PlaylistDetailsContolViewModel(playList, bitmapRepository);
+                            viewmodel.Back.Subscribe(next => { SelectedViewModel = NavigationViewModel; });
+                            SelectedViewModel = viewmodel;
                             return;
                         }
 

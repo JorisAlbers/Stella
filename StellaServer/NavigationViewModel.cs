@@ -8,11 +8,10 @@ namespace StellaServer
 {
     public class NavigationViewModel : ReactiveObject
     {
-        public ReactiveCommand<Unit, Unit> NavigateToCreateAnimation { get; }
+        public ReactiveCommand<Unit, Unit> NavigateToCreateAnimation { get; } = ReactiveCommand.Create(() => { });
 
         public NavigationViewModel()
         {
-            this.NavigateToCreateAnimation = ReactiveCommand.Create<Unit, Unit>(_ => new Unit());
         }
     }
 }

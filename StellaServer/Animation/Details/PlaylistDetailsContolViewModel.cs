@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -15,6 +16,8 @@ namespace StellaServer.Animation.Details
         private readonly BitmapRepository _bitmapRepository;
 
         public List<PlaylistItemDetailsViewModel> Items { get; set; }
+
+        public ReactiveCommand<Unit, Unit> Back { get; } = ReactiveCommand.Create(() => { });
 
 
         public PlaylistDetailsContolViewModel(PlayList playList, BitmapRepository bitmapRepository)
