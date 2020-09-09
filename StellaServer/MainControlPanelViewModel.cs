@@ -27,7 +27,7 @@ namespace StellaServer
 
         public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer,
             StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator,
-            BitmapRepository bitmapRepository, LogViewModel logViewModel)
+            BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository,LogViewModel logViewModel)
         {
             _stellaServer = stellaServer;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
@@ -62,7 +62,7 @@ namespace StellaServer
                     });
 
             StatusViewModel = new StatusViewModel(stellaServer, 3, logViewModel); //TODO insert number of clients
-            AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository,bitmapStoryboardCreator, 6, 24); // Todo insert number of rows, number of tubes
+            AnimationCreationViewModel = new AnimationCreationViewModel(bitmapRepository,bitmapStoryboardCreator,thumbnailRepository, 6, 24); // Todo insert number of rows, number of tubes
             AnimationCreationViewModel.Save.Subscribe(onNext => AnimationsPanelViewModel.AddItem(onNext));
             AnimationCreationViewModel.Start.Subscribe(onNext => StartAnimation(null, onNext));
             AnimationCreationViewModel.Back.Subscribe(onNext => SelectedViewModel = NavigationViewModel);

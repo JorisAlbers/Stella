@@ -35,7 +35,7 @@ namespace StellaServer.Animation.Creation
         public ReactiveCommand<Unit,Unit> Back { get; set; }
 
 
-        public AnimationCreationViewModel(BitmapRepository bitmapRepository, BitmapStoryboardCreator creator, int numberOfRows, int numberOfTubes)
+        public AnimationCreationViewModel(BitmapRepository bitmapRepository, BitmapStoryboardCreator creator,BitmapThumbnailRepository thumbnailRepository, int numberOfRows, int numberOfTubes)
         {
             _bitmapRepository = bitmapRepository;
             _creator = creator;
@@ -46,7 +46,7 @@ namespace StellaServer.Animation.Creation
             {
                 if (_bitmapSelectionViewModel == null)
                 {
-                    _bitmapSelectionViewModel = new BitmapSelectionViewModel(bitmapRepository);
+                    _bitmapSelectionViewModel = new BitmapSelectionViewModel(bitmapRepository, thumbnailRepository);
                 }
 
                 BitmapSelectionControl bitmapSelectionControl = new BitmapSelectionControl();

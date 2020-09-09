@@ -24,6 +24,9 @@ namespace StellaServer
             Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "StellaServer","Settings.xml");
 
+        private readonly string ThumbnailRepository = 
+            Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Thumbnails");
+
         private UserSettings _userSettings;
 
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
@@ -46,10 +49,12 @@ namespace StellaServer
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
             BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
+            BitmapThumbnailRepository thumbnailRepository = new BitmapThumbnailRepository(new FileSystem(), ThumbnailRepository, bitmapRepository);
+            thumbnailRepository.Create();
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  480, 3, 2); // TODO get these magic values from the config
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
-            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, LogViewModel);
+            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

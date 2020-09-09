@@ -13,6 +13,7 @@ namespace StellaServer.Animation
 {
     public class BitmapSelectionViewModel : ReactiveObject
     {
+        private readonly BitmapThumbnailRepository _thumbnailRepository;
         [Reactive] public string BitmapFolder { get; set; }
         [Reactive] public IEnumerable<BitmapViewModel> Bitmaps { get; private set; }
 
@@ -20,10 +21,11 @@ namespace StellaServer.Animation
 
         public ReactiveCommand<Unit, BitmapViewModel> BitmapSelected { get; set; } 
 
-        public BitmapSelectionViewModel(BitmapRepository bitmapRepository)
+        public BitmapSelectionViewModel(BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository)
         {
+            _thumbnailRepository = thumbnailRepository;
             BitmapFolder = bitmapRepository.FolderPath;
-            Bitmaps = CreateBitmapViewModels(bitmapRepository);
+            Bitmaps = CreateBitmapViewModels(bitmapRepository,thumbnailRepository);
 
             var canExecute = this.WhenAny(
                 x => x.SelectedItem,
@@ -32,9 +34,9 @@ namespace StellaServer.Animation
             BitmapSelected = ReactiveCommand.Create<Unit, BitmapViewModel>((u) => SelectedItem, canExecute);
         }
 
-        private IEnumerable<BitmapViewModel> CreateBitmapViewModels(BitmapRepository bitmapRepository)
+        private IEnumerable<BitmapViewModel> CreateBitmapViewModels(BitmapRepository bitmapRepository,BitmapThumbnailRepository thumbnailRepository)
         {
-            return bitmapRepository.ListAllBitmaps().Select(x => new BitmapViewModel(x.Name, bitmapRepository.Load(x.Name)));
+            return bitmapRepository.ListAllBitmaps().Select(x => new BitmapViewModel(x.Name, thumbnailRepository.Load(x.Name)));
         }
     }
 }
