@@ -34,7 +34,7 @@ namespace StellaServer.Animation
 
         private IEnumerable<BitmapViewModel> CreateBitmapViewModels(BitmapRepository bitmapRepository)
         {
-            return bitmapRepository.ListAllBitmaps().Select(x => new BitmapViewModel(x, bitmapRepository.Load(x)));
+            return bitmapRepository.ListAllBitmaps().Select(x => new BitmapViewModel(x.Name, bitmapRepository.Load(x.Name)));
         }
     }
 }

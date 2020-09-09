@@ -67,21 +67,21 @@ namespace StellaServerLib
             return $"{name}.png";
         }
 
-        public List<string> ListAllBitmaps()
+        public List<BitmapInfo> ListAllBitmaps()
         {
-            List<string> bitmapList = new List<string>();
+            List<BitmapInfo> bitmapList = new List<BitmapInfo>();
             InternalListAllBitmaps(_directory, bitmapList);
             return bitmapList;
         }
 
-        private void InternalListAllBitmaps(IDirectoryInfo directory, List<string> bitmapList)
+        private void InternalListAllBitmaps(IDirectoryInfo directory, List<BitmapInfo> bitmapList)
         {
             // Iterate files in bitmap dir
             foreach (IFileInfo fileInfo in directory.GetFiles())
             {
                 if (fileInfo.Extension == ".png")
                 {
-                    bitmapList.Add(fileInfo.FullName.Replace(_directory.FullName + "\\", "").Replace(".png",""));
+                    bitmapList.Add(new BitmapInfo(fileInfo.FullName.Replace(_directory.FullName + "\\", "").Replace(".png",""), fileInfo.FullName));
                 }
             }
 
@@ -90,6 +90,18 @@ namespace StellaServerLib
             {
                 InternalListAllBitmaps(subDirectory, bitmapList);
             }
+        }
+    }
+
+    public class BitmapInfo
+    {
+        public string Name { get; }
+        public string Path { get; }
+
+        public BitmapInfo(string name, string path)
+        {
+            Name = name;
+            Path = path;
         }
     }
 }
