@@ -19,19 +19,14 @@ namespace StellaServer.Animation
 
         [Reactive] public BitmapViewModel SelectedItem { get; set; }
 
-        public ReactiveCommand<Unit, BitmapViewModel> BitmapSelected { get; set; } 
+        public ReactiveCommand<BitmapViewModel, BitmapViewModel> BitmapSelected { get; set; } =
+            ReactiveCommand.Create<BitmapViewModel, BitmapViewModel>((viewmodel) => viewmodel);
 
         public BitmapSelectionViewModel(BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository)
         {
             _thumbnailRepository = thumbnailRepository;
             BitmapFolder = bitmapRepository.FolderPath;
             Bitmaps = CreateBitmapViewModels(bitmapRepository,thumbnailRepository);
-
-            var canExecute = this.WhenAny(
-                x => x.SelectedItem,
-                (item) => item != null);
-
-            BitmapSelected = ReactiveCommand.Create<Unit, BitmapViewModel>((u) => SelectedItem, canExecute);
         }
 
         private IEnumerable<BitmapViewModel> CreateBitmapViewModels(BitmapRepository bitmapRepository,BitmapThumbnailRepository thumbnailRepository)

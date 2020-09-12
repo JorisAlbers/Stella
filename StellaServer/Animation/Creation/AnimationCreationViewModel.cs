@@ -17,6 +17,7 @@ namespace StellaServer.Animation.Creation
         private readonly int _numberOfRows;
         private readonly int _numberOfTubes;
         private BitmapSelectionViewModel _bitmapSelectionViewModel;
+        private BitmapSelectionControl _bitmapSelectionControl;
 
         [Reactive] public string Name { get; set; }
 
@@ -47,18 +48,16 @@ namespace StellaServer.Animation.Creation
                 if (_bitmapSelectionViewModel == null)
                 {
                     _bitmapSelectionViewModel = new BitmapSelectionViewModel(bitmapRepository, thumbnailRepository);
+                    _bitmapSelectionViewModel.BitmapSelected.Subscribe(onNext =>
+                    {
+                        _bitmapSelectionControl?.Close();
+                        BitmapViewModel = onNext;
+                    });
                 }
 
-                BitmapSelectionControl bitmapSelectionControl = new BitmapSelectionControl();
-                bitmapSelectionControl.ViewModel = _bitmapSelectionViewModel;
-
-                _bitmapSelectionViewModel.BitmapSelected.Subscribe(onNext =>
-                {
-                    bitmapSelectionControl.Close();
-                    BitmapViewModel = onNext;
-                });
-
-                bitmapSelectionControl.ShowDialog();
+                _bitmapSelectionControl = new BitmapSelectionControl();
+                _bitmapSelectionControl.ViewModel = _bitmapSelectionViewModel;
+                _bitmapSelectionControl.ShowDialog();
             });
             
             var canSave = this.WhenAnyValue(

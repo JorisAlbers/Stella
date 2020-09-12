@@ -38,9 +38,25 @@ namespace StellaServer.Animation
 
                 this.BindCommand(ViewModel,
                     viewmodel => viewmodel.BitmapSelected,
-                    view=> view.OkButton);
-                
+                    view=> view.OkButton,
+                    viewmodel=>viewmodel.SelectedItem);
+
+                this.OneWayBind(ViewModel,
+                    viewmodel => viewmodel.SelectedItem,
+                    view => view.OkButton.IsEnabled,
+                    x=> x!= null);
+
             });
+        }
+
+        private void HandleDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListViewItem listViewItem)
+            {
+                sender = listViewItem.DataContext;
+            }
+
+            ViewModel.BitmapSelected.Execute((BitmapViewModel) sender).Subscribe();
         }
     }
 }

@@ -16,8 +16,13 @@
     TextElement.FontWeight="Medium"
     TextElement.FontSize="14"
     FontFamily="{materialDesign:MaterialDesignFont}">
-        <Grid Margin="10">
-            <Grid.RowDefinitions>
+   <Grid Margin="10">
+        <Grid.Resources>
+            <Style TargetType="ListViewItem" x:Key="ListViewItemWithDoubleClick">
+                <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition/>
                 <RowDefinition Height="50"/>
@@ -33,7 +38,8 @@
             <TextBlock Grid.Column="0" Grid.Row="1" Text="Available bitmaps:"/>
 
 
-        <ListView Grid.Column="1" Grid.Row="1" x:Name="BitmapsPanel" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListView Grid.Column="1" Grid.Row="1" x:Name="BitmapsPanel" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource ListViewItemWithDoubleClick}">
+
             <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal"  />
