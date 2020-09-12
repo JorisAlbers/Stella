@@ -39,9 +39,9 @@ namespace StellaServerLib
         {
             List<Storyboard> storyboards = new List<Storyboard>();
             // Iterate folders in directory
-            foreach (BitmapInfo bitmap in _bitmapRepository.ListAllBitmaps())
+            foreach (string bitmap in _bitmapRepository.ListAllBitmaps())
             {
-                AddBitmapAnimation(storyboards, bitmap.Name);
+                AddBitmapAnimation(storyboards, bitmap);
             }
 
             return storyboards;

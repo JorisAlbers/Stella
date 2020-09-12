@@ -29,15 +29,15 @@ namespace StellaServer
         {
             Task.Run(() =>
             {
-                foreach (BitmapInfo info in _bitmapRepository.ListAllBitmaps())
+                foreach (string bitmap in _bitmapRepository.ListAllBitmaps())
                 {
-                    string thumbnailPath = Path.Combine(_directory.FullName, info.Name + ".png");
+                    string thumbnailPath = Path.Combine(_directory.FullName, bitmap + ".png");
                     if (_fileSystem.File.Exists(thumbnailPath))
                     {
                         continue;
                     }
 
-                    CreateThumbnail(thumbnailPath, info.Name);
+                    CreateThumbnail(thumbnailPath, bitmap);
                 }
             });
         }
