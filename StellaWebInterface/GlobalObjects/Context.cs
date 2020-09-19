@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using StellaWebInterface.Annotations;
+using DotNetify;
 
 namespace StellaWebInterface.GlobalObjects
 {
@@ -8,7 +9,7 @@ namespace StellaWebInterface.GlobalObjects
     {
         private static Context _instance;
         public Status Status { get; }
-    
+
         private Context()
         {
             Status = new Status();

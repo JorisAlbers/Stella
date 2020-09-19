@@ -1,10 +1,11 @@
 import React from 'react';
+
 import Grid from '@material-ui/core/Grid/index';
 import Slider from "@material-ui/core/Slider";
-// import {socketConnect} from 'socket.io-react';
 import Typography from "@material-ui/core/Typography";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import Stop from "@material-ui/icons/Stop";
+
 import Status from "./Blocks/Status";
 
 class HomePage extends React.Component {
@@ -62,7 +63,8 @@ class HomePage extends React.Component {
         <Grid xs item style={{overflowX: 'auto', maxHeight: '-webkit-fill-available'}}>
           <Typography variant={'h6'}>Content of selected Storyboard</Typography>
           {this.state.currentSelectedStoryboard &&
-          <Typography variant={'subtitle2'}>Storyboard name: {this.state.currentSelectedStoryboard.Name}</Typography>
+          <Typography variant={'subtitle2'}>Storyboard
+            name: {this.state.currentSelectedStoryboard.Name}</Typography>
           }
           {this.state.currentSelectedStoryboard && this.state.currentSelectedStoryboard.Animations.map((animation, i) => (
             <div key={i}>
@@ -89,7 +91,8 @@ class HomePage extends React.Component {
             <Grid xs item>
               <Typography variant={'h6'}>Master control</Typography>
               <div>
-                <div aria-labelledby="slider-label-name" style={{float: 'left', display: 'inline', width: '100px'}}>
+                <div aria-labelledby="slider-label-name"
+                     style={{float: 'left', display: 'inline', width: '100px'}}>
                   <Slider
                     style={{height: '100px', marginTop: '10px'}}
                     orientation="vertical"
@@ -245,7 +248,8 @@ class HomePage extends React.Component {
                 <div key={i} style={{display: 'inline-block', width: '500px'}}>
                   <Typography
                     id={'slider-label-name'}>{storyboard.class} [{storyboard.startIndex}, {storyboard.startIndex + storyboard.stripLength}]</Typography>
-                  <div aria-labelledby="slider-label-name" style={{float: 'left', display: 'inline', width: '100px'}}>
+                  <div aria-labelledby="slider-label-name"
+                       style={{float: 'left', display: 'inline', width: '100px'}}>
                     <Slider
                       style={{height: '100px', marginTop: '10px'}}
                       orientation="vertical"

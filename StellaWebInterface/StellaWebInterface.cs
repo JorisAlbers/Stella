@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using StellaWebInterface.GlobalObjects;
 
 namespace StellaWebInterface
@@ -18,6 +19,7 @@ namespace StellaWebInterface
         public void Start()
         {
             CreateWebHostBuilder(_args).Build().Run();
+//            BuildWebHost(_args).Run();
         }
 
         private IWebHostBuilder CreateWebHostBuilder(string[] args)
@@ -25,6 +27,17 @@ namespace StellaWebInterface
             return WebHost
                 .CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+        }
+        
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var config = new ConfigurationBuilder().AddCommandLine(args).Build();
+            var enviroment = config["environment"] ?? "Development";
+
+            return WebHost.CreateDefaultBuilder(args)
+                .UseEnvironment(enviroment)
+                .UseStartup<Startup>()
+                .Build();
         }
     }
 }
