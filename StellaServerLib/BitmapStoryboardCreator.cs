@@ -85,7 +85,6 @@ namespace StellaServerLib
                 {
                     new BitmapAnimationSettings
                     {
-                        TimeUnitsPerFrame = 10,
                         ImageName = name,
                         StripLength = _totalNumberOfPixels,
                         Wraps = true
@@ -128,7 +127,6 @@ namespace StellaServerLib
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    TimeUnitsPerFrame = 10,
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
@@ -147,7 +145,6 @@ namespace StellaServerLib
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    TimeUnitsPerFrame = 10,
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
@@ -167,7 +164,6 @@ namespace StellaServerLib
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    TimeUnitsPerFrame = 10,
                     ImageName = name,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,
@@ -183,13 +179,10 @@ namespace StellaServerLib
         {
             IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
 
-            float midpoint = (_animationsCount - 1) / 2f;
-
             for (int i = 0; i < _animationsCount; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    TimeUnitsPerFrame = 10,
                     ImageName = imageName,
                     StartIndex = _rowSize * i,
                     StripLength = _rowSize,

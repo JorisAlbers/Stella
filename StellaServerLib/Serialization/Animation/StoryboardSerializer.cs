@@ -113,10 +113,6 @@ namespace StellaServerLib.Serialization.Animation
             {
                 errors.Add($"{typeName} at index {animationIndex}: StartIndex must be >= 0");
             }
-            if (animationSettings.TimeUnitsPerFrame < 1)
-            {
-                errors.Add($"{typeName} at index {animationIndex}: TimeUnitsPerFrame must be > 0");
-            }
             if (animationSettings.RelativeStart < 0)
             {
                 errors.Add($"{typeName} at index {animationIndex}: RelativeStart must be >= 0");

@@ -9,7 +9,6 @@ namespace StellaServerLib.Serialization.Animation
     {
         public int StartIndex { get; set; }
         public int StripLength { get; set; }
-        public int TimeUnitsPerFrame { get; set; }
         public int RelativeStart { get; set; }
         public string ImageName { get; set; }
         public bool Wraps { get; set; }

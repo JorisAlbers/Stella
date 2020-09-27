@@ -51,7 +51,6 @@ namespace StellaServerLib.Test.Serialization.Animation.PlayLists
             // storyboard
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
-            int expectedTimeUnitsPerFrame = 30;
             int expectedRelativeStart = 99;
             bool expectedWraps = true;
             string expectedImageName = "fakeImage";
@@ -65,7 +64,6 @@ namespace StellaServerLib.Test.Serialization.Animation.PlayLists
             stringBuilder.AppendLine($"        - !Bitmap");
             stringBuilder.AppendLine($"           StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"           StripLength:  {expectedStripLength}");
-            stringBuilder.AppendLine($"           TimeUnitsPerFrame:  {expectedTimeUnitsPerFrame}");
             stringBuilder.AppendLine($"           RelativeStart:  {expectedRelativeStart}");
             stringBuilder.AppendLine($"           ImageName:  {expectedImageName}");
             stringBuilder.AppendLine($"           Wraps:  {expectedWraps}");
@@ -91,7 +89,6 @@ namespace StellaServerLib.Test.Serialization.Animation.PlayLists
             Assert.AreEqual(expectedWraps, settings.Wraps);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
-            Assert.AreEqual(expectedTimeUnitsPerFrame, settings.TimeUnitsPerFrame);
         }
 
         [Test]
@@ -102,7 +99,6 @@ namespace StellaServerLib.Test.Serialization.Animation.PlayLists
             int expectedStoryboardDuration1 = 999;
             int expectedStartIndex = 10;
             int expectedStripLength = 20;
-            int expectedTimeUnitsPerFrame = 30;
             int expectedRelativeStart = 99;
             bool expectedWraps = true;
             string expectedImageName = "fakeImage";
@@ -121,7 +117,6 @@ namespace StellaServerLib.Test.Serialization.Animation.PlayLists
             stringBuilder.AppendLine($"        - !Bitmap");
             stringBuilder.AppendLine($"           StartIndex:  {expectedStartIndex}");
             stringBuilder.AppendLine($"           StripLength:  {expectedStripLength}");
-            stringBuilder.AppendLine($"           TimeUnitsPerFrame:  {expectedTimeUnitsPerFrame}");
             stringBuilder.AppendLine($"           RelativeStart:  {expectedRelativeStart}");
             stringBuilder.AppendLine($"           ImageName:  {expectedImageName}");
             stringBuilder.AppendLine($"           Wraps:  {expectedWraps}");
@@ -147,7 +142,6 @@ namespace StellaServerLib.Test.Serialization.Animation.PlayLists
             Assert.AreEqual(expectedWraps, settings.Wraps);
             Assert.AreEqual(expectedStripLength, settings.StripLength);
             Assert.AreEqual(expectedRelativeStart, settings.RelativeStart);
-            Assert.AreEqual(expectedTimeUnitsPerFrame, settings.TimeUnitsPerFrame);
             // By name
             Assert.AreEqual(expectedStoryboard, playList.Items[1].Storyboard );
         }
