@@ -68,9 +68,9 @@
 
             <Slider x:Name="TimeUnitsPerFrameSlider"
                     Grid.Column="4" Grid.Row="0"
-                    Maximum="1000" Minimum="0"
+                    Maximum="250" Minimum="0"
                     TickPlacement="Both"
-                    TickFrequency="10"
+                    TickFrequency="1"
                     SmallChange="1"
                     LargeChange="100"/>
             <TextBlock Text="{Binding ElementName=TimeUnitsPerFrameSlider, Path=Value}"

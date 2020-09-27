@@ -16,7 +16,7 @@ namespace StellaServer.Transformations
         [Reactive] public int BlueCorrection { get; set; }
         [Reactive] public int BrightnessCorrection { get; set; }
 
-        [Reactive] public int TimeUnitsPerFrame { get; set; }
+        [Reactive] public int TimeUnitsPerFrame { get; set; } = 10;
 
         public ReactiveCommand<Unit,Unit> Reset { get; } 
 
