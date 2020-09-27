@@ -60,7 +60,7 @@ namespace StellaVisualizer.Server
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
             _memoryNetworkController.SetServer(memoryServer);
-            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, 1, bitmapRepository, memoryServer);
+            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060, 1, 60, bitmapRepository, memoryServer);
             _stellaServer.Start();
 
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();

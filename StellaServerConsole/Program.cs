@@ -111,7 +111,8 @@ namespace StellaServerConsole
             string[] animationNames = animations.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , millisecondsPerTimeUnit, _bitmapRepository, new Server());
+            int maximumFrameRate = 30;
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
 
             try
             {

@@ -56,7 +56,7 @@ namespace StellaServer.Setup
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, bitmapRepository, new Server());
+                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1,24, bitmapRepository, new Server());
                 stellaServer.Start();
                 
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()

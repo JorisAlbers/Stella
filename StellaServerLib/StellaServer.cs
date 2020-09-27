@@ -23,19 +23,21 @@ namespace StellaServerLib
         private ClientController _clientController;
 
         private int _loadingAnimation;
+        private readonly int _maximumFrameRate;
 
         public IAnimator Animator { get; private set; }
         public BitmapRepository BitmapRepository { get; }
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit, BitmapRepository bitmapRepository, IServer server)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
+            _maximumFrameRate = maximumFrameRate;
             BitmapRepository = bitmapRepository;
             _server = server;
         }
@@ -50,7 +52,7 @@ namespace StellaServerLib
             // Start Server
             _server = StartServer(_ip, _port, _udpPort, _server);
             // Start ClientController
-            _clientController = StartClientController(_server);
+            _clientController = StartClientController(_server, _maximumFrameRate);
         }
 
         public void StartAnimation(IAnimation animation)
@@ -132,11 +134,11 @@ namespace StellaServerLib
             ClientStatusChanged?.Invoke(sender, e);
         }
 
-        private ClientController StartClientController(IServer server)
+        private ClientController StartClientController(IServer server, int maximumFrameRate)
         {
             try
             {
-                ClientController clientController = new ClientController(server);
+                ClientController clientController = new ClientController(server, maximumFrameRate);
                 clientController.Run();
                 return clientController;
             }

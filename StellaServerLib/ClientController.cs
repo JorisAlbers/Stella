@@ -14,9 +14,13 @@ namespace StellaServerLib
         private object _frameSetLock = new object();
         private bool _isDisposed;
 
-        public ClientController(IServer server)
+        private long[] _nextRenderAllowedAtperPi;
+        private long _minimumTicksPerFrame;
+
+        public ClientController(IServer server, int maximumFrameRate)
         {
             _server = server;
+            _minimumTicksPerFrame = 1000 / maximumFrameRate;
         }
 
         public void Run()
@@ -45,6 +49,7 @@ namespace StellaServerLib
                 {
                     animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
                     renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
+                    _nextRenderAllowedAtperPi = new long[frames.Length];
                 }
 
                 long now = Environment.TickCount;
@@ -66,11 +71,16 @@ namespace StellaServerLib
 
         private void SendRenderFrame(FrameWithoutDelta[] frames)
         {
+            int now = Environment.TickCount;
             for (int i = 0; i < frames.Length; i++)
             {
                 if (frames[i] != null)
                 {
-                    _server.SendToClient(i,frames[i]);
+                    if (now >= _nextRenderAllowedAtperPi[i])
+                    {
+                        _server.SendToClient(i, frames[i]);
+                        _nextRenderAllowedAtperPi[i] = now + _minimumTicksPerFrame;
+                    }
                 }
             }
         }
