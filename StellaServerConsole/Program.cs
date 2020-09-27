@@ -13,7 +13,6 @@ namespace StellaServerConsole
     class Program
     {
         private static StellaServer _stellaServer;
-        private static APIServer _apiServer;
         private static BitmapRepository _bitmapRepository;
         
         static void Main(string[] args)
@@ -30,8 +29,6 @@ namespace StellaServerConsole
             string storyboardDirPath = null;
             string ip = null;
             int port = 0, udpPort = 0;
-            string apiIp = null;
-            int apiPort= 0;
             int millisecondsPerTimeUnit = 1;
             int maximumFrameRate = 1;
             string bitmapDirectory = null;
@@ -61,12 +58,6 @@ namespace StellaServerConsole
                         case "-udp_port":
                             udpPort = int.Parse(args[++i]);
                             break;
-                        case "-api_ip":
-                            apiIp = args[++i];
-                            break;
-                        case "-api_port":
-                            apiPort = int.Parse(args[++i]);
-                            break;
                         case "-b":
                             bitmapDirectory = args[++i];
                             break;
@@ -83,7 +74,7 @@ namespace StellaServerConsole
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort, bitmapDirectory, millisecondsPerTimeUnit, maximumFrameRate))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, bitmapDirectory, millisecondsPerTimeUnit, maximumFrameRate))
             {
                 return;
             }
@@ -127,42 +118,7 @@ namespace StellaServerConsole
                 OutputError(e);
                 return;
             }
-
-            // Start serverAPI if requested
-            if (!string.IsNullOrWhiteSpace(apiIp))
-            {
-                try
-                {
-                    _apiServer = new APIServer(apiIp, apiPort, animations);
-                    _apiServer.TimeUnitsPerFrameRequested += ApiServerOnTimeUnitsPerFrameRequested;
-                    _apiServer.TimeUnitsPerFrameSet += ApiServerOnTimeUnitsPerFrameSet;
-                    _apiServer.RgbFadeRequested += ApiServerOnRgbFadeRequested;
-                    _apiServer.RgbFadeSet += ApiServerOnRgbFadeSet;
-                    _apiServer.BrightnessCorrectionRequested += ApiServerOnBrightnessCorrectionRequested;
-                    _apiServer.BrightnessCorrectionSet += ApiServerOnBrightnessCorrectionSet;
-                    _apiServer.StartAnimation += (sender, storyboard) => _stellaServer.StartAnimation(storyboard);
-                    _apiServer.BitmapReceived += (sender, eventArgs) =>
-                    {
-                        if (_bitmapRepository.BitmapExists(eventArgs.Name))
-                        {
-                            Console.Out.WriteLine(
-                                "Failed to store bitmap. A bitmap with the name {eventArgs.Name} already exists.");
-                            return;
-                        }
-
-                        _bitmapRepository.Save(eventArgs.Bitmap, eventArgs.Name);
-                    };
-
-                    _apiServer.Start();
-                }
-                catch (Exception e)
-                {
-                    Console.Out.WriteLine("An exception occured when starting the APIServer.");
-                    OutputError(e);
-                    return;
-                }
-            }
-
+            
             while (true)
             {
                 OutputMenu(animationNames);
@@ -202,58 +158,7 @@ namespace StellaServerConsole
 
             Console.Out.WriteLine("End of StellaServer.");
         }
-
-        private static void ApiServerOnBrightnessCorrectionSet(int animationIndex, float brightnessCorrection)
-        {
-            if (animationIndex == -1)
-            {
-                // Set for all
-                _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection);
-                return;
-            }
-
-            _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(brightnessCorrection, animationIndex);
-        }
-
-        private static void ApiServerOnRgbFadeSet(int animationIndex, float[] rgbFade)
-        {
-            if (animationIndex == -1)
-            {
-                // Set for all
-                _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(rgbFade);
-                return;
-            }
-
-            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(rgbFade, animationIndex);
-        }
-
-        private static void ApiServerOnTimeUnitsPerFrameSet(int animationIndex, int timeUnitsPerFrame)
-        {
-            if (animationIndex == -1)
-            {
-                // Set for all
-                _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(timeUnitsPerFrame);
-                return;
-            }
-
-            _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame(animationIndex, timeUnitsPerFrame);
-        }
-
-        private static float ApiServerOnBrightnessCorrectionRequested(int animationIndex)
-        {
-            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].BrightnessCorrection;
-        }
-
-        private static float[] ApiServerOnRgbFadeRequested(int animationIndex)
-        {
-            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].RgbFadeCorrection;
-        }
-
-        private static int ApiServerOnTimeUnitsPerFrameRequested(int animationIndex)
-        {
-            return _stellaServer.Animator.StoryboardTransformationController.Settings.AnimationSettings[animationIndex].TimeUnitsPerFrame;
-        }
-
+        
         private static void GetTransformationInput()
         {
             Console.Out.WriteLine("TRANSFORMATION MODE, q to quit");
@@ -366,7 +271,7 @@ namespace StellaServerConsole
         
 
         static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, int udpPort,
-            string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory,
+            string storyboardDirPath, string bitmapDirectory,
             int millisecondsPerTimeUnit, int maximumFrameRate)
         {
             // TODO path and file exist validation
@@ -395,18 +300,6 @@ namespace StellaServerConsole
             if (ip == null)
             {
                 Console.Out.WriteLine("The ip must be set. Use -ip <ip value>");
-                return false;
-            }
-
-            if (apiPort == 0 && !string.IsNullOrWhiteSpace(apiIp))
-            {
-                Console.Out.WriteLine("The apiPort must be set. Use -api_port <port value>");
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(apiIp) && apiPort != 0)
-            {
-                Console.Out.WriteLine("The apiIP must be set. Use -api_ip <ip value>");
                 return false;
             }
 
