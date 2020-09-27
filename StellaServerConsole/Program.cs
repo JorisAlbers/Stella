@@ -33,6 +33,7 @@ namespace StellaServerConsole
             string apiIp = null;
             int apiPort= 0;
             int millisecondsPerTimeUnit = 1;
+            int maximumFrameRate = 1;
             string bitmapDirectory = null;
 
             for (int i = 0; i < args.Length; i++)
@@ -72,6 +73,9 @@ namespace StellaServerConsole
                         case "-t":
                             millisecondsPerTimeUnit = int.Parse(args[++i]);
                             break;
+                        case "-mfr":
+                            maximumFrameRate = int.Parse(args[++i]);
+                            break;
 
                         default:
                             Console.Out.WriteLine($"Unknown flag {args[i]}");
@@ -79,7 +83,7 @@ namespace StellaServerConsole
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort, bitmapDirectory, millisecondsPerTimeUnit))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, apiIp, apiPort, bitmapDirectory, millisecondsPerTimeUnit, maximumFrameRate))
             {
                 return;
             }
@@ -111,7 +115,6 @@ namespace StellaServerConsole
             string[] animationNames = animations.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            int maximumFrameRate = 30;
             _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
 
             try
@@ -362,8 +365,9 @@ namespace StellaServerConsole
 
         
 
-        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port,int udpPort, string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory,
-            int millisecondsPerTimeUnit)
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, int udpPort,
+            string storyboardDirPath, string apiIp, int apiPort, string bitmapDirectory,
+            int millisecondsPerTimeUnit, int maximumFrameRate)
         {
             // TODO path and file exist validation
             if (mappingFilePath == null)
@@ -427,6 +431,11 @@ namespace StellaServerConsole
             if (millisecondsPerTimeUnit < 1)
             {
                 Console.Out.WriteLine("The milliseconds per time unit must be larger than 0");
+            }
+
+            if (maximumFrameRate < 1 || maximumFrameRate > 999)
+            {
+                Console.Out.WriteLine("The maximumFrameRate must be larger than 0 and smaller than 1000");
             }
 
             return true;
