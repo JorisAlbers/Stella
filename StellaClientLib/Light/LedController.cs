@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using rpi_ws281x;
 using StellaLib.Animation;
 
@@ -11,13 +10,11 @@ namespace StellaClientLib.Light
     public class LedController : ILedController
     {
         private readonly ILEDStrip _ledStrip;
-        private long _nextRenderAllowedAfter;
         private object lockObject = new object();
 
         public LedController(ILEDStrip ledStrip)
         {
             _ledStrip = ledStrip;
-            _nextRenderAllowedAfter = DateTime.Now.Ticks;
         }
 
         public void RenderFrame(FrameWithoutDelta frame)
