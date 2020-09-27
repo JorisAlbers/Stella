@@ -53,7 +53,7 @@ namespace StellaServer.Transformations
                 GreenCorrection = 0;
                 BlueCorrection = 0;
                 BrightnessCorrection = 0;
-                TimeUnitsPerFrame = 0;
+                TimeUnitsPerFrame = 10;
             });
         }
 
