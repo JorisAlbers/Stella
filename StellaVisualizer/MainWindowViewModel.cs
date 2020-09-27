@@ -47,7 +47,7 @@ namespace StellaVisualizer
             _memoryLedStrips[0] = new MemoryLedStrip(pixelsPerPi);
             _memoryLedStrips[1] = new MemoryLedStrip(pixelsPerPi);
             _memoryLedStrips[2] = new MemoryLedStrip(pixelsPerPi);
-            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 20, 255);
+            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 255);
 
             ServerViewModel = new ServerControlViewModel(_memoryNetworkController, pixelsPerRow, pixelsPerRow * 6);
 
@@ -75,7 +75,7 @@ namespace StellaVisualizer
             _memoryLedStrips[0] = new MemoryLedStrip(pixelsPerPi);
             _memoryLedStrips[1] = new MemoryLedStrip(pixelsPerPi);
             _memoryLedStrips[2] = new MemoryLedStrip(pixelsPerPi);
-            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 20, 255);
+            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 255);
 
             ServerViewModel = new ServerControlViewModel(_memoryNetworkController, pixelsPerRow, pixelsPerRow * 6);
 
@@ -104,7 +104,7 @@ namespace StellaVisualizer
             _memoryLedStrips[0] = new MemoryLedStrip(pixelsPerPi);
             _memoryLedStrips[1] = new MemoryLedStrip(pixelsPerPi);
             _memoryLedStrips[2] = new MemoryLedStrip(pixelsPerPi);
-            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 20, 255);
+            _memoryNetworkController = new MemoryNetworkController(_memoryLedStrips, pixelsPerPi, 255);
 
             ServerViewModel = new ServerControlViewModel(_memoryNetworkController, pixelsPerRow, pixelsPerRow * 6);
 

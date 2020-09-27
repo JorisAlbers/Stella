@@ -19,7 +19,6 @@ namespace StellaClient.Test.Serialization
             int expectedPwmPin = 18;
             byte expectedBrightness = 250;
             int expectedDmaChannel = 10;
-            int expectedMinimumFrameRate = 24;
             
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -32,7 +31,6 @@ namespace StellaClient.Test.Serialization
             stringBuilder.AppendLine($"PwmPin: {expectedPwmPin}");
             stringBuilder.AppendLine($"Brightness: {expectedBrightness}");
             stringBuilder.AppendLine($"DmaChannel: {expectedDmaChannel}");
-            stringBuilder.AppendLine($"MinimumFrameRate: {expectedMinimumFrameRate}");
 
             ConfigurationLoader loader = new ConfigurationLoader();
 
@@ -47,7 +45,6 @@ namespace StellaClient.Test.Serialization
             Assert.AreEqual(expectedPwmPin, configuration.PwmPin);
             Assert.AreEqual(expectedBrightness, configuration.Brightness);
             Assert.AreEqual(expectedDmaChannel, configuration.DmaChannel);
-            Assert.AreEqual(expectedMinimumFrameRate, configuration.MinimumFrameRate);
 
         }
     }

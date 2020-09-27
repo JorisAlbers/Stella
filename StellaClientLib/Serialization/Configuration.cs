@@ -27,13 +27,10 @@
         /// <summary> The dma channel used to generate the pwm signal.</summary>
         public int DmaChannel { get; }
 
-        /// <summary> The minimum frame rate allowed. </summary>
-        public int MinimumFrameRate { get; }
-
         /// <summary> The overall brightness </summary>
         public byte Brightness { get;}
 
-        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel, int minimumFrameRate, byte brightness)
+        public Configuration(int id, string ip, int port,int udpPort, int ledCount, int pwmPin, int dmaChannel,  byte brightness)
         {
             Id = id;
             Ip = ip;
@@ -42,7 +39,6 @@
             LedCount = ledCount;
             PwmPin = pwmPin;
             DmaChannel = dmaChannel;
-            MinimumFrameRate = minimumFrameRate;
             Brightness = brightness;
         }
     }

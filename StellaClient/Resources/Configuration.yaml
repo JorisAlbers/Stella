@@ -7,4 +7,3 @@ LedCount: 120
 PwmPin: 18
 Brightness: 255
 DmaChannel: 10
-MinimumFrameRate: 24

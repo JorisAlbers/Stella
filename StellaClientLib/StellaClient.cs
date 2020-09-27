@@ -26,7 +26,7 @@ namespace StellaClientLib
             // Start the ledController
             try
             {
-                _ledController = new LedController(_ledStrip, _configuration.MinimumFrameRate);
+                _ledController = new LedController(_ledStrip);
             }
             catch (Exception e)
             {

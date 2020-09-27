@@ -10,16 +10,14 @@ namespace StellaClientLib.Light
     /// </summary>
     public class LedController : ILedController
     {
-        private readonly long _minimumTicksPerFrame;
         private readonly ILEDStrip _ledStrip;
         private long _nextRenderAllowedAfter;
         private object lockObject = new object();
 
-        public LedController(ILEDStrip ledStrip, int minimumFrameRate)
+        public LedController(ILEDStrip ledStrip)
         {
             _ledStrip = ledStrip;
             _nextRenderAllowedAfter = DateTime.Now.Ticks;
-            _minimumTicksPerFrame = 1000 / minimumFrameRate * TimeSpan.TicksPerMillisecond;
         }
 
         public void RenderFrame(FrameWithoutDelta frame)
@@ -28,19 +26,14 @@ namespace StellaClientLib.Light
             {
                 try
                 {
-                    DateTime now = DateTime.Now;
-                    if (now.Ticks >= _nextRenderAllowedAfter)
+                    for (int i = 0; i < frame.Count; i++)
                     {
-                        for (int i = 0; i < frame.Count; i++)
-                        {
-                            PixelInstruction instruction = frame[i];
+                        PixelInstruction instruction = frame[i];
 
-                            _ledStrip.SetLEDColor(0, i, System.Drawing.Color.FromArgb(instruction.R, instruction.G, instruction.B));
-                        }
-
-                        _ledStrip.Render();
-                        _nextRenderAllowedAfter = now.Ticks + _minimumTicksPerFrame;
+                        _ledStrip.SetLEDColor(0, i, System.Drawing.Color.FromArgb(instruction.R, instruction.G, instruction.B));
                     }
+
+                    _ledStrip.Render();
                 }
                 finally
                 {

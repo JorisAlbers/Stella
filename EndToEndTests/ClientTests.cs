@@ -50,7 +50,7 @@ namespace EndToEndTests
             Settings settings = Settings.CreateDefaultSettings();
             settings.Channels[0] = new Channel(ledCount, 18, 255, false, StripType.WS2812_STRIP);
             WS281x ledstrip = new WS281x(settings);
-            LedController ledController = new LedController(ledstrip,50);
+            LedController ledController = new LedController(ledstrip);
 
             // Server
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(Program.SERVER_IP), 20055);

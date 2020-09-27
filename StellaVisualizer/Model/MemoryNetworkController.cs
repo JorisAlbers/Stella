@@ -14,7 +14,7 @@ namespace StellaVisualizer.Model
 
         private MemoryServer _memoryServer;
         
-        public MemoryNetworkController(MemoryLedStrip[] ledstrips, int numberOfPixels, int minimumFrameRate, byte brightness)
+        public MemoryNetworkController(MemoryLedStrip[] ledstrips, int numberOfPixels, byte brightness)
         {
             if (_memoryStellaServers != null)
             {
@@ -34,7 +34,7 @@ namespace StellaVisualizer.Model
                 _memoryStellaServers[i] = new MemoryStellaServer();
                 _memoryStellaServers[i].MessageSend += MemoryStellaServer_OnMessageSend;
                 
-                _clients[i] = new StellaClient(new Configuration(i, "192.168.1.110", 20055, 20060, numberOfPixels, 18, 10, minimumFrameRate, brightness), _memoryStellaServers[i], ledstrips[i]);
+                _clients[i] = new StellaClient(new Configuration(i, "192.168.1.110", 20055, 20060, numberOfPixels, 18, 10, brightness), _memoryStellaServers[i], ledstrips[i]);
                 _clients[i].Start();
             }
         }

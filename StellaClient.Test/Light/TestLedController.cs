@@ -26,7 +26,7 @@ namespace StellaClient.Test.Light
                 color = c;
             });
 
-            LedController controller = new LedController(mock.Object,50);
+            LedController controller = new LedController(mock.Object);
             controller.RenderFrame(frame);
             Assert.AreEqual(0, index);
             Assert.AreEqual(Color.FromArgb(10, 20, 30), color);
@@ -40,7 +40,7 @@ namespace StellaClient.Test.Light
             var mock = new Mock<ILEDStrip>();
             mock.Setup(x => x.Render());
 
-            LedController controller = new LedController(mock.Object,50);
+            LedController controller = new LedController(mock.Object);
             controller.RenderFrame(frame);
 
             mock.Verify(x=>x.Render(),Times.Once);
