@@ -55,6 +55,11 @@ namespace StellaServer.Setup
                         view => view.StoryboardFolderTextBox.Text)
                     .DisposeWith(disposableRegistration);
 
+                this.Bind(ViewModel,
+                        viewmodel => viewmodel.MaximumFrameRate,
+                        view => view.MaximumFrameRateTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
                 this.BindCommand(ViewModel,
                         viewmodel => viewmodel.StartCommand,
                         view => view.StartButton)

@@ -23,5 +23,7 @@ namespace StellaServer
         public string BitmapFolder { get; set; }
         [XmlElement]
         public string StoryboardFolder { get; set; }
+        [XmlElement]
+        public int MaximumFrameRate { get; set; }
     }
 }

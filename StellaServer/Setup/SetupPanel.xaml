@@ -35,6 +35,15 @@
                 </ListViewItem>
                 <ListViewItem>
                     <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Maximum frame rate:"/>
+                        <TextBox x:Name="MaximumFrameRateTextBox" 
+                                 Margin="10,0,0,0" 
+                                 Width="100" ></TextBox>
+                    </StackPanel>
+                </ListViewItem>
+
+                <ListViewItem>
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Mapping file:"/>
                         <TextBox x:Name="MappingFilePathTextBox" 
                                  Width="500"

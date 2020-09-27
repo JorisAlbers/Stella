@@ -17,6 +17,7 @@ namespace StellaServer.Setup
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public string StoryboardFolder { get; set; }                                                                                                                        
+        [Reactive] public int MaximumFrameRate { get; set; }                                                                                                                        
         [Reactive] public List<string> Errors { get; set; }
 
         public EventHandler<ServerCreatedEventArgs> ServerCreated;
@@ -34,6 +35,7 @@ namespace StellaServer.Setup
                 MappingFilePath = settings.MappingFilePath;
                 BitmapFolder = settings.BitmapFolder;
                 StoryboardFolder = settings.StoryboardFolder;
+                MaximumFrameRate = settings.MaximumFrameRate;
             }
 
             var canStartServer = this.WhenAnyValue(
@@ -43,20 +45,22 @@ namespace StellaServer.Setup
                 x => x.MappingFilePath,
                 x => x.BitmapFolder,
                 x=> x.StoryboardFolder,
-                (serverIp, tcp, udp, configFile, bitmapFolder, storyboardFolder) =>
+                x => x.MaximumFrameRate,
+                (serverIp, tcp, udp, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
                     !String.IsNullOrWhiteSpace(serverIp) &&
                     !String.IsNullOrWhiteSpace(MappingFilePath) &&
                     tcp != 0 &&
                     udp != 0 &&
                     !String.IsNullOrWhiteSpace(bitmapFolder) &&
-                    !String.IsNullOrWhiteSpace(storyboardFolder) 
-                );
+                    !String.IsNullOrWhiteSpace(storyboardFolder) &&
+                    maximumFrameRate > 1 && maximumFrameRate < 1000
+            );
 
             StartCommand = ReactiveCommand.Create(() =>
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1,24, bitmapRepository, new Server());
+                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
                 stellaServer.Start();
                 
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
@@ -66,7 +70,8 @@ namespace StellaServer.Setup
                     ServerUdpPort = ServerUdpPort,
                     MappingFilePath = MappingFilePath,
                     BitmapFolder = BitmapFolder,
-                    StoryboardFolder = StoryboardFolder
+                    StoryboardFolder = StoryboardFolder,
+                    MaximumFrameRate = MaximumFrameRate,
                 }, stellaServer));
             }, canStartServer);
 
