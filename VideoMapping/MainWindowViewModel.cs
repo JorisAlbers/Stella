@@ -41,6 +41,8 @@ namespace VideoMapping
             Start.Subscribe((x) =>
             {
                 settingsSerializer.Save(x);
+                VideosConverter converter = new VideosConverter(new DirectoryInfo(x.InputFolder), new DirectoryInfo(x.OutputFolder), x.Rows, x.PixelsPerRow);
+                converter.Start();
             });
         }
 
