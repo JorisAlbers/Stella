@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Windows;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -44,6 +45,11 @@ namespace VideoMapping
                 VideosConverter converter = new VideosConverter(new DirectoryInfo(x.InputFolder), new DirectoryInfo(x.OutputFolder), x.Rows, x.PixelsPerRow);
                 converter.Start();
             });
+            Start.ThrownExceptions.Subscribe(x =>
+            {
+                MessageBox.Show(x.Message, "error");
+            });
+
         }
 
     }
