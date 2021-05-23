@@ -94,6 +94,7 @@
     </ApplicationDefinition>
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsSerializer.cs" />
+    <Compile Include="VideoConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
