@@ -33,15 +33,16 @@ namespace VideoMapping
             FileInfo[] videos = _inputFolder.EnumerateFiles("*.mp4").ToArray();
             foreach (FileInfo video in videos)
             {
-                if (_storyboardFolder.Exists)
+                string videoName = video.Name.Remove(video.Name.LastIndexOf('.'));
+                string storyboardPath = Path.Combine(_storyboardFolder.FullName, $"videomapping {videoName}.yaml");
+
+                if (File.Exists(storyboardPath))
                 {
                     continue;
                 }
 
-                string videoName = video.Name.Remove(video.Name.LastIndexOf('.'));
-
                 _storyboardFolder.Create();
-                CreateStoryBoard(videoName, _storyboardFolder.FullName, _rows, _pixelsPerRow);
+                CreateStoryBoard(videoName, storyboardPath, _rows, _pixelsPerRow);
 
                 DirectoryInfo videoOutputFolder =
                     new DirectoryInfo(Path.Combine(_outputFolder.FullName, videoName));
@@ -54,7 +55,7 @@ namespace VideoMapping
             }
         }
 
-        private static void CreateStoryBoard(string videoName, string storyboardFolder, int rows, int pixelsPerRow)
+        private static void CreateStoryBoard(string videoName, string filePath, int rows, int pixelsPerRow)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("!Storyboard");
@@ -68,7 +69,7 @@ namespace VideoMapping
                 sb.AppendLine(@$"   ImageName: {videoName}\{videoName}_row{i}");
             }
             
-            File.WriteAllText(Path.Combine(storyboardFolder, $"videomapping {videoName}.yaml"), sb.ToString());
+            File.WriteAllText(filePath, sb.ToString());
         }
     }
 
