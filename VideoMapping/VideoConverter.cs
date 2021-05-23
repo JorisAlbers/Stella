@@ -14,13 +14,15 @@ namespace VideoMapping
     {
         private readonly DirectoryInfo _inputFolder;
         private readonly DirectoryInfo _outputFolder;
+        private readonly DirectoryInfo _storyboardFolder;
         private readonly int _rows;
         private readonly int _pixelsPerRow;
 
-        public VideosConverter(DirectoryInfo inputFolder, DirectoryInfo outputFolder, int rows, int pixelsPerRow)
+        public VideosConverter(DirectoryInfo inputFolder, DirectoryInfo outputFolder, DirectoryInfo storyboardFolder, int rows, int pixelsPerRow)
         {
             _inputFolder = inputFolder;
             _outputFolder = outputFolder;
+            _storyboardFolder = storyboardFolder;
             _rows = rows;
             _pixelsPerRow = pixelsPerRow;
         }
@@ -38,7 +40,42 @@ namespace VideoMapping
 
                 VideoConverter converter = new VideoConverter(fileInfo, videoOutputFolder, _rows, _pixelsPerRow);
                 converter.Start();
+
+                CreateStoryBoard(fileInfo.Name, _storyboardFolder.FullName);
             }
+        }
+
+        private static void CreateStoryBoard(string videoName, string storyboardFolder)
+        {
+            string s = $@"!Storyboard
+Name: videomapping v{videoName}
+Animations:
+ - !Bitmap
+   StartIndex:  0
+   StripLength: 480
+   ImageName: {videoName}\{videoName}_row0
+ - !Bitmap
+   StartIndex:  480
+   StripLength: 480
+   ImageName: {videoName}\{videoName}_row1
+ - !Bitmap
+   StartIndex:  960
+   StripLength: 480
+   ImageName: {videoName}\{videoName}_row2
+ - !Bitmap
+   StartIndex:  1440
+   StripLength: 480
+   ImageName: {videoName}\{videoName}_row3
+ - !Bitmap
+   StartIndex:  1920
+   StripLength: 480
+   ImageName: {videoName}\{videoName}_row4
+ - !Bitmap
+   StartIndex:  2400
+   StripLength: 480
+   ImageName: {videoName}\{videoName}_row5";
+
+            File.WriteAllText(Path.Combine(storyboardFolder, $"videomapping {videoName}.yaml"), s);
         }
     }
 
