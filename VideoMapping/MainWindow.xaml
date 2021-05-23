@@ -24,5 +24,7 @@
         <TextBlock Text="Input folder (files should be of type .mp4):"/>
         <TextBlock x:Name="InputFolderTextBlock"/>
 
+        <Button Content="Start" x:Name="StartButton"/>
+
     </UniformGrid>
 </reactiveUi:ReactiveWindow>
