@@ -24,8 +24,9 @@ namespace VideoMapping
     {
         public MainWindow()
         {
+            ViewModel = new MainWindowViewModel();
             InitializeComponent();
-
+            
             this.WhenActivated((d) =>
             {
                 this.Bind(ViewModel, vm => vm.PixelsPerRow, v => v.PixelsPerRowTextBox.Text).DisposeWith(d);
