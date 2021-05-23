@@ -7,7 +7,18 @@
                                 xmlns:reactiveUi="http://reactiveui.net"
                                 mc:Ignorable="d"
                                 Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <UniformGrid Columns="2">
+        <TextBlock Text="Pixels per row:"/>
+        <TextBlock x:Name="PixelsPerRowTextBlock"/>
+
+        <TextBlock Text="Rows:"/>
+        <TextBlock x:Name="RowsTextBlock"/>
+
+        <TextBlock Text="Output folder:"/>
+        <TextBlock x:Name="OutputFolderTextBlock"/>
+
+        <TextBlock Text="Storyboard folder:"/>
+        <TextBlock x:Name="StoryboardFolderTextBlock"/>
+
+    </UniformGrid>
 </reactiveUi:ReactiveUserControl>
