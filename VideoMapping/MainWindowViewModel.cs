@@ -9,6 +9,8 @@ namespace VideoMapping
 
         public string StoryboardFolder { get; set; }
         public string OutputFolder { get; set; }
+        public string InputFolder { get; set; }
+
 
         public MainWindowViewModel()
         {

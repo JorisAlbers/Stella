@@ -21,5 +21,8 @@
         <TextBlock Text="Storyboard folder:"/>
         <TextBlock x:Name="StoryboardFolderTextBlock"/>
 
+        <TextBlock Text="Input folder (files should be of type .mp4):"/>
+        <TextBlock x:Name="InputFolderTextBlock"/>
+
     </UniformGrid>
 </reactiveUi:ReactiveWindow>

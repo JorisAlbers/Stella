@@ -32,6 +32,7 @@ namespace VideoMapping
                 this.Bind(ViewModel, vm => vm.Rows, v => v.RowsTextBlock.Text).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.StoryboardFolder, v => v.StoryboardFolderTextBlock.Text).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.OutputFolder, v => v.OutputFolderTextBlock.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.InputFolder, v => v.InputFolderTextBlock.Text).DisposeWith(d);
             });
         }
     }
