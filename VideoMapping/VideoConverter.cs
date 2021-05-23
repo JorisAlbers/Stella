@@ -77,13 +77,13 @@ namespace VideoMapping
             DistributeVideoOverRows(videoCapture,frame, matPerRow, rowIndexes);
 
             // Resize to mapping
-            /*for (int i = 0; i < matPerRow.Length; i++)
+            for (int i = 0; i < matPerRow.Length; i++)
             {
-                CvInvoke.Resize(matPerRow[i], matPerRow[i], new Size(_pixelsPerRow, matPerRow[i].Height));
+                Cv2.Resize(matPerRow[i], matPerRow[i], new OpenCvSharp.Size(_pixelsPerRow, matPerRow[i].Height));
                 // save
-                matPerRow[i].Save(Path.Combine(outputDirectoryInfo.FullName, $"vm{video.ID}_row{i}.png"));
+                Cv2.ImWrite(Path.Combine(outputDirectoryInfo.FullName, $"vm_{video.Name}_row{i}.png"), matPerRow[i]);
                 matPerRow[i].Dispose();
-            }*/
+            }
         }
 
         private static int[] CalculateRowIndexes(int numberOfRows, int height)
