@@ -28,11 +28,11 @@ namespace VideoMapping
 
             this.WhenActivated((d) =>
             {
-                this.Bind(ViewModel, vm => vm.PixelsPerRow, v => v.PixelsPerRowTextBlock.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Rows, v => v.RowsTextBlock.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.StoryboardFolder, v => v.StoryboardFolderTextBlock.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.OutputFolder, v => v.OutputFolderTextBlock.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.InputFolder, v => v.InputFolderTextBlock.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.PixelsPerRow, v => v.PixelsPerRowTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Rows, v => v.RowsTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.StoryboardFolder, v => v.StoryboardFolderTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.OutputFolder, v => v.OutputFolderTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.InputFolder, v => v.InputFolderTextBox.Text).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.Start, v => v.StartButton).DisposeWith(d);
             });
         }

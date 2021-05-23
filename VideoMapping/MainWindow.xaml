@@ -10,19 +10,19 @@
                                 Height="450" Width="800">
     <UniformGrid Columns="2">
         <TextBlock Text="Pixels per row:"/>
-        <TextBlock x:Name="PixelsPerRowTextBlock"/>
+        <TextBox x:Name="PixelsPerRowTextBox"/>
 
         <TextBlock Text="Rows:"/>
-        <TextBlock x:Name="RowsTextBlock"/>
+        <TextBox x:Name="RowsTextBox"/>
 
         <TextBlock Text="Output folder:"/>
-        <TextBlock x:Name="OutputFolderTextBlock"/>
+        <TextBox x:Name="OutputFolderTextBox"/>
 
         <TextBlock Text="Storyboard folder:"/>
-        <TextBlock x:Name="StoryboardFolderTextBlock"/>
+        <TextBox x:Name="StoryboardFolderTextBox"/>
 
         <TextBlock Text="Input folder (files should be of type .mp4):"/>
-        <TextBlock x:Name="InputFolderTextBlock"/>
+        <TextBox x:Name="InputFolderTextBox"/>
 
         <Button Content="Start" x:Name="StartButton"/>
 
