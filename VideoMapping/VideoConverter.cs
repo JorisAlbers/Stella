@@ -31,22 +31,24 @@ namespace VideoMapping
         {
             _outputFolder.Create();
             FileInfo[] videos = _inputFolder.EnumerateFiles("*.mp4").ToArray();
-            foreach (FileInfo fileInfo in videos)
+            foreach (FileInfo video in videos)
             {
                 if (_storyboardFolder.Exists)
                 {
                     continue;
                 }
 
+                string videoName = video.Name.Remove(video.Name.LastIndexOf('.'));
+
                 _storyboardFolder.Create();
-                CreateStoryBoard(fileInfo.Name, _storyboardFolder.FullName, _rows, _pixelsPerRow);
+                CreateStoryBoard(videoName, _storyboardFolder.FullName, _rows, _pixelsPerRow);
 
                 DirectoryInfo videoOutputFolder =
-                    new DirectoryInfo(Path.Combine(_outputFolder.FullName, fileInfo.Name));
+                    new DirectoryInfo(Path.Combine(_outputFolder.FullName, videoName));
 
                 videoOutputFolder.Create();
 
-                VideoConverter converter = new VideoConverter(fileInfo, videoOutputFolder, _rows, _pixelsPerRow);
+                VideoConverter converter = new VideoConverter(video, videoOutputFolder, _rows, _pixelsPerRow);
                 converter.Start();
                 
             }
@@ -94,6 +96,8 @@ namespace VideoMapping
         {
             Directory.CreateDirectory(outputDirectoryInfo.FullName);
 
+            string videoName = video.Name.Remove(video.Name.LastIndexOf('.'));
+
             using VideoCapture videoCapture = new VideoCapture(video.FullName);
             Mat frame = new Mat();
             videoCapture.Read(frame);
@@ -109,7 +113,7 @@ namespace VideoMapping
             {
                 Cv2.Resize(matPerRow[i], matPerRow[i], new OpenCvSharp.Size(_pixelsPerRow, matPerRow[i].Height));
                 // save
-                Cv2.ImWrite(Path.Combine(outputDirectoryInfo.FullName, $"vm_{video.Name}_row{i}.png"), matPerRow[i]);
+                Cv2.ImWrite(Path.Combine(outputDirectoryInfo.FullName, $"{videoName}_row{i}.png"), matPerRow[i]);
                 matPerRow[i].Dispose();
             }
         }
