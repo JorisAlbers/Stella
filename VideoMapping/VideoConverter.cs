@@ -33,6 +33,14 @@ namespace VideoMapping
             FileInfo[] videos = _inputFolder.EnumerateFiles("*.mp4").ToArray();
             foreach (FileInfo fileInfo in videos)
             {
+                if (_storyboardFolder.Exists)
+                {
+                    continue;
+                }
+
+                _storyboardFolder.Create();
+                CreateStoryBoard(fileInfo.Name, _storyboardFolder.FullName, _rows, _pixelsPerRow);
+
                 DirectoryInfo videoOutputFolder =
                     new DirectoryInfo(Path.Combine(_outputFolder.FullName, fileInfo.Name));
 
@@ -40,42 +48,25 @@ namespace VideoMapping
 
                 VideoConverter converter = new VideoConverter(fileInfo, videoOutputFolder, _rows, _pixelsPerRow);
                 converter.Start();
-
-                CreateStoryBoard(fileInfo.Name, _storyboardFolder.FullName);
+                
             }
         }
 
-        private static void CreateStoryBoard(string videoName, string storyboardFolder)
+        private static void CreateStoryBoard(string videoName, string storyboardFolder, int rows, int pixelsPerRow)
         {
-            string s = $@"!Storyboard
-Name: videomapping v{videoName}
-Animations:
- - !Bitmap
-   StartIndex:  0
-   StripLength: 480
-   ImageName: {videoName}\{videoName}_row0
- - !Bitmap
-   StartIndex:  480
-   StripLength: 480
-   ImageName: {videoName}\{videoName}_row1
- - !Bitmap
-   StartIndex:  960
-   StripLength: 480
-   ImageName: {videoName}\{videoName}_row2
- - !Bitmap
-   StartIndex:  1440
-   StripLength: 480
-   ImageName: {videoName}\{videoName}_row3
- - !Bitmap
-   StartIndex:  1920
-   StripLength: 480
-   ImageName: {videoName}\{videoName}_row4
- - !Bitmap
-   StartIndex:  2400
-   StripLength: 480
-   ImageName: {videoName}\{videoName}_row5";
-
-            File.WriteAllText(Path.Combine(storyboardFolder, $"videomapping {videoName}.yaml"), s);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("!Storyboard");
+            sb.AppendLine($"Name: videomapping {videoName}");
+            sb.AppendLine("Animations:");
+            for (int i = 0; i < rows; i++)
+            {
+                sb.AppendLine(  " - !Bitmap");
+                sb.AppendLine( $"   StartIndex:  {i * pixelsPerRow}");
+                sb.AppendLine( $"   StripLength: {pixelsPerRow}");
+                sb.AppendLine(@$"   ImageName: {videoName}\{videoName}_row{i}");
+            }
+            
+            File.WriteAllText(Path.Combine(storyboardFolder, $"videomapping {videoName}.yaml"), sb.ToString());
         }
     }
 
