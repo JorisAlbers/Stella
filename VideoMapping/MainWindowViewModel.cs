@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using ReactiveUI;
@@ -23,7 +25,27 @@ namespace VideoMapping
 
         public MainWindowViewModel()
         {
+            SettingsSerializer settingsSerializer = new SettingsSerializer(new FileInfo("settings.json"));
+            try
+            {
+                Settings settings = settingsSerializer.Load();
+                PixelsPerRow = settings.PixelsPerRow;
+                Rows = settings.Rows;
+                StoryboardFolder = settings.StoryboardFolder;
+                OutputFolder = settings.OutputFolder;
+                InputFolder = settings.InputFolder;
+            }
+            catch { }
+
+
+
+
+
             Start = ReactiveCommand.Create<Unit, Settings>((_) => new Settings(PixelsPerRow, Rows, StoryboardFolder, OutputFolder, InputFolder));
+            Start.Subscribe((x) =>
+            {
+                settingsSerializer.Save(x);
+            });
         }
 
     }
