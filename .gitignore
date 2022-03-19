@@ -8,3 +8,5 @@
 /_ReSharper.Caches
 /packages
 /StellaServerConsole/Properties/launchSettings.json
+/StellaClientCpp/StellaClientCpp.vcxproj.user
+/StellaClientCpp/StellaClientCpp.vcxproj.filters
