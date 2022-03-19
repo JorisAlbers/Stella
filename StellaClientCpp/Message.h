@@ -33,7 +33,7 @@ namespace stella
 			// TODO redesign vector to array?
 			// Pushes any POD-like data into the message buffer
 			template<typename DataType>
-			friend message<T>& operator << (message<t>& msg, const DataType& data)
+			friend message<T>& operator << (message<T>& msg, const DataType& data)
 			{
 				// Check that the type of the data being pushed is trivially copyable
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
