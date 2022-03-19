@@ -10,3 +10,5 @@
 /StellaServerConsole/Properties/launchSettings.json
 /StellaClientCpp/StellaClientCpp.vcxproj.user
 /StellaClientCpp/StellaClientCpp.vcxproj.filters
+/StellaClientCpp.Test/StellaClientCpp.Test.vcxproj.user
+/StellaClientCpp.Test/StellaClientCpp.Test.vcxproj.filters
