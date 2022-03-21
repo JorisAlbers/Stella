@@ -3,21 +3,14 @@
 #include <iostream>
 #include "TcpClient.h"
 
-enum class MyMessageType : uint32_t
-{
-	Aap,
-	Noot,
-	Mies
-};
-
-class CustomClient : public stella::net::TcpClient<MyMessageType>
+class CustomClient : public stella::net::TcpClient
 {
 public:
 	bool SendMessage()
 	{
-		stella::net::message<MyMessageType> message;
-		message.header.id = MyMessageType::Noot;
-		message << "test";
+		stella::net::message message;
+		message.header.id = stella::net::StellaMessageTypes::Init;
+		message << 1;
 		//Send();
 	}
 };
@@ -25,9 +18,9 @@ public:
 
 int main(int argc, char* argv[])
 {
-	stella::net::message<MyMessageType> message;
-	message.header.id = MyMessageType::Aap;
-	message << " Test";
+	stella::net::message message;
+	message.header.id = stella::net::StellaMessageTypes::Init;
+	message << 1;
 
 	CustomClient c;
 	c.Connect("127.0.0.1", 20512);

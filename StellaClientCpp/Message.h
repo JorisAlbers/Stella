@@ -5,25 +5,33 @@ namespace stella
 {
 	namespace net
 	{
-		template <typename T>
+		enum class StellaMessageTypes : uint32_t
+		{
+			Unknown,
+			Init,
+			Standard,
+			AnimationRenderFrame,
+		};
+
+				
 		struct message_header
 		{
-			T id{};
+			StellaMessageTypes id{};
 			uint32_t size = 0;
 		};
 
-		template <typename T>
+		
 		struct message
 		{
-			message_header<T> header{ };
+			message_header header{ };
 			std::vector<uint8_t> body;
 
 			size_t size() const
 			{
-				return sizeof(message_header<T>) + body.size();
+				return sizeof(message_header) + body.size();
 			}
 
-			friend std::ostream& operator << (std::ostream& os, const message<T>& msg)
+			friend std::ostream& operator << (std::ostream& os, const message& msg)
 			{
 				os << "ID:" << int(msg.header.id) << " Size:" << msg.header.size;
 				return os;
@@ -33,7 +41,7 @@ namespace stella
 			// TODO redesign vector to array?
 			// Pushes any POD-like data into the message buffer
 			template<typename DataType>
-			friend message<T>& operator << (message<T>& msg, const DataType& data)
+			friend message& operator << (message& msg, const DataType& data)
 			{
 				// Check that the type of the data being pushed is trivially copyable
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
@@ -56,7 +64,7 @@ namespace stella
 
 			// Pulls any POD-like data form the message buffer
 			template<typename DataType>
-			friend message<T>& operator >> (message<T>& msg, DataType& data)
+			friend message& operator >> (message& msg, DataType& data)
 			{
 				// Check that the type of the data being pushed is trivially copyable
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");

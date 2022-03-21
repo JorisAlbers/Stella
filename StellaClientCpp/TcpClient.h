@@ -8,7 +8,6 @@ namespace stella
 {
 	namespace net
 	{
-		template<typename T>
 		class TcpClient
 		{
 		public:
@@ -78,7 +77,7 @@ namespace stella
 
 		public:
 			// Retrieve queue of messages from server
-			ConcurrentDoubleEndedQueue<message<T>>& Incoming()
+			ConcurrentDoubleEndedQueue<message>& Incoming()
 			{
 				return queueIn;
 			}
@@ -86,7 +85,7 @@ namespace stella
 		private:
 			void ReadHeader()
 			{
-				asio::async_read(*m_socket, asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header<T>)),
+				asio::async_read(*m_socket, asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header)),
 					[this](std::error_code ec, std::size_t length)
 					{
 						if (!ec)
@@ -102,6 +101,14 @@ namespace stella
 							}
 							else
 							{
+								if (m_msgTemporaryIn.header.id == StellaMessageTypes::Unknown)
+								{
+									// Keep alive message received.
+									std::cout << "Keep alive message received." << std::endl;
+									ReadHeader();
+									return;
+								}
+
 								// it doesn't, so add this bodyless message to the connections
 								// incoming message queue
 								AddToIncomingMessageQueue();
@@ -162,12 +169,12 @@ namespace stella
 
 			std::thread threadContext;
 
-			ConcurrentDoubleEndedQueue<message<T>> queueOut;
-			ConcurrentDoubleEndedQueue<message<T>> queueIn; // should be provided by the concrete implementation
+			ConcurrentDoubleEndedQueue<message> queueOut;
+			ConcurrentDoubleEndedQueue<message> queueIn; // should be provided by the concrete implementation
 
 			// Incoming messages are constructed asynchronously, so we will
 			// store the part assembled message here, until it is ready
-			message<T> m_msgTemporaryIn;
+			message m_msgTemporaryIn;
 		};
 	}
 }
