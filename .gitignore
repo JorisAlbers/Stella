@@ -12,3 +12,6 @@
 /StellaClientCpp/StellaClientCpp.vcxproj.filters
 /StellaClientCpp.Test/StellaClientCpp.Test.vcxproj.user
 /StellaClientCpp.Test/StellaClientCpp.Test.vcxproj.filters
+/StellaClientCpp.Test/Debug
+/Debug
+/StellaClientCpp/Debug
