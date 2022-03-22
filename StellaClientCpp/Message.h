@@ -16,8 +16,8 @@ namespace stella
 				
 		struct message_header
 		{
-			StellaMessageTypes id{};
-			uint32_t size = 0;
+			uint32_t size = 0; // excludes this 4 byte int field. messagetype + message size
+			StellaMessageTypes type{};
 		};
 
 		
@@ -33,7 +33,7 @@ namespace stella
 
 			friend std::ostream& operator << (std::ostream& os, const message& msg)
 			{
-				os << "ID:" << int(msg.header.id) << " Size:" << msg.header.size;
+				os << "ID:" << int(msg.header.type) << " Size:" << msg.header.size;
 				return os;
 			}
 

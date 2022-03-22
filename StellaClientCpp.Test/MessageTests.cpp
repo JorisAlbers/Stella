@@ -9,7 +9,7 @@ public:
 	bool SendMessage()
 	{
 		stella::net::message message;
-		message.header.id = stella::net::StellaMessageTypes::Init;
+		message.header.type = stella::net::StellaMessageTypes::Init;
 		message << 1;
 		//Send();
 	}
@@ -19,7 +19,7 @@ public:
 int main(int argc, char* argv[])
 {
 	stella::net::message message;
-	message.header.id = stella::net::StellaMessageTypes::Init;
+	message.header.type = stella::net::StellaMessageTypes::Init;
 	message << 1;
 
 	CustomClient c;

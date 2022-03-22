@@ -101,7 +101,7 @@ namespace stella
 							}
 							else
 							{
-								if (m_msgTemporaryIn.header.id == StellaMessageTypes::Unknown)
+								if (m_msgTemporaryIn.header.type == StellaMessageTypes::Unknown)
 								{
 									// Keep alive message received.
 									std::cout << "Keep alive message received." << std::endl;
