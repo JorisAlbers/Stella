@@ -10,9 +10,28 @@ namespace stella
 	{
 		class TcpClient
 		{
+		private:
+			asio::io_context m_context;
+
+			asio::ip::tcp::socket* m_socket;
+
+			std::thread threadContext;
+
+			ConcurrentDoubleEndedQueue<message> queueOut;
+			ConcurrentDoubleEndedQueue<message> queueIn; // should be provided by the concrete implementation
+
+			// Incoming messages are constructed asynchronously, so we will
+			// store the part assembled message here, until it is ready
+			message m_msgTemporaryIn;
+
+			asio::ip::tcp::resolver::results_type m_endpoints;
+
+
 		public:
-			TcpClient()
+			explicit TcpClient(const std::string& host, const uint16_t port)
 			{
+				asio::ip::tcp::resolver resolver(m_context);
+				m_endpoints = resolver.resolve(host, std::to_string(port));
 			}
 
 			virtual ~TcpClient()
@@ -22,18 +41,15 @@ namespace stella
 				delete m_socket;
 			}
 
-			bool Connect(const std::string& host, const uint16_t port)
+			bool Connect()
 			{
 				try 
 				{
-					asio::ip::tcp::resolver resolver(m_context);
-					asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(port));
-
 					// Request asio attempts to connect to an endpoint
 
 					m_socket = new asio::ip::tcp::socket(m_context);
 
-					asio::async_connect(*m_socket, endpoints,
+					asio::async_connect(*m_socket, m_endpoints,
 						[this](std::error_code ec, asio::ip::tcp::endpoint endpoint)
 						{
 							if (ec)
@@ -259,22 +275,7 @@ namespace stella
 							}
 						});
 				}
-
-
-
-		private:
-			asio::io_context m_context;
-
-			asio::ip::tcp::socket* m_socket;
-
-			std::thread threadContext;
-
-			ConcurrentDoubleEndedQueue<message> queueOut;
-			ConcurrentDoubleEndedQueue<message> queueIn; // should be provided by the concrete implementation
-
-			// Incoming messages are constructed asynchronously, so we will
-			// store the part assembled message here, until it is ready
-			message m_msgTemporaryIn;
+		
 		};
 	}
 }

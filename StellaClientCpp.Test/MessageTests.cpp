@@ -3,18 +3,6 @@
 #include <iostream>
 #include "TcpClient.h"
 
-class CustomClient : public stella::net::TcpClient
-{
-public:
-	bool SendMessage()
-	{
-		stella::net::message message;
-		message.header.type = stella::net::StellaMessageTypes::Init;
-		message << 1;
-		//Send();
-	}
-};
-
 
 int main(int argc, char* argv[])
 {
@@ -22,15 +10,10 @@ int main(int argc, char* argv[])
 	message.header.type = stella::net::StellaMessageTypes::Init;
 	message << 1; //  my id = 1
 
-	CustomClient c;
-	c.Connect("127.0.0.1", 20512);
+	stella::net::TcpClient c("127.0.0.1", 20512);
+	c.Connect();
 
-	while (!c.IsConnected())
-	{
-		// wait;
-		;
-	}
-
+	
 	c.Send(message);
 	
 	while (true)
