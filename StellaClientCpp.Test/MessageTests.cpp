@@ -6,15 +6,10 @@
 
 int main(int argc, char* argv[])
 {
-	stella::net::message message;
-	message.header.type = stella::net::StellaMessageTypes::Init;
-	message << 1; //  my id = 1
+	const int id = 2;
 
-	stella::net::TcpClient c("127.0.0.1", 20512);
+	stella::net::TcpClient c(id,"127.0.0.1", 20512);
 	c.Connect();
-
-	
-	c.Send(message);
 	
 	while (true)
 	{

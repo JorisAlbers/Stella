@@ -11,6 +11,8 @@ namespace stella
 		class TcpClient
 		{
 		private:
+			const int m_id;
+
 			asio::io_context m_context;
 
 			asio::ip::tcp::socket* m_socket;
@@ -28,7 +30,7 @@ namespace stella
 
 
 		public:
-			explicit TcpClient(const std::string& host, const uint16_t port)
+			explicit TcpClient(const int id, const std::string& host, const uint16_t port) : m_id(id)
 			{
 				asio::ip::tcp::resolver resolver(m_context);
 				m_endpoints = resolver.resolve(host, std::to_string(port));
@@ -58,6 +60,8 @@ namespace stella
 								std::cerr << ec.message() << "\n";
 								return;
 							}
+
+							OnConnected();
 							
 							ReadHeader();							
 							
@@ -120,6 +124,19 @@ namespace stella
 			}
 
 		private:
+
+			void OnConnected()
+			{
+				std::cout << "Connected to server via tcp.\n";
+				std::cout << "Sending INIT message. My id is " << m_id << "\n";
+
+				stella::net::message message;
+				message.header.type = stella::net::StellaMessageTypes::Init;
+				message << 1; //  my id = 1
+
+				Send(message);
+			}
+
 			void ReadHeader()
 			{
 				asio::async_read(*m_socket, asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header)),
