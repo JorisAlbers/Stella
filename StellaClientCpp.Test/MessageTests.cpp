@@ -20,10 +20,18 @@ int main(int argc, char* argv[])
 {
 	stella::net::message message;
 	message.header.type = stella::net::StellaMessageTypes::Init;
-	message << 1;
+	message << 1; //  my id = 1
 
 	CustomClient c;
 	c.Connect("127.0.0.1", 20512);
+
+	while (!c.IsConnected())
+	{
+		// wait;
+		;
+	}
+
+	c.Send(message);
 	
 	while (true)
 	{

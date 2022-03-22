@@ -73,7 +73,28 @@ namespace stella
 				return m_socket->is_open();
 			};
 
-			//bool Send(const message<T>& message);
+			
+		public:
+			// ASYNC - Send a message, connections are one-to-one so no need to specifiy
+			// the target, for a client, the target is the server and vice versa
+			void Send(const message& msg)
+			{
+				asio::post(m_context,
+					[this, msg]()
+					{
+						// If the queue has a message in it, then we must 
+						// assume that it is in the process of asynchronously being written.
+						// Either way add the message to the queue to be output. If no messages
+						// were available to be written, then start the process of writing the
+						// message at the front of the queue.
+						bool bWritingMessage = !queueOut.empty();
+						queueOut.push_back(msg);
+						if (!bWritingMessage)
+						{
+							WriteHeader();
+						}
+					});
+			}
 
 		public:
 			// Retrieve queue of messages from server
@@ -159,6 +180,85 @@ namespace stella
 
 				ReadHeader();
 			}
+
+			private:
+				// ASYNC - Prime context to write a message header
+				void WriteHeader()
+				{
+					// If this function is called, we know the outgoing message queue must have 
+					// at least one message to send. So allocate a transmission buffer to hold
+					// the message, and issue the work - asio, send these bytes
+					asio::async_write(*m_socket, asio::buffer(&queueOut.front().header, sizeof(message_header)),
+						[this](std::error_code ec, std::size_t length)
+						{
+							// asio has now sent the bytes - if there was a problem
+							// an error would be available...
+							if (!ec)
+							{
+								// ... no error, so check if the message header just sent also
+								// has a message body...
+								if (queueOut.front().body.size() > 0)
+								{
+									// ...it does, so issue the task to write the body bytes
+									WriteBody();
+								}
+								else
+								{
+									// ...it didnt, so we are done with this message. Remove it from 
+									// the outgoing message queue
+									queueOut.pop_front();
+
+									// If the queue is not empty, there are more messages to send, so
+									// make this happen by issuing the task to send the next header.
+									if (!queueOut.empty())
+									{
+										WriteHeader();
+									}
+								}
+							}
+							else
+							{
+								// ...asio failed to write the message, we could analyse why but 
+								// for now simply assume the connection has died by closing the
+								// socket. When a future attempt to write to this client fails due
+								// to the closed socket, it will be tidied up.
+								int id = 10;
+								std::cout << "[" << id << "] Write Header Fail.\n";
+								m_socket->close();
+							}
+						});
+				}
+
+				// ASYNC - Prime context to write a message body
+				void WriteBody()
+				{
+					// If this function is called, a header has just been sent, and that header
+					// indicated a body existed for this message. Fill a transmission buffer
+					// with the body data, and send it!
+					asio::async_write(*m_socket, asio::buffer(queueOut.front().body.data(), queueOut.front().body.size()),
+						[this](std::error_code ec, std::size_t length)
+						{
+							if (!ec)
+							{
+								// Sending was successful, so we are done with the message
+								// and remove it from the queue
+								queueOut.pop_front();
+
+								// If the queue still has messages in it, then issue the task to 
+								// send the next messages' header.
+								if (!queueOut.empty())
+								{
+									WriteHeader();
+								}
+							}
+							else
+							{
+								int id = 10;
+								std::cout << "[" << id << "] Write Body Fail.\n";
+								m_socket->close();
+							}
+						});
+				}
 
 
 
