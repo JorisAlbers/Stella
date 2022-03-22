@@ -132,9 +132,16 @@ namespace stella
 
 				stella::net::message message;
 				message.header.type = stella::net::StellaMessageTypes::Init;
-				message << 1; //  my id = 1
+				message << m_id;
 
 				Send(message);
+			}
+
+			void OnDisconnect()
+			{
+				std::cout << "Disconnected with server.\n";
+				std::cout << "Attempting to connect\n";
+				Connect();
 			}
 
 			void ReadHeader()
