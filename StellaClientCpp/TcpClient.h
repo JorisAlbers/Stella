@@ -155,9 +155,6 @@ namespace stella
 							// has a body to follow...
 							if (m_msgTemporaryIn.header.size > 0)
 							{
-								// ...it does, so allocate enough space in the messages' body
-								// vector, and issue asio with the task to read the body.
-								m_msgTemporaryIn.body.resize(m_msgTemporaryIn.header.size);
 								ReadBody();
 							}
 							else
@@ -181,6 +178,7 @@ namespace stella
 							// Reading form the client went wrong, most likely a disconnect
 							// has occurred. Close the socket and let the system tidy it up later.
 							std::cout << "[" << id << "] Read Header Fail.\n";
+							std::cout << ec.message() <<"\n";
 							m_socket->close();
 						}
 					});
@@ -192,7 +190,7 @@ namespace stella
 				// If this function is called, a header has already been read, and that header
 				// request we read a body, The space for that body has already been allocated
 				// in the temporary message object, so just wait for the bytes to arrive...
-				asio::async_read(*m_socket, asio::buffer(m_msgTemporaryIn.body.data(), m_msgTemporaryIn.body.size()),
+				asio::async_read(*m_socket, asio::buffer(m_msgTemporaryIn.body, UDP_HEADER_SIZE),
 					[this](std::error_code ec, std::size_t length)
 					{
 						if (!ec)
@@ -237,7 +235,7 @@ namespace stella
 							{
 								// ... no error, so check if the message header just sent also
 								// has a message body...
-								if (queueOut.front().body.size() > 0)
+								if (queueOut.front().currentIndex > 0)
 								{
 									// ...it does, so issue the task to write the body bytes
 									WriteBody();
@@ -275,11 +273,12 @@ namespace stella
 					// If this function is called, a header has just been sent, and that header
 					// indicated a body existed for this message. Fill a transmission buffer
 					// with the body data, and send it!
-					asio::async_write(*m_socket, asio::buffer(queueOut.front().body.data(), queueOut.front().body.size()),
+					asio::async_write(*m_socket, asio::buffer(queueOut.front().body, queueOut.front().header.size - sizeof(int)), // size = message type+ body size. 
 						[this](std::error_code ec, std::size_t length)
 						{
 							if (!ec)
 							{
+
 								// Sending was successful, so we are done with the message
 								// and remove it from the queue
 								queueOut.pop_front();

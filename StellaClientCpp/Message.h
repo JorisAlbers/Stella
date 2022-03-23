@@ -5,6 +5,9 @@ namespace stella
 {
 	namespace net
 	{
+		const int UDP_HEADER_SIZE = 60000;
+
+
 		enum class StellaMessageTypes : uint32_t
 		{
 			Unknown,
@@ -16,7 +19,7 @@ namespace stella
 				
 		struct message_header
 		{
-			uint32_t size = 0; // excludes this 4 byte int field. messagetype + message size
+			uint32_t size; // excludes this 4 byte int field. messagetype + message size
 			StellaMessageTypes type{};
 		};
 
@@ -24,11 +27,13 @@ namespace stella
 		struct message
 		{
 			message_header header{ };
-			std::vector<uint8_t> body;
+			char body[UDP_HEADER_SIZE]; // UDP max size. TODO for sending data a smaller size is enough
+			int currentIndex = 0;
+			
 
 			size_t size() const
 			{
-				return sizeof(message_header) + body.size();
+				return sizeof(header.size) + header.size; // size excludes itself.
 			}
 
 			friend std::ostream& operator << (std::ostream& os, const message& msg)
@@ -46,45 +51,17 @@ namespace stella
 				// Check that the type of the data being pushed is trivially copyable
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
 
-				// Cache current size of vector, as this will be the point we insert the data
-				size_t i = msg.body.size();
+				// copy data
+				std::memcpy(&msg.body[msg.currentIndex], &data, sizeof(DataType));
 
-				// Resize the vector by the size of the data being pushed
-				msg.body.resize(msg.body.size() + sizeof(DataType));
+				// increment index
+				msg.currentIndex += sizeof(DataType);
 
-				// Physically copy the data into the newly allocated vector space
-				std::memcpy(msg.body.data() + i, &data, sizeof(DataType));
-
-				// Recalculate the message size
-				msg.header.size = msg.size();
-
+				msg.header.size = sizeof(int) + msg.currentIndex; // int = message type 
+				
 				// Return the target message so it can be "chained"
 				return msg;
 			}
-
-			// Pulls any POD-like data form the message buffer
-			template<typename DataType>
-			friend message& operator >> (message& msg, DataType& data)
-			{
-				// Check that the type of the data being pushed is trivially copyable
-				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");
-
-				// Cache the location towards the end of the vector where the pulled data starts
-				size_t i = msg.body.size() - sizeof(DataType);
-
-				// Physically copy the data from the vector into the user variable
-				std::memcpy(&data, msg.body.data() + i, sizeof(DataType));
-
-				// Shrink the vector to remove read bytes, and reset end position
-				msg.body.resize(i);
-
-				// Recalculate the message size
-				msg.header.size = msg.size();
-
-				// Return the target message so it can be "chained"
-				return msg;
-			}
-
 		};
 	}
 }
