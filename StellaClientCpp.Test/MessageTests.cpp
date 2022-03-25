@@ -2,6 +2,7 @@
 #include "message.h"
 #include <iostream>
 #include "TcpClient.h"
+#include "UdpClient.h"
 
 
 #include <chrono>
@@ -15,6 +16,8 @@ int main(int argc, char* argv[])
 	const int id = 2;
 	stella::net::TcpClient c(id,"127.0.0.1", 20512);
 	c.Connect();
+
+	stella::net::UdpClient  udp("127.0.0.1", 20513);
 	
 	while (true)
 	{
