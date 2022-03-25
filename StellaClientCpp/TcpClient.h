@@ -19,7 +19,7 @@ namespace stella
 
 			std::thread threadContext;
 
-			ConcurrentDoubleEndedQueue<message> queueOut;
+			ConcurrentDoubleEndedQueue<message_out> queueOut;
 			ConcurrentDoubleEndedQueue<message> queueIn; // should be provided by the concrete implementation
 
 			// Incoming messages are constructed asynchronously, so we will
@@ -97,7 +97,7 @@ namespace stella
 		public:
 			// ASYNC - Send a message, connections are one-to-one so no need to specifiy
 			// the target, for a client, the target is the server and vice versa
-			void Send(const message& msg)
+			void Send(const message_out& msg)
 			{
 				asio::post(m_context,
 					[this, msg]()
@@ -130,7 +130,7 @@ namespace stella
 				std::cout << "Connected to server via tcp.\n";
 				std::cout << "Sending INIT message. My id is " << m_id << "\n";
 
-				stella::net::message message;
+				stella::net::message_out message;
 				message.header.type = stella::net::StellaMessageTypes::Init;
 				message << m_id;
 
