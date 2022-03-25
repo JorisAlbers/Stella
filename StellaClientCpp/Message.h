@@ -6,6 +6,7 @@ namespace stella
 	namespace net
 	{
 		const int UDP_HEADER_SIZE = 60000;
+		const int TCP_BUFFER_SIZE = 1024;
 		const int MAX_MESSAGE_OUT_SIZE = sizeof(int) + sizeof(int);
 
 		enum class StellaMessageTypes : uint32_t
@@ -24,10 +25,10 @@ namespace stella
 		};
 
 		
-		struct message
+		struct message_in_tcp
 		{
 			message_header header{ };
-			char body[UDP_HEADER_SIZE]; // UDP max size. TODO for sending data a smaller size is enough
+			char body[TCP_BUFFER_SIZE]; 
 			int currentIndex = 0;
 			
 
@@ -36,7 +37,7 @@ namespace stella
 				return sizeof(header.size) + header.size; // size excludes itself.
 			}
 
-			friend std::ostream& operator << (std::ostream& os, const message& msg)
+			friend std::ostream& operator << (std::ostream& os, const message_in_tcp& msg)
 			{
 				os << "ID:" << int(msg.header.type) << " Size:" << msg.header.size;
 				return os;
@@ -46,7 +47,7 @@ namespace stella
 			// TODO redesign vector to array?
 			// Pushes any POD-like data into the message buffer
 			template<typename DataType>
-			friend message& operator << (message& msg, const DataType& data)
+			friend message_in_tcp& operator << (message_in_tcp& msg, const DataType& data)
 			{
 				// Check that the type of the data being pushed is trivially copyable
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");

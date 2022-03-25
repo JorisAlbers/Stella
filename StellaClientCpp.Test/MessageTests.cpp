@@ -20,9 +20,9 @@ int main(int argc, char* argv[])
 	{
 		if (!c.Incoming().empty())
 		{
-			auto message = c.Incoming().pop_front();
+			auto message_in_tcp = c.Incoming().pop_front();
 
-			std::cout << message << "\n";
+			std::cout << message_in_tcp << "\n";
 		}
 	}
 

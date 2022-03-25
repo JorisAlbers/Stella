@@ -20,11 +20,11 @@ namespace stella
 			std::thread threadContext;
 
 			ConcurrentDoubleEndedQueue<message_out> queueOut;
-			ConcurrentDoubleEndedQueue<message> queueIn; // should be provided by the concrete implementation
+			ConcurrentDoubleEndedQueue<message_in_tcp> queueIn; // should be provided by the concrete implementation
 
 			// Incoming messages are constructed asynchronously, so we will
 			// store the part assembled message here, until it is ready
-			message m_msgTemporaryIn;
+			message_in_tcp m_msgTemporaryIn;
 
 			asio::ip::tcp::resolver::results_type m_endpoints;
 
@@ -118,7 +118,7 @@ namespace stella
 
 		public:
 			// Retrieve queue of messages from server
-			ConcurrentDoubleEndedQueue<message>& Incoming()
+			ConcurrentDoubleEndedQueue<message_in_tcp>& Incoming()
 			{
 				return queueIn;
 			}
@@ -130,11 +130,11 @@ namespace stella
 				std::cout << "Connected to server via tcp.\n";
 				std::cout << "Sending INIT message. My id is " << m_id << "\n";
 
-				stella::net::message_out message;
-				message.header.type = stella::net::StellaMessageTypes::Init;
-				message << m_id;
+				stella::net::message_out message_in_tcp;
+				message_in_tcp.header.type = stella::net::StellaMessageTypes::Init;
+				message_in_tcp << m_id;
 
-				Send(message);
+				Send(message_in_tcp);
 			}
 
 			void OnDisconnect()
