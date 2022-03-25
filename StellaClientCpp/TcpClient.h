@@ -190,7 +190,7 @@ namespace stella
 				// If this function is called, a header has already been read, and that header
 				// request we read a body, The space for that body has already been allocated
 				// in the temporary message object, so just wait for the bytes to arrive...
-				asio::async_read(*m_socket, asio::buffer(m_msgTemporaryIn.body, UDP_BUFFER_SIZE),
+				asio::async_read(*m_socket, asio::buffer(m_msgTemporaryIn.body, TCP_BUFFER_SIZE),
 					[this](std::error_code ec, std::size_t length)
 					{
 						if (!ec)
@@ -204,6 +204,7 @@ namespace stella
 							// As above!
 							int id = 10;
 							std::cout << "[" << id << "] Read Body Fail.\n";
+							std::cout << "Reason: " << ec.message() << std::endl;
 							m_socket->close();
 						}
 					});
