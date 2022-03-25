@@ -7,7 +7,7 @@ namespace stella
 	{
 		const int UDP_BUFFER_SIZE = 60000;
 		const int TCP_BUFFER_SIZE = 1024;
-		const int MAX_MESSAGE_OUT_SIZE = sizeof(int) + sizeof(int);
+		const int TCP_OUT_BUFFER_SIZE = sizeof(int) + sizeof(int);
 
 		enum class StellaMessageTypes : uint32_t
 		{
@@ -111,7 +111,7 @@ namespace stella
 		struct message_out 
 		{
 			message_header header{ };
-			char body[MAX_MESSAGE_OUT_SIZE];
+			char body[TCP_OUT_BUFFER_SIZE];
 			int currentIndex = 0;
 
 
