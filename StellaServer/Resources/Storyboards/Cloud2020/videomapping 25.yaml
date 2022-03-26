@@ -1,0 +1,27 @@
+!Storyboard
+Name: videomapping v25
+Animations:
+ - !Bitmap
+   StartIndex:  0
+   StripLength: 480
+   ImageName: 25\vm25_row0
+ - !Bitmap
+   StartIndex:  480
+   StripLength: 480
+   ImageName: 25\vm25_row1
+ - !Bitmap
+   StartIndex:  960
+   StripLength: 480
+   ImageName: 25\vm25_row2
+ - !Bitmap
+   StartIndex:  1440
+   StripLength: 480
+   ImageName: 25\vm25_row3
+ - !Bitmap
+   StartIndex:  1920
+   StripLength: 480
+   ImageName: 25\vm25_row4
+ - !Bitmap
+   StartIndex:  2400
+   StripLength: 480
+   ImageName: 25\vm25_row5
