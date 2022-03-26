@@ -43,8 +43,6 @@ namespace stella
 				return os;
 			}
 
-			// TODO we know the length of the message when we create it.
-			// TODO redesign vector to array?
 			// Pushes any POD-like data into the message buffer
 			template<typename DataType>
 			friend message_in_tcp& operator << (message_in_tcp& msg, const DataType& data)
@@ -83,8 +81,6 @@ namespace stella
 				return os;
 			}
 
-			// TODO we know the length of the message when we create it.
-			// TODO redesign vector to array?
 			// Pushes any POD-like data into the message buffer
 			template<typename DataType>
 			friend message_in_udp& operator << (message_in_udp& msg, const DataType& data)
@@ -126,8 +122,6 @@ namespace stella
 				return os;
 			}
 
-			// TODO we know the length of the message when we create it.
-			// TODO redesign vector to array?
 			// Pushes any POD-like data into the message buffer
 			template<typename DataType>
 			friend message_out& operator << (message_out& msg, const DataType& data)
