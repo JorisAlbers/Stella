@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	stella::net::TcpClient c(id,"127.0.0.1", 20512);
 	c.Connect();
 
-	stella::net::UdpClient  udp("127.0.0.1", 20513);
+	stella::net::UdpClient  udp("127.0.0.1", 20055);
 	udp.Connect();
 	
 	while (true)
