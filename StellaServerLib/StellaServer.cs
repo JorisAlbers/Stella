@@ -16,6 +16,8 @@ namespace StellaServerLib
         private readonly string _ip;
         private readonly int _port;
         private readonly int _udpPort;
+        private int _remoteUdpPort;
+
         private readonly int _millisecondsPerTimeUnit;
 
         private AnimatorCreator _animatorCreator;
@@ -30,12 +32,13 @@ namespace StellaServerLib
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort,int remoteUdpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
+            _remoteUdpPort = remoteUdpPort;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
             _maximumFrameRate = maximumFrameRate;
             BitmapRepository = bitmapRepository;
@@ -50,7 +53,7 @@ namespace StellaServerLib
             _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit), stripLengthPerPi, mask);
 
             // Start Server
-            _server = StartServer(_ip, _port, _udpPort, _server);
+            _server = StartServer(_ip, _port, _udpPort, _remoteUdpPort,_server);
             // Start ClientController
             _clientController = StartClientController(_server, _maximumFrameRate);
         }
@@ -114,13 +117,13 @@ namespace StellaServerLib
             }
         }
 
-        private IServer StartServer(string ip, int port, int udpPort, IServer server)
+        private IServer StartServer(string ip, int port, int udpPort,int remoteUdpPort, IServer server)
         {
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
                 server.ClientChanged += ServerOnClientChanged;
-                server.Start(ip, port, udpPort);
+                server.Start(ip, port, udpPort, remoteUdpPort);
                 return server;
             }
             catch (Exception e)

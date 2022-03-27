@@ -14,6 +14,7 @@ namespace StellaServer.Setup
         [Reactive] public string ServerIp { get; set; }
         [Reactive] public int ServerTcpPort { get; set; }
         [Reactive] public int ServerUdpPort { get; set; }
+        [Reactive] public int RemoteUdpPort { get; set; }
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public string StoryboardFolder { get; set; }                                                                                                                        
@@ -32,6 +33,7 @@ namespace StellaServer.Setup
                 ServerIp = settings.ServerIp;
                 ServerTcpPort = settings.ServerTcpPort;
                 ServerUdpPort = settings.ServerUdpPort;
+                RemoteUdpPort = settings.RemoteUdpPort;
                 MappingFilePath = settings.MappingFilePath;
                 BitmapFolder = settings.BitmapFolder;
                 StoryboardFolder = settings.StoryboardFolder;
@@ -42,15 +44,17 @@ namespace StellaServer.Setup
                 x => x.ServerIp,
                 x => x.ServerTcpPort,
                 x => x.ServerUdpPort,
+                x => x.RemoteUdpPort,
                 x => x.MappingFilePath,
                 x => x.BitmapFolder,
                 x=> x.StoryboardFolder,
                 x => x.MaximumFrameRate,
-                (serverIp, tcp, udp, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
+                (serverIp, tcp, udp, remoteUdpPort, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
                     !String.IsNullOrWhiteSpace(serverIp) &&
                     !String.IsNullOrWhiteSpace(MappingFilePath) &&
                     tcp != 0 &&
                     udp != 0 &&
+                    remoteUdpPort != 0 &&
                     !String.IsNullOrWhiteSpace(bitmapFolder) &&
                     !String.IsNullOrWhiteSpace(storyboardFolder) &&
                     maximumFrameRate > 1 && maximumFrameRate < 1000
@@ -60,7 +64,7 @@ namespace StellaServer.Setup
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
+                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
                 stellaServer.Start();
                 
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
@@ -68,6 +72,7 @@ namespace StellaServer.Setup
                     ServerIp = ServerIp,
                     ServerTcpPort = ServerTcpPort,
                     ServerUdpPort = ServerUdpPort,
+                    RemoteUdpPort = RemoteUdpPort,
                     MappingFilePath = MappingFilePath,
                     BitmapFolder = BitmapFolder,
                     StoryboardFolder = StoryboardFolder,

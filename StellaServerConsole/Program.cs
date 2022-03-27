@@ -28,7 +28,7 @@ namespace StellaServerConsole
             string mappingFilePath = null;
             string storyboardDirPath = null;
             string ip = null;
-            int port = 0, udpPort = 0;
+            int port = 0, udpPort = 0, remoteUdpPort = 0;
             int millisecondsPerTimeUnit = 1;
             int maximumFrameRate = 1;
             string bitmapDirectory = null;
@@ -58,6 +58,9 @@ namespace StellaServerConsole
                         case "-udp_port":
                             udpPort = int.Parse(args[++i]);
                             break;
+                        case "-udp_port_remote":
+                            remoteUdpPort = int.Parse(args[++i]);
+                            break;
                         case "-b":
                             bitmapDirectory = args[++i];
                             break;
@@ -74,7 +77,7 @@ namespace StellaServerConsole
                     }
                 }
             }
-            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,storyboardDirPath, bitmapDirectory, millisecondsPerTimeUnit, maximumFrameRate))
+            if(!ValidateCommandLineArguments(mappingFilePath,ip,port, udpPort,remoteUdpPort,storyboardDirPath, bitmapDirectory, millisecondsPerTimeUnit, maximumFrameRate))
             {
                 return;
             }
@@ -106,7 +109,7 @@ namespace StellaServerConsole
             string[] animationNames = animations.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort , millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
+            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort,remoteUdpPort, millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
 
             try
             {
@@ -270,7 +273,7 @@ namespace StellaServerConsole
 
         
 
-        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, int udpPort,
+        static bool ValidateCommandLineArguments(string mappingFilePath, string ip, int port, int udpPort, int remoteUdpPort,
             string storyboardDirPath, string bitmapDirectory,
             int millisecondsPerTimeUnit, int maximumFrameRate)
         {
@@ -295,6 +298,11 @@ namespace StellaServerConsole
             {
                 Console.Out.WriteLine("The port and the udp_port can't be identical.");
                 return false;
+            }
+
+            if (remoteUdpPort == 0)
+            {
+                Console.Out.WriteLine("The udp_port_remote must be set. Use -udp_port_remote <port value>");
             }
 
             if (ip == null)
@@ -363,12 +371,13 @@ StellaServer
     StellaServer -ip <ip> -port <port> -udp_port <udp port> -m <mapping file path> -s <storyboard directory path> -b <bitmap directory path>
 
 [Required]
-    -ip         Ip address of this machine. The pi's will connect to this address.
-    -port       Tcp port the pi's will connect to.
-    -udp_port   Udp port the pi's will connect to.
-    -m          Path to mapping configuration file.
-    -s          Path to the directory containig storyboards.
-    -b          Path to the directory containig bitmaps, which will be converted to storyboards.
+    -ip                Ip address of this machine. The pi's will connect to this address.
+    -port              Tcp port the pi's will connect to.
+    -udp_port          Udp port to send data from (local endpoint)
+    -udp_port_remote   Udp port to send data to (remote endpoint, port open on the clients)
+    -m                 Path to mapping configuration file.
+    -s                 Path to the directory containig storyboards.
+    -b                 Path to the directory containig bitmaps, which will be converted to storyboards.
 
 [Optional]
     -api_ip     Ip adress of this machine. The webserver will connect to this address.  Default = null.

@@ -31,6 +31,11 @@
                         <TextBox x:Name="UdpPortTextBox" 
                                  Width="50" 
                                  Margin="10,0,0,0"></TextBox>
+                        <TextBox Text="Remote udp port:"
+                                 Margin="10,0,0,0"/>
+                        <TextBox x:Name="RemoteUdpPortTextBox" 
+                                 Width="50" 
+                                 Margin="10,0,0,0"></TextBox>
                     </StackPanel>
                 </ListViewItem>
                 <ListViewItem>

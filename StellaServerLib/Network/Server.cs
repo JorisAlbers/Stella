@@ -24,6 +24,8 @@ namespace StellaServerLib.Network
 
         private int _port;
         private int _udpPort;
+        private int _remoteUdpPort;
+
         private bool _isShuttingDown = false;
         private readonly object _isShuttingDownLock = new object();
 
@@ -38,7 +40,7 @@ namespace StellaServerLib.Network
             _clients = new ConcurrentDictionary<int, Client>();
         }
 
-        public void Start(string ip, int port, int udpPort)
+        public void Start(string ip, int port, int udpPort, int remoteUdpPort)
         {
             Console.Out.WriteLine($"Starting server on {port}");
 
@@ -47,6 +49,7 @@ namespace StellaServerLib.Network
             _udpLocalEndpoint = new IPEndPoint(ipAddress, udpPort);
             _port = port;
             _udpPort = udpPort;
+            _remoteUdpPort = remoteUdpPort;
 
             // Create a TCP/IP socket.  
             _listenerSocket = new SocketConnection(_tcpLocalEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
@@ -124,7 +127,7 @@ namespace StellaServerLib.Network
             // Create TCP connection
             SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler, TCP_BUFFER_SIZE);
             //  Create UDP connection
-            IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address,_udpPort);
+            IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address, _remoteUdpPort);
 
             UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, udpRemoteEndPoint, UDP_BUFFER_SIZE);
             Client client = new Client(socketConnectionController, udpSocketConnectionController);

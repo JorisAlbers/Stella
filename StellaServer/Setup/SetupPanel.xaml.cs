@@ -41,6 +41,11 @@ namespace StellaServer.Setup
                     .DisposeWith(disposableRegistration);
 
                 this.Bind(ViewModel,
+                        viewmodel => viewmodel.RemoteUdpPort,
+                        view => view.RemoteUdpPortTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
                         viewmodel => viewmodel.MappingFilePath,
                         view => view.MappingFilePathTextBox.Text)
                     .DisposeWith(disposableRegistration);
