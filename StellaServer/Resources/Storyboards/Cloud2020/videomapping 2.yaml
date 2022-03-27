@@ -1,0 +1,27 @@
+!Storyboard
+Name: videomapping v2
+Animations:
+ - !Bitmap
+   StartIndex:  0
+   StripLength: 480
+   ImageName: 2\vm2_row0
+ - !Bitmap
+   StartIndex:  480
+   StripLength: 480
+   ImageName: 2\vm2_row1
+ - !Bitmap
+   StartIndex:  960
+   StripLength: 480
+   ImageName: 2\vm2_row2
+ - !Bitmap
+   StartIndex:  1440
+   StripLength: 480
+   ImageName: 2\vm2_row3
+ - !Bitmap
+   StartIndex:  1920
+   StripLength: 480
+   ImageName: 2\vm2_row4
+ - !Bitmap
+   StartIndex:  2400
+   StripLength: 480
+   ImageName: 2\vm2_row5
