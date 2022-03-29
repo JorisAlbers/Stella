@@ -75,34 +75,41 @@ namespace stella
 				return m_socket->is_open();
 			};
 
+			// Retrieve queue of messages from server
+			ConcurrentDoubleEndedQueue<message_in_udp>& Incoming()
+			{
+				return queueIn;
+			}
+
 		private:
 			void ReadHeader()
 			{
-				m_socket->async_receive(asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header)),
+				m_socket->async_receive(asio::buffer(&m_msgTemporaryIn.header, UDP_BUFFER_SIZE),
 					[this](std::error_code ec, std::size_t length)
 					{
 						if (!ec)
 						{
 							// A complete message header has been read, check if this message
 							// has a body to follow...
-							if (m_msgTemporaryIn.header.size > 0)
-							{
-								ReadBody();
-							}
-							else
+							if (m_msgTemporaryIn.header.size == 0)
 							{
 								if (m_msgTemporaryIn.header.type == StellaMessageTypes::Unknown)
 								{
 									// Keep alive message received.
 									std::cout << "Keep alive message received." << std::endl;
-									ReadHeader();
-									return;
+								}
+							}
+							else
+							{
+								if(m_msgTemporaryIn.header.size != length -4) // first 4 bytes are not included in the size property
+								{
+									std::cout << "Failed to receive package, size incorrect. Expected " << m_msgTemporaryIn.header.size + 4 << " bytes, got " << length << ".\n";
 								}
 
-								// it doesn't, so add this bodyless message to the connections
-								// incoming message queue
 								AddToIncomingMessageQueue();
 							}
+
+							ReadHeader();
 						}
 						else
 						{
@@ -115,33 +122,7 @@ namespace stella
 						}
 
 					});
-			}
-
-			// ASYNC - Prime context ready to read a message body
-			void ReadBody()
-			{
-				// If this function is called, a header has already been read, and that header
-				// request we read a body, The space for that body has already been allocated
-				// in the temporary message object, so just wait for the bytes to arrive...
-				m_socket-> async_receive(asio::buffer(m_msgTemporaryIn.body, UDP_BUFFER_SIZE),
-					[this](std::error_code ec, std::size_t length)
-					{
-						if (!ec)
-						{
-							// ...and they have! The message is now complete, so add
-							// the whole message to incoming queue
-							AddToIncomingMessageQueue();
-						}
-						else
-						{
-							// As above!
-							int id = 10;
-							std::cout << "[" << id << "] Read Body Fail.\n";
-							std::cout << "Reason: " << ec.message() << std::endl;
-							m_socket->close();
-						}
-					});
-			}
+			}			
 
 			// Once a full message is received, add it to the incoming queue
 			void AddToIncomingMessageQueue()
@@ -149,8 +130,6 @@ namespace stella
 				// Shove it in queue, converting it to an "owned message", by initialising
 				// with the a shared pointer from this connection object
 				queueIn.push_back(m_msgTemporaryIn);
-
-				ReadHeader();
 			}
 
 

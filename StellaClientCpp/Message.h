@@ -28,7 +28,7 @@ namespace stella
 		struct message_in_tcp
 		{
 			message_header header{ };
-			char body[TCP_BUFFER_SIZE]; 
+			uint8_t  body[TCP_BUFFER_SIZE];
 			int currentIndex = 0;
 			
 
@@ -68,7 +68,7 @@ namespace stella
 		struct message_in_udp
 		{
 			message_header header{ };
-			char body[UDP_BUFFER_SIZE];
+			uint8_t  body[UDP_BUFFER_SIZE];
 			int currentIndex = 0;
 
 
@@ -111,7 +111,7 @@ namespace stella
 		struct message_out 
 		{
 			message_header header{ };
-			char body[TCP_OUT_BUFFER_SIZE];
+			uint8_t  body[TCP_OUT_BUFFER_SIZE];
 			int currentIndex = 0;
 
 

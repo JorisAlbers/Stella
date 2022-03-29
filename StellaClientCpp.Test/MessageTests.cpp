@@ -1,5 +1,6 @@
 #include "MessageTests.h"
 #include "message.h"
+#include "FrameProtocol.h"
 #include <iostream>
 #include "TcpClient.h"
 #include "UdpClient.h"
@@ -28,6 +29,21 @@ int main(int argc, char* argv[])
 
 			std::cout << message_in_tcp << "\n";
 		}
+
+		if(!udp.Incoming().empty())
+		{
+			auto message_in_udp = udp.Incoming().pop_front();
+
+			int i = FrameProtocol::GetFrameIndex(message_in_udp.body);
+			int x = FrameProtocol::GetFrameIndex(&message_in_udp.body[4]);
+			int y = FrameProtocol::GetFrameIndex(&message_in_udp.body[8]);
+			int z = FrameProtocol::GetFrameIndex(&message_in_udp.body[12]);
+
+
+
+			std::cout << " UDP package received. Size: " << message_in_udp.header.size << "type: " << static_cast<int>(message_in_udp.header.type) << "frame index: " << FrameProtocol::GetFrameIndex(message_in_udp.body) << "\n";
+		}
+
 	}
 
 
