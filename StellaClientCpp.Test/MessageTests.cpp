@@ -34,14 +34,21 @@ int main(int argc, char* argv[])
 		{
 			auto message_in_udp = udp.Incoming().pop_front();
 
-			int i = FrameProtocol::GetFrameIndex(message_in_udp.body);
-			int x = FrameProtocol::GetFrameIndex(&message_in_udp.body[4]);
-			int y = FrameProtocol::GetFrameIndex(&message_in_udp.body[8]);
-			int z = FrameProtocol::GetFrameIndex(&message_in_udp.body[12]);
+			frame_protocol_header* header = reinterpret_cast<frame_protocol_header*>(message_in_udp.body);
 
+			std::cout << header << std::endl;
 
+			int startIndex = sizeof(frame_protocol_header);
+			// iterate till end of package
+			for (int i = 0; i < header->number_of_pixel_instructions; i++)
+			{
+				int index = startIndex + sizeof(rgb) * i;
+				rgb* x = reinterpret_cast<rgb*>(&message_in_udp.body[index]);
 
-			std::cout << " UDP package received. Size: " << message_in_udp.header.size << "type: " << static_cast<int>(message_in_udp.header.type) << "frame index: " << FrameProtocol::GetFrameIndex(message_in_udp.body) << "\n";
+				auto y = x->r;
+
+				break;
+			}			
 		}
 
 	}
