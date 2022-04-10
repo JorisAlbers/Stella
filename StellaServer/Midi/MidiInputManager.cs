@@ -15,6 +15,8 @@ namespace StellaServer.Midi
         private MidiIn _midiIn;
 
         [Reactive] public float RedCorrection { get; set; }
+        [Reactive] public float GreenCorrection { get; set; }
+        [Reactive] public float BlueCorrection { get; set; }
 
 
 
@@ -58,6 +60,12 @@ namespace StellaServer.Midi
             {
                 case 6: // RED
                     RedCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
+                    break;
+                case 7: // GREEN
+                    GreenCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
+                    break;
+                case 8: // BLUE
+                    BlueCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
                     break;
             }
         }
