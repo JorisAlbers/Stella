@@ -10,7 +10,8 @@ namespace StellaServer.Midi
 {
     public class MidiInputManager : ReactiveObject
     {
-        private const float _CONVERSION_RATIO = 100.0f / 127.0f / 100.0f;
+        private const float _RGB_CONVERSION_RATIO = 100.0f / 127.0f / 100.0f;
+        private const float _BRIGHTNESS_CONVERSION_RATIO = 2.0f / 127.0f;
         private readonly int _deviceIndex;
         private MidiIn _midiIn;
         private StellaServerLib.StellaServer _stellaServer;
@@ -60,6 +61,12 @@ namespace StellaServer.Midi
 
             switch (controllerIndex)
             {
+                case 2: // BRIGHTNESS
+                {
+                    _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(ConvertToBrightnessScale(controlChangeEvent.ControllerValue));
+                    break;
+                }
+
                 case 6: // RED
                 {
                     var master = _stellaServer.Animator?.StoryboardTransformationController.Settings.MasterSettings;
@@ -117,10 +124,19 @@ namespace StellaServer.Midi
             // controller value ranges between 0 - 127
             // the rgb correction should be in the range 0 - 100
             // and then converted to 0 - 1 for the transformationsettings
-            return controllerValue * _CONVERSION_RATIO;
+            return controllerValue * _RGB_CONVERSION_RATIO;
         }
 
-        
+        private float ConvertToBrightnessScale(int controllerValue)
+        {
+            // controller value ranges between 0 - 127
+            // the rgb correction should be in the range -100 - 100
+            // and then converted to -1 - 1 for the transformationsettings
+
+            return -1 + controllerValue * _BRIGHTNESS_CONVERSION_RATIO;
+        }
+
+
 
 
         public static List<MidiWithIndex> GetDevices()

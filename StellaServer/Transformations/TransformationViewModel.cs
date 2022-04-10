@@ -59,6 +59,15 @@ namespace StellaServer.Transformations
                     BlueCorrection = ConvertToSlider(x[2]);
                 });
 
+            this.WhenAnyValue(x =>
+                    x._stellaServer.Animator.StoryboardTransformationController.Settings.MasterSettings
+                        .BrightnessCorrection)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    BrightnessCorrection = ConvertToSlider(x);
+                });
+
 
             this.Reset = ReactiveCommand.Create(() =>
             {
