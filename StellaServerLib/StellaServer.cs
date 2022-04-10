@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
@@ -10,7 +12,7 @@ using StellaServerLib.Serialization.Mapping;
 
 namespace StellaServerLib
 {
-    public class StellaServer : IDisposable
+    public class StellaServer : ReactiveObject, IDisposable
     {
         private readonly string _mappingFilePath;
         private readonly string _ip;
@@ -27,7 +29,7 @@ namespace StellaServerLib
         private int _loadingAnimation;
         private readonly int _maximumFrameRate;
 
-        public IAnimator Animator { get; private set; }
+        [Reactive] public IAnimator Animator { get; private set; }
         public BitmapRepository BitmapRepository { get; }
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;

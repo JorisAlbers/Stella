@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using StellaLib.Animation;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
@@ -10,7 +12,7 @@ using StellaServerLib.Animation.Transformation;
 
 namespace StellaServerLib.Animation
 {
-    public class Animator : IAnimator
+    public class Animator : ReactiveObject, IAnimator
     {
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
@@ -19,7 +21,7 @@ namespace StellaServerLib.Animation
 
         private IFrameProvider _frameProvider;
 
-        public StoryboardTransformationController StoryboardTransformationController { get; private set; }
+        [Reactive] public StoryboardTransformationController StoryboardTransformationController { get; private set; }
         public event EventHandler TimeResetRequested;
 
         /// <summary>

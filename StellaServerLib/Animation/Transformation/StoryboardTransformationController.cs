@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace StellaServerLib.Animation.Transformation
 {
     // Contains settings for a single storyboard.
-    public class StoryboardTransformationController
+    public class StoryboardTransformationController:  ReactiveObject
     {
         private AnimationTransformationSettings   _masterSettings;
         private AnimationTransformationSettings[] _animationSettings;
 
-        public StoryboardTransformationSettings Settings { get; private set; }
+        [Reactive] public StoryboardTransformationSettings Settings { get; private set; }
 
         public StoryboardTransformationController(AnimationTransformationSettings masterSettings, AnimationTransformationSettings[] animationSettings)
         {
@@ -115,6 +117,15 @@ namespace StellaServerLib.Animation.Transformation
             if (rgbFadeCorrection.Any(x => x > 1 || x < 0))
             {
                 throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
+            }
+
+            var previous = _masterSettings.RgbFadeCorrection;
+            if (Math.Abs(rgbFadeCorrection[0] - previous[0]) < float.Epsilon &&
+                Math.Abs(rgbFadeCorrection[1] - previous[1]) < float.Epsilon &&
+                Math.Abs(rgbFadeCorrection[2] - previous[2]) < float.Epsilon)
+            {
+                // same.
+                return;
             }
 
             _masterSettings = new AnimationTransformationSettings(_masterSettings.TimeUnitsPerFrame, _masterSettings.BrightnessCorrection, rgbFadeCorrection);

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -11,6 +9,7 @@ namespace StellaServer.Transformations
 {
     public class TransformationViewModel : ReactiveObject
     {
+        private readonly StellaServerLib.StellaServer _stellaServer;
         [Reactive] public int RedCorrection { get; set; } = 100;
         [Reactive] public int GreenCorrection { get; set; } = 100;
         [Reactive] public int BlueCorrection { get; set; } = 100;
@@ -26,6 +25,8 @@ namespace StellaServer.Transformations
         /// <param name="stellaServer"></param>
         public TransformationViewModel(StellaServerLib.StellaServer stellaServer)
         {
+            _stellaServer = stellaServer;
+
             this.WhenAnyValue(
                 x => x.RedCorrection,
                 x => x.GreenCorrection,
@@ -46,6 +47,18 @@ namespace StellaServer.Transformations
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(onNext =>
                     stellaServer.Animator?.StoryboardTransformationController.SetBrightnessCorrection(IntegerCorrectionToFloatCorrection(onNext)));
+
+            this.WhenAnyValue(x =>
+                    x._stellaServer.Animator.StoryboardTransformationController.Settings.MasterSettings
+                        .RgbFadeCorrection)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    RedCorrection = ConvertToSlider(x[0]);
+                    GreenCorrection = ConvertToSlider(x[1]);
+                    BlueCorrection = ConvertToSlider(x[2]);
+                });
+
 
             this.Reset = ReactiveCommand.Create(() =>
             {
@@ -75,6 +88,13 @@ namespace StellaServer.Transformations
             return (float) (i / 100.0);
         }
 
+
+        private int ConvertToSlider(float f)
+        {
+            float x = f * 100.0f;
+
+            return (int)x;
+        }
 
     }
 }
