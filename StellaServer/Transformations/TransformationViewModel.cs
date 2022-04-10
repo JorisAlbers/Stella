@@ -11,9 +11,9 @@ namespace StellaServer.Transformations
 {
     public class TransformationViewModel : ReactiveObject
     {
-        [Reactive] public int RedCorrection { get; set; }
-        [Reactive] public int GreenCorrection { get; set; }
-        [Reactive] public int BlueCorrection { get; set; }
+        [Reactive] public int RedCorrection { get; set; } = 100;
+        [Reactive] public int GreenCorrection { get; set; } = 100;
+        [Reactive] public int BlueCorrection { get; set; } = 100;
         [Reactive] public int BrightnessCorrection { get; set; }
 
         [Reactive] public int TimeUnitsPerFrame { get; set; } = 10;
@@ -65,6 +65,12 @@ namespace StellaServer.Transformations
 
         private float IntegerCorrectionToFloatCorrection(int i)
         {
+            // In the end,
+            // 0 = completely removed
+            // 1 = completely on
+
+            // In the slider, 100 = on, 0 = removed.
+
             // i ranges between 0 and -100
             return (float) (i / 100.0);
         }
