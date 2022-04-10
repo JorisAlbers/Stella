@@ -112,7 +112,7 @@ namespace StellaServerLib.Animation.Transformation
         /// <param name="rgbFadeCorrection"></param>
         public void SetRgbFadeCorrection(float[] rgbFadeCorrection)
         {
-            if (rgbFadeCorrection.Any(x => x > 1 || x < 0))
+            if (rgbFadeCorrection.Any(x => x > 0 || x < -1))
             {
                 throw new ArgumentException($"The rgb corrections must be between -1 and 0 ");
             }

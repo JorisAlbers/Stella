@@ -44,11 +44,12 @@ namespace StellaServerLib.Animation.Transformation
 
         private float TransformChannel(float channel, float correctionFactor)
         {
-            if (Math.Abs(correctionFactor - 1) < Single.Epsilon)
+            if (correctionFactor == 0)
             {
                 return channel;
             }
 
+            correctionFactor = 1 + correctionFactor;
             channel *= correctionFactor;
 
             return channel;
@@ -60,6 +61,7 @@ namespace StellaServerLib.Animation.Transformation
 
             if (correctionFactor < 0)
             {
+                correctionFactor = 1 + correctionFactor;
                 red *= correctionFactor;
                 green *= correctionFactor;
                 blue *= correctionFactor;
