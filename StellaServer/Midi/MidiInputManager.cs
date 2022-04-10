@@ -10,9 +10,10 @@ namespace StellaServer.Midi
 {
     public class MidiInputManager : ReactiveObject
     {
-        private const float _CONVERSION_RATIO = 100.0f / 127.0f;
+        private const float _CONVERSION_RATIO = 100.0f / 127.0f / 100.0f;
         private readonly int _deviceIndex;
         private MidiIn _midiIn;
+        private StellaServerLib.StellaServer _stellaServer;
 
         [Reactive] public float RedCorrection { get; set; }
         [Reactive] public float GreenCorrection { get; set; }
@@ -25,8 +26,9 @@ namespace StellaServer.Midi
             _deviceIndex = deviceIndex;
         }
 
-        public void Start()
+        public void Start(StellaServerLib.StellaServer stellaServer)
         {
+            _stellaServer = stellaServer;
             _midiIn = new MidiIn(_deviceIndex);
             _midiIn.MessageReceived += MidiInOnMessageReceived;
             _midiIn.ErrorReceived += MidiInOnErrorReceived;
@@ -59,13 +61,53 @@ namespace StellaServer.Midi
             switch (controllerIndex)
             {
                 case 6: // RED
-                    RedCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
+                {
+                    var master = _stellaServer.Animator?.StoryboardTransformationController.Settings.MasterSettings;
+                    if (master == null)
+                    {
+                        return;
+                    }
+
+
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[3]
+                    {
+                        ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue),
+                        master.RgbFadeCorrection[1],
+                        master.RgbFadeCorrection[2],
+                    });
+                }
                     break;
                 case 7: // GREEN
-                    GreenCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
+                {
+                    var master = _stellaServer.Animator?.StoryboardTransformationController.Settings.MasterSettings;
+                    if (master == null)
+                    {
+                        return;
+                    }
+
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[3]
+                    {
+                        master.RgbFadeCorrection[0],
+                        ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue),
+                        master.RgbFadeCorrection[2],
+                    });
+                }
                     break;
                 case 8: // BLUE
-                    BlueCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
+                {
+                    var master = _stellaServer.Animator?.StoryboardTransformationController.Settings.MasterSettings;
+                    if (master == null)
+                    {
+                        return;
+                    }
+                    
+                    _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[3]
+                    {
+                        master.RgbFadeCorrection[0],
+                        master.RgbFadeCorrection[1],
+                        ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue),
+                    });
+                }
                     break;
             }
         }
@@ -74,8 +116,11 @@ namespace StellaServer.Midi
         {
             // controller value ranges between 0 - 127
             // the rgb correction should be in the range 0 - 100
+            // and then converted to 0 - 1 for the transformationsettings
             return controllerValue * _CONVERSION_RATIO;
         }
+
+        
 
 
         public static List<MidiWithIndex> GetDevices()
