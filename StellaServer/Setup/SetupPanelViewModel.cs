@@ -78,6 +78,7 @@ namespace StellaServer.Setup
                 {
                     // the 0 index indicates no midi device should be used.
                     midiInputManager = new MidiInputManager(SelectedMidiDevice - 1);
+                    midiInputManager.Start();
                 }
                 
 

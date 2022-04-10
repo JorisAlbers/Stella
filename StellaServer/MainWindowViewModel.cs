@@ -13,6 +13,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
 using StellaServer.Log;
+using StellaServer.Midi;
 using StellaServer.Setup;
 using StellaServerLib;
 
@@ -31,6 +32,8 @@ namespace StellaServer
 
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
         [Reactive] public LogViewModel LogViewModel { get; set; }
+
+        private MidiInputManager midiInputManager;
         
         public MainWindowViewModel()
         {
@@ -48,6 +51,7 @@ namespace StellaServer
             _userSettings.ServerSetup = args.Settings;
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
+            midiInputManager = args.MidiInputManager;
             BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
             BitmapThumbnailRepository thumbnailRepository = new BitmapThumbnailRepository(new FileSystem(), ThumbnailRepository, bitmapRepository);
             thumbnailRepository.Create();

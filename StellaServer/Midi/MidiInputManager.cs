@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using ReactiveUI;
 using NAudio.Midi;
@@ -11,9 +10,11 @@ namespace StellaServer.Midi
 {
     public class MidiInputManager : ReactiveObject
     {
+        private const float _CONVERSION_RATIO = 100.0f / 127.0f;
         private readonly int _deviceIndex;
+        private MidiIn _midiIn;
 
-        [Reactive] public int RedCorrection { get; set; }
+        [Reactive] public float RedCorrection { get; set; }
 
 
 
@@ -24,9 +25,15 @@ namespace StellaServer.Midi
 
         public void Start()
         {
-            var midiIn = new MidiIn(_deviceIndex);
-            midiIn.MessageReceived += MidiInOnMessageReceived;
-            midiIn.Start();
+            _midiIn = new MidiIn(_deviceIndex);
+            _midiIn.MessageReceived += MidiInOnMessageReceived;
+            _midiIn.ErrorReceived += MidiInOnErrorReceived;
+            _midiIn.Start();
+        }
+
+        private void MidiInOnErrorReceived(object? sender, MidiInMessageEventArgs e)
+        {
+            Console.Out.WriteLine(e.RawMessage);
         }
 
         private void MidiInOnMessageReceived(object? sender, MidiInMessageEventArgs e)
@@ -49,8 +56,8 @@ namespace StellaServer.Midi
 
             switch (controllerIndex)
             {
-                case 6:
-                    float correction = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
+                case 6: // RED
+                    RedCorrection = ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue);
                     break;
             }
         }
@@ -58,7 +65,8 @@ namespace StellaServer.Midi
         private float ConvertControllerValueToPercentage(int controllerValue)
         {
             // controller value ranges between 0 - 127
-            throw new NotImplementedException();
+            // the rgb correction should be in the range 0 - 100
+            return controllerValue * _CONVERSION_RATIO;
         }
 
 
