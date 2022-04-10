@@ -71,6 +71,22 @@ namespace StellaServer.Setup
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.MidiDevices,
+                        view => view.MidiDevicesComboBox.ItemsSource)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.MidiDevices,
+                        view => view.MidiDevicesComboBox.ItemsSource,
+                        c=> c.Select(x=> x== null ? "-" : x.Device.ProductName))
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                    vm => vm.SelectedMidiDevice,
+                    view => view.MidiDevicesComboBox.SelectedIndex)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
                         viewmodel => viewmodel.Errors,
                         view => view.ErrorsListBox.ItemsSource)
                     .DisposeWith(disposableRegistration);

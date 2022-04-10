@@ -8,7 +8,7 @@ namespace StellaServer.Midi
 {
     public class MidiInputManager : ReactiveObject
     {
-        private static List<MidiWithIndex> GetDevices()
+        public static List<MidiWithIndex> GetDevices()
         {
             List<MidiWithIndex> devices = new List<MidiWithIndex>();
             

@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using System.Reactive;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServer.Midi;
 using StellaServerLib;
 using StellaServerLib.Network;
 
@@ -18,7 +19,9 @@ namespace StellaServer.Setup
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public string StoryboardFolder { get; set; }                                                                                                                        
-        [Reactive] public int MaximumFrameRate { get; set; }                                                                                                                        
+        [Reactive] public int MaximumFrameRate { get; set; }           
+        [Reactive] public List<MidiWithIndex> MidiDevices { get; set; }
+        [Reactive] public int SelectedMidiDevice { get; set; }
         [Reactive] public List<string> Errors { get; set; }
 
         public EventHandler<ServerCreatedEventArgs> ServerCreated;
@@ -60,6 +63,8 @@ namespace StellaServer.Setup
                     maximumFrameRate > 1 && maximumFrameRate < 1000
             );
 
+            MidiDevices = GetMidiDevices();
+
             StartCommand = ReactiveCommand.Create(() =>
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
@@ -81,6 +86,14 @@ namespace StellaServer.Setup
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
+        }
+
+        private List<MidiWithIndex> GetMidiDevices()
+        {
+            List<MidiWithIndex> devices = new List<MidiWithIndex>();
+            devices.Add(null);
+            devices.AddRange(MidiInputManager.GetDevices());
+            return devices;
         }
 
         private List<string> GetAllErrorMessages(Exception e)
