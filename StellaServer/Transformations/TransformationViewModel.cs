@@ -80,9 +80,9 @@ namespace StellaServer.Transformations
 
             this.Reset = ReactiveCommand.Create(() =>
             {
-                RedCorrection = 0;
-                GreenCorrection = 0;
-                BlueCorrection = 0;
+                RedCorrection = 100;
+                GreenCorrection = 100;
+                BlueCorrection = 100;
                 BrightnessCorrection = 0;
                 TimeUnitsPerFrame = 10;
             });
