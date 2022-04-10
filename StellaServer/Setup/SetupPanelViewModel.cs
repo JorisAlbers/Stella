@@ -71,7 +71,16 @@ namespace StellaServer.Setup
                 StellaServerLib.StellaServer stellaServer =
                     new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
                 stellaServer.Start();
+
+
+                MidiInputManager midiInputManager = null;
+                if (SelectedMidiDevice > 0)
+                {
+                    // the 0 index indicates no midi device should be used.
+                    midiInputManager = new MidiInputManager(SelectedMidiDevice - 1);
+                }
                 
+
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
                 {
                     ServerIp = ServerIp,
@@ -82,7 +91,7 @@ namespace StellaServer.Setup
                     BitmapFolder = BitmapFolder,
                     StoryboardFolder = StoryboardFolder,
                     MaximumFrameRate = MaximumFrameRate,
-                }, stellaServer));
+                }, stellaServer, midiInputManager));
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
@@ -113,11 +122,14 @@ namespace StellaServer.Setup
     {
         public ServerSetupSettings Settings { get; }
         public StellaServerLib.StellaServer StellaServer { get; }
+        public MidiInputManager MidiInputManager { get; }
 
-        public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer)
+        public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer,
+            MidiInputManager midiInputManager)
         {
             Settings = settings;
             StellaServer = stellaServer;
+            MidiInputManager = midiInputManager;
         }
     }
 }
