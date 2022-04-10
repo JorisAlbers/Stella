@@ -68,6 +68,15 @@ namespace StellaServer.Transformations
                     BrightnessCorrection = ConvertToSlider(x);
                 });
 
+            this.WhenAnyValue(x =>
+                    x._stellaServer.Animator.StoryboardTransformationController.Settings.MasterSettings
+                        .TimeUnitsPerFrame)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    TimeUnitsPerFrame = x;
+                });
+
 
             this.Reset = ReactiveCommand.Create(() =>
             {

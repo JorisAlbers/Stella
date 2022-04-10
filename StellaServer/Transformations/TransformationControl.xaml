@@ -73,8 +73,9 @@
                     TickFrequency="1"
                     SmallChange="1"
                     LargeChange="100"/>
-            <TextBlock Text="{Binding ElementName=TimeUnitsPerFrameSlider, Path=Value}"
-                       Grid.Column="4" Grid.Row="1"
+            <TextBlock 
+                x:Name="TimeUnitsPerFrameTextBlock"
+                Grid.Column="4" Grid.Row="1"
                        VerticalAlignment="Top" HorizontalAlignment="Center"/>
 
 

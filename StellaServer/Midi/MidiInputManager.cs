@@ -12,6 +12,8 @@ namespace StellaServer.Midi
     {
         private const float _RGB_CONVERSION_RATIO = 100.0f / 127.0f / 100.0f;
         private const float _BRIGHTNESS_CONVERSION_RATIO = 2.0f / 127.0f;
+        private const float _SPEED_RATIO = 1.5f;
+
         private readonly int _deviceIndex;
         private MidiIn _midiIn;
         private StellaServerLib.StellaServer _stellaServer;
@@ -64,6 +66,19 @@ namespace StellaServer.Midi
                 case 2: // BRIGHTNESS
                 {
                     _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(ConvertToBrightnessScale(controlChangeEvent.ControllerValue));
+                        break;
+                }
+
+                case 9: // SPEED
+                {
+                    int value = controlChangeEvent.ControllerValue;
+                    if (value == 127)
+                    {
+                        value = 1000;
+                    }
+
+
+                    _stellaServer.Animator.StoryboardTransformationController.SetTimeUnitsPerFrame((int)(value));
                     break;
                 }
 

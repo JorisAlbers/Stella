@@ -53,7 +53,13 @@ namespace StellaServer.Transformations
 
                 this.BindCommand(ViewModel,
                     viewmodel => viewmodel.Reset,
-                    view => view.ResetButton);
+                    view => view.ResetButton)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.TimeUnitsPerFrame,
+                    view => view.TimeUnitsPerFrameTextBlock.Text)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }
