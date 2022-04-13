@@ -80,7 +80,38 @@ namespace StellaServerLib.Animation
             }
         }
 
-        public bool TryGetNextFramePerPi(out FrameWithoutDelta[] frames)
+        
+        public bool TryPeek(out int frameIndex, out long timeStampRelative)
+        {
+            if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
+            {
+                frameIndex = -1;
+                timeStampRelative = -1;
+                return false;
+            }
+
+            IFrameProvider frameProvider = _frameProvider;
+            
+            // Calculate initial frame if needed
+            if (frameProvider.Current == null)
+            {
+                frameProvider.MoveNext();
+            }
+
+            Frame frame = frameProvider.Current;
+            if (frame == null)
+            {
+                frameIndex = -1;
+                timeStampRelative = -1;
+                return false;
+            }
+
+            frameIndex        = frame.Index;
+            timeStampRelative = frame.TimeStampRelative;
+            return true;
+        }
+
+        public bool TryConsume(int frameIndex, long timestampRelative, out FrameWithoutDelta[] frames)
         {
             if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
             {
@@ -88,17 +119,25 @@ namespace StellaServerLib.Animation
                 return false;
             }
 
-            // Get the combined frame from the FrameProvider
             IFrameProvider frameProvider = _frameProvider;
 
-            frameProvider.MoveNext();
-            Frame combinedFrame = frameProvider.Current;
+            Frame frame = frameProvider.Current;
+            if (frame == null ||
+                frame.Index != frameIndex ||
+                frame.TimeStampRelative != timestampRelative)
+            {
+                frames = null;
+                return false;
+            }
 
             // Split the frame over pis
-            Frame[] framePerPi = SplitFrameOverPis(combinedFrame, _mask);
+            Frame[] framePerPi = SplitFrameOverPis(frame, _mask);
 
             // Overlay with the previous frame
             frames = OverlayWithCurrentFrame(framePerPi);
+
+            frameProvider.MoveNext();
+
             return true;
         }
 

@@ -47,7 +47,8 @@ namespace StellaServerLib.Test.Animation
 
             PlayList playList = new PlayList("test", new PlayListItem[]{new PlayListItem(new Storyboard(), 10)});
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(10,1,new float[3], false));
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
+            animator.TryPeek(out int frameIndex, out long timeStampRelative);
+            animator.TryConsume(frameIndex, timeStampRelative, out FrameWithoutDelta[] framePerPi);
 
             Assert.AreEqual(1, framePerPi.Length);
 
@@ -105,7 +106,8 @@ namespace StellaServerLib.Test.Animation
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3], false));
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
+            animator.TryPeek(out int frameIndex, out long timeStampRelative);
+            animator.TryConsume(frameIndex, timeStampRelative, out FrameWithoutDelta[] framePerPi);
 
             Assert.AreEqual(3,framePerPi.Length);
             // Pi1
@@ -179,11 +181,14 @@ namespace StellaServerLib.Test.Animation
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3], false));
             // Flush first two frames
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] _);
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] _);
+            animator.TryPeek(out int frameIndex1, out long timeStampRelative1);
+            animator.TryConsume(frameIndex1, timeStampRelative1, out FrameWithoutDelta[] _);
+            animator.TryPeek(out int frameIndex2, out long timeStampRelative2);
+            animator.TryConsume(frameIndex2, timeStampRelative2, out FrameWithoutDelta[] _);
 
             // Assert
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
+            animator.TryPeek(out int frameIndex3, out long timeStampRelative3);
+            animator.TryConsume(frameIndex3, timeStampRelative3, out FrameWithoutDelta[] framePerPi);
 
             Assert.AreEqual(3, framePerPi.Length);
             // Pi1

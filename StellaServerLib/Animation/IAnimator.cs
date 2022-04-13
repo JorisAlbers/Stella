@@ -11,10 +11,19 @@ namespace StellaServerLib.Animation
     /// </summary>
     public interface IAnimator : IReactiveObject, IDisposable
     {
-        /// <summary> Get the next frame, split over the pis</summary>
-        /// <returns>A frame for each pi.
-        /// False if no frames are available. </returns>
-        bool TryGetNextFramePerPi(out FrameWithoutDelta[] frames);
+        /// <summary>
+        /// True if there is a next frame.
+        /// </summary>
+        bool TryPeek(out int frameIndex, out long timeStampRelative);
+
+        /// <summary>
+        /// Only consumes if the inserted frameIndex and timestampRelative is equal to the frame prepared by the animator.
+        /// True if it was consumed.
+        /// False if it was not consumed.
+        /// </summary>
+        /// <returns></returns>
+        public bool TryConsume(int frameIndex, long timestampRelative, out FrameWithoutDelta[] frames);
+
 
         StoryboardTransformationController StoryboardTransformationController { get; }
 

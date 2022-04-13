@@ -29,62 +29,45 @@ namespace StellaServerLib
             thread.Start();
         }
 
+        //  
+
         private void MainLoop()
         {
-            FrameWithoutDelta[] frames = null;
-            long renderNextFrameAt = 0;
-
             while (!_isDisposed)
             {
                 AnimationWithStartingTime animationWithStartingTime = _animationWithStartingTime;
                 if (animationWithStartingTime == null)
                 {
                     // No animation on display.
-                    renderNextFrameAt = 0;
                     continue;
                 }
 
-                // Prepare if the animation is about to start
-                if (renderNextFrameAt == 0)
+                // Check if there is a frame available
+                if (!animationWithStartingTime.Animator.TryPeek(out int frameIndex, out long timeStampRelative))
                 {
-                    if (animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames))
-                    {
-                        renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
-                        _nextRenderAllowedAtperPi = new long[frames.Length];
-                    }
-                    else
-                    {
-                        // The animation seems to be paused. We need to wait longer for the first frame to arrive.
-                        continue; 
-                    }
+                    continue;
                 }
 
-                long now = Environment.TickCount;
 
+                // Check if we should display the frame now.
+                long now = Environment.TickCount;
+                long renderNextFrameAt = animationWithStartingTime.StartAtTicks + timeStampRelative;
                 if (now < renderNextFrameAt)
                 {
                     // render will happen in other loop
                     continue;
                 }
 
-                // Render. But only when there are frames.
-                if (frames != null)
+                // Render. But only when there are frames and the frame we were preparing still matches. 
+                if (animationWithStartingTime.Animator.TryConsume(frameIndex, timeStampRelative, out FrameWithoutDelta[] frames))
                 {
+                    if (_nextRenderAllowedAtperPi == null)
+                    {
+                        _nextRenderAllowedAtperPi = new long[frames.Length]; // TODO insert number of clients and initialize this array at ctor
+                    }
+
                     SendRenderFrame(frames);
                 }
-
-                // Prepare
-                if (animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames))
-                {
-                    // frames is set.
-                    // set the time at which to send the next frame.
-                    renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
-                }
-                else
-                {
-                    // the animation seems to be paused. We need to wait before we get the next frame.
-                    // frames will be set to null by TryGetNextFramePerPi
-                };
             }
         }
 
