@@ -57,7 +57,7 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The master timeUnitsPerFrame must be at least 0 ms.");
             }
 
-            _masterSettings = new AnimationTransformationSettings(timeUnitsPerFrame, _masterSettings.BrightnessCorrection, _masterSettings.RgbFadeCorrection);
+            _masterSettings = new AnimationTransformationSettings(timeUnitsPerFrame, _masterSettings.BrightnessCorrection, _masterSettings.RgbFadeCorrection, _masterSettings.IsPaused);
             Settings = new StoryboardTransformationSettings(_masterSettings,_animationSettings);
         }
 
@@ -73,7 +73,7 @@ namespace StellaServerLib.Animation.Transformation
 
             _animationSettings = (AnimationTransformationSettings[])_animationSettings.Clone();
             AnimationTransformationSettings old = _animationSettings[animationIndex];
-            _animationSettings[animationIndex] = new AnimationTransformationSettings(timeUnitsPerFrame, old.BrightnessCorrection, old.RgbFadeCorrection);
+            _animationSettings[animationIndex] = new AnimationTransformationSettings(timeUnitsPerFrame, old.BrightnessCorrection, old.RgbFadeCorrection, old.IsPaused);
             Settings = new StoryboardTransformationSettings(_masterSettings, _animationSettings);
         }
 
@@ -88,7 +88,7 @@ namespace StellaServerLib.Animation.Transformation
                 throw new ArgumentException($"The brightness correction must in the range of -1 and 1");
             }
             
-            _masterSettings = new AnimationTransformationSettings(_masterSettings.TimeUnitsPerFrame, brightnessCorrection, _masterSettings.RgbFadeCorrection);
+            _masterSettings = new AnimationTransformationSettings(_masterSettings.TimeUnitsPerFrame, brightnessCorrection, _masterSettings.RgbFadeCorrection, _masterSettings.IsPaused);
             Settings = new StoryboardTransformationSettings(_masterSettings, _animationSettings);
         }
 
@@ -104,7 +104,7 @@ namespace StellaServerLib.Animation.Transformation
 
             _animationSettings = (AnimationTransformationSettings[])_animationSettings.Clone();
             AnimationTransformationSettings old = _animationSettings[animationIndex];
-            _animationSettings[animationIndex] = new AnimationTransformationSettings(old.TimeUnitsPerFrame, brightnessCorrection, old.RgbFadeCorrection);
+            _animationSettings[animationIndex] = new AnimationTransformationSettings(old.TimeUnitsPerFrame, brightnessCorrection, old.RgbFadeCorrection, old.IsPaused);
             Settings = new StoryboardTransformationSettings(_masterSettings, _animationSettings);
         }
 
@@ -128,7 +128,7 @@ namespace StellaServerLib.Animation.Transformation
                 return;
             }
 
-            _masterSettings = new AnimationTransformationSettings(_masterSettings.TimeUnitsPerFrame, _masterSettings.BrightnessCorrection, rgbFadeCorrection);
+            _masterSettings = new AnimationTransformationSettings(_masterSettings.TimeUnitsPerFrame, _masterSettings.BrightnessCorrection, rgbFadeCorrection, _masterSettings.IsPaused);
             Settings = new StoryboardTransformationSettings(_masterSettings, _animationSettings);
         }
 
@@ -145,7 +145,18 @@ namespace StellaServerLib.Animation.Transformation
             // Create a new Array
             _animationSettings = (AnimationTransformationSettings[])_animationSettings.Clone();
             AnimationTransformationSettings old = _animationSettings[animationIndex];
-            _animationSettings[animationIndex] = new AnimationTransformationSettings(old.TimeUnitsPerFrame, old.BrightnessCorrection, rgbFadeCorrection);
+            _animationSettings[animationIndex] = new AnimationTransformationSettings(old.TimeUnitsPerFrame, old.BrightnessCorrection, rgbFadeCorrection, old.IsPaused);
+            Settings = new StoryboardTransformationSettings(_masterSettings, _animationSettings);
+        }
+
+        public void SetIsPaused(bool isPaused)
+        {
+            if (_masterSettings.IsPaused == isPaused)
+            {
+                return;
+            }
+
+            _masterSettings = new AnimationTransformationSettings(_masterSettings.TimeUnitsPerFrame, _masterSettings.BrightnessCorrection, _masterSettings.RgbFadeCorrection, isPaused);
             Settings = new StoryboardTransformationSettings(_masterSettings, _animationSettings);
         }
 

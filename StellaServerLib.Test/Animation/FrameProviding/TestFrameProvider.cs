@@ -34,9 +34,9 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
 
 
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0,0,new float[3]),new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0,0,new float[3], false),new AnimationTransformationSettings[]
             {
-                new AnimationTransformationSettings(100,0,new float[3]), 
+                new AnimationTransformationSettings(100,0,new float[3], false), 
             } );
             FrameProvider frameProvider =  new FrameProvider(drawerMock.Object, transformationController,1);
 
@@ -78,9 +78,9 @@ namespace StellaServerLib.Test.Animation.FrameProviding
             int index = -1;
             drawerMock.Setup(x => x.Current).Returns(()=>drawerFrames[index]);
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3], false), new AnimationTransformationSettings[]
             {
-                new AnimationTransformationSettings(timeUnitsPerFrame, 0 , new float[3]),
+                new AnimationTransformationSettings(timeUnitsPerFrame, 0 , new float[3], false),
             });
             FrameProvider frameProvider = new FrameProvider(drawerMock.Object, transformationController, timeUnitMs);
 
@@ -155,10 +155,10 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 50; // 50ms to make sure they get out of frame
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3], false), new AnimationTransformationSettings[]
             {
-                new AnimationTransformationSettings(100,0,new float[3]),
-                new AnimationTransformationSettings(100,0,new float[3]),
+                new AnimationTransformationSettings(100,0,new float[3], false),
+                new AnimationTransformationSettings(100,0,new float[3], false),
             });
             FrameProvider frameProvider = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);
 
@@ -225,10 +225,10 @@ namespace StellaServerLib.Test.Animation.FrameProviding
 
             int start1 = 0;
             int start2 = 0; // Both are in frame
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3]), new AnimationTransformationSettings[]
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new AnimationTransformationSettings(0, 0, new float[3], false), new AnimationTransformationSettings[]
             {
-                new AnimationTransformationSettings(100,0,new float[3]),
-                new AnimationTransformationSettings(100,0,new float[3]),
+                new AnimationTransformationSettings(100,0,new float[3],false),
+                new AnimationTransformationSettings(100,0,new float[3],false),
             });
 
             FrameProvider frameProvider = new FrameProvider(new IDrawer[] { mockDrawer1.Object, mockDrawer2.Object }, new int[] { start1, start2 }, transformationController,1);

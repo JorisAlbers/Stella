@@ -82,6 +82,12 @@ namespace StellaServerLib.Animation
 
         public bool TryGetNextFramePerPi(out FrameWithoutDelta[] frames)
         {
+            if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
+            {
+                frames = null;
+                return false;
+            }
+
             // Get the combined frame from the FrameProvider
             IFrameProvider frameProvider = _frameProvider;
 

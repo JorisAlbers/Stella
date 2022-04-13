@@ -25,7 +25,7 @@ namespace StellaServerLib.Animation
             AnimationTransformationSettings masterTransformationSettings;
             if (_previousAnimator == null)
             {
-                masterTransformationSettings = new AnimationTransformationSettings(10, 0, new float[3]{1,1,1});
+                masterTransformationSettings = new AnimationTransformationSettings(10, 0, new float[3]{1,1,1}, false);
             }
             else
             {

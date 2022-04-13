@@ -16,8 +16,13 @@ namespace StellaServerLib.Animation.Transformation
         /// </summary>
         public float[] RgbFadeCorrection { get; }
 
+        /// <summary>
+        /// If the animation is paused
+        /// </summary>
+        public bool IsPaused { get; }
+
         
-        public AnimationTransformationSettings(int timeUnitsPerFrame, float brightnessCorrection, float[] rgbFadeCorrection)
+        public AnimationTransformationSettings(int timeUnitsPerFrame, float brightnessCorrection, float[] rgbFadeCorrection, bool isPaused)
         {
             if (rgbFadeCorrection.Length != 3)
             {
@@ -27,6 +32,7 @@ namespace StellaServerLib.Animation.Transformation
             TimeUnitsPerFrame = timeUnitsPerFrame;
             BrightnessCorrection = brightnessCorrection;
             RgbFadeCorrection = rgbFadeCorrection;
+            IsPaused = isPaused;
         }
 
 
