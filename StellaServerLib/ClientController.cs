@@ -47,9 +47,16 @@ namespace StellaServerLib
                 // Prepare if the animation is about to start
                 if (renderNextFrameAt == 0)
                 {
-                    animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
-                    renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
-                    _nextRenderAllowedAtperPi = new long[frames.Length];
+                    if (animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames))
+                    {
+                        renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
+                        _nextRenderAllowedAtperPi = new long[frames.Length];
+                    }
+                    else
+                    {
+                        // The animation seems to be paused. We need to wait longer for the first frame to arrive.
+                        continue; 
+                    }
                 }
 
                 long now = Environment.TickCount;
@@ -60,12 +67,24 @@ namespace StellaServerLib
                     continue;
                 }
 
-                // Render
-                SendRenderFrame(frames);
+                // Render. But only when there are frames.
+                if (frames != null)
+                {
+                    SendRenderFrame(frames);
+                }
 
                 // Prepare
-                animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
-                renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
+                if (animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames))
+                {
+                    // frames is set.
+                    // set the time at which to send the next frame.
+                    renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
+                }
+                else
+                {
+                    // the animation seems to be paused. We need to wait before we get the next frame.
+                    // frames will be set to null by TryGetNextFramePerPi
+                };
             }
         }
 

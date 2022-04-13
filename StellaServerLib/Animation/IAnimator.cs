@@ -12,7 +12,8 @@ namespace StellaServerLib.Animation
     public interface IAnimator : IReactiveObject, IDisposable
     {
         /// <summary> Get the next frame, split over the pis</summary>
-        /// <returns>A frame for each pi.</returns>
+        /// <returns>A frame for each pi.
+        /// False if no frames are available. </returns>
         bool TryGetNextFramePerPi(out FrameWithoutDelta[] frames);
 
         StoryboardTransformationController StoryboardTransformationController { get; }
