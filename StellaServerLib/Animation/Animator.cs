@@ -118,7 +118,7 @@ namespace StellaServerLib.Animation
                 {
                     FrameIndex = frame.Index, 
                     TimeStampRelative = frame.TimeStampRelative,
-                    Frames = GetFrames(frame, frameProvider)
+                    Frames = GetFrames(frame)
                 };
                 return true;
             }
@@ -127,7 +127,7 @@ namespace StellaServerLib.Animation
             return true;
         }
 
-        private FrameWithoutDelta[] GetFrames(Frame frame, IFrameProvider frameProvider)
+        private FrameWithoutDelta[] GetFrames(Frame frame)
         {
             // Split the frame over pis
             Frame[] framePerPi = SplitFrameOverPis(frame, _mask);
