@@ -90,6 +90,11 @@ namespace StellaServerLib.Animation
             }
 
             IFrameProvider frameProvider = _frameProvider;
+            if (frameProvider == null) // animations are off. 
+            {
+                previous = null;
+                return false;
+            }
 
             if (previous == null) // Caller does not have a frame yet
             {
