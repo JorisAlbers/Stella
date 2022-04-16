@@ -33,6 +33,7 @@ namespace StellaServerLib
 
         private void MainLoop()
         {
+            FrameMetadata frameMetadata = null;
             while (!_isDisposed)
             {
                 AnimationWithStartingTime animationWithStartingTime = _animationWithStartingTime;
@@ -43,7 +44,7 @@ namespace StellaServerLib
                 }
 
                 // Check if there is a frame available
-                if (!animationWithStartingTime.Animator.TryPeek(out int frameIndex, out long timeStampRelative))
+                if (!animationWithStartingTime.Animator.TryPeek(ref frameMetadata))
                 {
                     continue;
                 }
@@ -51,23 +52,21 @@ namespace StellaServerLib
 
                 // Check if we should display the frame now.
                 long now = Environment.TickCount;
-                long renderNextFrameAt = animationWithStartingTime.StartAtTicks + timeStampRelative;
+                long renderNextFrameAt = animationWithStartingTime.StartAtTicks + frameMetadata.TimeStampRelative;
                 if (now < renderNextFrameAt)
                 {
                     // render will happen in other loop
                     continue;
                 }
 
-                // Render. But only when there are frames and the frame we were preparing still matches. 
-                if (animationWithStartingTime.Animator.TryConsume(frameIndex, timeStampRelative, out FrameWithoutDelta[] frames))
+                // Render.
+                if (_nextRenderAllowedAtperPi == null)
                 {
-                    if (_nextRenderAllowedAtperPi == null)
-                    {
-                        _nextRenderAllowedAtperPi = new long[frames.Length]; // TODO insert number of clients and initialize this array at ctor
-                    }
-
-                    SendRenderFrame(frames);
+                    _nextRenderAllowedAtperPi = new long[frameMetadata.Frames.Length]; // TODO insert number of clients and initialize this array at ctor
                 }
+
+                SendRenderFrame(frameMetadata.Frames);
+                frameMetadata = null; // set back to null so the animator will calculate the next frame.
             }
         }
 

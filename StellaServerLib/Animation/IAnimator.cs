@@ -13,17 +13,9 @@ namespace StellaServerLib.Animation
     {
         /// <summary>
         /// True if there is a next frame.
+        /// Will try to calculate the next frame when the FrameMetaData is null.
         /// </summary>
-        bool TryPeek(out int frameIndex, out long timeStampRelative);
-
-        /// <summary>
-        /// Only consumes if the inserted frameIndex and timestampRelative is equal to the frame prepared by the animator.
-        /// True if it was consumed.
-        /// False if it was not consumed.
-        /// </summary>
-        /// <returns></returns>
-        public bool TryConsume(int frameIndex, long timestampRelative, out FrameWithoutDelta[] frames);
-
+        bool TryPeek(ref FrameMetadata previous);
 
         StoryboardTransformationController StoryboardTransformationController { get; }
 

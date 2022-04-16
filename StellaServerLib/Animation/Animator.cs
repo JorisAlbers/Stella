@@ -81,64 +81,56 @@ namespace StellaServerLib.Animation
         }
 
         
-        public bool TryPeek(out int frameIndex, out long timeStampRelative)
+        public bool TryPeek(ref FrameMetadata previous)
         {
             if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
             {
-                frameIndex = -1;
-                timeStampRelative = -1;
+                previous = null;
                 return false;
             }
 
             IFrameProvider frameProvider = _frameProvider;
-            
-            // Calculate initial frame if needed
-            if (frameProvider.Current == null)
+
+            if (previous == null) // Caller does not have a frame yet
             {
                 frameProvider.MoveNext();
             }
 
             Frame frame = frameProvider.Current;
-            if (frame == null)
+            if (frame ==  null)
             {
-                frameIndex = -1;
-                timeStampRelative = -1;
+                previous = null;
                 return false;
             }
 
-            frameIndex        = frame.Index;
-            timeStampRelative = frame.TimeStampRelative;
+            if(previous == null ||  // Caller does not have a frame yet
+               frame.Index != previous.FrameIndex || // Caller has an outdated frame
+               frame.TimeStampRelative != previous.TimeStampRelative) 
+            {
+                // Caller is no longer looking at the same frame.
+                // Calculate new one.
+                previous = new FrameMetadata()
+                {
+                    FrameIndex = frame.Index, 
+                    TimeStampRelative = frame.TimeStampRelative,
+                    Frames = GetFrames(frame, frameProvider)
+                };
+                return true;
+            }
+
+            //  Caller is still looking at the same frame.
             return true;
         }
 
-        public bool TryConsume(int frameIndex, long timestampRelative, out FrameWithoutDelta[] frames)
+        private FrameWithoutDelta[] GetFrames(Frame frame, IFrameProvider frameProvider)
         {
-            if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
-            {
-                frames = null;
-                return false;
-            }
-
-            IFrameProvider frameProvider = _frameProvider;
-
-            Frame frame = frameProvider.Current;
-            if (frame == null ||
-                frame.Index != frameIndex ||
-                frame.TimeStampRelative != timestampRelative)
-            {
-                frames = null;
-                return false;
-            }
-
             // Split the frame over pis
             Frame[] framePerPi = SplitFrameOverPis(frame, _mask);
 
             // Overlay with the previous frame
-            frames = OverlayWithCurrentFrame(framePerPi);
-
-            frameProvider.MoveNext();
-
-            return true;
+            FrameWithoutDelta[] frames = OverlayWithCurrentFrame(framePerPi);
+            
+            return frames;
         }
 
         private void OnTimeResetRequested()
@@ -199,5 +191,12 @@ namespace StellaServerLib.Animation
         {
             _cancellationTokenSource?.Cancel();
         }
+    }
+
+    public class FrameMetadata
+    {
+        public int FrameIndex;
+        public long TimeStampRelative;
+        public FrameWithoutDelta[] Frames;
     }
 }

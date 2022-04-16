@@ -47,12 +47,13 @@ namespace StellaServerLib.Test.Animation
 
             PlayList playList = new PlayList("test", new PlayListItem[]{new PlayListItem(new Storyboard(), 10)});
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(10,1,new float[3], false));
-            animator.TryPeek(out int frameIndex, out long timeStampRelative);
-            animator.TryConsume(frameIndex, timeStampRelative, out FrameWithoutDelta[] framePerPi);
+           
+            FrameMetadata frameMetadata = null;
+            animator.TryPeek(ref frameMetadata);
+          
+            Assert.AreEqual(1, frameMetadata.Frames.Length);
 
-            Assert.AreEqual(1, framePerPi.Length);
-
-            FrameWithoutDelta frame = framePerPi[0];
+            FrameWithoutDelta frame = frameMetadata.Frames[0];
             Assert.AreEqual(expectedFrameIndex, frame.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame.TimeStampRelative);
             Assert.AreEqual(expectedColor, frame[expectedPixelIndex].ToColor());
@@ -106,24 +107,27 @@ namespace StellaServerLib.Test.Animation
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3], false));
-            animator.TryPeek(out int frameIndex, out long timeStampRelative);
-            animator.TryConsume(frameIndex, timeStampRelative, out FrameWithoutDelta[] framePerPi);
 
-            Assert.AreEqual(3,framePerPi.Length);
+            FrameMetadata frameMetadata = null;
+
+            animator.TryPeek(ref frameMetadata);
+           
+
+            Assert.AreEqual(3, frameMetadata.Frames.Length);
             // Pi1
-            FrameWithoutDelta frame1 = framePerPi[0];
+            FrameWithoutDelta frame1 = frameMetadata.Frames[0];
             Assert.AreEqual(50,frame1.Count);
             Assert.AreEqual(expectedFrameIndex,frame1.Index);
             Assert.AreEqual(expectedRelativeTimeStamp,frame1.TimeStampRelative);
             Assert.AreEqual(expectedColor1,frame1[expectedPixelIndex1].ToColor());
             // Pi1
-            FrameWithoutDelta frame2 = framePerPi[1];
+            FrameWithoutDelta frame2 = frameMetadata.Frames[1];
             Assert.AreEqual(50, frame2.Count);
             Assert.AreEqual(expectedFrameIndex, frame2.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame2.TimeStampRelative);
             Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].ToColor());
             // Pi 3
-            FrameWithoutDelta frame3 = framePerPi[2];
+            FrameWithoutDelta frame3 = frameMetadata.Frames[2];
             Assert.AreEqual(50, frame3.Count);
             Assert.AreEqual(expectedFrameIndex, frame3.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
@@ -181,28 +185,29 @@ namespace StellaServerLib.Test.Animation
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
             Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3], false));
             // Flush first two frames
-            animator.TryPeek(out int frameIndex1, out long timeStampRelative1);
-            animator.TryConsume(frameIndex1, timeStampRelative1, out FrameWithoutDelta[] _);
-            animator.TryPeek(out int frameIndex2, out long timeStampRelative2);
-            animator.TryConsume(frameIndex2, timeStampRelative2, out FrameWithoutDelta[] _);
+            FrameMetadata frameMetadata = null;
+            animator.TryPeek(ref frameMetadata);
+            frameMetadata = null;
+            animator.TryPeek(ref frameMetadata);
+            frameMetadata = null;
 
             // Assert
-            animator.TryPeek(out int frameIndex3, out long timeStampRelative3);
-            animator.TryConsume(frameIndex3, timeStampRelative3, out FrameWithoutDelta[] framePerPi);
+            animator.TryPeek(ref frameMetadata);
+         
 
-            Assert.AreEqual(3, framePerPi.Length);
+            Assert.AreEqual(3, frameMetadata.Frames.Length);
             // Pi1
-            FrameWithoutDelta frame1 = framePerPi[0];
+            FrameWithoutDelta frame1 = frameMetadata.Frames[0];
             Assert.AreEqual(expectedFrameIndex, frame1.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame1.TimeStampRelative);
             Assert.AreEqual(expectedColor1, frame1[expectedPixelIndex1].ToColor());
             // Pi1
-            FrameWithoutDelta frame2 = framePerPi[1];
+            FrameWithoutDelta frame2 = frameMetadata.Frames[1];
             Assert.AreEqual(expectedFrameIndex, frame2.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame2.TimeStampRelative);
             Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].ToColor());
             // Pi 3
-            FrameWithoutDelta frame3 = framePerPi[2];
+            FrameWithoutDelta frame3 = frameMetadata.Frames[2];
             Assert.AreEqual(expectedFrameIndex, frame3.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
             Assert.AreEqual(expectedColor3, frame3[expectedPixelIndex3].ToColor());
