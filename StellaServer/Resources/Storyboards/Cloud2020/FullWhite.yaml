@@ -1,0 +1,7 @@
+﻿!Storyboard
+Name: Full white for testing purposes
+Animations:
+ - !RepeatingPattern
+   StartIndex:  0
+   StripLength: 2880
+   Patterns: [[[255,255,255]]]
