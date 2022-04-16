@@ -17,10 +17,11 @@ namespace StellaServerLib
         private long[] _nextRenderAllowedAtperPi;
         private long _minimumTicksPerFrame;
 
-        public ClientController(IServer server, int maximumFrameRate)
+        public ClientController(IServer server, int maximumFrameRate, int numberOfClients)
         {
             _server = server;
             _minimumTicksPerFrame = 1000 / maximumFrameRate;
+            _nextRenderAllowedAtperPi = new long[numberOfClients];
         }
 
         public void Run()
@@ -60,11 +61,6 @@ namespace StellaServerLib
                 }
 
                 // Render.
-                if (_nextRenderAllowedAtperPi == null)
-                {
-                    _nextRenderAllowedAtperPi = new long[frameMetadata.Frames.Length]; // TODO insert number of clients and initialize this array at ctor
-                }
-
                 SendRenderFrame(frameMetadata.Frames);
                 frameMetadata = null; // set back to null so the animator will calculate the next frame.
             }

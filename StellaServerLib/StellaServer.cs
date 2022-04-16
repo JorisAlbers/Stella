@@ -57,7 +57,7 @@ namespace StellaServerLib
             // Start Server
             _server = StartServer(_ip, _port, _udpPort, _remoteUdpPort,_server);
             // Start ClientController
-            _clientController = StartClientController(_server, _maximumFrameRate);
+            _clientController = StartClientController(_server, _maximumFrameRate, stripLengthPerPi.Length);
         }
 
         public void StartAnimation(IAnimation animation)
@@ -139,11 +139,11 @@ namespace StellaServerLib
             ClientStatusChanged?.Invoke(sender, e);
         }
 
-        private ClientController StartClientController(IServer server, int maximumFrameRate)
+        private ClientController StartClientController(IServer server, int maximumFrameRate, int numberOfClients)
         {
             try
             {
-                ClientController clientController = new ClientController(server, maximumFrameRate);
+                ClientController clientController = new ClientController(server, maximumFrameRate, numberOfClients);
                 clientController.Run();
                 return clientController;
             }

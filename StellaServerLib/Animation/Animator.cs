@@ -85,7 +85,7 @@ namespace StellaServerLib.Animation
         {
             if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
             {
-                previous = null;
+                previous = null; // TODO adjust timestamprelative
                 return false;
             }
 
