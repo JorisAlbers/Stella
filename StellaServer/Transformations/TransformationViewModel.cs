@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -17,7 +18,8 @@ namespace StellaServer.Transformations
 
         [Reactive] public int TimeUnitsPerFrame { get; set; } = 10;
 
-        public ReactiveCommand<Unit,Unit> Reset { get; } 
+        public ReactiveCommand<Unit,Unit> Reset { get; }
+        [Reactive] public bool ShouldPause { get; set; }
 
         /// <summary>
         /// TODO this one only adjust the master now, also add other animations
@@ -85,6 +87,11 @@ namespace StellaServer.Transformations
                 BlueCorrection = 100;
                 BrightnessCorrection = 0;
                 TimeUnitsPerFrame = 10;
+            });
+
+            this.WhenAnyValue(x => x.ShouldPause).Subscribe(x =>
+            {
+                _stellaServer.Animator?.StoryboardTransformationController.SetIsPaused(x);
             });
         }
 

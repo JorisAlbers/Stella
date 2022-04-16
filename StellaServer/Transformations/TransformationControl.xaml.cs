@@ -56,6 +56,10 @@ namespace StellaServer.Transformations
                     view => view.ResetButton)
                     .DisposeWith(disposableRegistration);
 
+                this.Bind(ViewModel,
+                    vm => vm.ShouldPause,
+                    view => view.PauseButton.IsChecked);
+
                 this.OneWayBind(ViewModel,
                     vm => vm.TimeUnitsPerFrame,
                     view => view.TimeUnitsPerFrameTextBlock.Text)

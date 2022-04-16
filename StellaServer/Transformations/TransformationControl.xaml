@@ -10,6 +10,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800">
     <DockPanel Margin="50,10" HorizontalAlignment="Center">
+
+        <ToggleButton x:Name="PauseButton">
+            <materialDesign:PackIcon Kind="Pause" />
+        </ToggleButton>
+
         <Grid Width="200">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
