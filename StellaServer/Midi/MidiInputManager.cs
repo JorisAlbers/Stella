@@ -22,6 +22,8 @@ namespace StellaServer.Midi
         [Reactive] public float GreenCorrection { get; set; }
         [Reactive] public float BlueCorrection { get; set; }
 
+        public ReactiveCommand<PadPressedEvent, PadPressedEvent> PadPressed { get; } =
+            ReactiveCommand.Create<PadPressedEvent, PadPressedEvent>(e => e);
 
 
         public MidiInputManager(int deviceIndex)
@@ -60,6 +62,11 @@ namespace StellaServer.Midi
         {
             ControlChangeEvent controlChangeEvent = (ControlChangeEvent)e.MidiEvent;
             int controllerIndex = (int)controlChangeEvent.Controller;
+
+            if (controllerIndex > 9 && controllerIndex < 26)
+            {
+                PadPressed.Execute(new PadPressedEvent(controllerIndex, controlChangeEvent.ControllerValue == 127)).Subscribe().Dispose();
+            }
 
             switch (controllerIndex)
             {
@@ -177,6 +184,18 @@ namespace StellaServer.Midi
         {
             Device = device;
             Index = index;
+        }
+    }
+
+    public class PadPressedEvent
+    {
+        public int ControllerIndex { get; }
+        public bool KeyDown { get; }
+
+        public PadPressedEvent(int controllerIndex, bool keyDown)
+        {
+            ControllerIndex = controllerIndex;
+            KeyDown = keyDown;
         }
     }
 }

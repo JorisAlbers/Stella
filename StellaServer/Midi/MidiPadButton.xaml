@@ -9,8 +9,10 @@
                                 mc:Ignorable="d" 
                                 d:DesignHeight="450" d:DesignWidth="800">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Border BorderBrush="White" BorderThickness="1" CornerRadius="3">
-
+        <Border x:Name="PadBorder"
+            BorderBrush="White" BorderThickness="1" CornerRadius="3">
+            <TextBlock x:Name="ControllerIndexTextBlock"/>
+            
         </Border>
     </Grid>
 </reactiveUi:ReactiveUserControl>

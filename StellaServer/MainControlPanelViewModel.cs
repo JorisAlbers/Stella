@@ -74,7 +74,7 @@ namespace StellaServer
 
             if (midiInputManager != null)
             {
-                MidiPanelViewModel = new MidiPanelViewModel(4, 4, 14, midiInputManager); //TODO configurable midi buttons
+                MidiPanelViewModel = new MidiPanelViewModel(4, 4, 10, midiInputManager); //TODO configurable midi buttons
             }
             
             NavigationViewModel = new NavigationViewModel();
