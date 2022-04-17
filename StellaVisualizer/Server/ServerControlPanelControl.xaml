@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ListView Grid.Row="0" ItemsSource="{Binding Animations}" SelectedItem="{Binding SelectedAnimation}">
             <ListView.ItemTemplate>
@@ -28,6 +29,12 @@
             <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterBlueCorrection}"/>
 
         </UniformGrid>
+
+        <DockPanel Grid.Row="2">
+            <Button Content="Pause"
+                    x:Name="PauseButton"
+                    Click="ButtonBase_OnClick"/>
+        </DockPanel>
 
             
     </Grid>

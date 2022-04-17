@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace StellaVisualizer.Server
 {
@@ -10,6 +11,23 @@ namespace StellaVisualizer.Server
         public ServerControlPanelControl()
         {
             InitializeComponent();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            ServerControlPanelViewModel viewmodel = DataContext as ServerControlPanelViewModel;
+
+            if (viewmodel.IsPaused)
+            {
+                PauseButton.Content = "Pause";
+                
+            }
+            else
+            {
+                PauseButton.Content = "Continue";
+            }
+
+            viewmodel.IsPaused = !viewmodel.IsPaused;
         }
     }
 }
