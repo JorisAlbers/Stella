@@ -133,52 +133,6 @@ namespace StellaServerLib.Animation
             _startAtTicks = startAt;
         }
 
-        public bool TryPeek(ref FrameMetadata previous)
-        {
-            if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
-            {
-                previous = null; // TODO adjust timestamprelative
-                return false;
-            }
-
-            IFrameProvider frameProvider = _frameProvider;
-            if (frameProvider == null) // animations are off. 
-            {
-                previous = null;
-                return false;
-            }
-
-            if (previous == null) // Caller does not have a frame yet
-            {
-                frameProvider.MoveNext();
-            }
-
-            Frame frame = frameProvider.Current;
-            if (frame ==  null)
-            {
-                previous = null;
-                return false;
-            }
-
-            if(previous == null ||  // Caller does not have a frame yet
-               frame.Index != previous.FrameIndex || // Caller has an outdated frame
-               frame.TimeStampRelative != previous.TimeStampRelative) 
-            {
-                // Caller is no longer looking at the same frame.
-                // Calculate new one.
-                previous = new FrameMetadata()
-                {
-                    FrameIndex = frame.Index, 
-                    TimeStampRelative = frame.TimeStampRelative,
-                    Frames = GetFrames(frame)
-                };
-                return true;
-            }
-
-            //  Caller is still looking at the same frame.
-            return true;
-        }
-
         private FrameWithoutDelta[] GetFrames(Frame frame)
         {
             // Split the frame over pis

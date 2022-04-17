@@ -11,12 +11,6 @@ namespace StellaServerLib.Animation
     /// </summary>
     public interface IAnimator : IReactiveObject, IDisposable
     {
-        /// <summary>
-        /// True if there is a next frame.
-        /// Will try to calculate the next frame when the FrameMetaData is null.
-        /// </summary>
-        bool TryPeek(ref FrameMetadata previous);
-
         StoryboardTransformationController StoryboardTransformationController { get; }
 
         bool TryGetFramePerClient(out FrameWithoutDelta[] frames);
