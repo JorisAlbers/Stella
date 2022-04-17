@@ -33,8 +33,6 @@ namespace StellaServer
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
         [Reactive] public LogViewModel LogViewModel { get; set; }
 
-        private MidiInputManager midiInputManager;
-        
         public MainWindowViewModel()
         {
             LogViewModel = new LogViewModel();
@@ -51,14 +49,13 @@ namespace StellaServer
             _userSettings.ServerSetup = args.Settings;
             SaveUserSettings(UserSettingsFilePath, _userSettings);
 
-            midiInputManager = args.MidiInputManager;
             BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
             BitmapThumbnailRepository thumbnailRepository = new BitmapThumbnailRepository(new FileSystem(), ThumbnailRepository, bitmapRepository);
             thumbnailRepository.Create();
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  480, 3, 2); // TODO get these magic values from the config
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
-            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel);
+            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

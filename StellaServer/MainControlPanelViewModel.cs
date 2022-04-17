@@ -8,6 +8,7 @@ using StellaServer.Animation;
 using StellaServer.Animation.Creation;
 using StellaServer.Animation.Details;
 using StellaServer.Log;
+using StellaServer.Midi;
 using StellaServer.Status;
 using StellaServer.Transformations;
 using StellaServerLib;
@@ -23,11 +24,15 @@ namespace StellaServer
         [Reactive] public StatusViewModel StatusViewModel { get; set; }
         [Reactive] public TransformationViewModel TransformationViewModel { get; set; }
         [Reactive] public NavigationViewModel NavigationViewModel { get; set; }
+
+        [Reactive] public MidiPanelViewModel MidiPanelViewModel { get; set; }
+
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
         public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer,
             StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator,
-            BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository,LogViewModel logViewModel)
+            BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository, LogViewModel logViewModel,
+            MidiInputManager midiInputManager)
         {
             _stellaServer = stellaServer;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
@@ -66,9 +71,15 @@ namespace StellaServer
             AnimationCreationViewModel.Save.Subscribe(onNext => AnimationsPanelViewModel.AddItem(onNext));
             AnimationCreationViewModel.Start.Subscribe(onNext => StartAnimation(null, onNext));
             AnimationCreationViewModel.Back.Subscribe(onNext => SelectedViewModel = NavigationViewModel);
+
+            if (midiInputManager != null)
+            {
+                MidiPanelViewModel = new MidiPanelViewModel(4, 4, 14, midiInputManager); //TODO configurable midi buttons
+            }
             
             NavigationViewModel = new NavigationViewModel();
             NavigationViewModel.NavigateToCreateAnimation.Subscribe(onNext => SelectedViewModel = AnimationCreationViewModel);
+            NavigationViewModel.NavigateToMidiPanel.Subscribe(onNext => SelectedViewModel = MidiPanelViewModel);
             SelectedViewModel = NavigationViewModel;
         }
 
