@@ -16,6 +16,7 @@ namespace StellaServerLib
 
         private long[] _nextRenderAllowedAtperPi;
         private long _minimumTicksPerFrame;
+        private IAnimator _animator;
 
         public ClientController(IServer server, int maximumFrameRate, int numberOfClients)
         {
@@ -34,35 +35,23 @@ namespace StellaServerLib
 
         private void MainLoop()
         {
-            FrameMetadata frameMetadata = null;
             while (!_isDisposed)
             {
-                AnimationWithStartingTime animationWithStartingTime = _animationWithStartingTime;
-                if (animationWithStartingTime == null)
-                {
-                    // No animation on display.
-                    continue;
-                }
-
-                // Check if there is a frame available
-                if (!animationWithStartingTime.Animator.TryPeek(ref frameMetadata))
+                // Check if there is an animator
+                IAnimator animator = _animator;
+                if (animator == null)
                 {
                     continue;
                 }
 
-
-                // Check if we should display the frame now.
-                long now = Environment.TickCount;
-                long renderNextFrameAt = animationWithStartingTime.StartAtTicks + frameMetadata.TimeStampRelative;
-                if (now < renderNextFrameAt)
+                // Check if there is a frame available.
+                if (!animator.TryGetFramePerClient(out FrameWithoutDelta[] frames))
                 {
-                    // render will happen in other loop
                     continue;
                 }
-
+                
                 // Render.
-                SendRenderFrame(frameMetadata.Frames);
-                frameMetadata = null; // set back to null so the animator will calculate the next frame.
+                SendRenderFrame(frames);
             }
         }
 
@@ -86,24 +75,10 @@ namespace StellaServerLib
         /// 
         /// </summary>
         /// <param name="animator">The animator to retrieve frames from</param>
-        /// <param name="startAtTicks">The environment.TickCount at which to start the animation</param>
-        public void StartAnimation(IAnimator animator, long startAtTicks)
+        public void StartAnimation(IAnimator animator)
         {
-            lock(_frameSetLock)
-            {
-                if (_animationWithStartingTime != null)
-                {
-                    _animationWithStartingTime.Animator.TimeResetRequested -= AnimatorOnTimeResetRequested;
-                }
-
-                animator.TimeResetRequested += AnimatorOnTimeResetRequested;
-                _animationWithStartingTime = new AnimationWithStartingTime(animator, startAtTicks);
-            }
-        }
-
-        private void AnimatorOnTimeResetRequested(object sender, EventArgs e)
-        {
-            _animationWithStartingTime = new AnimationWithStartingTime(_animationWithStartingTime.Animator, Environment.TickCount);
+            animator.StartAnimation(Environment.TickCount);
+            _animator = animator;
         }
 
         public void Dispose()

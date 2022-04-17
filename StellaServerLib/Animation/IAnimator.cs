@@ -19,9 +19,8 @@ namespace StellaServerLib.Animation
 
         StoryboardTransformationController StoryboardTransformationController { get; }
 
-        /// <summary>
-        /// Fired when the next storyboard starts an the startAt time needs to be reset. // TODO should no be needed, put the startAt inside the Animator
-        /// </summary>
-        event EventHandler TimeResetRequested;
+        bool TryGetFramePerClient(out FrameWithoutDelta[] frames);
+
+        void StartAnimation(int tickCount);
     }
 }

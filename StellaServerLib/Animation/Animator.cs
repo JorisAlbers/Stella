@@ -22,9 +22,8 @@ namespace StellaServerLib.Animation
         private IFrameProvider _frameProvider;
 
         [Reactive] public StoryboardTransformationController StoryboardTransformationController { get; private set; }
-        public event EventHandler TimeResetRequested;
 
-        /// <summary>
+        /// <summary>+
         /// CTOR
         /// </summary>s
         /// <param name="playList"></param>
@@ -70,7 +69,7 @@ namespace StellaServerLib.Animation
 
                         // Play
                         // TODO race condition
-                        OnTimeResetRequested();
+                        _startAtTicks = Environment.TickCount;
                         _frameProvider = nextFrameProvider;
                         StoryboardTransformationController = controller;
 
@@ -80,7 +79,60 @@ namespace StellaServerLib.Animation
             }
         }
 
-        
+        private FrameWithoutDelta[] _preparedFramePerClient;
+        private long _startAtTicks;
+
+
+        public bool TryGetFramePerClient(out FrameWithoutDelta[] frames)
+        {
+            if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
+            {
+                frames = null; // TODO adjust timestamprelative
+                return false;
+            }
+
+            IFrameProvider frameProvider = _frameProvider;
+            if (frameProvider == null) // animations are off. 
+            {
+                frames = null;
+                return false;
+            }
+
+            if (frameProvider.Current == null || // No frame was prepared.
+                _preparedFramePerClient == null) // The previous frame was consumed
+            {
+                frameProvider.MoveNext();
+                if (frameProvider.Current == null) // Give up. Maybe at a later time the provider has frames available.
+                {
+                    frames = null;
+                    return false;
+                }
+                
+                // Separate frame over clients
+                _preparedFramePerClient = GetFrames(frameProvider.Current);
+            }
+
+            // Check if we should display the frame now.
+            long now = Environment.TickCount;
+            long renderNextFrameAt = _startAtTicks + frameProvider.Current.TimeStampRelative;
+            if (now < renderNextFrameAt)
+            {
+                // render will happen in other loop
+                frames = null;
+                return false;
+            }
+            
+            // We need to draw NOW!
+            frames = _preparedFramePerClient;
+            _preparedFramePerClient = null;
+            return true;
+        }
+
+        public void StartAnimation(int startAt)
+        {
+            _startAtTicks = startAt;
+        }
+
         public bool TryPeek(ref FrameMetadata previous)
         {
             if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
@@ -136,11 +188,6 @@ namespace StellaServerLib.Animation
             FrameWithoutDelta[] frames = OverlayWithCurrentFrame(framePerPi);
             
             return frames;
-        }
-
-        private void OnTimeResetRequested()
-        {
-            TimeResetRequested?.Invoke(this,new EventArgs());
         }
 
         private Frame[] SplitFrameOverPis(Frame combinedFrame, List<PiMaskItem> mask)

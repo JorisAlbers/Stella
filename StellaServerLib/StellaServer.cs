@@ -83,6 +83,8 @@ namespace StellaServerLib
                 {
                     // Create the animation on a new task
                     Animator = await Task.Run(() => _animatorCreator.Create(playList));
+                    _clientController.StartAnimation(Animator);
+                    oldAnimator?.Dispose();
                     // Release the lock
                     Interlocked.Exchange(ref _loadingAnimation, 0);
                 }
@@ -96,9 +98,6 @@ namespace StellaServerLib
             {
                 throw new Exception("Failed to create new animator.", e);
             }
-
-            _clientController.StartAnimation(Animator, Environment.TickCount); // TODO variable startAT
-            oldAnimator?.Dispose();
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)
