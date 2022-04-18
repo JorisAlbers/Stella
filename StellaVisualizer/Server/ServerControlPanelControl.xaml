@@ -24,9 +24,9 @@
 
         <UniformGrid Grid.Row="1" Rows="1" Background="LightSalmon">
             <Slider Orientation="Vertical" Minimum="1" Maximum="250" Value="{Binding MasterWaitMs}"/>
-            <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterRedCorrection}"/>
-            <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterGreenCorrection}"/>
-            <Slider Orientation="Vertical" Minimum="-1.0" Maximum="0.0"  Value="{Binding MasterBlueCorrection}"/>
+            <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterRedCorrection}"/>
+            <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterGreenCorrection}"/>
+            <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterBlueCorrection}"/>
 
         </UniformGrid>
 
