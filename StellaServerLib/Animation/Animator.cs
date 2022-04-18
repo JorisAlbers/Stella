@@ -96,7 +96,7 @@ namespace StellaServerLib.Animation
                     _currentPauseStarted = Environment.TickCount;
                 }
                 
-                frames = null; // TODO adjust timestamprelative
+                frames = null;
                 return false;
             }
 
