@@ -70,6 +70,8 @@ namespace StellaServerLib.Animation
                         // Play
                         // TODO race condition
                         _startAtTicks = Environment.TickCount;
+                        _ticksPaused = 0;
+                        _currentPauseStarted = 0;
                         _frameProvider = nextFrameProvider;
                         StoryboardTransformationController = controller;
 
@@ -82,13 +84,28 @@ namespace StellaServerLib.Animation
         private FrameWithoutDelta[] _preparedFramePerClient;
         private long _startAtTicks;
 
+        private long _ticksPaused = 0;
+        private long _currentPauseStarted = 0;
 
         public bool TryGetFramePerClient(out FrameWithoutDelta[] frames)
         {
             if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
             {
+                if (_currentPauseStarted == 0)
+                {
+                    _currentPauseStarted = Environment.TickCount;
+                }
+                
                 frames = null; // TODO adjust timestamprelative
                 return false;
+            }
+
+            // Adjust the time paused, this will make sure the next frames after the pause have more or less the correct timing.
+            // TODO instead of using a timestamp relative to the start of the animation, use a timestamp relative to the previous frame.
+            if (_currentPauseStarted != 0)
+            {
+                _ticksPaused += Environment.TickCount - _currentPauseStarted;
+                _currentPauseStarted = 0;
             }
 
             IFrameProvider frameProvider = _frameProvider;
@@ -114,7 +131,7 @@ namespace StellaServerLib.Animation
 
             // Check if we should display the frame now.
             long now = Environment.TickCount;
-            long renderNextFrameAt = _startAtTicks + frameProvider.Current.TimeStampRelative;
+            long renderNextFrameAt = _startAtTicks + _ticksPaused + frameProvider.Current.TimeStampRelative;
             if (now < renderNextFrameAt)
             {
                 // render will happen in other loop
