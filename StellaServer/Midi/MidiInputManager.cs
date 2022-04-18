@@ -72,8 +72,9 @@ namespace StellaServer.Midi
             {
                 case 2: // BRIGHTNESS
                 {
-                    _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(ConvertToBrightnessScale(controlChangeEvent.ControllerValue));
-                        break;
+                    _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(
+                        ConvertToBrightnessScale(controlChangeEvent.ControllerValue));
+                    break;
                 }
 
                 case 9: // SPEED
@@ -129,13 +130,25 @@ namespace StellaServer.Midi
                     {
                         return;
                     }
-                    
+
                     _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[3]
                     {
                         master.RgbFadeCorrection[0],
                         master.RgbFadeCorrection[1],
                         ConvertControllerValueToPercentage(controlChangeEvent.ControllerValue),
                     });
+                }
+                    break;
+                case 14: // PAUZE
+                {
+                    var master = _stellaServer.Animator?.StoryboardTransformationController.Settings.MasterSettings;
+                    if (master == null)
+                    {
+                        return;
+                    }
+
+                    _stellaServer.Animator.StoryboardTransformationController.SetIsPaused(
+                        controlChangeEvent.ControllerValue == 127);
                 }
                     break;
             }

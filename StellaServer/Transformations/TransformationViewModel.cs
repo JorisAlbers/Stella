@@ -93,6 +93,14 @@ namespace StellaServer.Transformations
             {
                 _stellaServer.Animator?.StoryboardTransformationController.SetIsPaused(x);
             });
+
+            this.WhenAnyValue(x => x._stellaServer.Animator.StoryboardTransformationController.Settings.MasterSettings
+                .IsPaused)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    ShouldPause = x;
+                });
         }
 
         private float[] IntegerCorrectionToFloatCorrection(int[] i)
