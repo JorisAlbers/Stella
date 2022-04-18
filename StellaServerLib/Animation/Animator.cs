@@ -87,18 +87,48 @@ namespace StellaServerLib.Animation
         private long _ticksPaused = 0;
         private long _currentPauseStarted = 0;
 
+        private AnimationTransformationSettings _previousMasterSettings;
+
         public bool TryGetFramePerClient(out FrameWithoutDelta[] frames)
         {
-            if (StoryboardTransformationController.Settings.MasterSettings.IsPaused)
+            var masterSettings = StoryboardTransformationController.Settings.MasterSettings;
+
+            if (masterSettings.IsPaused)
             {
                 if (_currentPauseStarted == 0)
                 {
                     _currentPauseStarted = Environment.TickCount;
                 }
-                
-                frames = null;
-                return false;
+
+                if (masterSettings == _previousMasterSettings)
+                {
+                    // The transformation did not change.
+                    frames = null;
+                    return false;
+                }
+
+                // We need to redraw the frame as the transformation settings changed.
+                IFrameProvider frameProvider1 = _frameProvider;
+                if (frameProvider1 == null) // animations are off. 
+                {
+                    frames = null;
+                    return false;
+                }
+
+                frameProvider1.RedrawCurrent();
+                if (frameProvider1.Current == null) // Give up. Maybe at a later time the provider has frames available.
+                {
+                    frames = null;
+                    return false;
+                }
+
+                _previousMasterSettings = masterSettings;
+                // Separate frame over clients.
+                frames = GetFrames(frameProvider1.Current);
+                return true;
             }
+
+            _previousMasterSettings = masterSettings;
 
             // Adjust the time paused, this will make sure the next frames after the pause have more or less the correct timing.
             // TODO instead of using a timestamp relative to the start of the animation, use a timestamp relative to the previous frame.

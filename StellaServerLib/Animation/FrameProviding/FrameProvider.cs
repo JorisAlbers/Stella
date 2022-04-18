@@ -19,6 +19,7 @@ namespace StellaServerLib.Animation.FrameProviding
         private readonly int _timeUnitMs;
         private readonly int[] _relativeStartingTimestamps;
         private readonly int _firstTimestamp;
+        private List<PixelInstructionWithDelta>[] _previousInstructionsPerProvider;
 
         private int[] _timestamps;
         private int   _frameIndex;
@@ -36,6 +37,8 @@ namespace StellaServerLib.Animation.FrameProviding
             _timeUnitMs = timeUnitMs;
             _relativeStartingTimestamps = new []{0};
             _timestamps = new int[1];
+            _previousInstructionsPerProvider = new List<PixelInstructionWithDelta>[_drawers.Length];
+
             _drawers[0].MoveNext();
         }
 
@@ -53,6 +56,7 @@ namespace StellaServerLib.Animation.FrameProviding
             _firstTimestamp = relativeStartingTimestamps.Min();
             _timeUnitMs = timeUnitMs;
             _timestamps = new int[drawers.Length];
+            _previousInstructionsPerProvider = new List<PixelInstructionWithDelta>[_drawers.Length];
 
             // Initialize frames
             for (int i = 0; i < _drawers.Length; i++)
@@ -89,6 +93,7 @@ namespace StellaServerLib.Animation.FrameProviding
             return sectionIndexes;
         }
 
+
         public bool MoveNext()
         {
             // Get the storyboard animation transformation
@@ -108,10 +113,19 @@ namespace StellaServerLib.Animation.FrameProviding
             int deltaWithOverallTimestamp = timestampFirstDrawer - _firstTimestamp;
             Frame frame = new Frame(_frameIndex, deltaWithOverallTimestamp);
 
+            var previousInstructionsPerProvider = new List<PixelInstructionWithDelta>[_previousInstructionsPerProvider.Length];
+            for (int i = 0; i < _previousInstructionsPerProvider.Length; i++)
+            {
+                previousInstructionsPerProvider[i] = _previousInstructionsPerProvider[i];
+            }
+            
+
             // Add the frames of each drawer
             foreach (int providerIndex in providersInNextFrame)
             {
                 List<PixelInstructionWithDelta> instructions = _drawers[providerIndex].Current;
+                previousInstructionsPerProvider[providerIndex] = instructions;
+
                 for (int j = 0; j < instructions.Count; j++)
                 {
                     PixelInstructionWithDelta pixelInstructionWithDelta = instructions[j];
@@ -123,6 +137,8 @@ namespace StellaServerLib.Animation.FrameProviding
                     frame.Add(pixelInstructionWithDelta);
                 }
             }
+
+            _previousInstructionsPerProvider = previousInstructionsPerProvider;
 
             Current = frame;
 
@@ -137,6 +153,49 @@ namespace StellaServerLib.Animation.FrameProviding
             _frameIndex++;
             return true;
         }
+
+        public bool RedrawCurrent()
+        {
+            Frame current = Current;
+
+            if (current == null)
+            {
+                return false;
+            }
+
+            // Get the storyboard animation transformation
+            StoryboardTransformationSettings animationTransformation = _transformationController.Settings;
+
+            var previousInstructions = _previousInstructionsPerProvider;
+
+            // Add the frames of each drawer
+            Frame frame = new Frame(_frameIndex, current.TimeStampRelative);
+
+            for (var providerIndex = 0; providerIndex < previousInstructions.Length; providerIndex++)
+            {
+                if (previousInstructions[providerIndex] == null)
+                {
+                    continue;
+                }
+
+                var instructions = previousInstructions[providerIndex];
+                for (int j = 0; j < instructions.Count; j++)
+                {
+                    PixelInstructionWithDelta pixelInstructionWithDelta = instructions[j];
+                    (byte red, byte green, byte blue) = animationTransformation.AdjustColor(providerIndex,
+                        pixelInstructionWithDelta.R,
+                        pixelInstructionWithDelta.G, pixelInstructionWithDelta.B);
+                    pixelInstructionWithDelta.R = red;
+                    pixelInstructionWithDelta.G = green;
+                    pixelInstructionWithDelta.B = blue;
+                    frame.Add(pixelInstructionWithDelta);
+                }
+            }
+
+            Current = frame;
+            return true;
+        }
+
 
         public void Reset()
         {
