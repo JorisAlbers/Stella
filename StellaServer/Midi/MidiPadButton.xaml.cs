@@ -36,6 +36,17 @@ namespace StellaServer.Midi
                         view => view.PadBorder.Background,
                         x => x ? new SolidColorBrush(Colors.Red) : null)
                     .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.Bpm,
+                        view => view.BpmTextBlock.Text)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.Mode,
+                        view => view.BpmTextBlock.Visibility,
+                        mode => mode == MdiPadMode.BpmMeasurement ? Visibility.Visible : Visibility.Collapsed)
+                    .DisposeWith(d);
             });
         }
     }
