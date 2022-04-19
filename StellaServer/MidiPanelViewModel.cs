@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
+using System.Windows.Input;
 using DynamicData;
 using MaterialDesignThemes.Wpf;
 using ReactiveUI;
@@ -19,12 +21,16 @@ namespace StellaServer
 
         public MidiPadButtonViewModel[] Pads { get; }
 
+        public MidiPadButtonViewModel BpmStartPadButtonViewModel { get; }
 
         public MidiPanelViewModel(int rows, int columns, int controllerStartIndex, MidiInputManager midiInputManager)
         {
             _midiInputManager = midiInputManager;
             Rows = rows;
             Columns = columns;
+
+            BpmStartPadButtonViewModel = new MidiPadButtonViewModel(controllerStartIndex + 14, MdiPadMode.BpmStart);
+
             var pads = new List<MidiPadButtonViewModel>
             {
                 new MidiPadButtonViewModel(controllerStartIndex + 0, MdiPadMode.StartAnimation),
@@ -44,10 +50,10 @@ namespace StellaServer
 
                 new MidiPadButtonViewModel(controllerStartIndex + 12, MdiPadMode.StartAnimation),
                 new MidiPadButtonViewModel(controllerStartIndex + 13, MdiPadMode.StartAnimation),
-                new MidiPadButtonViewModel(controllerStartIndex + 14, MdiPadMode.StartAnimation),
+                BpmStartPadButtonViewModel,
                 new MidiPadButtonViewModel(controllerStartIndex + 15, MdiPadMode.BpmMeasurement),
             };
-            
+
             Pads = pads.ToArray();
 
             midiInputManager.PadPressed.Subscribe(x =>
@@ -67,14 +73,26 @@ namespace StellaServer
 
         [Reactive] public bool KeyDown { get; private set; }
 
+        public ReactiveCommand<Unit,BpmTransformationSettings> StartBpmTransformation { get; set; }
+
         public MidiPadButtonViewModel(int controller, MdiPadMode mode)
         {
             Controller = controller;
             Mode = mode;
+
+            if (mode == MdiPadMode.BpmStart)
+            {
+                StartBpmTransformation = ReactiveCommand.Create(() =>
+                {
+                    return new BpmTransformationSettings(Bpm, _lastTickAt);
+                });
+            }
+
         }
 
         private Stopwatch _stopwatch;
         private List<TimeSpan> _measurements = new List<TimeSpan>();
+        private long _lastTickAt;
 
         public void PadPressed(PadPressedEvent padPressedEvent)
         {
@@ -82,6 +100,7 @@ namespace StellaServer
 
             if (Mode == MdiPadMode.BpmMeasurement && KeyDown)
             {
+                _lastTickAt = Environment.TickCount64;
                 if (_stopwatch == null)
                 {
                     _stopwatch = new Stopwatch();
@@ -126,6 +145,19 @@ namespace StellaServer
         NotSet,
         StartAnimation,
         BpmMeasurement,
+        BpmStart,
+    }
+
+    public class BpmTransformationSettings
+    {
+        public double Bpm { get; }
+        public long LastTickAt { get; }
+
+        public BpmTransformationSettings(double bpm, long lastTickAt)
+        {
+            Bpm = bpm;
+            LastTickAt = lastTickAt;
+        }
     }
 
 

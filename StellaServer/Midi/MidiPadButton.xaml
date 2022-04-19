@@ -15,6 +15,12 @@
                 <TextBlock x:Name="ControllerIndexTextBlock" DockPanel.Dock="Top"/>
 
                 <TextBlock x:Name="BpmTextBlock" DockPanel.Dock="Bottom"/>
+
+                <Button x:Name="PlayButton" 
+                        DockPanel.Dock="Top"/>
+
+            
+
             </DockPanel>
 
             
