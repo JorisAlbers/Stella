@@ -20,6 +20,8 @@ namespace StellaServer.Midi
         public ReactiveCommand<PadPressedEvent, PadPressedEvent> PadPressed { get; } =
             ReactiveCommand.Create<PadPressedEvent, PadPressedEvent>(e => e);
 
+        public ReactiveCommand<Unit, Unit> Stop { get; } = ReactiveCommand.Create<Unit, Unit>((_) => Unit.Default);
+
 
         public MidiInputManager(int deviceIndex)
         {
@@ -144,6 +146,14 @@ namespace StellaServer.Midi
 
                     _stellaServer.Animator.StoryboardTransformationController.SetIsPaused(
                         controlChangeEvent.ControllerValue == 127);
+                }
+                    break;
+                case 40: // STOP
+                {
+                    if (controlChangeEvent.ControllerValue == 127)
+                    {
+                        Stop.Execute().Subscribe().Dispose();
+                    }
                 }
                     break;
             }

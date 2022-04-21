@@ -82,6 +82,10 @@ namespace StellaServer
                 {
                     StartAnimation(null, x);
                 });
+                midiInputManager.Stop.Subscribe(x =>
+                {
+                    StartAnimation(null, FindStopAnimation());
+                });
             }
             
             NavigationViewModel = new NavigationViewModel();
@@ -109,6 +113,8 @@ namespace StellaServer
                 });
             }
         }
+
+        
 
         private IAnimation FindStopAnimation()
         {
