@@ -32,6 +32,11 @@ namespace StellaServer.Midi
                     .DisposeWith(d);
 
                 this.OneWayBind(ViewModel,
+                        vm => vm.AnimationName,
+                        view => view.AnimationNameTextBlock.Text)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
                         vm => vm.KeyDown,
                         view => view.PadBorder.Background,
                         x => x ? new SolidColorBrush(Colors.Red) : null)

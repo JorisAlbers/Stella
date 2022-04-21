@@ -37,6 +37,8 @@ namespace StellaServer
             _stellaServer = stellaServer;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
             AnimationsPanelViewModel.StartAnimationRequested += StartAnimation;
+            AnimationsPanelViewModel.SendToPadRequested += AnimationsPanelViewModel_OnSendToPadRequested;
+
             this.WhenAnyValue(x => x.AnimationsPanelViewModel.SelectedAnimation)
                 .Subscribe(onNext =>
                     {
@@ -81,6 +83,11 @@ namespace StellaServer
             NavigationViewModel.NavigateToCreateAnimation.Subscribe(onNext => SelectedViewModel = AnimationCreationViewModel);
             NavigationViewModel.NavigateToMidiPanel.Subscribe(onNext => SelectedViewModel = MidiPanelViewModel);
             SelectedViewModel = NavigationViewModel;
+        }
+
+        private void AnimationsPanelViewModel_OnSendToPadRequested(object? sender, SendToPadEventArgs e)
+        {
+            MidiPanelViewModel.SetAnimationToPad(e.Animation, e.Pad);
         }
 
         private void StartAnimation(object sender, IAnimation e)

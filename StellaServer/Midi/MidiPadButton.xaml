@@ -11,7 +11,12 @@
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Border x:Name="PadBorder"
             BorderBrush="White" BorderThickness="1" CornerRadius="3">
-            <TextBlock x:Name="ControllerIndexTextBlock"/>
+            <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True">
+                <TextBlock x:Name="ControllerIndexTextBlock" DockPanel.Dock="Top"/>
+
+                <TextBlock x:Name="AnimationNameTextBlock" DockPanel.Dock="Bottom" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </DockPanel>
+           
             
         </Border>
     </Grid>
