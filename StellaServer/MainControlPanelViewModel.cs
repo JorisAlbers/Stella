@@ -77,6 +77,10 @@ namespace StellaServer
             if (midiInputManager != null)
             {
                 MidiPanelViewModel = new MidiPanelViewModel(4, 4, 10, midiInputManager); //TODO configurable midi buttons
+                MidiPanelViewModel.StartAnimation.Subscribe(x =>
+                {
+                    StartAnimation(null, x);
+                });
             }
             
             NavigationViewModel = new NavigationViewModel();

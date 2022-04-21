@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive;
 using DynamicData;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -17,6 +18,8 @@ namespace StellaServer
 
 
         public MidiPadButtonViewModel[] Pads { get; }
+
+        public ReactiveCommand<IAnimation, IAnimation> StartAnimation { get; }
 
 
         public MidiPanelViewModel(int rows, int columns, int controllerStartIndex, MidiInputManager midiInputManager)
@@ -39,8 +42,21 @@ namespace StellaServer
 
             midiInputManager.PadPressed.Subscribe(x =>
             {
-                Pads[x.ControllerIndex - controllerStartIndex].PadPressed(x);
+                var viewmodel = Pads[x.ControllerIndex - controllerStartIndex];
+                viewmodel.PadPressed(x);
+
+
+                if (!viewmodel.KeyDown && viewmodel.AnimationName != null)
+                {
+                    StartAnimation.Execute(viewmodel.Animation).Subscribe().Dispose();
+                }
             });
+
+            StartAnimation = ReactiveCommand.Create<IAnimation, IAnimation>(unit =>
+            {
+                return unit;
+            });
+
 
         }
 
@@ -52,13 +68,14 @@ namespace StellaServer
 
     public class MidiPadButtonViewModel : ReactiveObject
     {
-        private IAnimation _animation;
 
         public int Controller { get; }
 
         [Reactive] public bool KeyDown { get; private set; }
 
         [Reactive] public string AnimationName { get;private set; }
+        
+        [Reactive] public IAnimation Animation { get; private set; }
 
         public MidiPadButtonViewModel(int controller)
         {
@@ -72,8 +89,8 @@ namespace StellaServer
 
         public void SetAnimation(IAnimation animation)
         {
-            _animation = animation;
-            AnimationName = _animation.Name;
+            Animation = animation;
+            AnimationName = Animation.Name;
         }
     }
 }
