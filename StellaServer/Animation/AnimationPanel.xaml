@@ -11,6 +11,9 @@
     mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ListView x:Name="StoryboardListView"/>
+        <ListView x:Name="StoryboardListView" 
+                  VirtualizingPanel.IsVirtualizing="False">
+
+        </ListView>
     </Grid>
 </reactiveUi:ReactiveUserControl >
