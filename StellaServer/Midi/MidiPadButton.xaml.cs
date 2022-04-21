@@ -47,11 +47,6 @@ namespace StellaServer.Midi
                         view => view.BpmTextBlock.Visibility,
                         mode => mode == MdiPadMode.BpmMeasurement ? Visibility.Visible : Visibility.Collapsed)
                     .DisposeWith(d);
-
-                this.BindCommand(ViewModel,
-                        vm => vm.StartBpmTransformation,
-                        view => view.PlayButton)
-                    .DisposeWith(d);
             });
         }
     }
