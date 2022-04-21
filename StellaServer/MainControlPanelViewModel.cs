@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
@@ -101,8 +102,17 @@ namespace StellaServer
             StatusViewModel.AnimationStarted(e);
             if (TransformationViewModel == null)
             {
-                TransformationViewModel = new TransformationViewModel(_stellaServer);
+                TransformationViewModel = new TransformationViewModel(_stellaServer, FindStopAnimation());
+                TransformationViewModel.Stop.Subscribe(x =>
+                {
+                    StartAnimation(null, FindStopAnimation());
+                });
             }
+        }
+
+        private IAnimation FindStopAnimation()
+        {
+            return AnimationsPanelViewModel.Items.FirstOrDefault(x => x.Name == "Clear")?.Animation;
         }
     }
 }

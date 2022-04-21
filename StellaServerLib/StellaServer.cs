@@ -100,13 +100,6 @@ namespace StellaServerLib
             }
         }
 
-        public void StopAnimation()
-        {
-            IAnimator oldAnimator = Animator;
-            _clientController.StopAnimation();
-            oldAnimator.Dispose();
-        }
-
         private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)
         {
             try

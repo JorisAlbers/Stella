@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServerLib.Animation;
 
 namespace StellaServer.Transformations
 {
@@ -27,7 +28,7 @@ namespace StellaServer.Transformations
         /// TODO this one only adjust the master now, also add other animations
         /// </summary>
         /// <param name="stellaServer"></param>
-        public TransformationViewModel(StellaServerLib.StellaServer stellaServer)
+        public TransformationViewModel(StellaServerLib.StellaServer stellaServer, IAnimation clearAnimation)
         {
             _stellaServer = stellaServer;
 
@@ -93,7 +94,7 @@ namespace StellaServer.Transformations
 
             this.Stop = ReactiveCommand.Create(() =>
             {
-                _stellaServer.StopAnimation();
+
             });
 
             this.WhenAnyValue(x => x.ShouldPause).Subscribe(x =>
