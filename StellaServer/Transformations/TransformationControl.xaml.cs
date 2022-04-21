@@ -56,6 +56,11 @@ namespace StellaServer.Transformations
                     view => view.ResetButton)
                     .DisposeWith(disposableRegistration);
 
+                this.BindCommand(ViewModel,
+                        viewmodel => viewmodel.Stop,
+                        view => view.StopButton)
+                    .DisposeWith(disposableRegistration);
+
                 this.Bind(ViewModel,
                     vm => vm.ShouldPause,
                     view => view.PauseButton.IsChecked);

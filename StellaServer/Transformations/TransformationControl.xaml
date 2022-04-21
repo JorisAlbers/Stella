@@ -86,8 +86,12 @@
 
         </Grid>
 
-        <Button x:Name="ResetButton" >
+        <Button x:Name="ResetButton" ToolTip="Reset all transformations" >
             <materialDesign:PackIcon Kind="Refresh"/>
+        </Button>
+
+        <Button x:Name="StopButton" ToolTip="Stop the animation" Margin="5,0" >
+            <materialDesign:PackIcon Kind="Stop"/>
         </Button>
 
 

@@ -85,6 +85,11 @@ namespace StellaServerLib
         {
             _isDisposed = true;
         }
+
+        public void StopAnimation()
+        {
+            _animator = null;
+        }
     }
 
     internal class AnimationWithStartingTime

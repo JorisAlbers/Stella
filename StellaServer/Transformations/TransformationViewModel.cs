@@ -19,6 +19,8 @@ namespace StellaServer.Transformations
         [Reactive] public int TimeUnitsPerFrame { get; set; } = 10;
 
         public ReactiveCommand<Unit,Unit> Reset { get; }
+        public ReactiveCommand<Unit,Unit> Stop { get; }
+
         [Reactive] public bool ShouldPause { get; set; }
 
         /// <summary>
@@ -87,6 +89,11 @@ namespace StellaServer.Transformations
                 BlueCorrection = 100;
                 BrightnessCorrection = 0;
                 TimeUnitsPerFrame = 10;
+            });
+
+            this.Stop = ReactiveCommand.Create(() =>
+            {
+                _stellaServer.StopAnimation();
             });
 
             this.WhenAnyValue(x => x.ShouldPause).Subscribe(x =>
