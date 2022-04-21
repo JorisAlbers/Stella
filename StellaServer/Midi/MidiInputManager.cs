@@ -134,7 +134,7 @@ namespace StellaServer.Midi
                     });
                 }
                     break;
-                case 14: // PAUZE
+                case 63: // PAUZE
                 {
                     var master = _stellaServer.Animator?.StoryboardTransformationController.Settings.MasterSettings;
                     if (master == null)
