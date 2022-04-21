@@ -12,15 +12,10 @@ namespace StellaServer.Midi
     {
         private const float _RGB_CONVERSION_RATIO = 100.0f / 127.0f / 100.0f;
         private const float _BRIGHTNESS_CONVERSION_RATIO = 2.0f / 127.0f;
-        private const float _SPEED_RATIO = 1.5f;
 
         private readonly int _deviceIndex;
         private MidiIn _midiIn;
         private StellaServerLib.StellaServer _stellaServer;
-
-        [Reactive] public float RedCorrection { get; set; }
-        [Reactive] public float GreenCorrection { get; set; }
-        [Reactive] public float BlueCorrection { get; set; }
 
         public ReactiveCommand<PadPressedEvent, PadPressedEvent> PadPressed { get; } =
             ReactiveCommand.Create<PadPressedEvent, PadPressedEvent>(e => e);
