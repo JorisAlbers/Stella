@@ -13,6 +13,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServer.Animation;
 using StellaServer.Log;
+using StellaServer.Midi;
 using StellaServer.Setup;
 using StellaServerLib;
 
@@ -31,7 +32,7 @@ namespace StellaServer
 
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
         [Reactive] public LogViewModel LogViewModel { get; set; }
-        
+
         public MainWindowViewModel()
         {
             LogViewModel = new LogViewModel();
@@ -54,7 +55,7 @@ namespace StellaServer
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  480, 3, 2); // TODO get these magic values from the config
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
-            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel);
+            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

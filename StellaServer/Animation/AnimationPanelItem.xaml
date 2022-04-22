@@ -8,12 +8,23 @@
              xmlns:local="clr-namespace:StellaServer.Animation"
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" >
-    <DockPanel LastChildFill="True">
+             mc:Ignorable="d">
+    <DockPanel LastChildFill="True" 
+               HorizontalAlignment="Stretch">
+        <DockPanel.ContextMenu>
+            <ContextMenu>
+<!--TODO proper binding and dynamic pad numbers-->
+                <MenuItem x:Name="SendToPad1MenuItem" Header="Send to pad 10" Click="SendToPad1MenuItem_OnClick"/>
+                <MenuItem x:Name="SendToPad2MenuItem" Header="Send to pad 11" Click="SendToPad2MenuItem_OnClick"/>
+                <MenuItem x:Name="SendToPad3MenuItem" Header="Send to pad 12" Click="SendToPad3MenuItem_OnClick"/>
+                <MenuItem x:Name="SendToPad4MenuItem" Header="Send to pad 13" Click="SendToPad4MenuItem_OnClick"/>
+            </ContextMenu>
+        </DockPanel.ContextMenu>
+
         <Button x:Name="StartButton" 
                 ToolTip="Icon"
                 DockPanel.Dock="Left" Height="25" Width="30" Padding="0"
-                >
+        >
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="Content" Value="{materialDesign:PackIcon Play}"/>

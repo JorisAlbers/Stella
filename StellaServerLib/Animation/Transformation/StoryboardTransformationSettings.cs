@@ -6,7 +6,7 @@ namespace StellaServerLib.Animation.Transformation
 {
     public class StoryboardTransformationSettings
     {
-        public AnimationTransformationSettings MasterSettings { get; private set; }
+        public AnimationTransformationSettings MasterSettings { get; }
         public AnimationTransformationSettings[] AnimationSettings{ get; }
 
         public StoryboardTransformationSettings(AnimationTransformationSettings masterSettings, AnimationTransformationSettings[] animationSettings)

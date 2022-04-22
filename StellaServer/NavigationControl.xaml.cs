@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,13 @@ namespace StellaServer
             {
                 this.BindCommand(ViewModel,
                     vm => vm.NavigateToCreateAnimation,
-                    view => view.CreateAnimationButton);
+                    view => view.CreateAnimationButton)
+                    .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                        vm => vm.NavigateToMidiPanel,
+                        view => view.NavigateToMidiPanelButton)
+                    .DisposeWith(disposable);
             });
         }
     }

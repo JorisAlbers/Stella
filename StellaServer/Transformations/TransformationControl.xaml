@@ -10,6 +10,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800">
     <DockPanel Margin="50,10" HorizontalAlignment="Center">
+
+        <ToggleButton x:Name="PauseButton">
+            <materialDesign:PackIcon Kind="Pause" />
+        </ToggleButton>
+
         <Grid Width="200">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -29,8 +34,8 @@
                     <Setter Property="TickFrequency" Value="5"/>
                     <Setter Property="Interval" Value="1"/>
                     <Setter Property="IsSnapToTickEnabled" Value="True"/>
-                    <Setter Property="Maximum" Value="0"/>
-                    <Setter Property="Minimum" Value="-100"/>
+                    <Setter Property="Maximum" Value="100"/>
+                    <Setter Property="Minimum" Value="0"/>
                     <Setter Property="Orientation" Value="Vertical"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
                     <Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -73,15 +78,20 @@
                     TickFrequency="1"
                     SmallChange="1"
                     LargeChange="100"/>
-            <TextBlock Text="{Binding ElementName=TimeUnitsPerFrameSlider, Path=Value}"
-                       Grid.Column="4" Grid.Row="1"
+            <TextBlock 
+                x:Name="TimeUnitsPerFrameTextBlock"
+                Grid.Column="4" Grid.Row="1"
                        VerticalAlignment="Top" HorizontalAlignment="Center"/>
 
 
         </Grid>
 
-        <Button x:Name="ResetButton" >
+        <Button x:Name="ResetButton" ToolTip="Reset all transformations" >
             <materialDesign:PackIcon Kind="Refresh"/>
+        </Button>
+
+        <Button x:Name="StopButton" ToolTip="Stop the animation" Margin="5,0" >
+            <materialDesign:PackIcon Kind="Stop"/>
         </Button>
 
 

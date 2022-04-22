@@ -11,6 +11,13 @@
     mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ListView x:Name="StoryboardListView"/>
+        <ListView x:Name="StoryboardListView" 
+                  VirtualizingPanel.IsVirtualizing="False">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </Grid>
 </reactiveUi:ReactiveUserControl >

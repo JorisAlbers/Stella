@@ -9,6 +9,7 @@
     xmlns:setup="clr-namespace:StellaServer.Setup"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:midi="clr-namespace:StellaServer.Midi"
     mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -29,6 +30,11 @@
                         <TextBlock Text="udp port:" 
                                    Margin="10,0,0,0"/>
                         <TextBox x:Name="UdpPortTextBox" 
+                                 Width="50" 
+                                 Margin="10,0,0,0"></TextBox>
+                        <TextBox Text="Remote udp port:"
+                                 Margin="10,0,0,0"/>
+                        <TextBox x:Name="RemoteUdpPortTextBox" 
                                  Width="50" 
                                  Margin="10,0,0,0"></TextBox>
                     </StackPanel>
@@ -66,6 +72,21 @@
                                  Margin="10,0,0,0"/>
                     </StackPanel>
                 </ListViewItem>
+                <ListViewItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Midi device:"/>
+                        <ComboBox x:Name="MidiDevicesComboBox" 
+                                 MinWidth="200"
+                                 Margin="10,0,0,0">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </ListViewItem>
+
             </ListView>
             <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" ></Button>
 

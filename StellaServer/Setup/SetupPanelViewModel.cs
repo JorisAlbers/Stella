@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using System.Reactive;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServer.Midi;
 using StellaServerLib;
 using StellaServerLib.Network;
 
@@ -14,10 +15,13 @@ namespace StellaServer.Setup
         [Reactive] public string ServerIp { get; set; }
         [Reactive] public int ServerTcpPort { get; set; }
         [Reactive] public int ServerUdpPort { get; set; }
+        [Reactive] public int RemoteUdpPort { get; set; }
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public string StoryboardFolder { get; set; }                                                                                                                        
-        [Reactive] public int MaximumFrameRate { get; set; }                                                                                                                        
+        [Reactive] public int MaximumFrameRate { get; set; }           
+        [Reactive] public List<MidiWithIndex> MidiDevices { get; set; }
+        [Reactive] public int SelectedMidiDevice { get; set; }
         [Reactive] public List<string> Errors { get; set; }
 
         public EventHandler<ServerCreatedEventArgs> ServerCreated;
@@ -32,6 +36,7 @@ namespace StellaServer.Setup
                 ServerIp = settings.ServerIp;
                 ServerTcpPort = settings.ServerTcpPort;
                 ServerUdpPort = settings.ServerUdpPort;
+                RemoteUdpPort = settings.RemoteUdpPort;
                 MappingFilePath = settings.MappingFilePath;
                 BitmapFolder = settings.BitmapFolder;
                 StoryboardFolder = settings.StoryboardFolder;
@@ -42,40 +47,63 @@ namespace StellaServer.Setup
                 x => x.ServerIp,
                 x => x.ServerTcpPort,
                 x => x.ServerUdpPort,
+                x => x.RemoteUdpPort,
                 x => x.MappingFilePath,
                 x => x.BitmapFolder,
                 x=> x.StoryboardFolder,
                 x => x.MaximumFrameRate,
-                (serverIp, tcp, udp, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
+                (serverIp, tcp, udp, remoteUdpPort, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
                     !String.IsNullOrWhiteSpace(serverIp) &&
                     !String.IsNullOrWhiteSpace(MappingFilePath) &&
                     tcp != 0 &&
                     udp != 0 &&
+                    remoteUdpPort != 0 &&
                     !String.IsNullOrWhiteSpace(bitmapFolder) &&
                     !String.IsNullOrWhiteSpace(storyboardFolder) &&
                     maximumFrameRate > 1 && maximumFrameRate < 1000
             );
 
+            MidiDevices = GetMidiDevices();
+
             StartCommand = ReactiveCommand.Create(() =>
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
+                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
                 stellaServer.Start();
+
+
+                MidiInputManager midiInputManager = null;
+                if (SelectedMidiDevice > 0)
+                {
+                    // the 0 index indicates no midi device should be used.
+                    midiInputManager = new MidiInputManager(SelectedMidiDevice - 1);
+                    midiInputManager.Start(stellaServer);
+                }
                 
+
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
                 {
                     ServerIp = ServerIp,
                     ServerTcpPort = ServerTcpPort,
                     ServerUdpPort = ServerUdpPort,
+                    RemoteUdpPort = RemoteUdpPort,
                     MappingFilePath = MappingFilePath,
                     BitmapFolder = BitmapFolder,
                     StoryboardFolder = StoryboardFolder,
                     MaximumFrameRate = MaximumFrameRate,
-                }, stellaServer));
+                }, stellaServer, midiInputManager));
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
+        }
+
+        private List<MidiWithIndex> GetMidiDevices()
+        {
+            List<MidiWithIndex> devices = new List<MidiWithIndex>();
+            devices.Add(null);
+            devices.AddRange(MidiInputManager.GetDevices());
+            return devices;
         }
 
         private List<string> GetAllErrorMessages(Exception e)
@@ -95,11 +123,14 @@ namespace StellaServer.Setup
     {
         public ServerSetupSettings Settings { get; }
         public StellaServerLib.StellaServer StellaServer { get; }
+        public MidiInputManager MidiInputManager { get; }
 
-        public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer)
+        public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer,
+            MidiInputManager midiInputManager)
         {
             Settings = settings;
             StellaServer = stellaServer;
+            MidiInputManager = midiInputManager;
         }
     }
 }

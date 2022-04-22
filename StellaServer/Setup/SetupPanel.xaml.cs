@@ -41,6 +41,11 @@ namespace StellaServer.Setup
                     .DisposeWith(disposableRegistration);
 
                 this.Bind(ViewModel,
+                        viewmodel => viewmodel.RemoteUdpPort,
+                        view => view.RemoteUdpPortTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
                         viewmodel => viewmodel.MappingFilePath,
                         view => view.MappingFilePathTextBox.Text)
                     .DisposeWith(disposableRegistration);
@@ -63,6 +68,22 @@ namespace StellaServer.Setup
                 this.BindCommand(ViewModel,
                         viewmodel => viewmodel.StartCommand,
                         view => view.StartButton)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.MidiDevices,
+                        view => view.MidiDevicesComboBox.ItemsSource)
+                    .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.MidiDevices,
+                        view => view.MidiDevicesComboBox.ItemsSource,
+                        c=> c.Select(x=> x== null ? "-" : x.Device.ProductName))
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                    vm => vm.SelectedMidiDevice,
+                    view => view.MidiDevicesComboBox.SelectedIndex)
                     .DisposeWith(disposableRegistration);
 
                 this.OneWayBind(ViewModel,

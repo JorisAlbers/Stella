@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Moq;
 using NUnit.Framework;
@@ -34,7 +35,7 @@ namespace StellaServerLib.Test.Animation
 
             var drawerMock = new Mock<IFrameProvider>();
             int index = -1;
-            drawerMock.Setup(x => x.Current).Returns(()=> frames[index]);
+            drawerMock.Setup(x => x.Current).Returns(()=> index > -1 ? frames[index] : null);
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
@@ -42,16 +43,18 @@ namespace StellaServerLib.Test.Animation
             };
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[]{new AnimationTransformationSettings(0,0,new float[3])});
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[]{new AnimationTransformationSettings(0,0,new float[3], false)});
             frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(),out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[]{new PlayListItem(new Storyboard(), 10)});
-            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(10,1,new float[3]));
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
+            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(10,1,new float[3], false));
+            animator.StartAnimation(1);
 
-            Assert.AreEqual(1, framePerPi.Length);
+            animator.TryGetFramePerClient(out var framesPerClient);
+          
+            Assert.AreEqual(1, framesPerClient.Length);
 
-            FrameWithoutDelta frame = framePerPi[0];
+            FrameWithoutDelta frame = framesPerClient[0];
             Assert.AreEqual(expectedFrameIndex, frame.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame.TimeStampRelative);
             Assert.AreEqual(expectedColor, frame[expectedPixelIndex].ToColor());
@@ -90,7 +93,7 @@ namespace StellaServerLib.Test.Animation
 
             var drawerMock = new Mock<IFrameProvider>();
             int index = -1;
-            drawerMock.Setup(x => x.Current).Returns(() => frames[index]);
+            drawerMock.Setup(x => x.Current).Returns(() => index > -1 ? frames[index] : null);
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
@@ -100,28 +103,30 @@ namespace StellaServerLib.Test.Animation
             };
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[] { new AnimationTransformationSettings(0, 0, new float[3]) });
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[] { new AnimationTransformationSettings(0, 0, new float[3], false) });
             frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>() ,out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
-            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3]));
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
+            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3], false));
+            animator.StartAnimation(1);
+            animator.TryGetFramePerClient(out var framesPerClient);
+           
 
-            Assert.AreEqual(3,framePerPi.Length);
+            Assert.AreEqual(3, framesPerClient.Length);
             // Pi1
-            FrameWithoutDelta frame1 = framePerPi[0];
+            FrameWithoutDelta frame1 = framesPerClient[0];
             Assert.AreEqual(50,frame1.Count);
             Assert.AreEqual(expectedFrameIndex,frame1.Index);
             Assert.AreEqual(expectedRelativeTimeStamp,frame1.TimeStampRelative);
             Assert.AreEqual(expectedColor1,frame1[expectedPixelIndex1].ToColor());
             // Pi1
-            FrameWithoutDelta frame2 = framePerPi[1];
+            FrameWithoutDelta frame2 = framesPerClient[1];
             Assert.AreEqual(50, frame2.Count);
             Assert.AreEqual(expectedFrameIndex, frame2.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame2.TimeStampRelative);
             Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].ToColor());
             // Pi 3
-            FrameWithoutDelta frame3 = framePerPi[2];
+            FrameWithoutDelta frame3 = framesPerClient[2];
             Assert.AreEqual(50, frame3.Count);
             Assert.AreEqual(expectedFrameIndex, frame3.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
@@ -163,7 +168,7 @@ namespace StellaServerLib.Test.Animation
 
             var drawerMock = new Mock<IFrameProvider>();
             int index = -1;
-            drawerMock.Setup(x => x.Current).Returns(() => frames[index]);
+            drawerMock.Setup(x => x.Current).Returns(() => index > -1 ? frames[index] : null);
             drawerMock.Setup(x => x.MoveNext()).Returns(true).Callback(() => index++);
             List<PiMaskItem> mask = new List<PiMaskItem>
             {
@@ -173,31 +178,33 @@ namespace StellaServerLib.Test.Animation
             };
 
             var frameProviderCreatorMock = new Mock<IFrameProviderCreator>();
-            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[] { new AnimationTransformationSettings(0, 0, new float[3]) });
+            StoryboardTransformationController transformationController = new StoryboardTransformationController(new[] { new AnimationTransformationSettings(0, 0, new float[3], false) });
             frameProviderCreatorMock.Setup(x => x.Create(It.IsAny<Storyboard>(), out transformationController)).Returns(drawerMock.Object);
 
             PlayList playList = new PlayList("test", new PlayListItem[] { new PlayListItem(new Storyboard(), 10) });
-            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3]));
+            Animator animator = new Animator(playList, frameProviderCreatorMock.Object, stripLengthPerPi, mask, new AnimationTransformationSettings(5, 1, new float[3], false));
+            animator.StartAnimation(1);
             // Flush first two frames
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] _);
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] _);
+            animator.TryGetFramePerClient(out _);
+            animator.TryGetFramePerClient(out _);
 
             // Assert
-            animator.TryGetNextFramePerPi(out FrameWithoutDelta[] framePerPi);
+            animator.TryGetFramePerClient(out var framesPerClient);
+         
 
-            Assert.AreEqual(3, framePerPi.Length);
+            Assert.AreEqual(3, framesPerClient.Length);
             // Pi1
-            FrameWithoutDelta frame1 = framePerPi[0];
+            FrameWithoutDelta frame1 = framesPerClient[0];
             Assert.AreEqual(expectedFrameIndex, frame1.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame1.TimeStampRelative);
             Assert.AreEqual(expectedColor1, frame1[expectedPixelIndex1].ToColor());
             // Pi1
-            FrameWithoutDelta frame2 = framePerPi[1];
+            FrameWithoutDelta frame2 = framesPerClient[1];
             Assert.AreEqual(expectedFrameIndex, frame2.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame2.TimeStampRelative);
             Assert.AreEqual(expectedColor2, frame2[expectedPixelIndex2].ToColor());
             // Pi 3
-            FrameWithoutDelta frame3 = framePerPi[2];
+            FrameWithoutDelta frame3 = framesPerClient[2];
             Assert.AreEqual(expectedFrameIndex, frame3.Index);
             Assert.AreEqual(expectedRelativeTimeStamp, frame3.TimeStampRelative);
             Assert.AreEqual(expectedColor3, frame3[expectedPixelIndex3].ToColor());

@@ -8,9 +8,20 @@
              xmlns:reactiveUi="http://reactiveui.net"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-       <Button x:Name="CreateAnimationButton"
-               Content="Create animation" MaxWidth="200"/>
-            
-    </Grid>
+
+
+    <DockPanel>
+        <UniformGrid Columns="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="CreateAnimationButton"
+                    Content="Create animation" MaxWidth="200"/>
+
+            <Rectangle/>
+
+            <Button x:Name="NavigateToMidiPanelButton"
+                    Content="Midi panel" MaxWidth="200"/>
+
+        </UniformGrid>
+    </DockPanel>
+
+    
 </reactiveUi:ReactiveUserControl>

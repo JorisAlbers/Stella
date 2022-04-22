@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ConcurrentDoubleEndedQueue.h" />
+    <ClInclude Include="FrameProtocol.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="TcpClient.h" />
     <ClInclude Include="UdpClient.h" />

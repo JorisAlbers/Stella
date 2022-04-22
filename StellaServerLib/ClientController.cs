@@ -16,11 +16,13 @@ namespace StellaServerLib
 
         private long[] _nextRenderAllowedAtperPi;
         private long _minimumTicksPerFrame;
+        private IAnimator _animator;
 
-        public ClientController(IServer server, int maximumFrameRate)
+        public ClientController(IServer server, int maximumFrameRate, int numberOfClients)
         {
             _server = server;
             _minimumTicksPerFrame = 1000 / maximumFrameRate;
+            _nextRenderAllowedAtperPi = new long[numberOfClients];
         }
 
         public void Run()
@@ -29,43 +31,27 @@ namespace StellaServerLib
             thread.Start();
         }
 
+        //  
+
         private void MainLoop()
         {
-            FrameWithoutDelta[] frames = null;
-            long renderNextFrameAt = 0;
-
             while (!_isDisposed)
             {
-                AnimationWithStartingTime animationWithStartingTime = _animationWithStartingTime;
-                if (animationWithStartingTime == null)
+                // Check if there is an animator
+                IAnimator animator = _animator;
+                if (animator == null)
                 {
-                    // No animation on display.
-                    renderNextFrameAt = 0;
                     continue;
                 }
 
-                // Prepare if the animation is about to start
-                if (renderNextFrameAt == 0)
+                // Check if there is a frame available.
+                if (!animator.TryGetFramePerClient(out FrameWithoutDelta[] frames))
                 {
-                    animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
-                    renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
-                    _nextRenderAllowedAtperPi = new long[frames.Length];
-                }
-
-                long now = Environment.TickCount;
-
-                if (now < renderNextFrameAt)
-                {
-                    // render will happen in other loop
                     continue;
                 }
-
-                // Render
+                
+                // Render.
                 SendRenderFrame(frames);
-
-                // Prepare
-                animationWithStartingTime.Animator.TryGetNextFramePerPi(out frames);
-                renderNextFrameAt = animationWithStartingTime.StartAtTicks + frames.First(x => x != null).TimeStampRelative;
             }
         }
 
@@ -89,29 +75,20 @@ namespace StellaServerLib
         /// 
         /// </summary>
         /// <param name="animator">The animator to retrieve frames from</param>
-        /// <param name="startAtTicks">The environment.TickCount at which to start the animation</param>
-        public void StartAnimation(IAnimator animator, long startAtTicks)
+        public void StartAnimation(IAnimator animator)
         {
-            lock(_frameSetLock)
-            {
-                if (_animationWithStartingTime != null)
-                {
-                    _animationWithStartingTime.Animator.TimeResetRequested -= AnimatorOnTimeResetRequested;
-                }
-
-                animator.TimeResetRequested += AnimatorOnTimeResetRequested;
-                _animationWithStartingTime = new AnimationWithStartingTime(animator, startAtTicks);
-            }
-        }
-
-        private void AnimatorOnTimeResetRequested(object sender, EventArgs e)
-        {
-            _animationWithStartingTime = new AnimationWithStartingTime(_animationWithStartingTime.Animator, Environment.TickCount);
+            animator.StartAnimation(Environment.TickCount);
+            _animator = animator;
         }
 
         public void Dispose()
         {
             _isDisposed = true;
+        }
+
+        public void StopAnimation()
+        {
+            _animator = null;
         }
     }
 

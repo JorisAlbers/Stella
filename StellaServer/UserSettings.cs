@@ -18,6 +18,8 @@ namespace StellaServer
         [XmlAttribute]
         public int ServerUdpPort { get; set; }
         [XmlElement]
+        public int RemoteUdpPort { get; set; }
+        [XmlElement]
         public string MappingFilePath { get; set; }
         [XmlElement]
         public string BitmapFolder { get; set; }
@@ -25,5 +27,6 @@ namespace StellaServer
         public string StoryboardFolder { get; set; }
         [XmlElement]
         public int MaximumFrameRate { get; set; }
+ 
     }
 }

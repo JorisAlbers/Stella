@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
@@ -8,6 +9,7 @@ using StellaServer.Animation;
 using StellaServer.Animation.Creation;
 using StellaServer.Animation.Details;
 using StellaServer.Log;
+using StellaServer.Midi;
 using StellaServer.Status;
 using StellaServer.Transformations;
 using StellaServerLib;
@@ -23,15 +25,21 @@ namespace StellaServer
         [Reactive] public StatusViewModel StatusViewModel { get; set; }
         [Reactive] public TransformationViewModel TransformationViewModel { get; set; }
         [Reactive] public NavigationViewModel NavigationViewModel { get; set; }
+
+        [Reactive] public MidiPanelViewModel MidiPanelViewModel { get; set; }
+
         [Reactive] public ReactiveObject SelectedViewModel { get; set; }
 
         public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer,
             StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator,
-            BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository,LogViewModel logViewModel)
+            BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository, LogViewModel logViewModel,
+            MidiInputManager midiInputManager)
         {
             _stellaServer = stellaServer;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
             AnimationsPanelViewModel.StartAnimationRequested += StartAnimation;
+            AnimationsPanelViewModel.SendToPadRequested += AnimationsPanelViewModel_OnSendToPadRequested;
+
             this.WhenAnyValue(x => x.AnimationsPanelViewModel.SelectedAnimation)
                 .Subscribe(onNext =>
                     {
@@ -66,10 +74,29 @@ namespace StellaServer
             AnimationCreationViewModel.Save.Subscribe(onNext => AnimationsPanelViewModel.AddItem(onNext));
             AnimationCreationViewModel.Start.Subscribe(onNext => StartAnimation(null, onNext));
             AnimationCreationViewModel.Back.Subscribe(onNext => SelectedViewModel = NavigationViewModel);
+
+            if (midiInputManager != null)
+            {
+                MidiPanelViewModel = new MidiPanelViewModel(4, 4, 10, midiInputManager); //TODO configurable midi buttons
+                MidiPanelViewModel.StartAnimation.Subscribe(x =>
+                {
+                    StartAnimation(null, x);
+                });
+                midiInputManager.Stop.Subscribe(x =>
+                {
+                    StartAnimation(null, FindStopAnimation());
+                });
+            }
             
             NavigationViewModel = new NavigationViewModel();
             NavigationViewModel.NavigateToCreateAnimation.Subscribe(onNext => SelectedViewModel = AnimationCreationViewModel);
+            NavigationViewModel.NavigateToMidiPanel.Subscribe(onNext => SelectedViewModel = MidiPanelViewModel);
             SelectedViewModel = NavigationViewModel;
+        }
+
+        private void AnimationsPanelViewModel_OnSendToPadRequested(object? sender, SendToPadEventArgs e)
+        {
+            MidiPanelViewModel.SetAnimationToPad(e.Animation, e.Pad);
         }
 
         private void StartAnimation(object sender, IAnimation e)
@@ -79,8 +106,19 @@ namespace StellaServer
             StatusViewModel.AnimationStarted(e);
             if (TransformationViewModel == null)
             {
-                TransformationViewModel = new TransformationViewModel(_stellaServer);
+                TransformationViewModel = new TransformationViewModel(_stellaServer, FindStopAnimation());
+                TransformationViewModel.Stop.Subscribe(x =>
+                {
+                    StartAnimation(null, FindStopAnimation());
+                });
             }
+        }
+
+        
+
+        private IAnimation FindStopAnimation()
+        {
+            return AnimationsPanelViewModel.Items.FirstOrDefault(x => x.Name == "Clear")?.Animation;
         }
     }
 }

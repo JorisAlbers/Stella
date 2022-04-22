@@ -29,6 +29,7 @@ namespace StellaServer.Animation
         
         //TODO use observable
         public event EventHandler<IAnimation> StartAnimationRequested;
+        public event EventHandler<SendToPadEventArgs> SendToPadRequested;
 
         public AnimationsPanelViewModel(StoryboardRepository storyboardRepository,
             BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
@@ -49,11 +50,18 @@ namespace StellaServer.Animation
             var list = animations.Select(x => new AnimationPanelItemViewModel(x)).Select(vm =>
             {
                 vm.StartCommand.Subscribe(onNext => { StartAnimationRequested?.Invoke(this, vm.Animation); });
+                vm.SendToPad.Subscribe(onNext =>
+                {
+                    SendToPadRequested?.Invoke(this, new SendToPadEventArgs(vm.Animation, onNext));
+                });
+
                 return vm;
             }).ToList();
             _animationViewModels.AddRange(list);
-
             _animationViewModels.Connect().Bind(out var animationPanelItemViewModels).Subscribe();
+            
+            
+
             Items = animationPanelItemViewModels;
 
            
@@ -70,4 +78,17 @@ namespace StellaServer.Animation
             _animationViewModels.Add(new AnimationPanelItemViewModel(animation));
         }
     }
+
+    public class SendToPadEventArgs
+    {
+        public IAnimation Animation { get; }
+        public int Pad { get; }
+
+        public SendToPadEventArgs(IAnimation animation, int pad)
+        {
+            Animation = animation;
+            Pad = pad;
+        }
+    }
+
 }

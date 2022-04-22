@@ -1,6 +1,7 @@
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServerLib.Animation;
@@ -16,12 +17,16 @@ namespace StellaServer.Animation
         public ReactiveCommand<Unit, Unit> StartCommand { get; } = ReactiveCommand.Create(() => { });
 
         public bool IsPlayList { get; set; }
-            
+
+        public ReactiveCommand<int, int> SendToPad { get; } 
+
+
         public AnimationPanelItemViewModel(IAnimation animation)
         {
             Animation = animation;
             Name = animation.Name;
             IsPlayList = animation is PlayList;
+            SendToPad = ReactiveCommand.Create<int, int>(i => i);
         }
     }
 }

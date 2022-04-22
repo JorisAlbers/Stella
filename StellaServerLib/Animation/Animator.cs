@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using StellaLib.Animation;
 using StellaServerLib.Animation.FrameProviding;
 using StellaServerLib.Animation.Mapping;
@@ -10,7 +12,7 @@ using StellaServerLib.Animation.Transformation;
 
 namespace StellaServerLib.Animation
 {
-    public class Animator : IAnimator
+    public class Animator : ReactiveObject, IAnimator
     {
         private readonly List<PiMaskItem> _mask;
         private readonly int _numberOfPis;
@@ -19,10 +21,9 @@ namespace StellaServerLib.Animation
 
         private IFrameProvider _frameProvider;
 
-        public StoryboardTransformationController StoryboardTransformationController { get; private set; }
-        public event EventHandler TimeResetRequested;
+        [Reactive] public StoryboardTransformationController StoryboardTransformationController { get; private set; }
 
-        /// <summary>
+        /// <summary>+
         /// CTOR
         /// </summary>s
         /// <param name="playList"></param>
@@ -68,7 +69,9 @@ namespace StellaServerLib.Animation
 
                         // Play
                         // TODO race condition
-                        OnTimeResetRequested();
+                        _startAtTicks = Environment.TickCount;
+                        _ticksPaused = 0;
+                        _currentPauseStarted = 0;
                         _frameProvider = nextFrameProvider;
                         StoryboardTransformationController = controller;
 
@@ -78,25 +81,114 @@ namespace StellaServerLib.Animation
             }
         }
 
-        public bool TryGetNextFramePerPi(out FrameWithoutDelta[] frames)
+        private FrameWithoutDelta[] _preparedFramePerClient;
+        private long _startAtTicks;
+
+        private long _ticksPaused = 0;
+        private long _currentPauseStarted = 0;
+
+        private AnimationTransformationSettings _previousMasterSettings;
+
+        public bool TryGetFramePerClient(out FrameWithoutDelta[] frames)
         {
-            // Get the combined frame from the FrameProvider
+            var masterSettings = StoryboardTransformationController.Settings.MasterSettings;
+
+            if (masterSettings.IsPaused)
+            {
+                if (_currentPauseStarted == 0)
+                {
+                    _currentPauseStarted = Environment.TickCount;
+                }
+
+                if (masterSettings == _previousMasterSettings)
+                {
+                    // The transformation did not change.
+                    frames = null;
+                    return false;
+                }
+
+                // We need to redraw the frame as the transformation settings changed.
+                IFrameProvider frameProvider1 = _frameProvider;
+                if (frameProvider1 == null) // animations are off. 
+                {
+                    frames = null;
+                    return false;
+                }
+
+                frameProvider1.RedrawCurrent();
+                if (frameProvider1.Current == null) // Give up. Maybe at a later time the provider has frames available.
+                {
+                    frames = null;
+                    return false;
+                }
+
+                _previousMasterSettings = masterSettings;
+                // Separate frame over clients.
+                frames = GetFrames(frameProvider1.Current);
+                return true;
+            }
+
+            _previousMasterSettings = masterSettings;
+
+            // Adjust the time paused, this will make sure the next frames after the pause have more or less the correct timing.
+            // TODO instead of using a timestamp relative to the start of the animation, use a timestamp relative to the previous frame.
+            if (_currentPauseStarted != 0)
+            {
+                _ticksPaused += Environment.TickCount - _currentPauseStarted;
+                _currentPauseStarted = 0;
+            }
+
             IFrameProvider frameProvider = _frameProvider;
+            if (frameProvider == null) // animations are off. 
+            {
+                frames = null;
+                return false;
+            }
 
-            frameProvider.MoveNext();
-            Frame combinedFrame = frameProvider.Current;
+            if (frameProvider.Current == null || // No frame was prepared.
+                _preparedFramePerClient == null) // The previous frame was consumed
+            {
+                frameProvider.MoveNext();
+                if (frameProvider.Current == null) // Give up. Maybe at a later time the provider has frames available.
+                {
+                    frames = null;
+                    return false;
+                }
+                
+                // Separate frame over clients
+                _preparedFramePerClient = GetFrames(frameProvider.Current);
+            }
 
-            // Split the frame over pis
-            Frame[] framePerPi = SplitFrameOverPis(combinedFrame, _mask);
-
-            // Overlay with the previous frame
-            frames = OverlayWithCurrentFrame(framePerPi);
+            // Check if we should display the frame now.
+            long now = Environment.TickCount;
+            long renderNextFrameAt = _startAtTicks + _ticksPaused + frameProvider.Current.TimeStampRelative;
+            if (now < renderNextFrameAt)
+            {
+                // render will happen in other loop
+                frames = null;
+                return false;
+            }
+            
+            // We need to draw NOW!
+            frames = _preparedFramePerClient;
+            _preparedFramePerClient = null;
             return true;
         }
 
-        private void OnTimeResetRequested()
+        public void StartAnimation(int startAt)
         {
-            TimeResetRequested?.Invoke(this,new EventArgs());
+            _startAtTicks = startAt;
+        }
+
+        private FrameWithoutDelta[] GetFrames(Frame frame)
+        {
+            // Split the frame over pis
+            Frame[] framePerPi = SplitFrameOverPis(frame, _mask);
+
+            // Overlay with the previous frame
+            FrameWithoutDelta[] frames = OverlayWithCurrentFrame(framePerPi);
+            
+            return frames;
         }
 
         private Frame[] SplitFrameOverPis(Frame combinedFrame, List<PiMaskItem> mask)
@@ -152,5 +244,12 @@ namespace StellaServerLib.Animation
         {
             _cancellationTokenSource?.Cancel();
         }
+    }
+
+    public class FrameMetadata
+    {
+        public int FrameIndex;
+        public long TimeStampRelative;
+        public FrameWithoutDelta[] Frames;
     }
 }

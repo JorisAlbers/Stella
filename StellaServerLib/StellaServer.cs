@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using StellaServerLib.Animation;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
@@ -10,12 +12,14 @@ using StellaServerLib.Serialization.Mapping;
 
 namespace StellaServerLib
 {
-    public class StellaServer : IDisposable
+    public class StellaServer : ReactiveObject, IDisposable
     {
         private readonly string _mappingFilePath;
         private readonly string _ip;
         private readonly int _port;
         private readonly int _udpPort;
+        private int _remoteUdpPort;
+
         private readonly int _millisecondsPerTimeUnit;
 
         private AnimatorCreator _animatorCreator;
@@ -25,17 +29,18 @@ namespace StellaServerLib
         private int _loadingAnimation;
         private readonly int _maximumFrameRate;
 
-        public IAnimator Animator { get; private set; }
+        [Reactive] public IAnimator Animator { get; private set; }
         public BitmapRepository BitmapRepository { get; }
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
+        public StellaServer(string mappingFilePath, string ip, int port, int udpPort,int remoteUdpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
         {
             _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
+            _remoteUdpPort = remoteUdpPort;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
             _maximumFrameRate = maximumFrameRate;
             BitmapRepository = bitmapRepository;
@@ -50,9 +55,9 @@ namespace StellaServerLib
             _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit), stripLengthPerPi, mask);
 
             // Start Server
-            _server = StartServer(_ip, _port, _udpPort, _server);
+            _server = StartServer(_ip, _port, _udpPort, _remoteUdpPort,_server);
             // Start ClientController
-            _clientController = StartClientController(_server, _maximumFrameRate);
+            _clientController = StartClientController(_server, _maximumFrameRate, stripLengthPerPi.Length);
         }
 
         public void StartAnimation(IAnimation animation)
@@ -78,6 +83,8 @@ namespace StellaServerLib
                 {
                     // Create the animation on a new task
                     Animator = await Task.Run(() => _animatorCreator.Create(playList));
+                    _clientController.StartAnimation(Animator);
+                    oldAnimator?.Dispose();
                     // Release the lock
                     Interlocked.Exchange(ref _loadingAnimation, 0);
                 }
@@ -91,9 +98,6 @@ namespace StellaServerLib
             {
                 throw new Exception("Failed to create new animator.", e);
             }
-
-            _clientController.StartAnimation(Animator, Environment.TickCount); // TODO variable startAT
-            oldAnimator?.Dispose();
         }
 
         private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)
@@ -114,13 +118,13 @@ namespace StellaServerLib
             }
         }
 
-        private IServer StartServer(string ip, int port, int udpPort, IServer server)
+        private IServer StartServer(string ip, int port, int udpPort,int remoteUdpPort, IServer server)
         {
             Console.Out.WriteLine($"Starting server on {ip}:{port}");
             try
             {
                 server.ClientChanged += ServerOnClientChanged;
-                server.Start(ip, port, udpPort);
+                server.Start(ip, port, udpPort, remoteUdpPort);
                 return server;
             }
             catch (Exception e)
@@ -134,11 +138,11 @@ namespace StellaServerLib
             ClientStatusChanged?.Invoke(sender, e);
         }
 
-        private ClientController StartClientController(IServer server, int maximumFrameRate)
+        private ClientController StartClientController(IServer server, int maximumFrameRate, int numberOfClients)
         {
             try
             {
-                ClientController clientController = new ClientController(server, maximumFrameRate);
+                ClientController clientController = new ClientController(server, maximumFrameRate, numberOfClients);
                 clientController.Run();
                 return clientController;
             }

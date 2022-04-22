@@ -18,6 +18,8 @@ namespace StellaVisualizer.Server
         public float MasterRedCorrection { get; set; }
         public float MasterGreenCorrection { get; set; }
         public float MasterBlueCorrection { get; set; }
+
+        public bool IsPaused { get; set; }
         
         public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<IAnimation> animations)
         {
@@ -40,6 +42,9 @@ namespace StellaVisualizer.Server
                 case nameof(MasterBlueCorrection):
                 case nameof(MasterGreenCorrection):
                     _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(new float[]{MasterRedCorrection, MasterGreenCorrection, MasterBlueCorrection });
+                    break;
+                case nameof(IsPaused):
+                    _stellaServer.Animator.StoryboardTransformationController.SetIsPaused(IsPaused);
                     break;
             }
         }

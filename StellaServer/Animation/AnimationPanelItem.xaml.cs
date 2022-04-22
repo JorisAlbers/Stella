@@ -37,5 +37,25 @@ namespace StellaServer.Animation
                     .DisposeWith(disposableRegistration);
             });
         }
+
+        private void SendToPad1MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.SendToPad.Execute(0).Subscribe().Dispose();
+        }
+
+        private void SendToPad2MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.SendToPad.Execute(1).Subscribe().Dispose();
+        }
+
+        private void SendToPad3MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.SendToPad.Execute(2).Subscribe().Dispose();
+        }
+
+        private void SendToPad4MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.SendToPad.Execute(3).Subscribe().Dispose();
+        }
     }
 }
