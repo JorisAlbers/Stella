@@ -11,8 +11,6 @@ namespace StellaServerLib.Network
 {
     public class Server : IServer, IDisposable
     {
-        /// <summary> The size of the package protocol TCP buffer </summary>
-        private const int TCP_BUFFER_SIZE = 1024;
         /// <summary> The size of the package protocol UDP buffer </summary>
         private const int UDP_BUFFER_SIZE = 60_000; // The maximum UDP package size is 65,507 bytes.
 
@@ -29,7 +27,6 @@ namespace StellaServerLib.Network
         private bool _isShuttingDown = false;
         private readonly object _isShuttingDownLock = new object();
 
-        private ISocketConnection _listenerSocket;
         private ISocketConnection _udpSocketConnection;
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientChanged;
@@ -51,18 +48,10 @@ namespace StellaServerLib.Network
             _udpPort = udpPort;
             _remoteUdpPort = remoteUdpPort;
 
-            // Create a TCP/IP socket.  
-            _listenerSocket = new SocketConnection(_tcpLocalEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // TODO inject with ISocketConnection
-
-            // Bind the socket to the local endpoint and listen for incoming connections.  
-            _listenerSocket.Bind(_tcpLocalEndpoint);  
-            _listenerSocket.Listen(100);
-
             // Create an UDP socket.
             _udpSocketConnection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpLocalEndpoint);
 
-            // Start an asynchronous socket to listen for connections.  
-            _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket );  
+            // TODO create UDP socket to listen for broadcasts
         }
 
         public void SendToClient(int clientId, MessageType messageType)
@@ -101,7 +90,9 @@ namespace StellaServerLib.Network
             }
         }
 
-        private void AcceptCallback(IAsyncResult ar) 
+        // TODO handle UDP broadcast message received:
+        // TODO create new potential client, send init, wait for confirmation, add to connected clients
+        /*private void AcceptCallback(IAsyncResult ar) 
         {
             Console.Out.WriteLine("Received accept callback");
             // Get the socket that handles the client request.  
@@ -117,7 +108,7 @@ namespace StellaServerLib.Network
             }
 
             // Start an asynchronous socket to listen for connections.  
-            _listenerSocket.BeginAccept(new AsyncCallback(AcceptCallback), _listenerSocket);
+
 
             // Handle the new connection
             ISocketConnection handler = listener.EndAccept(ar);
@@ -141,7 +132,7 @@ namespace StellaServerLib.Network
             }
 
             client.Start();
-        }
+        }*/
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
@@ -221,10 +212,7 @@ namespace StellaServerLib.Network
 
             try
             {
-                _listenerSocket.Shutdown(SocketShutdown.Receive);
-                _listenerSocket.Dispose();
-                _listenerSocket.Close();
-
+                // TODO dispose UDP client
             }
             catch (SocketException) { }
             try
