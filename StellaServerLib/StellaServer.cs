@@ -124,7 +124,7 @@ namespace StellaServerLib
             try
             {
                 server.ClientChanged += ServerOnClientChanged;
-                server.Start(ip, port, udpPort, remoteUdpPort);
+                server.Start(ip, port, udpPort, remoteUdpPort, new SocketConnectionCreator());
                 return server;
             }
             catch (Exception e)

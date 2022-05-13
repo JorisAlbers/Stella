@@ -17,8 +17,8 @@ namespace StellaServerLib.Network
         private List<Client> _newConnections;
         private ConcurrentDictionary<int,Client> _clients;
 
-        private IPEndPoint _tcpLocalEndpoint;
-        private IPEndPoint _udpLocalEndpoint;
+        private IPEndPoint _udpBroadcastEndpoint;
+        private IPEndPoint _udpOutputEndPoint;
 
         private int _port;
         private int _udpPort;
@@ -37,21 +37,26 @@ namespace StellaServerLib.Network
             _clients = new ConcurrentDictionary<int, Client>();
         }
 
-        public void Start(string ip, int port, int udpPort, int remoteUdpPort)
+        public void Start(string ip, int port, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator)
         {
             Console.Out.WriteLine($"Starting server on {port}");
 
             IPAddress ipAddress = IPAddress.Parse(ip);
-            _tcpLocalEndpoint = new IPEndPoint(ipAddress, port);
-            _udpLocalEndpoint = new IPEndPoint(ipAddress, udpPort);
+            _udpBroadcastEndpoint = new IPEndPoint(ipAddress, port);
+            _udpOutputEndPoint = new IPEndPoint(ipAddress, udpPort);
             _port = port;
             _udpPort = udpPort;
             _remoteUdpPort = remoteUdpPort;
 
             // Create an UDP socket.
-            _udpSocketConnection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpLocalEndpoint);
+            _udpSocketConnection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpOutputEndPoint);
 
             // TODO create UDP socket to listen for broadcasts
+            var broadCastSocket = socketConnectionCreator.CreateForBroadcast(_udpBroadcastEndpoint);
+
+            var broadCastConnection =
+                new UdpSocketConnectionController<MessageType>(broadCastSocket, _udpBroadcastEndpoint, UDP_BUFFER_SIZE);
+
         }
 
         public void SendToClient(int clientId, MessageType messageType)
