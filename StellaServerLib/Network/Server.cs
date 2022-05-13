@@ -49,7 +49,7 @@ namespace StellaServerLib.Network
             _remoteUdpPort = remoteUdpPort;
 
             // Create an UDP socket.
-            _udpSocketConnection = UdpSocketConnectionController<MessageType>.CreateSocket(_udpOutputEndPoint);
+            _udpSocketConnection = socketConnectionCreator.Create(_udpOutputEndPoint);
 
             // TODO create UDP socket to listen for broadcasts
             var broadCastSocket = socketConnectionCreator.CreateForBroadcast(_udpBroadcastEndpoint);

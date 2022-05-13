@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol.Animation;
+using StellaServerLib.Network;
 
 namespace StellaClientLib.Network
 {
@@ -45,7 +46,8 @@ namespace StellaClientLib.Network
             IPEndPoint udpRemoteEndpoint = new IPEndPoint(_serverAdress.Address, udpPort);
             IPEndPoint udpLocalEndPoint = new IPEndPoint(IPAddress.Any, udpPort); // TODO inject the local endpoint?
 
-            ISocketConnection udpSocket = UdpSocketConnectionController<MessageType>.CreateSocket(udpLocalEndPoint);
+            SocketConnectionCreator socketConnectionCreator = new SocketConnectionCreator();
+            ISocketConnection udpSocket = socketConnectionCreator.Create(udpLocalEndPoint);
             _udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(udpSocket, udpRemoteEndpoint, UDP_BUFFER_SIZE);
             _udpSocketConnectionController.MessageReceived += OnMessageReceived;
             _udpSocketConnectionController.Start();

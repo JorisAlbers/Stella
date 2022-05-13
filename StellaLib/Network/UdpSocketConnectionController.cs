@@ -134,15 +134,5 @@ namespace StellaLib.Network
             _isDisposed = true;
             IsConnected = false;
         }
-
-        public static ISocketConnection CreateSocket(IPEndPoint localEndPoint)
-        {
-            SocketConnection socket = new SocketConnection(localEndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            socket.EnableBroadcast = false;
-            socket.Bind(localEndPoint);
-            return socket;
-        }
-
-
     }
 }
