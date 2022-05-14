@@ -28,6 +28,7 @@ namespace StellaServerLib.Network
         private readonly object _isShuttingDownLock = new object();
 
         private ISocketConnection _udpSocketConnection;
+        private ClientRegistrationController _clientRegistrationController;
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientChanged;
 
@@ -42,7 +43,6 @@ namespace StellaServerLib.Network
             Console.Out.WriteLine($"Starting server on {port}");
 
             IPAddress ipAddress = IPAddress.Parse(ip);
-            _udpBroadcastEndpoint = new IPEndPoint(ipAddress, port);
             _udpOutputEndPoint = new IPEndPoint(ipAddress, udpPort);
             _port = port;
             _udpPort = udpPort;
@@ -52,10 +52,10 @@ namespace StellaServerLib.Network
             _udpSocketConnection = socketConnectionCreator.Create(_udpOutputEndPoint);
 
             // TODO create UDP socket to listen for broadcasts
-            var broadCastSocket = socketConnectionCreator.CreateForBroadcast(_udpBroadcastEndpoint);
+            _clientRegistrationController =
+                new ClientRegistrationController(socketConnectionCreator, port);
+            _clientRegistrationController.Start();
 
-            var broadCastConnection =
-                new UdpSocketConnectionController<MessageType>(broadCastSocket, _udpBroadcastEndpoint, UDP_BUFFER_SIZE);
 
         }
 

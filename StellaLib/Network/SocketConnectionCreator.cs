@@ -6,11 +6,12 @@ namespace StellaServerLib.Network
 {
     public class SocketConnectionCreator
     {
-        public virtual ISocketConnection CreateForBroadcast(IPEndPoint localEndPoint)
+        public virtual ISocketConnection CreateForBroadcast(int port)
         {
-            SocketConnection socket = new SocketConnection(localEndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            var localEp = new IPEndPoint(IPAddress.Any, port);
+            SocketConnection socket = new SocketConnection(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             socket.EnableBroadcast = true;
-            socket.Bind(localEndPoint);
+            socket.Bind(localEp);
             return socket;
         }
 

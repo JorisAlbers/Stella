@@ -20,7 +20,7 @@ namespace StellaServerLib.Test.Network
 
             var connectionCreatorMock = new Mock<SocketConnectionCreator>();
             connectionCreatorMock
-                .Setup(x => x.CreateForBroadcast(It.IsAny<IPEndPoint>()))
+                .Setup(x => x.CreateForBroadcast(It.IsAny<int>()))
                 .Returns<IPEndPoint>((localEndPoint) => socketConnectionMock.Object);
             connectionCreatorMock
                 .Setup(x => x.Create(It.IsAny<IPEndPoint>()))
