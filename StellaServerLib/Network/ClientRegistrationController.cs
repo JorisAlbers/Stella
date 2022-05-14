@@ -56,12 +56,11 @@ namespace StellaServerLib.Network
 
         private void ReceiveCallback(IAsyncResult ar)
         {
-            IPEndPoint source = new IPEndPoint(0, 0);
-            EndPoint endPoint = (EndPoint)source;;
+            EndPoint source = new IPEndPoint(0, 0);
             int bytesRead = 0;
             try
             {
-                bytesRead = _socket.EndReceiveFrom(ar, ref endPoint);
+                bytesRead = _socket.EndReceiveFrom(ar, ref source);
             }
             catch (SocketException)
             {
@@ -71,13 +70,15 @@ namespace StellaServerLib.Network
             // Parse the message
             if (bytesRead > 0) // TODO check if disposed
             {
-                if (!_packageProtocolPerClient.ContainsKey(source))
+                IPEndPoint ipSource = (IPEndPoint)source;
+
+                if (!_packageProtocolPerClient.ContainsKey(ipSource))
                 {
-                    _packageProtocolPerClient.Add(source, new PacketProtocol<MessageType>(UDP_BUFFER_SIZE));
+                    _packageProtocolPerClient.Add(ipSource, new PacketProtocol<MessageType>(UDP_BUFFER_SIZE));
                     // TODO subscribe to message received
                 }
 
-                var packageProtocol = _packageProtocolPerClient[source];
+                var packageProtocol = _packageProtocolPerClient[ipSource];
                 
                 try
                 {
