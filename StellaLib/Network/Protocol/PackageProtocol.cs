@@ -88,14 +88,6 @@ namespace StellaLib.Network.Protocol
 
 
         /// <summary>
-        /// Indicates the completion of a message read from the stream.
-        /// </summary>
-        /// <remarks>
-        /// <para>This event is invoked from within a call to <see cref="DataReceived"/>. Handlers for this event should not call <see cref="DataReceived"/>.</para>
-        /// </remarks>
-        public Action<TMessageType, byte[]> MessageArrived { get; set; }
-
-        /// <summary>
         /// Indicates the retrieval of a KeepAlive message
         /// </summary>
         /// <remarks>
@@ -111,8 +103,10 @@ namespace StellaLib.Network.Protocol
         /// </remarks>
         /// <param name="data">The data received from the stream. Cannot be null.</param>
         /// <exception cref="System.Net.ProtocolViolationException">If the data received is not a properly-formed message.</exception>
-        public void DataReceived(byte[] data, int length)
+        public bool DataReceived(byte[] data, int length, out Message<TMessageType> message)
         {
+            message = null;
+
             // Process the incoming data in chunks, as the ReadCompleted requests it
 
             // Logically, we are satisfying read requests with the received data, instead of processing the
@@ -134,7 +128,7 @@ namespace StellaLib.Network.Protocol
                     i += bytesTransferred;
 
                     // Notify "read completion"
-                    this.ReadCompleted(bytesTransferred);
+                    message = this.ReadCompleted(bytesTransferred);
                 }
                 else if (this.messageTypeBuffer != null)
                 {
@@ -147,7 +141,7 @@ namespace StellaLib.Network.Protocol
                     i += bytesTransferred;
 
                     // Notify "read completion"
-                    this.ReadCompleted(bytesTransferred);
+                    message = this.ReadCompleted(bytesTransferred);
                 }
                 else
                 {
@@ -160,9 +154,11 @@ namespace StellaLib.Network.Protocol
                     i += bytesTransferred;
 
                     // Notify "read completion"
-                    this.ReadCompleted(bytesTransferred);
+                    message = this.ReadCompleted(bytesTransferred);
                 }
             }
+
+            return message != null;
         }
 
         /// <summary>
@@ -170,7 +166,7 @@ namespace StellaLib.Network.Protocol
         /// </summary>
         /// <param name="count">The number of bytes read.</param>
         /// <exception cref="System.Net.ProtocolViolationException">If the data received is not a properly-formed message.</exception>
-        private void ReadCompleted(int count)
+        private Message<TMessageType> ReadCompleted(int count)
         {
             // Get the number of bytes read into the buffer
             this.bytesReceived += count;
@@ -245,15 +241,33 @@ namespace StellaLib.Network.Protocol
                 else
                 {
                     // We've gotten an entire packet
-                    if (this.MessageArrived != null)
-                        this.MessageArrived((TMessageType)(object)BitConverter.ToInt32(this.messageTypeBuffer, 0), dataBuffer);
+                    Message<TMessageType> message = new Message<TMessageType>((TMessageType)(object)BitConverter.ToInt32(this.messageTypeBuffer, 0),
+                        dataBuffer);
 
                     // Start reading the length buffer again
                     this.dataBuffer = null;
                     this.messageTypeBuffer = null;
                     this.bytesReceived = 0;
+
+                    return message;
                 }
             }
+
+            return null;
+        }
+
+        
+    }
+
+    public class Message<TMessageType>
+    {
+        public TMessageType MessageType { get; }
+        public byte[] Data { get; }
+
+        public Message(TMessageType messageType, byte[] data)
+        {
+            MessageType = messageType;
+            Data = data;
         }
     }
 }

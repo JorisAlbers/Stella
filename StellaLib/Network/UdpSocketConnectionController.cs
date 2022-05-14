@@ -27,7 +27,6 @@ namespace StellaLib.Network
         public void Start()
         {
             _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
-            _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
             IsConnected = true;
            
             StartReceive();
@@ -102,13 +101,14 @@ namespace StellaLib.Network
                 try
                 {
                     byte[] b = (byte[])ar.AsyncState;
-                    _packetProtocol.DataReceived(b, bytesRead);
+                    if (_packetProtocol.DataReceived(b, bytesRead, out Message<TMessageType> message))
+                    {
+                        OnMessageReceived(message.MessageType, message.Data);
+                    };
                 }
                 catch (ProtocolViolationException e)
                 {
-                    _packetProtocol.MessageArrived = null;
                     _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
-                    _packetProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);
                 }
             }
 

@@ -72,30 +72,54 @@ namespace StellaServerLib.Network
             {
                 IPEndPoint ipSource = (IPEndPoint)source;
 
-                if (!_packageProtocolPerClient.ContainsKey(ipSource))
+                PacketProtocol<MessageType> packetProtocol;
+
+                if (!_packageProtocolPerClient.TryGetValue(ipSource, out packetProtocol))
                 {
-                    _packageProtocolPerClient.Add(ipSource, new PacketProtocol<MessageType>(UDP_BUFFER_SIZE));
-                    // TODO subscribe to message received
+                    packetProtocol = new PacketProtocol<MessageType>(UDP_BUFFER_SIZE);
                 }
 
-                var packageProtocol = _packageProtocolPerClient[ipSource];
                 
                 try
                 {
                     byte[] b = (byte[])ar.AsyncState;
-                    packageProtocol.DataReceived(b, bytesRead);
+                    if (packetProtocol.DataReceived(b, bytesRead, out Message<MessageType> message))
+                    {
+                        ParseMessage(message);
+                    };
                 }
                 catch (ProtocolViolationException e)
                 {
-                    // TODO restore
-                    /*packageProtocol.MessageArrived = null;
-                    packageProtocol = new PacketProtocol<TMessageType>(_bufferSize);
-                    packageProtocol.MessageArrived = (MessageType, data) => OnMessageReceived(MessageType, data);*/
+                    // TODO
+                    //packetProtocol.Reset();
                 }
             }
 
             // Start receiving more data
             StartReceive();
+        }
+
+        private void ParseMessage(Message<MessageType> message)
+        {
+            switch (message.MessageType)
+            {
+                case MessageType.Unknown:
+                case MessageType.Init:
+                case MessageType.Standard:
+                case MessageType.AnimationRenderFrame:
+                    Console.Error.WriteLine($"Message type {message.MessageType} not supported by {this.GetType().Name}");
+                    break;
+                case MessageType.ConnectionRequest:
+                    ParseConnectionRequest(message.Data);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void ParseConnectionRequest(byte[] messageData)
+        {
+            throw new NotImplementedException();
         }
     }
 }

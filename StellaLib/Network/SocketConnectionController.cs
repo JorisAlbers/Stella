@@ -35,7 +35,6 @@ namespace StellaLib.Network
             }
 
             _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
-            _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
             IsConnected = true;
             byte[] buffer = new byte[_bufferSize];
             _socket.BeginReceive(buffer, 0, _bufferSize, 0, new AsyncCallback(ReceiveCallback), buffer);
@@ -145,15 +144,15 @@ namespace StellaLib.Network
                     try
                     {
                         byte[] b = (byte[]) ar.AsyncState;
-                        _packetProtocol.DataReceived(b, bytesRead);
+                        if(_packetProtocol.DataReceived(b, bytesRead, out Message<TMessageType> message))
+                        {
+                            OnMessageReceived(message.MessageType, message.Data);
+                        };
                     }
                     catch(ProtocolViolationException e)
                     {
                         Console.WriteLine("Failed to receive data. Package protocol violation. \n"+e.ToString());
-                        _packetProtocol.MessageArrived = null;
-                        _packetProtocol.KeepAliveArrived = null;
                         _packetProtocol = new PacketProtocol<TMessageType>(_bufferSize);
-                        _packetProtocol.MessageArrived = (MessageType, data)=> OnMessageReceived(MessageType,data);
                     }
                 }
                 // Start receiving more data
@@ -200,7 +199,6 @@ namespace StellaLib.Network
             _isDisposed = true;
             _keepAliveTimer.Enabled = false;
             _keepAliveTimer.Stop();
-            _packetProtocol.MessageArrived = null;
             _packetProtocol.KeepAliveArrived = null;
             _socket.Disconnect(false);
             _socket.Dispose();

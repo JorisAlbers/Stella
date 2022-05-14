@@ -17,20 +17,11 @@ namespace StellaLib.Test.Network.Protocol
 
             byte[] message = PacketProtocol<MessageType>.WrapMessage(expectedMessageType, expectedBytes);
 
-            MessageType receivedMessageType = MessageType.Unknown;
-            byte[] receivedBytes = null;
-
             PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(100);
-            packetProtocol.MessageArrived += (type, bytes) =>
-            {
-                receivedMessageType = type;
-                receivedBytes = bytes;
-            };
+            packetProtocol.DataReceived(message, message.Length, out Message<MessageType> messageReceived);
 
-            packetProtocol.DataReceived(message, message.Length);
-
-            Assert.AreEqual(expectedMessageType, receivedMessageType);
-            Assert.AreEqual(expectedBytes, receivedBytes);
+            Assert.AreEqual(expectedMessageType, messageReceived.MessageType);
+            Assert.AreEqual(expectedBytes, messageReceived.Data);
         }
 
         [Test]
@@ -57,27 +48,22 @@ namespace StellaLib.Test.Network.Protocol
                                       message[11],
             };
 
-            MessageType receivedMessageType = MessageType.Unknown;
-            byte[] receivedBytes = null;
 
             PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(100);
-            packetProtocol.MessageArrived += (type, bytes) =>
-            {
-                receivedMessageType = type;
-                receivedBytes = bytes;
-            };
 
-            packetProtocol.DataReceived(messagePackage1, messagePackage1.Length);
-            Assert.AreEqual(MessageType.Unknown, receivedMessageType);
-            packetProtocol.DataReceived(messagePackage2, messagePackage2.Length);
-            Assert.AreEqual(MessageType.Unknown, receivedMessageType);
-            packetProtocol.DataReceived(messagePackage3, messagePackage3.Length);
-            Assert.AreEqual(MessageType.Unknown, receivedMessageType);
+            packetProtocol.DataReceived(messagePackage1, messagePackage1.Length, out Message<MessageType> messageReceived1);
+            Assert.IsNull(messageReceived1);
+            packetProtocol.DataReceived(messagePackage2, messagePackage2.Length, out Message<MessageType> messageReceived2);
+            Assert.IsNull(messageReceived2);
 
-            packetProtocol.DataReceived(messagePackage4, messagePackage4.Length);
+            packetProtocol.DataReceived(messagePackage3, messagePackage3.Length, out Message<MessageType> messageReceived3);
+            Assert.IsNull(messageReceived3);
 
-            Assert.AreEqual(expectedMessageType, receivedMessageType);
-            Assert.AreEqual(expectedBytes, receivedBytes);
+            packetProtocol.DataReceived(messagePackage4, messagePackage4.Length, out Message<MessageType> messageReceived4);
+            Assert.IsNotNull(messageReceived4);
+
+            Assert.AreEqual(expectedMessageType, messageReceived4.MessageType);
+            Assert.AreEqual(expectedBytes, messageReceived4.Data);
         }
 
         [Test]
@@ -90,19 +76,12 @@ namespace StellaLib.Test.Network.Protocol
             // Add bytes the package protocol should not read.
             byte[] tooLongMessage = message.Concat(new byte[] {9, 8, 7}).ToArray();
 
-            MessageType receivedMessageType = MessageType.Unknown;
-            byte[] receivedBytes = null;
-
             PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(100);
-            packetProtocol.MessageArrived += (type, bytes) =>
-            {
-                receivedMessageType = type;
-                receivedBytes = bytes;
-            };
 
-            packetProtocol.DataReceived(tooLongMessage, message.Length);
-            Assert.AreEqual(expectedMessageType, receivedMessageType);
-            Assert.AreEqual(expectedBytes, receivedBytes);
+
+            packetProtocol.DataReceived(tooLongMessage, message.Length, out Message<MessageType> messageReceived);
+            Assert.AreEqual(expectedMessageType, messageReceived.MessageType);
+            Assert.AreEqual(expectedBytes, messageReceived.Data);
         }
 
         [Test]
@@ -115,7 +94,7 @@ namespace StellaLib.Test.Network.Protocol
             // Add bytes the package protocol should not read.
 
             PacketProtocol<MessageType> packetProtocol = new PacketProtocol<MessageType>(10);
-            Assert.Throws<ProtocolViolationException>(() => packetProtocol.DataReceived(message, message.Length));
+            Assert.Throws<ProtocolViolationException>(() => packetProtocol.DataReceived(message, message.Length, out Message<MessageType> _));
 
         }
 

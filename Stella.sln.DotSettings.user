@@ -9,5 +9,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=10a1f13d_002Dc142_002D4f42_002Dab35_002D3ff162ee3e0e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ClientSendsBroadcast_NoticedByServer" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::ABD5A469-EC56-42A9-A34E-E45577D9E169::.NETCoreApp,Version=v3.1::StellaServerLib.Test.Network.TestServer.ClientSendsBroadcast_NoticedByServer&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::B6D7B5B9-61D4-415D-BA15-C770EF5CE87B::.NETCoreApp,Version=v3.1::StellaLib.Test.Network.TestSocketConnectionController.BroadCastTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::B6D7B5B9-61D4-415D-BA15-C770EF5CE87B::.NETCoreApp,Version=v3.1::StellaLib.Test.Network.Protocol.TestPackageProtocol&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
