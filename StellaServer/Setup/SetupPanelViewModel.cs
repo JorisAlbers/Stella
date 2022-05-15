@@ -12,7 +12,6 @@ namespace StellaServer.Setup
 {
     public class SetupPanelViewModel : ReactiveObject
     {
-        [Reactive] public string ServerIp { get; set; }
         [Reactive] public int ServerTcpPort { get; set; }
         [Reactive] public int ServerUdpPort { get; set; }
         [Reactive] public int RemoteUdpPort { get; set; }
@@ -33,7 +32,6 @@ namespace StellaServer.Setup
         {
             if (settings != null)
             {
-                ServerIp = settings.ServerIp;
                 ServerTcpPort = settings.ServerTcpPort;
                 ServerUdpPort = settings.ServerUdpPort;
                 RemoteUdpPort = settings.RemoteUdpPort;
@@ -44,7 +42,6 @@ namespace StellaServer.Setup
             }
 
             var canStartServer = this.WhenAnyValue(
-                x => x.ServerIp,
                 x => x.ServerTcpPort,
                 x => x.ServerUdpPort,
                 x => x.RemoteUdpPort,
@@ -52,8 +49,7 @@ namespace StellaServer.Setup
                 x => x.BitmapFolder,
                 x=> x.StoryboardFolder,
                 x => x.MaximumFrameRate,
-                (serverIp, tcp, udp, remoteUdpPort, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
-                    !String.IsNullOrWhiteSpace(serverIp) &&
+                ( tcp, udp, remoteUdpPort, configFile, bitmapFolder, storyboardFolder, maximumFrameRate) =>
                     !String.IsNullOrWhiteSpace(MappingFilePath) &&
                     tcp != 0 &&
                     udp != 0 &&
@@ -69,7 +65,7 @@ namespace StellaServer.Setup
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
+                    new StellaServerLib.StellaServer(MappingFilePath, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
                 stellaServer.Start();
 
 
@@ -84,7 +80,6 @@ namespace StellaServer.Setup
 
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
                 {
-                    ServerIp = ServerIp,
                     ServerTcpPort = ServerTcpPort,
                     ServerUdpPort = ServerUdpPort,
                     RemoteUdpPort = RemoteUdpPort,

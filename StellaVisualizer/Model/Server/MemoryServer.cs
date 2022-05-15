@@ -12,7 +12,7 @@ namespace StellaVisualizer.Model.Server
         /// </summary>
         public event EventHandler<MessageSendEventArgs> FrameSend;
 
-        public void Start(string ip, int port, int udpPort, int remoteUdpPort, SocketConnectionCreator _)
+        public void Start(int port, int udpPort, int remoteUdpPort, SocketConnectionCreator _)
         {
             ;
         }

@@ -26,11 +26,6 @@ namespace StellaServer.Setup
             this.WhenActivated(disposableRegistration =>
             {
                 this.Bind(ViewModel,
-                        viewmodel => viewmodel.ServerIp,
-                        view => view.IpTextBox.Text)
-                    .DisposeWith(disposableRegistration);
-
-                this.Bind(ViewModel,
                         viewmodel => viewmodel.ServerTcpPort,
                         view => view.TcpPortTextBox.Text)
                     .DisposeWith(disposableRegistration);

@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace StellaServer
@@ -11,6 +12,7 @@ namespace StellaServer
     [XmlType]
     public class ServerSetupSettings
     {
+        [Obsolete]
         [XmlAttribute]
         public string ServerIp { get; set; }
         [XmlAttribute]

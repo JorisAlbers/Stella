@@ -28,7 +28,7 @@ namespace StellaServerLib.Test.Network
 
 
 
-            server.Start("192.168.0.1", 11, 22, 33, connectionCreatorMock.Object);
+            server.Start(11, 22, 33, connectionCreatorMock.Object);
 
             ;
         }
