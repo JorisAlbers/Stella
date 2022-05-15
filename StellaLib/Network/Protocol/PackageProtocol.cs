@@ -129,6 +129,14 @@ namespace StellaLib.Network.Protocol
 
                     // Notify "read completion"
                     message = this.ReadCompleted(bytesTransferred);
+                    if (message != null)
+                    {
+                        // Start reading the length buffer again
+                        this.dataBuffer = null;
+                        this.messageTypeBuffer = null;
+                        this.bytesReceived = 0;
+                        return true;
+                    }
                 }
                 else if (this.messageTypeBuffer != null)
                 {
@@ -141,7 +149,7 @@ namespace StellaLib.Network.Protocol
                     i += bytesTransferred;
 
                     // Notify "read completion"
-                    message = this.ReadCompleted(bytesTransferred);
+                    this.ReadCompleted(bytesTransferred);
                 }
                 else
                 {
@@ -154,11 +162,11 @@ namespace StellaLib.Network.Protocol
                     i += bytesTransferred;
 
                     // Notify "read completion"
-                    message = this.ReadCompleted(bytesTransferred);
+                    this.ReadCompleted(bytesTransferred);
                 }
             }
 
-            return message != null;
+            return false;
         }
 
         /// <summary>
@@ -243,12 +251,6 @@ namespace StellaLib.Network.Protocol
                     // We've gotten an entire packet
                     Message<TMessageType> message = new Message<TMessageType>((TMessageType)(object)BitConverter.ToInt32(this.messageTypeBuffer, 0),
                         dataBuffer);
-
-                    // Start reading the length buffer again
-                    this.dataBuffer = null;
-                    this.messageTypeBuffer = null;
-                    this.bytesReceived = 0;
-
                     return message;
                 }
             }
