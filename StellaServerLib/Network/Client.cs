@@ -6,21 +6,14 @@ namespace StellaServerLib.Network
 {
     public class Client : IDisposable
     {
-        private readonly SocketConnectionController<MessageType> _socketConnectionController;
         private readonly UdpSocketConnectionController<MessageType> _udpSocketConnectionController;
         public int ID { get; set; } = -1;
         public event EventHandler<SocketException> Disconnect;
         public event EventHandler<MessageReceivedEventArgs<MessageType>> MessageReceived;
 
 
-        public Client(SocketConnectionController<MessageType> socketConnectionController, UdpSocketConnectionController<MessageType> udpSocketConnectionController)
+        public Client(UdpSocketConnectionController<MessageType> udpSocketConnectionController)
         {
-            // TCP socketConnectionController
-            _socketConnectionController = socketConnectionController;
-            _udpSocketConnectionController = udpSocketConnectionController;
-            _socketConnectionController.Disconnect += OnDisconnect;
-            _socketConnectionController.MessageReceived += OnMessageReceived;
-
             // UDP socketConnectionController
             _udpSocketConnectionController = udpSocketConnectionController;
             _udpSocketConnectionController.MessageReceived += OnMessageReceived;
@@ -28,7 +21,6 @@ namespace StellaServerLib.Network
 
         public void Start()
         {
-            _socketConnectionController.Start();
             _udpSocketConnectionController.Start();
         }
 
@@ -36,12 +28,7 @@ namespace StellaServerLib.Network
         {
             _udpSocketConnectionController.Send(type, message);
         }
-
-        public void SendTcp(MessageType type, byte[] message)
-        {
-            _socketConnectionController.Send(type, message);
-        }
-
+        
         protected virtual void OnMessageReceived(object sender, MessageReceivedEventArgs<MessageType> eventArgs)
         {
             // Bubble the event. Add reference to this object.
@@ -64,9 +51,6 @@ namespace StellaServerLib.Network
 
         public void Dispose()
         {
-            _socketConnectionController.MessageReceived -= OnMessageReceived;
-            _socketConnectionController.Disconnect -= OnDisconnect;
-            _socketConnectionController.Dispose();
             _udpSocketConnectionController.MessageReceived -= MessageReceived;
             _udpSocketConnectionController.Dispose();
         }

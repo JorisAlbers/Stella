@@ -17,7 +17,6 @@ namespace StellaServerLib.Network
         private List<Client> _newConnections;
         private ConcurrentDictionary<int,Client> _clients;
 
-        private IPEndPoint _udpBroadcastEndpoint;
         private IPEndPoint _udpOutputEndPoint;
 
         private int _port;
@@ -40,7 +39,7 @@ namespace StellaServerLib.Network
 
         public void Start(string ip, int port, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator)
         {
-            Console.Out.WriteLine($"Starting server on {port}");
+            Console.Out.WriteLine($"Starting server on {ip} {port}");
 
             IPAddress ipAddress = IPAddress.Parse(ip);
             _udpOutputEndPoint = new IPEndPoint(ipAddress, udpPort);
@@ -51,17 +50,9 @@ namespace StellaServerLib.Network
             // Create an UDP socket.
             _udpSocketConnection = socketConnectionCreator.Create(_udpOutputEndPoint);
 
-            // TODO create UDP socket to listen for broadcasts
-            _clientRegistrationController =
-                new ClientRegistrationController(socketConnectionCreator, port);
+            _clientRegistrationController = new ClientRegistrationController(socketConnectionCreator, port);
+            _clientRegistrationController.NewClientRegistered += ClientRegistrationController_OnNewClientRegistered;
             _clientRegistrationController.Start();
-
-
-        }
-
-        public void SendToClient(int clientId, MessageType messageType)
-        {
-            SendToClient(clientId,messageType,new byte[0]);
         }
 
         public void SendToClient(int clientId, FrameWithoutDelta frame)
@@ -79,14 +70,7 @@ namespace StellaServerLib.Network
             {
                 if (_clients.TryGetValue(clientId, out Client client))
                 {
-                    if (messageType == MessageType.AnimationRenderFrame)
-                    {
-                        client.SendUdp(messageType, data);
-                    }
-                    else
-                    {
-                        client.SendTcp(messageType, data);
-                    }
+                    client.SendUdp(messageType, data);
                 }
             }
             catch (SocketException e)
@@ -95,60 +79,26 @@ namespace StellaServerLib.Network
             }
         }
 
-        // TODO handle UDP broadcast message received:
-        // TODO create new potential client, send init, wait for confirmation, add to connected clients
-        /*private void AcceptCallback(IAsyncResult ar) 
+        private void ClientRegistrationController_OnNewClientRegistered(object sender, IPEndPoint clientEndPoint)
         {
-            Console.Out.WriteLine("Received accept callback");
-            // Get the socket that handles the client request.  
-            ISocketConnection listener = (ISocketConnection) ar.AsyncState;  
-
-            lock(_isShuttingDownLock)
-            {
-                if(_isShuttingDown)
-                {
-                    Console.WriteLine("Ignored new client callback as the server is shutting down.");
-                    return;
-                }
-            }
-
-            // Start an asynchronous socket to listen for connections.  
-
-
-            // Handle the new connection
-            ISocketConnection handler = listener.EndAccept(ar);
-
             // Create a new client.
-            // For this, we need a TCP and an UDP connection.
-            // Create TCP connection
-            SocketConnectionController<MessageType> socketConnectionController = new SocketConnectionController<MessageType>(handler, TCP_BUFFER_SIZE);
-            //  Create UDP connection
-            IPEndPoint udpRemoteEndPoint = new IPEndPoint(((IPEndPoint)handler.RemoteEndPoint).Address, _remoteUdpPort);
-
-            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, udpRemoteEndPoint, UDP_BUFFER_SIZE);
-            Client client = new Client(socketConnectionController, udpSocketConnectionController);
+            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, clientEndPoint, UDP_BUFFER_SIZE);
+            Client client = new Client(udpSocketConnectionController);
             client.MessageReceived += Client_MessageReceived;
-            client.Disconnect += Client_Disconnected;
+            // TODO fix client.Disconnect += Client_Disconnected;
 
             // As we do not yet know which client this is, add him to the list of new connection.
-            lock (_newConnections)
-            {
-                _newConnections.Add(client);
-            }
-
             client.Start();
-        }*/
+            client.SendUdp(MessageType.Init, new byte[]{10}); // TODO create init protocol and message
+            // TODO map mac address to index
+        }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
         {
             Client client = (Client)sender;
             switch(e.MessageType)
             {
-                case MessageType.Init:
-                    // The client sends its ID
-                    ParseInitMessage(client, e.Message);
-                    break;
-                default:
+               default:
                     Console.WriteLine($"Message type {e.MessageType} is not supported by the server");
                     break;
             }
@@ -168,36 +118,7 @@ namespace StellaServerLib.Network
             ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(client.ID, ClientStatus.Disconnected));
             DisposeClient(client);
         }
-
-        private void ParseInitMessage(Client client, byte[] message)
-        {
-            int id = BitConverter.ToInt32(message,0);
-
-            if(client.ID != -1)
-            {
-                Console.WriteLine($"INIT is invalid. Client with ID {client.ID} wants to set his ID to {id}, but he already has an ID.");
-                return;
-            }
-
-            client.ID = id;
-            string logMessage = $"Client has initialized itself with id {id}";
-
-            _clients.AddOrUpdate(id, client, (key, oldValue) =>
-            {
-                logMessage = $"A client with ID {id} already exists. Replacing the existing one.";
-                DisposeClient(_clients[id]);
-                return client;
-            });
-
-            Console.Out.WriteLine(logMessage);
-            ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(id ,ClientStatus.Connected));
-
-            lock(_newConnections)
-            {
-                _newConnections.Remove(client);
-            }
-        }
-
+        
         public void Dispose()
         {
             lock(_isShuttingDownLock)

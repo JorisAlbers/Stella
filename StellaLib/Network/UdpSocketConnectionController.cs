@@ -94,7 +94,7 @@ namespace StellaLib.Network
             {
                 return;
             }
-
+            
             // Parse the message
             if (source.Equals(_targetEndPoint) && bytesRead > 0)
             {

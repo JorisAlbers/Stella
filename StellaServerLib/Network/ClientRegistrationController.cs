@@ -10,12 +10,16 @@ namespace StellaServerLib.Network
 {
     public class ClientRegistrationController
     {
+        private byte _STELLA_PROTOCOL_KEY = 73;
         private readonly SocketConnectionCreator _socketConnectionCreator;
         private readonly int _port;
         private ISocketConnection _socket;
         private const int UDP_BUFFER_SIZE = 60_000; // The maximum UDP package size is 65,507 bytes.
 
         private readonly Dictionary<IPEndPoint, PacketProtocol<MessageType>> _packageProtocolPerClient;
+
+        public event EventHandler<IPEndPoint> NewClientRegistered;
+
 
         public ClientRegistrationController(SocketConnectionCreator socketConnectionCreator, int port)
         {
@@ -73,25 +77,27 @@ namespace StellaServerLib.Network
                 IPEndPoint ipSource = (IPEndPoint)source;
 
                 PacketProtocol<MessageType> packetProtocol;
-
+                
                 if (!_packageProtocolPerClient.TryGetValue(ipSource, out packetProtocol))
                 {
                     packetProtocol = new PacketProtocol<MessageType>(UDP_BUFFER_SIZE);
+                    _packageProtocolPerClient.Add(ipSource, packetProtocol);
                 }
 
-                
+
                 try
                 {
                     byte[] b = (byte[])ar.AsyncState;
                     if (packetProtocol.DataReceived(b, bytesRead, out Message<MessageType> message))
                     {
-                        ParseMessage(message);
-                    };
+                        ParseMessage(message, ipSource);
+                    }
+
                 }
                 catch (ProtocolViolationException e)
                 {
-                    // TODO
-                    //packetProtocol.Reset();
+                    Console.Error.WriteLine($"Failed to parse message from {ipSource}, ProtocolViolationException");
+                    _packageProtocolPerClient.Remove(ipSource);
                 }
             }
 
@@ -99,7 +105,7 @@ namespace StellaServerLib.Network
             StartReceive();
         }
 
-        private void ParseMessage(Message<MessageType> message)
+        private void ParseMessage(Message<MessageType> message, IPEndPoint source)
         {
             switch (message.MessageType)
             {
@@ -110,16 +116,33 @@ namespace StellaServerLib.Network
                     Console.Error.WriteLine($"Message type {message.MessageType} not supported by {this.GetType().Name}");
                     break;
                 case MessageType.ConnectionRequest:
-                    ParseConnectionRequest(message.Data);
+                    ParseConnectionRequest(message.Data, source);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+                // TODO cleanup old packetProtocols.
             }
         }
 
-        private void ParseConnectionRequest(byte[] messageData)
+        private void ParseConnectionRequest(byte[] messageData, IPEndPoint ipEndPoint)
         {
-            throw new NotImplementedException();
+            ConnectionRequestMessage message = ConnectionRequestProtocol.Deserialize(messageData, 0);
+            Console.Out.WriteLine($"Received connection request message with key {message.Key} , version {message.Version}");
+
+            if (message.Key != _STELLA_PROTOCOL_KEY)
+            {
+                Console.Error.WriteLine($"Failed to parse {nameof(ConnectionRequestProtocol)}, the stella protocol key is incorrect, should be {_STELLA_PROTOCOL_KEY}");
+                return;
+            }
+
+            if (message.Version > 1)
+            {
+                Console.Error.WriteLine($"Failed to parse {nameof(ConnectionRequestProtocol)}, the protocol version is unknown. Expected 1, got {message.Version}");
+                return;
+            }
+
+            NewClientRegistered?.Invoke(this,ipEndPoint);
         }
+
     }
 }

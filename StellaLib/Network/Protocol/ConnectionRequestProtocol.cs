@@ -5,7 +5,7 @@ using StellaLib.Animation;
 
 namespace StellaLib.Network.Protocol
 {
-    class ConnectionRequestProtocol
+    public class ConnectionRequestProtocol
     {
         public const int BYTES_NEEDED = sizeof(byte) *2; // key, version
 
