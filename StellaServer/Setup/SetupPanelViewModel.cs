@@ -12,7 +12,7 @@ namespace StellaServer.Setup
 {
     public class SetupPanelViewModel : ReactiveObject
     {
-        [Reactive] public int ServerTcpPort { get; set; }
+        [Reactive] public int BroadcastPort { get; set; }
         [Reactive] public int ServerUdpPort { get; set; }
         [Reactive] public int RemoteUdpPort { get; set; }
         [Reactive] public string MappingFilePath { get; set; }
@@ -32,7 +32,7 @@ namespace StellaServer.Setup
         {
             if (settings != null)
             {
-                ServerTcpPort = settings.ServerTcpPort;
+                BroadcastPort = settings.BroadcastPort;
                 ServerUdpPort = settings.ServerUdpPort;
                 RemoteUdpPort = settings.RemoteUdpPort;
                 MappingFilePath = settings.MappingFilePath;
@@ -42,7 +42,7 @@ namespace StellaServer.Setup
             }
 
             var canStartServer = this.WhenAnyValue(
-                x => x.ServerTcpPort,
+                x => x.BroadcastPort,
                 x => x.ServerUdpPort,
                 x => x.RemoteUdpPort,
                 x => x.MappingFilePath,
@@ -65,7 +65,7 @@ namespace StellaServer.Setup
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
+                    new StellaServerLib.StellaServer(MappingFilePath, BroadcastPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
                 stellaServer.Start();
 
 
@@ -80,7 +80,7 @@ namespace StellaServer.Setup
 
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
                 {
-                    ServerTcpPort = ServerTcpPort,
+                    BroadcastPort = BroadcastPort,
                     ServerUdpPort = ServerUdpPort,
                     RemoteUdpPort = RemoteUdpPort,
                     MappingFilePath = MappingFilePath,

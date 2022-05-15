@@ -37,22 +37,22 @@ namespace StellaServerLib.Network
             _clients = new ConcurrentDictionary<int, Client>();
         }
 
-        public void Start(int port, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator)
+        public void Start(int broadcastPort, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator)
         {
             string ip = GetIp();
 
-            Console.Out.WriteLine($"Starting server on {ip} {port}");
+            Console.Out.WriteLine($"Starting server on {ip} {broadcastPort}");
 
             IPAddress ipAddress = IPAddress.Parse(ip);
             _udpOutputEndPoint = new IPEndPoint(ipAddress, udpPort);
-            _port = port;
+            _port = broadcastPort;
             _udpPort = udpPort;
             _remoteUdpPort = remoteUdpPort;
 
-            // Create an UDP socket.
+            // Create an UDP socket for output.
             _udpSocketConnection = socketConnectionCreator.Create(_udpOutputEndPoint);
 
-            _clientRegistrationController = new ClientRegistrationController(socketConnectionCreator, port);
+            _clientRegistrationController = new ClientRegistrationController(socketConnectionCreator, broadcastPort);
             _clientRegistrationController.NewClientRegistered += ClientRegistrationController_OnNewClientRegistered;
             _clientRegistrationController.Start();
         }

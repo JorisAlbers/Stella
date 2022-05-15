@@ -19,7 +19,7 @@
                 <ListViewItem>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Broadcast port:"/>
-                        <TextBox x:Name="TcpPortTextBox" 
+                        <TextBox x:Name="BroadcastPortTextBox" 
                                  Width="50" 
                                  Margin="10,0,0,0"></TextBox>
                         <TextBlock Text="udp port:" 

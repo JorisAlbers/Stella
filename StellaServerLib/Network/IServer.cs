@@ -6,7 +6,7 @@ namespace StellaServerLib.Network
 {
     public interface IServer : IDisposable
     {
-        void Start(int port, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator);
+        void Start(int broadcastPort, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator);
 
         /// <summary> Sends a frame to a client </summary>
         void SendToClient(int clientId, FrameWithoutDelta frame);

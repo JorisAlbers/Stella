@@ -15,8 +15,13 @@ namespace StellaServer
         [Obsolete]
         [XmlAttribute]
         public string ServerIp { get; set; }
+        
+        [Obsolete]
         [XmlAttribute]
         public int ServerTcpPort { get; set; }
+
+        [XmlAttribute]
+        public int BroadcastPort { get; set; }
         [XmlAttribute]
         public int ServerUdpPort { get; set; }
         [XmlElement]
