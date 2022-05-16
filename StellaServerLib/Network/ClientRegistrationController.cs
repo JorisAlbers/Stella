@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -127,7 +128,7 @@ namespace StellaServerLib.Network
         private void ParseConnectionRequest(byte[] messageData, IPEndPoint ipEndPoint)
         {
             ConnectionRequestMessage message = ConnectionRequestProtocol.Deserialize(messageData, 0);
-            Console.Out.WriteLine($"Received connection request message with key {message.Key} , version {message.Version}");
+            Console.Out.WriteLine($"Received connection request message. mac:{message.Mac}, key {message.Key} , version {message.Version})");
 
             if (message.Key != _STELLA_PROTOCOL_KEY)
             {
