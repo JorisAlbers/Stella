@@ -35,10 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServer", "StellaServe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoMapping", "VideoMapping\VideoMapping.csproj", "{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StellaClientCpp", "StellaClientCpp\StellaClientCpp.vcxproj", "{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StellaClientCpp.Test", "StellaClientCpp.Test\StellaClientCpp.Test.vcxproj", "{0E8AB898-C90A-4889-B873-1B728FE0E902}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -241,26 +237,6 @@ Global
 		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x64.Build.0 = Release|Any CPU
 		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x86.ActiveCfg = Release|Any CPU
 		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x86.Build.0 = Release|Any CPU
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|x64.ActiveCfg = Debug|x64
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|x64.Build.0 = Debug|x64
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|x86.ActiveCfg = Debug|Win32
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|x86.Build.0 = Debug|Win32
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Release|Any CPU.ActiveCfg = Release|Win32
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Release|x64.ActiveCfg = Release|x64
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Release|x64.Build.0 = Release|x64
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Release|x86.ActiveCfg = Release|Win32
-		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Release|x86.Build.0 = Release|Win32
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Debug|x64.ActiveCfg = Debug|x64
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Debug|x64.Build.0 = Debug|x64
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Debug|x86.ActiveCfg = Debug|Win32
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Debug|x86.Build.0 = Debug|Win32
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Release|Any CPU.ActiveCfg = Release|Win32
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Release|x64.ActiveCfg = Release|x64
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Release|x64.Build.0 = Release|x64
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Release|x86.ActiveCfg = Release|Win32
-		{0E8AB898-C90A-4889-B873-1B728FE0E902}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
