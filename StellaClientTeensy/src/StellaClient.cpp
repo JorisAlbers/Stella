@@ -2,18 +2,18 @@
 #include <NativeEthernet.h>
 #include <NativeEthernetUdp.h>
 #include <Arduino.h>
+//#include "message.h"
+#include "connection.h"
 
-void sendBroadCast();
-void getMacAdress(uint8_t *mac);
+unsigned int localPort = 20050;
+unsigned int server_broadcast_port = 20055;
 
-unsigned int localPort = 8888;
-byte mac[6];
-const int CONNECTION_REQUEST_PACKET_SIZE = 2* sizeof(int32_t) + 2* sizeof(byte) + sizeof(mac) ;
-byte packetBuffer[CONNECTION_REQUEST_PACKET_SIZE];
-EthernetUDP Udp;
+const int CONNECTION_REQUEST_PACKET_SIZE = 2* sizeof(int32_t) + 2* sizeof(byte) + 6 * sizeof(byte);
+byte packetBuffer[60000]; // TODO smaller?
 
+connection con(localPort,server_broadcast_port);
 
-
+void sendConnectionRequest();
 
 void setup() {  
     
@@ -22,33 +22,38 @@ void setup() {
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
     }
-    getMacAdress((u_int8_t*)&mac);
-        Serial.println("Starting");
-    // start Ethernet and UDP
-    if (Ethernet.begin(mac) == 0) {
-        Serial.println("Failed to configure Ethernet using DHCP");
-        // Check for Ethernet hardware present
-        if (Ethernet.hardwareStatus() == EthernetNoHardware) {
-        Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
-        } else if (Ethernet.linkStatus() == LinkOFF) {
-        Serial.println("Ethernet cable is not connected.");
+
+    Serial.println("-- Stella client teensy --");
+    
+    if(!con.open())
+    {
+        // We cant continue
+        Serial.println("Failed to connection to internet. Restart to continue");
+        while(true)
+        {
+            delay(1);
         }
-        // no point in carrying on, so do nothing forevermore:
-        while (true) {
-        delay(1);
-        }
+    };
+}
+
+void loop() {   
+    Serial.println("Sending connection request");
+    sendConnectionRequest();
+    delay(2000); 
+    con.maintain();    
+}
+
+/* void readHeader()
+{
+    int bytesRead = 0;
+    if (Udp.readBytes(packetBuffer,)) {
+        // We've received a packet, read the data from it
+        bytesRead = Udp.read(packetBuffer, UDP_BUFFER_SIZE); // read the packet into the buffer
+        Serial.printf("Received %d bytes\n",bytesRead);
     }
-    Udp.begin(localPort);
-}
+} */
 
-void loop() {
-  sendBroadCast();
-  // wait to see if a reply is available
-  delay(5000); 
-  Ethernet.maintain();
-}
-
-void sendBroadCast()
+void sendConnectionRequest()
 {
     byte key = 73;
     byte version = 1;
@@ -58,21 +63,12 @@ void sendBroadCast()
     memcpy(&packetBuffer[sizeof(int)], &messageType, sizeof(int));
     memcpy(&packetBuffer[sizeof(int) *2], &key, sizeof(byte));
     memcpy(&packetBuffer[sizeof(int) *2 + sizeof(byte)], &version, sizeof(byte));
-    memcpy(&packetBuffer[sizeof(int) *2 + sizeof(byte) *2 ], &mac, sizeof(mac));
-
+    memcpy(&packetBuffer[sizeof(int) *2 + sizeof(byte) *2 ], &con.m_mac, sizeof(con.m_mac));
        
     // LENGTH KEY VERSION MAC
 
-    IPAddress MyServer(255, 255, 255, 255);
-    Udp.beginPacket(MyServer, 20055);
-    Udp.write(packetBuffer, CONNECTION_REQUEST_PACKET_SIZE);
-    Udp.endPacket();
-    Serial.println("Send broadcast");
+    con.Broadcast(packetBuffer, CONNECTION_REQUEST_PACKET_SIZE);
 }
 
-void getMacAdress(uint8_t *mac) {
-    for(uint8_t by=0; by<2; by++) mac[by]=(HW_OCOTP_MAC1 >> ((1-by)*8)) & 0xFF;
-    for(uint8_t by=0; by<4; by++) mac[by+2]=(HW_OCOTP_MAC0 >> ((3-by)*8)) & 0xFF;
-    Serial.printf("MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-}
+
 
