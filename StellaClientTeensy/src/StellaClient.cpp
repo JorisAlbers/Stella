@@ -2,7 +2,6 @@
 #include <NativeEthernet.h>
 #include <NativeEthernetUdp.h>
 #include <Arduino.h>
-//#include "message.h"
 #include "connection.h"
 
 unsigned int localPort = 20050;

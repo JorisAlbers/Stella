@@ -4,21 +4,22 @@ namespace net
 {
     const int UDP_BUFFER_SIZE = 60000;
 
-    enum class stellaMessageTypes : uint32_t
+    enum class message_type : uint32_t
     {
         Unknown,
         Init,
         Standard,
         AnimationRenderFrame,
+        ConnectionRequest,
     };
 
     struct message_header
     {
         uint32_t size; // excludes this 4 byte int field. messagetype + message size
-        stellaMessageTypes type{};
+        message_type type{};
     };
 
-    struct message_in_udp
+    struct message
     {
         message_header header{ };
         uint8_t  body[UDP_BUFFER_SIZE];
@@ -30,13 +31,10 @@ namespace net
         }
 
         template<typename DataType>
-        friend message_in_udp& operator << (message_in_udp& msg, const DataType& data)
+        friend message& operator << (message& msg, const DataType& data)
         {
-            // Check that the type of the data being pushed is trivially copyable
-            static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
-
             // copy data
-            std::memcpy(&msg.body[msg.currentIndex], &data, sizeof(DataType));
+            memcpy(&msg.body[msg.currentIndex], &data, sizeof(DataType));
 
             // increment index
             msg.currentIndex += sizeof(DataType);
