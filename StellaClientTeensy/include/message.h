@@ -23,7 +23,8 @@ namespace net
     {
         message_header header{ };
         uint8_t  body[UDP_BUFFER_SIZE];
-        int currentIndex = 0;
+        uint32_t messageBytesReceived = 0;
+        uint32_t headerBytesReceived = 0;
 
         size_t size() const
         {
@@ -34,15 +35,21 @@ namespace net
         friend message& operator << (message& msg, const DataType& data)
         {
             // copy data
-            memcpy(&msg.body[msg.currentIndex], &data, sizeof(DataType));
+            memcpy(&msg.body[msg.messageBytesReceived], &data, sizeof(DataType));
 
             // increment index
-            msg.currentIndex += sizeof(DataType);
+            msg.messageBytesReceived += sizeof(DataType);
 
-            msg.header.size = sizeof(int) + msg.currentIndex; // int = message type 
+            msg.header.size = sizeof(int) + msg.messageBytesReceived; // int = message type 
 
             // Return the target message so it can be "chained"
             return msg;
+        }
+
+        void reset()
+        {
+            messageBytesReceived = 0;
+            headerBytesReceived = 0;
         }
     };
 }

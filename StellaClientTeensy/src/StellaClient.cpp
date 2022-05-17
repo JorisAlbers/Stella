@@ -35,7 +35,9 @@ void setup() {
     };
 }
 
-void loop() {   
+void loop() {  
+    con.ReadData();
+    
     Serial.println("Sending connection request");
     sendConnectionRequest();
     delay(2000); 
