@@ -13,6 +13,7 @@ byte packetBuffer[60000]; // TODO smaller?
 connection con(localPort,server_broadcast_port);
 
 void sendConnectionRequest();
+void parsePackage(net::message* message);
 
 void setup() {  
     
@@ -41,6 +42,9 @@ void loop() {
     {
         net::message* message = con.m_message_cache.getForReading();
         Serial.printf("Received message of type %d\n", message->header.type);
+        parsePackage(message);
+        
+
         con.m_message_cache.resetMessage(message);
     }
     
@@ -48,6 +52,21 @@ void loop() {
     sendConnectionRequest();
     delay(2000); 
     con.maintain();    
+}
+
+void parsePackage(net::message* message)
+{
+    switch (message->header.type)
+        {
+            case net::message_type::Init:                
+                net::init_message* init_message = reinterpret_cast<net::init_message*>(&message->body);
+                 Serial.printf("INIT received: pixels = %d, brightness = %d\n", init_message->pixels, init_message->brightness);
+                break;
+            
+            default:
+                break;
+        }
+
 }
 
 /* void readHeader()

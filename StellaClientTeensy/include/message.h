@@ -53,6 +53,13 @@ namespace net
             headerBytesReceived = 0;
         }
     };
+
+    struct init_message
+    {
+        uint32_t version;
+        uint32_t pixels;
+        uint8_t brightness;
+    };
 }
 
 

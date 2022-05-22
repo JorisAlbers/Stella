@@ -146,19 +146,13 @@ namespace StellaServerLib.Network
                 return;
             }
 
-            string a = message.Mac.ToString();
-            string b = _clientMappings[1].Mac;
-
-
             ClientMapping clientMapping = _clientMappings.FirstOrDefault(x => x.Mac.Equals(message.Mac.ToString(), StringComparison.OrdinalIgnoreCase));
             if (clientMapping == null)
             {
-                // This client was not found in our mapping. Ask user for input?
+                // This client was not found in our mapping. TODO Ask user for input?
                 Console.WriteLine($"Client tried to register but was not found in mapping. Mac = {message.Mac}");
                 return;
             }
-            
-            Console.WriteLine($"Client with id {clientMapping.Index} is now registered.");
 
             NewClientRegistered?.Invoke(this, (ipEndPoint, clientMapping.Index));
         }

@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using StellaLib.Animation;
 using StellaLib.Network;
+using StellaLib.Network.Protocol;
 using StellaLib.Network.Protocol.Animation;
 using StellaServerLib.Animation.Mapping;
 
@@ -43,6 +44,7 @@ namespace StellaServerLib.Network
         public void Start(int broadcastPort, int udpPort, int remoteUdpPort,
             SocketConnectionCreator socketConnectionCreator, List<ClientMapping> clientMappings)
         {
+            _clientMappings = clientMappings;
             string ip = GetIp();
 
             Console.Out.WriteLine($"Starting server on {ip} {broadcastPort}");
@@ -115,7 +117,10 @@ namespace StellaServerLib.Network
 
             // As we do not yet know which client this is, add him to the list of new connection.
             client.Start();
-            client.SendUdp(MessageType.Init, new byte[]{10}); // TODO create init protocol and message. TODO move to registrationController
+
+            // TODO move initializing client to registrationController
+            byte[] data = InitProtocol.Serialize(_clientMappings.First(x => x.Index == ipAndIndex.index).Pixels, 255);
+            client.SendUdp(MessageType.Init, data); 
             
             ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(ipAndIndex.index, ClientStatus.Connected));
         }
