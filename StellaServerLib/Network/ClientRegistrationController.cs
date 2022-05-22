@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using StellaLib.Network;
 using StellaLib.Network.Protocol;
+using StellaServerLib.Animation.Mapping;
 
 namespace StellaServerLib.Network
 {
@@ -14,18 +15,21 @@ namespace StellaServerLib.Network
         private byte _STELLA_PROTOCOL_KEY = 73;
         private readonly SocketConnectionCreator _socketConnectionCreator;
         private readonly int _port;
+        private readonly List<ClientMapping> _clientMappings;
         private ISocketConnection _socket;
         private const int UDP_BUFFER_SIZE = 60_000; // The maximum UDP package size is 65,507 bytes.
 
         private readonly Dictionary<IPEndPoint, PacketProtocol<MessageType>> _packageProtocolPerClient;
 
-        public event EventHandler<IPEndPoint> NewClientRegistered;
+        public event EventHandler<(IPEndPoint ip, int index)> NewClientRegistered;
 
 
-        public ClientRegistrationController(SocketConnectionCreator socketConnectionCreator, int port)
+        public ClientRegistrationController(SocketConnectionCreator socketConnectionCreator, int port,
+            List<ClientMapping> clientMappings)
         {
             _socketConnectionCreator = socketConnectionCreator;
             _port = port;
+            _clientMappings = clientMappings;
             _packageProtocolPerClient = new Dictionary<IPEndPoint, PacketProtocol<MessageType>>();
         }
 
@@ -142,7 +146,21 @@ namespace StellaServerLib.Network
                 return;
             }
 
-            NewClientRegistered?.Invoke(this,ipEndPoint);
+            string a = message.Mac.ToString();
+            string b = _clientMappings[1].Mac;
+
+
+            ClientMapping clientMapping = _clientMappings.FirstOrDefault(x => x.Mac.Equals(message.Mac.ToString(), StringComparison.OrdinalIgnoreCase));
+            if (clientMapping == null)
+            {
+                // This client was not found in our mapping. Ask user for input?
+                Console.WriteLine($"Client tried to register but was not found in mapping. Mac = {message.Mac}");
+                return;
+            }
+            
+            Console.WriteLine($"Client with id {clientMapping.Index} is now registered.");
+
+            NewClientRegistered?.Invoke(this, (ipEndPoint, clientMapping.Index));
         }
 
     }

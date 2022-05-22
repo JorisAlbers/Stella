@@ -48,14 +48,14 @@ namespace StellaServerLib
         public void Start()
         {
             // Read mapping
-            List<PiMaskItem> mask = LoadMask(_mappingFilePath, out int[] stripLengthPerPi);
+            List<PiMaskItem> mask = LoadMask(_mappingFilePath, out int[] stripLengthPerPi, out List<ClientMapping> clientMappings);
             // Create animatorCreator
             _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit), stripLengthPerPi, mask);
 
             // Start Server
-            _server = StartServer(_port, _udpPort, _remoteUdpPort,_server);
+            _server = StartServer(_port, _udpPort, _remoteUdpPort,_server, clientMappings);
             // Start ClientController
-            _clientController = StartClientController(_server, _maximumFrameRate, stripLengthPerPi.Length);
+            _clientController = StartClientController(_server, _maximumFrameRate, clientMappings.Count);
         }
 
         public void StartAnimation(IAnimation animation)
@@ -98,13 +98,15 @@ namespace StellaServerLib
             }
         }
 
-        private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi)
+        private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi, out List<ClientMapping> clientMappings)
         {
             try
             {
                 // Read the piMappings from file
                 MappingLoader mappingLoader = new MappingLoader();
                 Mappings mappings = mappingLoader.Load(new StreamReader(mappingFilePath));
+
+                clientMappings = mappings.ClientMappings;
 
                 // Convert them to a mask
                 PiMaskCalculator piMaskCalculator = new PiMaskCalculator(mappings.RegionMappings);
@@ -116,13 +118,14 @@ namespace StellaServerLib
             }
         }
 
-        private IServer StartServer(int port, int udpPort,int remoteUdpPort, IServer server)
+        private IServer StartServer(int port, int udpPort, int remoteUdpPort, IServer server,
+            List<ClientMapping> clientMappings)
         {
             Console.Out.WriteLine($"Starting server on port {port}");
             try
             {
                 server.ClientChanged += ServerOnClientChanged;
-                server.Start(port, udpPort, remoteUdpPort, new SocketConnectionCreator());
+                server.Start(port, udpPort, remoteUdpPort, new SocketConnectionCreator(), clientMappings);
                 return server;
             }
             catch (Exception e)

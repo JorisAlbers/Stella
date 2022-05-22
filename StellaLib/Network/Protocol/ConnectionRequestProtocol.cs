@@ -52,7 +52,7 @@ namespace StellaLib.Network.Protocol
 
         public override string ToString()
         {
-            return string.Join('-', Mac.Select(x=> x.ToString("X2")));
+            return string.Join(':', Mac.Select(x=> x.ToString("X2")));
         }
     }
 }

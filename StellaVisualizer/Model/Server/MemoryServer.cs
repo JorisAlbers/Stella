@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using StellaLib.Animation;
 using StellaLib.Network;
+using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
 
 namespace StellaVisualizer.Model.Server
@@ -12,7 +14,8 @@ namespace StellaVisualizer.Model.Server
         /// </summary>
         public event EventHandler<MessageSendEventArgs> FrameSend;
 
-        public void Start(int broadcastPort, int udpPort, int remoteUdpPort, SocketConnectionCreator _)
+        public void Start(int broadcastPort, int udpPort, int remoteUdpPort, SocketConnectionCreator _,
+            List<ClientMapping> clientMappings)
         {
             ;
         }

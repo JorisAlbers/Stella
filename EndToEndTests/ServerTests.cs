@@ -42,7 +42,7 @@ namespace EndToEndTests
         {
             Server server = new Server();
             Console.WriteLine("Starting server instance, press enter to quit");
-            server.Start(20055, 20056, 20056, new SocketConnectionCreator());
+            server.Start(20055, 20056, 20056, new SocketConnectionCreator(),null);
             Console.ReadLine();
             server.Dispose();
         }

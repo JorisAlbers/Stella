@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using StellaLib.Animation;
 using StellaLib.Network;
 using StellaLib.Network.Protocol.Animation;
+using StellaServerLib.Animation.Mapping;
 
 namespace StellaServerLib.Network
 {
@@ -22,6 +24,7 @@ namespace StellaServerLib.Network
         private int _port;
         private int _udpPort;
         private int _remoteUdpPort;
+        private List<ClientMapping> _clientMappings;
 
         private bool _isShuttingDown = false;
         private readonly object _isShuttingDownLock = new object();
@@ -37,7 +40,8 @@ namespace StellaServerLib.Network
             _clients = new ConcurrentDictionary<int, Client>();
         }
 
-        public void Start(int broadcastPort, int udpPort, int remoteUdpPort, SocketConnectionCreator socketConnectionCreator)
+        public void Start(int broadcastPort, int udpPort, int remoteUdpPort,
+            SocketConnectionCreator socketConnectionCreator, List<ClientMapping> clientMappings)
         {
             string ip = GetIp();
 
@@ -52,7 +56,7 @@ namespace StellaServerLib.Network
             // Create an UDP socket for output.
             _udpSocketConnection = socketConnectionCreator.Create(_udpOutputEndPoint);
 
-            _clientRegistrationController = new ClientRegistrationController(socketConnectionCreator, broadcastPort);
+            _clientRegistrationController = new ClientRegistrationController(socketConnectionCreator, broadcastPort, clientMappings);
             _clientRegistrationController.NewClientRegistered += ClientRegistrationController_OnNewClientRegistered;
             _clientRegistrationController.Start();
         }
@@ -81,18 +85,39 @@ namespace StellaServerLib.Network
             }
         }
 
-        private void ClientRegistrationController_OnNewClientRegistered(object sender, IPEndPoint clientEndPoint)
+        private void ClientRegistrationController_OnNewClientRegistered(object sender, (IPEndPoint ip, int index) ipAndIndex)
         {
+            if (_clients.ContainsKey(ipAndIndex.index))
+            {
+                Console.WriteLine($"Client {ipAndIndex.index} is already registered.");
+                return;
+            }
+
             // Create a new client.
-            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, clientEndPoint, UDP_BUFFER_SIZE);
+            UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, ipAndIndex.ip, UDP_BUFFER_SIZE);
             Client client = new Client(udpSocketConnectionController);
+
+            bool newClient = true;
+            _clients.AddOrUpdate(ipAndIndex.index, client, (key, oldValue) =>
+            {
+                newClient = false;
+                return oldValue;
+            });
+
+            if (!newClient)
+            {
+                return;
+            }
+
+
             client.MessageReceived += Client_MessageReceived;
             // TODO fix client.Disconnect += Client_Disconnected;
 
             // As we do not yet know which client this is, add him to the list of new connection.
             client.Start();
-            client.SendUdp(MessageType.Init, new byte[]{10}); // TODO create init protocol and message
-            // TODO map mac address to index
+            client.SendUdp(MessageType.Init, new byte[]{10}); // TODO create init protocol and message. TODO move to registrationController
+            
+            ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(ipAndIndex.index, ClientStatus.Connected));
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)

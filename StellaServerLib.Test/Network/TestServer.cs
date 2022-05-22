@@ -5,6 +5,7 @@ using System.Text;
 using Moq;
 using NUnit.Framework;
 using StellaLib.Network;
+using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
 
 namespace StellaServerLib.Test.Network
@@ -14,6 +15,11 @@ namespace StellaServerLib.Test.Network
         [Test]
         public void ClientSendsBroadcast_NoticedByServer()
         {
+            var clientMappings = new List<ClientMapping>()
+            {
+                new ClientMapping(0, "mac01"),
+            };
+
             Server server = new Server();
 
             var socketConnectionMock = new Mock<ISocketConnection>();
@@ -28,7 +34,7 @@ namespace StellaServerLib.Test.Network
 
 
 
-            server.Start(11, 22, 33, connectionCreatorMock.Object);
+            server.Start(11, 22, 33, connectionCreatorMock.Object, clientMappings);
 
             ;
         }
