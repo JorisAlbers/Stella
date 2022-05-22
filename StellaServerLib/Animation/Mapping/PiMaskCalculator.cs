@@ -8,13 +8,13 @@ namespace StellaServerLib.Animation.Mapping
     /// </summary>
     public class PiMaskCalculator
     {
-        private readonly List<PiMapping> _piMappings;
+        private readonly List<RegionMapping> _piMappings;
 
         /// <summary>
         /// CTOR
         ///  </summary>
         /// <param name="piMappings">The PiMappings must be ordered and start from the combined index 0.</param>
-        public PiMaskCalculator(List<PiMapping> piMappings)
+        public PiMaskCalculator(List<RegionMapping> piMappings)
         {
             _piMappings = piMappings;
         }
@@ -26,7 +26,7 @@ namespace StellaServerLib.Animation.Mapping
             List<int> stripLengthPerPiList = new List<int>();
 
 
-            foreach (PiMapping piMapping in _piMappings)
+            foreach (RegionMapping piMapping in _piMappings)
             {
                 AppendPiMapping(piMapping, mask);
                 
@@ -43,15 +43,15 @@ namespace StellaServerLib.Animation.Mapping
             return mask;
         }
 
-        private void AppendPiMapping(PiMapping piMapping, List<PiMaskItem> mask)
+        private void AppendPiMapping(RegionMapping regionMapping, List<PiMaskItem> mask)
         {
-            if (piMapping.InverseDirection)
+            if (regionMapping.InverseDirection)
             {
-                AppendBackwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
+                AppendBackwardsSection(mask, regionMapping.PiIndex, regionMapping.StartIndexOnPi, regionMapping.Length);
             }
             else
             {
-                AppendForwardsSection(mask, piMapping.PiIndex, piMapping.StartIndexOnPi, piMapping.Length);
+                AppendForwardsSection(mask, regionMapping.PiIndex, regionMapping.StartIndexOnPi, regionMapping.Length);
             }
         }
 

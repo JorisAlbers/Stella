@@ -32,10 +32,10 @@ namespace StellaServerLib.Test.Serialization.Mapping
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            List<PiMapping> mappings = loader.Load(mockStream);
+            List<RegionMapping> mappings = loader.Load(mockStream);
 
             Assert.AreEqual(1,mappings.Count);
-            PiMapping mapping = mappings[0];
+            RegionMapping mapping = mappings[0];
             Assert.AreEqual(expectedPiIndex,mapping.PiIndex);
             Assert.AreEqual(expectedLength,mapping.Length);
             Assert.AreEqual(expectedStartIndexOnPi,mapping.StartIndexOnPi);
@@ -71,17 +71,17 @@ namespace StellaServerLib.Test.Serialization.Mapping
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            List<PiMapping> mappings = loader.Load(mockStream);
+            List<RegionMapping> mappings = loader.Load(mockStream);
             Assert.AreEqual(2, mappings.Count);
 
             // Mapping 1
-            PiMapping mapping1 = mappings[0];
+            RegionMapping mapping1 = mappings[0];
             Assert.AreEqual(expectedPiIndex1, mapping1.PiIndex);
             Assert.AreEqual(expectedLength1, mapping1.Length);
             Assert.AreEqual(expectedStartIndexOnPi1, mapping1.StartIndexOnPi);
             Assert.AreEqual(expectedInverseDirection1, mapping1.InverseDirection);
             // Mapping 2
-            PiMapping mapping2 = mappings[1];
+            RegionMapping mapping2 = mappings[1];
             Assert.AreEqual(expectedPiIndex2, mapping2.PiIndex);
             Assert.AreEqual(expectedLength2, mapping2.Length);
             Assert.AreEqual(expectedStartIndexOnPi2, mapping2.StartIndexOnPi);
