@@ -14,9 +14,9 @@ namespace StellaServerLib.Test.Animation.Mapping
             int expectedLength = 5;
             int expectedStartIndexOnPi = 500;
 
-            List<PiMapping> mappings = new List<PiMapping>()
+            List<RegionMapping> mappings = new List<RegionMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,false)
+                new RegionMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,false)
             };
             
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -55,9 +55,9 @@ namespace StellaServerLib.Test.Animation.Mapping
             int expectedLength = 5;
             int expectedStartIndexOnPi = 500;
 
-            List<PiMapping> mappings = new List<PiMapping>()
+            List<RegionMapping> mappings = new List<RegionMapping>()
             {
-                new PiMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,true)
+                new RegionMapping(expectedPiIndex,expectedLength,expectedStartIndexOnPi,true)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -98,10 +98,10 @@ namespace StellaServerLib.Test.Animation.Mapping
             int expectedStartIndexOnPi1 = 500;
             int expectedStartIndexOnPi2 = 100;
 
-            List<PiMapping> mappings = new List<PiMapping>()
+            List<RegionMapping> mappings = new List<RegionMapping>()
             {
-                new PiMapping(expectedPiIndex1,expectedLength,expectedStartIndexOnPi1,false),
-                new PiMapping(expectedPiIndex2,expectedLength,expectedStartIndexOnPi2,false)
+                new RegionMapping(expectedPiIndex1,expectedLength,expectedStartIndexOnPi1,false),
+                new RegionMapping(expectedPiIndex2,expectedLength,expectedStartIndexOnPi2,false)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);
@@ -141,10 +141,10 @@ namespace StellaServerLib.Test.Animation.Mapping
 
             int[] sections = new int[] { 2 };
 
-            List<PiMapping> mappings = new List<PiMapping>()
+            List<RegionMapping> mappings = new List<RegionMapping>()
             {
-                new PiMapping(expectedPiIndex,2,500,true),
-                new PiMapping(expectedPiIndex,3,502,false)
+                new RegionMapping(expectedPiIndex,2,500,true),
+                new RegionMapping(expectedPiIndex,3,502,false)
             };
 
             PiMaskCalculator maskCalculator = new PiMaskCalculator(mappings);

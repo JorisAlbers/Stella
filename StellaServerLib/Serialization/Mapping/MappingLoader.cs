@@ -9,9 +9,9 @@ namespace StellaServerLib.Serialization.Mapping
     /// <summary>
     /// Loads a list of piMappings from file
     /// </summary>
-    public class MappingLoader : ILoader<List<PiMapping>>
+    public class MappingLoader : ILoader<List<RegionMapping>>
     {
-        public List<PiMapping> Load(StreamReader streamReader)
+        public List<RegionMapping> Load(StreamReader streamReader)
         {
             var settings = new SerializerSettings();
             settings.RegisterAssembly(typeof(MappingSettings).Assembly);
@@ -19,10 +19,10 @@ namespace StellaServerLib.Serialization.Mapping
             MappingSettings mappingSettings = serializer.Deserialize<MappingSettings>(streamReader);
 
             // Convert to list of PiMappings
-            List<PiMapping> mappings = new List<PiMapping>();
-            foreach (PiMappingSettings piMapping in mappingSettings.Mappings)
+            List<RegionMapping> mappings = new List<RegionMapping>();
+            foreach (RegionMappingSettings piMapping in mappingSettings.Mappings)
             {
-                mappings.Add(new PiMapping(piMapping.PiIndex, piMapping.Length, piMapping.StartIndexOnPi, piMapping.InverseDirection));
+                mappings.Add(new RegionMapping(piMapping.PiIndex, piMapping.Length, piMapping.StartIndexOnPi, piMapping.InverseDirection));
             }
 
             return mappings;
