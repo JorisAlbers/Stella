@@ -11,5 +11,6 @@
     &lt;TestId&gt;NUnit3x::ABD5A469-EC56-42A9-A34E-E45577D9E169::.NETCoreApp,Version=v3.1::StellaServerLib.Test.Network.TestServer.ClientSendsBroadcast_NoticedByServer&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::B6D7B5B9-61D4-415D-BA15-C770EF5CE87B::.NETCoreApp,Version=v3.1::StellaLib.Test.Network.TestSocketConnectionController.BroadCastTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::B6D7B5B9-61D4-415D-BA15-C770EF5CE87B::.NETCoreApp,Version=v3.1::StellaLib.Test.Network.Protocol.TestPackageProtocol&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::ABD5A469-EC56-42A9-A34E-E45577D9E169::.NETCoreApp,Version=v3.1::StellaServerLib.Test.Serialization.Mapping.TestMappingLoader&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

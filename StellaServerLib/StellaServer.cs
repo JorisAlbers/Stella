@@ -104,10 +104,10 @@ namespace StellaServerLib
             {
                 // Read the piMappings from file
                 MappingLoader mappingLoader = new MappingLoader();
-                List<RegionMapping> piMappings = mappingLoader.Load(new StreamReader(mappingFilePath));
+                Mappings mappings = mappingLoader.Load(new StreamReader(mappingFilePath));
 
                 // Convert them to a mask
-                PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
+                PiMaskCalculator piMaskCalculator = new PiMaskCalculator(mappings.RegionMappings);
                 return piMaskCalculator.Calculate(out stripLengthPerPi);
             }
             catch (Exception e)

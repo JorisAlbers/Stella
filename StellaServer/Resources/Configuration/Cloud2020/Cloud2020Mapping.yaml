@@ -1,4 +1,11 @@
-﻿!MappingSettings
+﻿!Mappings
+Clients:
+ - Index: 0
+   Mac: "04:e9:e5:0b:f0:f4"
+ - Index: 1
+   Mac: "04:e9:e5:0b:f0:fa"
+ - Index: 2
+   Mac: "unknown"
 Mappings:
  - PiIndex: 0
    Length:  480
