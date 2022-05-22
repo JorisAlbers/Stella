@@ -36,7 +36,13 @@ void setup() {
 }
 
 void loop() {  
-    con.ReadData();
+    bool packageReceived = con.ReadData();
+    if(packageReceived)
+    {
+        net::message* message = con.m_message_cache.getForReading();
+        Serial.printf("Received message of type %d\n", message->header.type);
+        con.m_message_cache.resetMessage(message);
+    }
     
     Serial.println("Sending connection request");
     sendConnectionRequest();

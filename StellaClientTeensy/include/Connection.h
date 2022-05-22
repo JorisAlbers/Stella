@@ -3,6 +3,7 @@
 #include <NativeEthernetUdp.h>
 #include <Arduino.h>
 #include "message.h"
+#include "messageCache.h"
 
 class connection
 {
@@ -10,10 +11,11 @@ class connection
         EthernetUDP m_udp;
         const uint16_t m_port;
         const uint16_t m_server_broadcast_port;
-        net::message m_message;
 
     public:
         byte m_mac[6];
+        net::messageCache m_message_cache;     
+
 
     public:
         explicit connection(const uint16_t port, const uint16_t server_broadcast_port) : m_port(port) , m_server_broadcast_port(server_broadcast_port)
@@ -59,49 +61,53 @@ class connection
                 return false;
             }
 
+            net::message* message = m_message_cache.getForWriting();
+
             Serial.printf("Received %d bytes\n", bytesReceived);
             int i = 0;
             while(i != bytesReceived)
             {
                 int bytesAvailable = bytesReceived - i;
-                if(m_message.headerBytesReceived < sizeof(m_message.header))
+                if(message->headerBytesReceived < sizeof(message->header))
                 {
                     // we need to receive the header.
-                    int bytesRequested = sizeof(m_message.header) - m_message.headerBytesReceived;
+                    int bytesRequested = sizeof(message->header) - message->headerBytesReceived;
                     int bytesTransferred = min(bytesRequested, bytesAvailable);
                     i+= bytesTransferred;
-                    m_message.headerBytesReceived += bytesTransferred;
+                    message->headerBytesReceived += bytesTransferred;
 
-                    m_udp.readBytes(reinterpret_cast<byte*>(&m_message.header),bytesTransferred);
+                    m_udp.readBytes(reinterpret_cast<byte*>(&message->header),bytesTransferred);
                     continue;
                 }
 
-                int bytesRequested = (m_message.header.size - sizeof(m_message.header.type)) - m_message.messageBytesReceived; // stella server sends as length messagetype + data
+                int bytesRequested = (message->header.size - sizeof(message->header.type)) - message->messageBytesReceived; // stella server sends as length messagetype + data
 
                 if(bytesRequested > 0) 
                 {
                     // we need to receive the data                    
                     int bytesTransferred = min(bytesRequested, bytesAvailable);
                     i+= bytesTransferred;
-                    m_message.messageBytesReceived += bytesTransferred;
+                    message->messageBytesReceived += bytesTransferred;
 
-                    m_udp.readBytes(reinterpret_cast<byte*>(&m_message.body),bytesTransferred);
+                    m_udp.readBytes(reinterpret_cast<byte*>(&message->body),bytesTransferred);
                     continue;
                 }
             }
 
-            Serial.printf("message: headerbr = %d, bodybr = %d, size = %d, type = %d\n", m_message.headerBytesReceived, m_message.messageBytesReceived, m_message.header.size, m_message.header.type);
+            Serial.printf("message: headerbr = %d, bodybr = %d, size = %d, type = %d\n", message->headerBytesReceived, message->messageBytesReceived, message->header.size, message->header.type);
 
-            if(m_message.headerBytesReceived == sizeof(m_message.header) &&
-                (m_message.header.size - sizeof(m_message.header.type)) == m_message.messageBytesReceived)
+            if(message->headerBytesReceived == sizeof(message->header) &&
+                (message->header.size - sizeof(message->header.type)) == message->messageBytesReceived)
                 {
-                    Serial.printf("Received full package of %d bytes\n", sizeof(m_message.header) + m_message.header.size);
-                    m_message.reset(); // TODO only reset after message is consumed further done the pipeline
+                    Serial.printf("Received full package of %d bytes\n", sizeof(message->header) + message->header.size);
+                    m_message_cache.markReadyForReading();
+                    return true;
                 }
             else
             {
                 Serial.println("Received partial package");
             }
+            return false;
         }
 
         void maintain()
