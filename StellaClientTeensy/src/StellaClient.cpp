@@ -3,7 +3,9 @@
 #include <NativeEthernetUdp.h>
 #include <Arduino.h>
 #include "connection.h"
+#include <TimeLib.h>
 
+const long ONE_MINUTE = 60;
 unsigned int localPort = 20050;
 unsigned int server_broadcast_port = 20055;
 
@@ -12,8 +14,12 @@ byte packetBuffer[60000]; // TODO smaller?
 
 connection con(localPort,server_broadcast_port);
 
+bool initialized = false;
+time_t lastMessageReceived;
+
 void sendConnectionRequest();
 void parsePackage(net::message* message);
+void initializeLeds(uint32_t pixels, uint8_t brightness);
 
 void setup() {  
     
@@ -40,17 +46,28 @@ void loop() {
     bool packageReceived = con.ReadData();
     if(packageReceived)
     {
+        // TODO make sure it is from the server
+        lastMessageReceived = now();
         net::message* message = con.m_message_cache.getForReading();
         Serial.printf("Received message of type %d\n", message->header.type);
-        parsePackage(message);
-        
+        parsePackage(message);  
 
         con.m_message_cache.resetMessage(message);
     }
     
-    Serial.println("Sending connection request");
-    sendConnectionRequest();
-    delay(2000); 
+    if(!initialized)
+    {
+        Serial.println("Attempting to register at the server.");
+        sendConnectionRequest();
+        delay(1000);
+    }
+    else if(now() - lastMessageReceived > ONE_MINUTE)
+    {
+        Serial.println("Did not get a message in a long time. Broadcasting our info again.");
+        sendConnectionRequest();
+        lastMessageReceived = now();
+    }
+
     con.maintain();    
 }
 
@@ -60,7 +77,8 @@ void parsePackage(net::message* message)
         {
             case net::message_type::Init:                
                 net::init_message* init_message = reinterpret_cast<net::init_message*>(&message->body);
-                 Serial.printf("INIT received: pixels = %d, brightness = %d\n", init_message->pixels, init_message->brightness);
+                Serial.printf("INIT received: pixels = %d, brightness = %d\n", init_message->pixels, init_message->brightness);
+                initializeLeds(init_message->pixels, init_message->brightness);
                 break;
             
             default:
@@ -69,15 +87,13 @@ void parsePackage(net::message* message)
 
 }
 
-/* void readHeader()
+void initializeLeds(uint32_t pixels, uint8_t brightness)
 {
-    int bytesRead = 0;
-    if (Udp.readBytes(packetBuffer,)) {
-        // We've received a packet, read the data from it
-        bytesRead = Udp.read(packetBuffer, UDP_BUFFER_SIZE); // read the packet into the buffer
-        Serial.printf("Received %d bytes\n",bytesRead);
-    }
-} */
+    initialized = true;
+    // TODO, octolib?
+}
+
+
 
 void sendConnectionRequest()
 {
