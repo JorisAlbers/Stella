@@ -88,41 +88,27 @@ namespace StellaServerLib.Network
         }
 
         private void ClientRegistrationController_OnNewClientRegistered(object sender, (IPEndPoint ip, int index) ipAndIndex)
-        {
-            if (_clients.ContainsKey(ipAndIndex.index))
-            {
-                Console.WriteLine($"Client {ipAndIndex.index} is already registered.");
-                return;
-            }
+        { 
+            Client client = _clients.GetOrAdd(ipAndIndex.index, (index) => CreateNewClient(ipAndIndex));
+          
+            // Send init message
+            // TODO move initializing client to registrationController
+            byte[] data = InitProtocol.Serialize(_clientMappings.First(x => x.Index == ipAndIndex.index).Pixels, 255);
+            client.SendUdp(MessageType.Init, data);
+            ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(ipAndIndex.index, ClientStatus.Connected));
+        }
 
+        private Client CreateNewClient((IPEndPoint ip, int index) ipAndIndex)
+        {
             // Create a new client.
             UdpSocketConnectionController<MessageType> udpSocketConnectionController = new UdpSocketConnectionController<MessageType>(_udpSocketConnection, ipAndIndex.ip, UDP_BUFFER_SIZE);
             Client client = new Client(udpSocketConnectionController);
 
-            bool newClient = true;
-            _clients.AddOrUpdate(ipAndIndex.index, client, (key, oldValue) =>
-            {
-                newClient = false;
-                return oldValue;
-            });
-
-            if (!newClient)
-            {
-                return;
-            }
-
-
-            client.MessageReceived += Client_MessageReceived;
             // TODO fix client.Disconnect += Client_Disconnected;
-
-            // As we do not yet know which client this is, add him to the list of new connection.
+            client.MessageReceived += Client_MessageReceived;
             client.Start();
 
-            // TODO move initializing client to registrationController
-            byte[] data = InitProtocol.Serialize(_clientMappings.First(x => x.Index == ipAndIndex.index).Pixels, 255);
-            client.SendUdp(MessageType.Init, data); 
-            
-            ClientChanged?.Invoke(this, new ClientStatusChangedEventArgs(ipAndIndex.index, ClientStatus.Connected));
+            return client;
         }
 
         private void Client_MessageReceived(object sender, MessageReceivedEventArgs<MessageType> e)
