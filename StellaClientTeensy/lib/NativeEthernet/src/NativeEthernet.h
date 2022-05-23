@@ -99,7 +99,6 @@ public:
     static void setStackHeap(uint8_t* stack_heap_ptr, size_t stack_heap_size); //Appoint your own buffer
     static void setStackHeap(size_t stack_heap_size); //Change allocated stack heap size
     static void setSocketSize(size_t _socket_size); //Change allocated socket size
-	static void setSocketSizeFixed(size_t _socket_size); //Actually Change allocated socket size , see https://github.com/vjmuzik/NativeEthernet/issues/28
     static void setSocketNum(uint8_t _socket_num); //Change allocated socket num
 	static int begin(uint8_t *mac, unsigned long timeout = 60000, unsigned long responseTimeout = 4000);
 	static int maintain();
