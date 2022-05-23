@@ -15,7 +15,7 @@ namespace StellaServerLib.Network
     public class Server : IServer, IDisposable
     {
         /// <summary> The size of the package protocol UDP buffer </summary>
-        private const int UDP_BUFFER_SIZE = 60_000; // The maximum UDP package size is 65,507 bytes.
+        private const int UDP_BUFFER_SIZE = 1024 * 2 * 7 - 8; 
 
         private List<Client> _newConnections;
         private ConcurrentDictionary<int,Client> _clients;
