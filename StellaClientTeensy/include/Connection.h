@@ -54,16 +54,17 @@ class connection
 
         bool ReadData()
         {
-            int bytesReceived = m_udp.parsePacket();
+            int bytesReceived = m_udp.parsePacket();      
             
             if(bytesReceived == 0)
             {
                 return false;
             }
 
+            Serial.printf("Message in: %d bytes, ", bytesReceived);
+
             net::message* message = m_message_cache.getForWriting();
 
-            Serial.printf("Received %d bytes\n", bytesReceived);
             int i = 0;
             while(i != bytesReceived)
             {
@@ -94,18 +95,18 @@ class connection
                 }
             }
 
-            Serial.printf("message: headerbr = %d, bodybr = %d, size = %d, type = %d\n", message->headerBytesReceived, message->messageBytesReceived, message->header.size, message->header.type);
+            Serial.printf(" headerbr = %d, bodybr = %d, size = %d, type = %d,", message->headerBytesReceived, message->messageBytesReceived, message->header.size, message->header.type);
 
             if(message->headerBytesReceived == sizeof(message->header) &&
                 (message->header.size - sizeof(message->header.type)) == message->messageBytesReceived)
                 {
-                    Serial.printf("Received full package of %d bytes\n", sizeof(message->header) + message->header.size);
+                    Serial.printf("Full end\n", sizeof(message->header) + message->header.size);
                     m_message_cache.markReadyForReading();
                     return true;
                 }
             else
             {
-                Serial.println("Received partial package");
+                Serial.println("partial package");
             }
             return false;
         }
