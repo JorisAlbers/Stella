@@ -3,8 +3,6 @@
 
 namespace net
 {
-    const int UDP_BUFFER_SIZE = 60000;
-
     enum class message_type : uint32_t
     {
         Unknown,
@@ -20,6 +18,8 @@ namespace net
         message_type type{};
     };
 
+    const int UDP_BUFFER_SIZE = 1024 * 2 * 7 - sizeof(message_header);
+ 
     struct message
     {
         message_header header{ };

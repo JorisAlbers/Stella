@@ -36,9 +36,11 @@
 #if defined(RAMEND) && defined(RAMSTART) && ((RAMEND - RAMSTART) <= 2048)
 #define MAX_SOCK_NUM 4
 #else
-#define MAX_SOCK_NUM 8
+//#define MAX_SOCK_NUM 8 //<- original FNET value 
+#define MAX_SOCK_NUM 1
 #endif
-#define FNET_SOCKET_DEFAULT_SIZE 1024 * 2
+//#define FNET_SOCKET_DEFAULT_SIZE 1024 * 2 // <- original FNET value 
+#define FNET_SOCKET_DEFAULT_SIZE 1024 * 2 *7
 #define FNET_STACK_HEAP_DEFAULT_SIZE 64u * 1024u //64k
 #define FNET_POLL_TIME 1000 //Time in microseconds
 
@@ -48,7 +50,7 @@
 // can really help with UDP protocols like Artnet.  In theory larger
 // buffers should allow faster TCP over high-latency links, but this
 // does not always seem to work in practice (maybe Wiznet bugs?)
-//#define ETHERNET_LARGE_BUFFERS
+#define ETHERNET_LARGE_BUFFERS
 
 
 #include <Arduino.h>
@@ -97,6 +99,7 @@ public:
     static void setStackHeap(uint8_t* stack_heap_ptr, size_t stack_heap_size); //Appoint your own buffer
     static void setStackHeap(size_t stack_heap_size); //Change allocated stack heap size
     static void setSocketSize(size_t _socket_size); //Change allocated socket size
+	static void setSocketSizeFixed(size_t _socket_size); //Actually Change allocated socket size , see https://github.com/vjmuzik/NativeEthernet/issues/28
     static void setSocketNum(uint8_t _socket_num); //Change allocated socket num
 	static int begin(uint8_t *mac, unsigned long timeout = 60000, unsigned long responseTimeout = 4000);
 	static int maintain();
