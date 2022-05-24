@@ -8,8 +8,8 @@ namespace StellaLib.Network.Protocol.Animation
 {
     public class FrameProtocol
     {
-        // Timestamp (absolute), number of frames OR number of Pixelinstructions, Has FrameSections
-        private const int HEADER_BYTES_NEEDED = sizeof(long) + sizeof(int) + sizeof(bool);
+        // Frame index, number of frames OR number of Pixelinstructions, Has FrameSections
+        private const int HEADER_BYTES_NEEDED = sizeof(int) + sizeof(int) + sizeof(bool);
 
         public static byte[][] SerializeFrame(FrameWithoutDelta frame, int maxSizePerPackage)
         {
@@ -23,9 +23,8 @@ namespace StellaLib.Network.Protocol.Animation
                 packages = new byte[1][];
                 packages[0] = new byte[bytesNeeded];
                 BitConverter.GetBytes(frame.Index).CopyTo(packages[0], 0);  // Sequence index
-                BitConverter.GetBytes(frame.TimeStampRelative).CopyTo(packages[0], 4);  // TimeStamp (relative)
-                BitConverter.GetBytes(frame.Count).CopyTo(packages[0], 8);   // Number of PixelInstructions
-                BitConverter.GetBytes(false).CopyTo(packages[0], 12);        // Has FrameSections
+                BitConverter.GetBytes(frame.Count).CopyTo(packages[0], 4);   // Number of PixelInstructions
+                BitConverter.GetBytes(false).CopyTo(packages[0], 8);        // Has FrameSections
 
                 for (int i = 0; i < frame.Count; i++)
                 {
@@ -52,12 +51,11 @@ namespace StellaLib.Network.Protocol.Animation
             packages[0] = new byte[headerBytesNeeded + instructionsInFirstSection * PixelInstructionProtocol.BYTES_NEEDED];
 
             BitConverter.GetBytes(frame.Index).CopyTo(packages[0], 0);           // Sequence index
-            BitConverter.GetBytes(frame.TimeStampRelative).CopyTo(packages[0], 4);           // TimeStamp (relative)
-            BitConverter.GetBytes(frameSectionsNeeded).CopyTo(packages[0], 8);    // Number of FrameSets
-            BitConverter.GetBytes(true).CopyTo(packages[0], 12);                  // Has FrameSections
-            CreateFrameSection(packages[0], 13, frame, frame.Index, 0, 0, instructionsInFirstSection);
+            BitConverter.GetBytes(frameSectionsNeeded).CopyTo(packages[0], 4);    // Number of FrameSets
+            BitConverter.GetBytes(true).CopyTo(packages[0], 8);                  // Has FrameSections
+            CreateFrameSection(packages[0], 9, frame, frame.Index, 0, 0, instructionsInFirstSection);
 
-            // Lastely, create the other frame sections. A new byte array (package) for each FrameSection.
+            // Last, create the other frame sections. A new byte array (package) for each FrameSection.
             for (int i = 0; i < frameSectionsNeeded - 1; i++)
             {
                 int instructionStartIndex = instructionsInFirstSection + i * instructionsThatFitInOtherSections;
@@ -96,8 +94,6 @@ namespace StellaLib.Network.Protocol.Animation
         private FrameSectionPackage[] _frameSectionPackages;
         private bool[] _frameSectionsReceived;
         private int _frameIndex = -1;
-        private int _timeStampRelative = -1;
-
 
 
         /// <summary>
@@ -114,7 +110,6 @@ namespace StellaLib.Network.Protocol.Animation
                 // Read Frame header
                 int startIndex = 0;
                 _frameIndex = BitConverter.ToInt32(bytes, startIndex);
-                _timeStampRelative = BitConverter.ToInt32(bytes, startIndex += 4);
                 int itemCount = BitConverter.ToInt32(bytes, startIndex += 4);
                 bool hasFrameSections = BitConverter.ToBoolean(bytes, startIndex += 4);
                 startIndex += 1;
@@ -130,7 +125,7 @@ namespace StellaLib.Network.Protocol.Animation
                 }
                 else
                 {
-                    frame = new FrameWithoutDelta(_frameIndex, _timeStampRelative, itemCount);
+                    frame = new FrameWithoutDelta(_frameIndex, -1, itemCount);
                     // The rest of the package contains PixelInstructions
                     for (int i = 0; i < itemCount; i++)
                     {
@@ -157,7 +152,7 @@ namespace StellaLib.Network.Protocol.Animation
                 {
                     // TODO add totalNumberOfPixelInstructions to frame header
                     int totalPixelInstructions = _frameSectionPackages.Sum(x => x.NumberOfPixelInstructions);
-                    frame = new FrameWithoutDelta(_frameIndex, _timeStampRelative, totalPixelInstructions);
+                    frame = new FrameWithoutDelta(_frameIndex, -1, totalPixelInstructions);
                     int index = 0;
                     for (int i = 0; i < _frameSectionPackages.Length; i++)
                     {

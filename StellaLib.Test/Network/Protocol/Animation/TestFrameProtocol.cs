@@ -13,17 +13,15 @@ namespace StellaLib.Test.Network.Protocol.Animation
         public void SerializeFrame_Frame_CreatesCorrectByteArray()
         {
             int maxPackageSize = 1016;
-            int timeUnitsPerFrame = 100;
             int frameIndex = 9;
-            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, timeUnitsPerFrame, 3);
+            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, 1, 3);
             frame[0] = new PixelInstruction(1,2,3);
             frame[1] = new PixelInstruction(4, 5, 6);
             frame[2] = new PixelInstruction(7, 8, 9);
 
-            byte[] expectedBytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + 3 + 3 + 3];
+            byte[] expectedBytes = new byte[sizeof(int)  + sizeof(int) + sizeof(bool) + 3 + 3 + 3];
             int startIndex = 0;
             BitConverter.GetBytes(frameIndex).CopyTo(expectedBytes, startIndex); // Frame index
-            BitConverter.GetBytes(timeUnitsPerFrame).CopyTo(expectedBytes, startIndex += 4);
             BitConverter.GetBytes(frame.Count).CopyTo(expectedBytes, startIndex += 4); // Number of PixelInstructions
             BitConverter.GetBytes(false).CopyTo(expectedBytes, startIndex += 4); // Has FrameSections
             // instruction 1
@@ -49,9 +47,8 @@ namespace StellaLib.Test.Network.Protocol.Animation
         public void SerializeFrame_FrameTooBigForASinglePackage_CreatesCorrectByteArray()
         {
             int maxPackageSize = 1016;
-            int timeUnitsPerFrame = 100;
             int frameIndex = 9;
-            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, timeUnitsPerFrame,900);
+            FrameWithoutDelta frame = new FrameWithoutDelta(frameIndex, 1,900);
             for (int i = 0; i < 900; i++)
             {
                 frame[i] = new PixelInstruction(1, 2, 3);
@@ -81,8 +78,7 @@ namespace StellaLib.Test.Network.Protocol.Animation
         [Test]
         public void TryDeserialize_frameWithNoFrameSets_DeserializesCorrectly()
         {
-            int timeUnitsPerFrame = 100;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(1, timeUnitsPerFrame, 3);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(1, 1, 3);
             expectedFrame[0] = new PixelInstruction (1, 2, 3) ;
             expectedFrame[1] = new PixelInstruction (4, 5, 6) ;
             expectedFrame[2] = new PixelInstruction (7, 8, 9) ;
@@ -90,7 +86,6 @@ namespace StellaLib.Test.Network.Protocol.Animation
             byte[] bytes = new byte[sizeof(int) + sizeof(int) + sizeof(int) + sizeof(bool) + PixelInstructionProtocol.BYTES_NEEDED * 3];
             int startIndex = 0;
             BitConverter.GetBytes(1).CopyTo(bytes, startIndex); // Frame index
-            BitConverter.GetBytes(timeUnitsPerFrame).CopyTo(bytes, startIndex += 4); // Timestamp (relative)
             BitConverter.GetBytes(expectedFrame.Count).CopyTo(bytes, startIndex += 4); // Number of PixelInstructions
             BitConverter.GetBytes(false).CopyTo(bytes, startIndex += 4); // Has FrameSections
             // instruction 1
@@ -111,7 +106,6 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(true, protocol.TryDeserialize(bytes, out frame));
             Assert.IsNotNull(frame);
             Assert.AreEqual(expectedFrame.Index, frame.Index);
-            Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEqual(expectedFrame.Items, frame.Items);
         }
@@ -120,9 +114,8 @@ namespace StellaLib.Test.Network.Protocol.Animation
         public void TryDeserialize_frameWithThreeFrameSets_DeserializesCorrectly()
         {
             int maxPackageSize = 1016;
-            int timeUnitsPerFrame = 100;
             int frameIndex = 9;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, timeUnitsPerFrame,900);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, 1,900);
             for (int i = 0; i < 900; i++)
             {
                 expectedFrame[i] = new PixelInstruction(1, 2, 3);
@@ -140,7 +133,6 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(true, protocol.TryDeserialize(packages[2], out frame));
             Assert.IsNotNull(frame);
             Assert.AreEqual(expectedFrame.Index, frame.Index);
-            Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEqual(expectedFrame.Items, frame.Items);
         }
@@ -149,9 +141,8 @@ namespace StellaLib.Test.Network.Protocol.Animation
         public void TryDeserialize_frameWithThreeFrameSetsOutOfOrder_DeserializesCorrectly()
         {
             int maxPackageSize = 1016;
-            int timeUnitsPerFrame = 100;
             int frameIndex = 9;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, timeUnitsPerFrame,900);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, 1,900);
             for (int i = 0; i < 900; i++)
             {
                 expectedFrame[i] = new PixelInstruction(1, 2, 3);
@@ -169,7 +160,6 @@ namespace StellaLib.Test.Network.Protocol.Animation
             Assert.AreEqual(true, protocol.TryDeserialize(packages[1], out frame));
             Assert.IsNotNull(frame);
             Assert.AreEqual(expectedFrame.Index, frame.Index);
-            Assert.AreEqual(expectedFrame.TimeStampRelative, frame.TimeStampRelative);
             Assert.AreEqual(expectedFrame.Count, frame.Count);
             CollectionAssert.AreEquivalent(expectedFrame.Items, frame.Items);
         }
@@ -179,9 +169,8 @@ namespace StellaLib.Test.Network.Protocol.Animation
         {
 
             int maxPackageSize = 1016;
-            int timeUnitsPerFrame = 100;
             int frameIndex = 9;
-            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, timeUnitsPerFrame,900);
+            FrameWithoutDelta expectedFrame = new FrameWithoutDelta(frameIndex, 1,900);
             for (int i = 0; i < 900; i++)
             {
                 expectedFrame[i] = new PixelInstruction(1, 2, 3);
