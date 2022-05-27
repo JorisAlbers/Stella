@@ -6,6 +6,8 @@ namespace StellaLib.Network
         Init,
         Standard,
         AnimationRenderFrame,
+        FrameHeader,
+        FrameSection,
         ConnectionRequest,
     }
 }

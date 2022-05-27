@@ -65,10 +65,11 @@ namespace StellaServerLib.Network
 
         public void SendToClient(int clientId, FrameWithoutDelta frame)
         {
-            byte[][] packages = FrameProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE); // TODO move the switch between UDP and TCP send from Client to here.
-            for (int i = 0; i < packages.Length; i++)
+            byte[][] packages = FrameProtocol.SerializeFrame(frame, UDP_BUFFER_SIZE);
+            SendToClient(clientId, MessageType.FrameHeader, packages[0]);
+            for (int i = 1; i < packages.Length; i++)
             {
-                SendToClient(clientId, MessageType.AnimationRenderFrame, packages[i]);
+                SendToClient(clientId, MessageType.FrameSection, packages[i]);
             }
         }
 
