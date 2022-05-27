@@ -159,30 +159,7 @@ namespace StellaClientLib.Network
             // The frame might be split up into multiple packages. 
             // We keep a buffer (FrameProtocol for each frame) to wait for all packages.
             // When the frame is complete, we call FrameReceived.
-            int frameIndex = FrameProtocol.GetFrameIndex(message);
-            FrameWithoutDelta frame = null;
-            lock (_resourceLock)
-            {
-                if (_frameSectionBuffer == null)
-                {
-                    _frameSectionBuffer = new Dictionary<int, FrameProtocol>();
-                }
-
-                if (!_frameSectionBuffer.ContainsKey(frameIndex))
-                {
-                    _frameSectionBuffer.Add(frameIndex, new FrameProtocol());
-                }
-
-                if (_frameSectionBuffer[frameIndex].TryDeserialize(message, out frame))
-                {
-                   _frameSectionBuffer.Remove(frameIndex);
-                }
-            }
-
-            if (frame != null)
-            {
-                OnFrameReceived(frame);
-            }
+            return; // TODO remove this entire lib
         }
 
         private void OnFrameReceived(FrameWithoutDelta frame)
