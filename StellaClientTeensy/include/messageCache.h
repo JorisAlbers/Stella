@@ -4,37 +4,49 @@
 #include <NativeEthernetUdp.h>
 #include <Arduino.h>
 #include "message.h"
+#include <vector>
 
 namespace net
 {
     class messageCache
     {
-        private:
-            
-            
-            net::message m_message1;
+        private:                        
+            std::vector<net::message*> m_buffers { new net::message};
+            uint32_t m_buffer_index;
+
+            void growSectionsArrayIfNecessary(uint32_t index)
+            {
+                if(m_buffers.size() > index)
+                {
+                    return;
+                }
+
+                m_buffers.resize(index + 1);
+                m_buffers[index] = new net::message;
+            }
 
 
 
         public:
-            net::message* getForWriting()
+            net::message* currentBuffer()
             {
-                return &m_message1;
+                return m_buffers[m_buffer_index];
             }
 
-            net::message* getForReading()
+            void switchBuffer()
             {
-                return &m_message1;
-            }
+                m_buffer_index++;
+                growSectionsArrayIfNecessary(m_buffer_index);
+            }     
 
-            void markReadyForReading()
+            void reset()
             {
-                // TODO
-            }
+                for (size_t i = 0; i < m_buffer_index+1; i++) // +1 to also reset the buffer at the current index.
+                {
+                    m_buffers[i]->reset();
+                }
 
-            void resetMessage(message* message)
-            {
-                m_message1.reset();
+                m_buffer_index = 0;                
             }
     };
 }

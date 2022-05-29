@@ -63,8 +63,8 @@ class connection
 
             Serial.printf("Message in: %d bytes, ", bytesReceived);
 
-            net::message* message = m_message_cache.getForWriting();
-
+            net::message* message = m_message_cache.currentBuffer();
+            
             int i = 0;
             while(i != bytesReceived)
             {
@@ -101,11 +101,12 @@ class connection
                 (message->header.size - sizeof(message->header.type)) == message->messageBytesReceived)
                 {
                     Serial.printf("Full end\n", sizeof(message->header) + message->header.size);
-                    m_message_cache.markReadyForReading();
+                    // Signal that a full package is received
                     return true;
                 }
             else
             {
+                // Wait for more data to arrive.
                 Serial.println("partial package");
             }
             return false;

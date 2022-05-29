@@ -35,7 +35,16 @@ void setup() {
         ; // wait for serial port to connect. Needed for native USB port only
     }
 
+    
+
     Serial.println("-- Stella client teensy --");
+
+    if ( Serial && CrashReport ) 
+    { // Make sure Serial is alive and there is a CrashReport stored.
+        Serial.println("Detected crash at previous run. Error:");
+        Serial.print(CrashReport); // Once called any crash data is cleared
+        // In this case USB Serial is used - but any Stream capable output will work : SD Card or other UART Serial
+    }
     
     if(!con.open())
     {
@@ -56,11 +65,9 @@ void loop() {
     {
         // TODO make sure it is from the server
         lastMessageReceived = t0;
-        net::message* message = con.m_message_cache.getForReading();
+        net::message* message = con.m_message_cache.currentBuffer();
         Serial.printf("Received message of type %d\n", message->header.type);
-        parsePackage(message);  
-
-        con.m_message_cache.resetMessage(message);
+        parsePackage(message);        
     }
     
 
@@ -95,6 +102,8 @@ void parsePackage(net::message* message)
             net::init_message* init_message = reinterpret_cast<net::init_message*>(&message->body);
             Serial.printf("INIT received: pixels = %d, brightness = %d\n", init_message->pixels, init_message->brightness);
             initializeLeds(init_message->pixels, init_message->brightness);
+            // only one package needed. mark done.
+            con.m_message_cache.reset();
             break;
         }              
 
@@ -104,16 +113,19 @@ void parsePackage(net::message* message)
             net::frame_header* header = reinterpret_cast<net::frame_header*>(&message->body);
             Serial.printf("FRAME_HEADER received: frameindex = %d, sections = %d, items = %d\n", header->index, header->total_sections, header->items);
                         
-            if(!header->total_sections < 2)
+            if(header->total_sections < 2)
             {
                // Frame is small enough to fit in one package.
-               displayFrame(header, message);        
+               displayFrame(header, message);
+               // only one package needed. mark done.
+               con.m_message_cache.reset();  
             }
-            else
+            else 
             {
                 // We are receiving a new frame split over multiple packages.
                 m_frame_buffer.clear();
                 m_frame_buffer.addHeader(header);
+                con.m_message_cache.switchBuffer(); // we need more than one message.
                 // TODO keep message in right buffer cache
                 // TODO what if previous buffer is missing just one section, we should wait a bit more.
             }
@@ -131,11 +143,17 @@ void parsePackage(net::message* message)
                 if(m_frame_buffer.addSection(section))
                 {
                     displayFrame(&m_frame_buffer);
+                    con.m_message_cache.reset();
+                }
+                else
+                {
+                    con.m_message_cache.switchBuffer(); // we need more than one message.
                 }
             }
             else
             {
                 Serial.printf("FRAME_SECTION with frameindex = %d, sectionIndex = %d\n is not of the right frame index", section->frame_index,section->section_index);
+                // TODO create new message cache?
             }            
             break;  
         }    
