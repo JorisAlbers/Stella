@@ -91,8 +91,6 @@ void loop() {
     con.maintain();    
 }
 
-frame_buffer m_frame_buffer;
-
 void parsePackage(net::message* message)
 {
     switch (message->header.type)
@@ -122,12 +120,17 @@ void parsePackage(net::message* message)
             }
             else 
             {
-                // We are receiving a new frame split over multiple packages.
-                m_frame_buffer.clear();
-                m_frame_buffer.addHeader(header);
-                con.m_message_cache.switchBuffer(); // we need more than one message.
-                // TODO keep message in right buffer cache
-                // TODO what if previous buffer is missing just one section, we should wait a bit more.
+                // TODO: implement frame sections.
+                con.m_message_cache.reset();
+                
+/*                     // We are receiving a new frame split over multiple packages.
+                    m_frame_buffer.clear();
+                    m_frame_buffer.addHeader(header);
+                    con.m_message_cache.switchBuffer(); // we need more than one message.
+                                // TODO keep message in right buffer cache
+                                // TODO what if previous buffer is missing just one section, we should wait a bit more.
+                 */
+          
             }
             break;  
         }
@@ -137,7 +140,9 @@ void parsePackage(net::message* message)
             net::frame_section_header* section = reinterpret_cast<net::frame_section_header*>(&message->body);
             Serial.printf("FRAME_SECTION received: frameindex = %d, sectionIndex = %d\n", section->frame_index,section->section_index);
 
-            if(m_frame_buffer.m_frame_header != NULL && 
+            // TODO: implement frame section
+            con.m_message_cache.reset();
+          /*   if(m_frame_buffer.m_frame_header != NULL && 
                m_frame_buffer.m_frame_header->index == section->frame_index)
             {
                 if(m_frame_buffer.addSection(section))
@@ -154,7 +159,7 @@ void parsePackage(net::message* message)
             {
                 Serial.printf("FRAME_SECTION with frameindex = %d, sectionIndex = %d\n is not of the right frame index", section->frame_index,section->section_index);
                 // TODO create new message cache?
-            }            
+            }           */  
             break;  
         }    
 
