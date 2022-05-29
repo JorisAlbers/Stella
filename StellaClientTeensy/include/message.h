@@ -9,6 +9,8 @@ namespace net
         Init,
         Standard,
         AnimationRenderFrame,
+        FrameHeader,
+        FrameSection,
         ConnectionRequest,
     };
 

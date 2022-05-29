@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "connection.h"
 #include "frame.h"
+#include "frame_buffer.h"
 #include <TimeLib.h>
 
 const long ONE_MINUTE = 60;
@@ -24,6 +25,7 @@ void sendConnectionRequest();
 void parsePackage(net::message* message);
 void initializeLeds(uint32_t pixels, uint8_t brightness);
 void displayFrame(net::frame_header*, net::message*);
+void displayFrame(frame_buffer*);
 
 void setup() {  
     
@@ -82,8 +84,7 @@ void loop() {
     con.maintain();    
 }
 
-uint32_t incoming_frame = -1;
-net::message incoming_frames[0];
+frame_buffer m_frame_buffer;
 
 void parsePackage(net::message* message)
 {
@@ -98,30 +99,44 @@ void parsePackage(net::message* message)
         }              
 
 
-        case net::message_type::AnimationRenderFrame:
+        case net::message_type::FrameHeader:
         {
-            uint32_t frameIndex = reinterpret_cast<uint32_t>(&message->body);
-            Serial.printf("ANIMATION_RENDER_FRAME received: frameindex = %d\n", frameIndex);
-            if(incoming_frame != frameIndex)
+            net::frame_header* header = reinterpret_cast<net::frame_header*>(&message->body);
+            Serial.printf("FRAME_HEADER received: frameindex = %d, sections = %d, items = %d\n", header->index, header->total_sections, header->items);
+                        
+            if(!header->total_sections < 2)
             {
-                incoming_frame = frameIndex;
-                // this should be the first frame 
-                net::frame_header* header = reinterpret_cast<net::frame_header*>(&message->body);
-                if(header->has_frame_sections)
+               // Frame is small enough to fit in one package.
+               displayFrame(header, message);        
+            }
+            else
+            {
+                // We are receiving a new frame split over multiple packages.
+                m_frame_buffer.clear();
+                m_frame_buffer.addHeader(header);
+                // TODO keep message in right buffer cache
+                // TODO what if previous buffer is missing just one section, we should wait a bit more.
+            }
+            break;  
+        }
+
+        case net::message_type::FrameSection:
+        {
+            net::frame_section_header* section = reinterpret_cast<net::frame_section_header*>(&message->body);
+            Serial.printf("FRAME_SECTION received: frameindex = %d, sectionIndex = %d\n", section->frame_index,section->section_index);
+
+            if(m_frame_buffer.m_frame_header != NULL && 
+               m_frame_buffer.m_frame_header->index == section->frame_index)
+            {
+                if(m_frame_buffer.addSection(section))
                 {
-                    // TODO
-                    Serial.println("Frame section frame is not yet supported." );
-                }
-                else
-                {
-                    displayFrame(header, message);
+                    displayFrame(&m_frame_buffer);
                 }
             }
             else
             {
-                // Frame was already being received
-                Serial.printf("More data on frame with index %d received.\n", frameIndex );
-            }
+                Serial.printf("FRAME_SECTION with frameindex = %d, sectionIndex = %d\n is not of the right frame index", section->frame_index,section->section_index);
+            }            
             break;  
         }    
 
@@ -146,13 +161,19 @@ void displayFrame(net::frame_header* header, net::message* message)
     Serial.printf("Displaying frame %D of length %d\n",header->index, header->items);
 }
 
+void displayFrame(frame_buffer* buffer)
+{
+    // TODO
+    Serial.printf("Displaying frame from frame buffer");
+}
+
 
 
 void sendConnectionRequest()
 {
     byte key = 73;
     byte version = 1;
-    int messageType = 4;
+    int messageType = static_cast<int>(net::message_type::ConnectionRequest);
     memset(packetBuffer, 0, CONNECTION_REQUEST_PACKET_SIZE);
     memcpy(&packetBuffer, &CONNECTION_REQUEST_PACKET_SIZE, sizeof(int));
     memcpy(&packetBuffer[sizeof(int)], &messageType, sizeof(int));

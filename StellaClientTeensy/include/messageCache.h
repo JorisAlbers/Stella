@@ -10,7 +10,10 @@ namespace net
     class messageCache
     {
         private:
+            
+            
             net::message m_message1;
+
 
 
         public:

@@ -10,16 +10,17 @@ namespace net
         uint8_t blue;
     };
 
-    struct frame_header_index
-    {
-        uint32_t index;
-    };
-
     struct frame_header
     {
         uint32_t index;
-        uint32_t timestamp_relative;
+        uint32_t total_sections;
         uint32_t items;
-        bool has_frame_sections;
+    };
+
+    struct frame_section_header
+    {
+         uint32_t frame_index;
+         uint32_t section_index;
+         uint32_t items;
     };
 }
