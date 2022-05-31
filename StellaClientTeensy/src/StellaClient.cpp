@@ -6,6 +6,7 @@
 #include "frame.h"
 #include "frame_buffer.h"
 #include <TimeLib.h>
+#include "LedController.h"
 
 const long ONE_MINUTE = 60;
 const long TEN_SECONDS = 10;
@@ -17,6 +18,8 @@ const int CONNECTION_REQUEST_PACKET_SIZE = 2* sizeof(int32_t) + 2* sizeof(byte) 
 byte packetBuffer[60000]; // TODO smaller?
 
 connection con(localPort,server_broadcast_port);
+LedController* ledcontroller;
+
 
 bool initialized = false;
 time_t lastMessageReceived;
@@ -174,14 +177,20 @@ void parsePackage(net::message* message)
 
 void initializeLeds(uint32_t pixels, uint8_t brightness)
 {
+    if(initialized)
+    {
+        return;
+    }
     initialized = true;
-    // TODO, octolib?
+
+    ledcontroller = new LedController(pixels / 8);
 }
 
 void displayFrame(net::frame_header* header, net::message* message)
 {
-    // TODO
     Serial.printf("Displaying frame %D of length %d\n",header->index, header->items);
+    ledcontroller->setPixels(reinterpret_cast<net::pixel_instruction*>(&message->body[sizeof(net::frame_header)]), header->items, 0);
+    ledcontroller->show();
 }
 
 void displayFrame(frame_buffer* buffer)
