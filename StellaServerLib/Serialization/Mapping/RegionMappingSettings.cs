@@ -3,8 +3,8 @@ using StellaServerLib.Animation.Mapping;
 
 namespace StellaServerLib.Serialization.Mapping
 {
-    [YamlTag(nameof(PiMapping))]
-    internal class PiMappingSettings
+    [YamlTag(nameof(RegionMapping))]
+    internal class RegionMappingSettings
     {
         public int PiIndex { get; set; }
 

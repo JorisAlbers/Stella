@@ -11,25 +11,19 @@ namespace StellaServerLib.Animation.Drawing.Fade
         private const int MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME = 1;
         private readonly int _startIndex;
         private readonly int _stripLength;
-        private readonly int _fadeSteps;
         private readonly Color[] _fadeColors;
         private Random _random;
         private LinkedList<List<FadePoint>> _fadePointsPerFadeStep;
 
 
 
-        public FadingPulseDrawer(int startIndex, int stripLength, Color color, int fadeSteps)
+        public FadingPulseDrawer(int startIndex, int stripLength, Color color, int _)
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _fadeSteps = fadeSteps;
 
-            Color[][] fadedPatterns = FadeCalculation.CalculateFadedPatterns(new Color[] { color }, _fadeSteps);
-            _fadeColors = new Color[_fadeSteps];
-            for (int i = 0; i < _fadeSteps; i++)
-            {
-                _fadeColors[i] = fadedPatterns[i][0];
-            }
+            Color[][] fadedPatterns = FadeCalculation.CalculateFadedPatterns(new Color[] { color }, 0.2, true);
+            _fadeColors = fadedPatterns[0];
             _random = new Random();
             _fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
         }
@@ -40,7 +34,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             {
                 // All fade points at this index have the same fade step count.
                 int fadeStep = fadePoints[0].Step;
-                Color color = _fadeColors[_fadeColors.Length - 1 - fadeStep];
+                Color color = _fadeColors[fadeStep];
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
@@ -73,7 +67,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
         public bool MoveNext()
         {
             // Create new FadePoints
-            int fadePointsToAdd = _random.Next(MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME, 5);
+            int fadePointsToAdd = _random.Next(MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME, Math.Min(MINIMUM_FADEPOINTS_ADDED_EVERY_FRAME, _fadeColors.Length / 10));
             if (fadePointsToAdd > 0)
             {
                 _fadePointsPerFadeStep.AddLast(CreateNewFadePoints(_random, fadePointsToAdd));
@@ -84,7 +78,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             DrawFadePoints(_fadePointsPerFadeStep, pixelInstructions);
 
             // remove FadePoints that have elapsed
-            if (_fadePointsPerFadeStep.First != null && _fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+            if (_fadePointsPerFadeStep.First != null && _fadePointsPerFadeStep.First.Value[0].Step > _fadeColors.Length - 1)
             {
                 _fadePointsPerFadeStep.RemoveFirst();
             }

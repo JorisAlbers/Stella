@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using StellaLib.Animation;
 
 namespace StellaServerLib.Animation.Drawing.Fade
@@ -11,7 +12,6 @@ namespace StellaServerLib.Animation.Drawing.Fade
         private readonly Color[][] _fadePatterns;
         private readonly int _startIndex;
         private readonly int _stripLength;
-        private readonly int _fadeSteps;
         private readonly Random _random;
         private LinkedList<List<FadePoint>> _fadePointsPerFadeStep;
 
@@ -20,9 +20,8 @@ namespace StellaServerLib.Animation.Drawing.Fade
         {
             _startIndex = startIndex;
             _stripLength = stripLength;
-            _fadeSteps = fadeSteps;
 
-            _fadePatterns = FadeCalculation.CalculateFadedPatterns(pattern, _fadeSteps);
+            _fadePatterns = FadeCalculation.CalculateFadedPatterns(pattern, 0.2, true);
             _random = new Random();
             _fadePointsPerFadeStep = new LinkedList<List<FadePoint>>();
         }
@@ -39,7 +38,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
             DrawFadePoints(fadePointsPerFadeStep, pixelInstructions);
 
             // remove FadePoints that have elapsed
-            if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadeSteps - 1)
+            if (fadePointsPerFadeStep.First != null && fadePointsPerFadeStep.First.Value[0].Step > _fadePatterns[0].Length -1)
             {
                 fadePointsPerFadeStep.RemoveFirst();
             }
@@ -66,11 +65,10 @@ namespace StellaServerLib.Animation.Drawing.Fade
             {
                 // All fade points at this index have the same fade step count.
                 int fadeStep = fadePoints[0].Step;
-                Color[] pattern = _fadePatterns[_fadeSteps - 1 - fadeStep];
 
                 foreach (FadePoint fadePoint in fadePoints)
                 {
-                    for (int i = 0; i < pattern.Length; i++)
+                    for (int i = 0; i < _fadePatterns[fadeStep].Length; i++)
                     {
                         int pixelIndex = i + fadePoint.Point;
                         if (pixelIndex < 0 || pixelIndex > _stripLength - 1)
@@ -78,7 +76,7 @@ namespace StellaServerLib.Animation.Drawing.Fade
                             continue;
                         }
 
-                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + pixelIndex, pattern[i].R, pattern[i].G, pattern[i].B));
+                        pixelInstructions.Add(new PixelInstructionWithDelta(_startIndex + pixelIndex, _fadePatterns[fadeStep][i].R, _fadePatterns[fadeStep][i].G, _fadePatterns[fadeStep][i].B));
                     }
                     fadePoint.Step++;
                 }

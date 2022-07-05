@@ -4,7 +4,7 @@
     /// A mapping allows us to transform coordinates to a certain pi and a certain section
     /// </summary>
 
-    public class PiMapping
+    public class RegionMapping
     {
         /// <summary> The index of the pi </summary>
         public int PiIndex { get; }
@@ -20,7 +20,7 @@
         /// </summary>
         public bool InverseDirection { get; }
         
-        public PiMapping(int piIndex, int length, int startIndexOnPi,  bool inverseDirection)
+        public RegionMapping(int piIndex, int length, int startIndexOnPi,  bool inverseDirection)
         {
             PiIndex = piIndex;
             Length = length;
