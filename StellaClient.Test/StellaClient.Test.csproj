@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
