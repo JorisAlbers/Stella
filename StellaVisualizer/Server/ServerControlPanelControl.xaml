@@ -27,6 +27,7 @@
             <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterRedCorrection}"/>
             <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterGreenCorrection}"/>
             <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterBlueCorrection}"/>
+            <Slider Orientation="Vertical" Minimum="-100" Maximum="100"  Value="{Binding MasterBrightnessCorrection}"/>
 
         </UniformGrid>
 
