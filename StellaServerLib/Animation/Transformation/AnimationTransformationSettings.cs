@@ -64,8 +64,16 @@ namespace StellaServerLib.Animation.Transformation
         {
             float correctionFactor = BrightnessCorrection;
 
+            // do not adjust near black colors
+            if (red < 1 && green < 1 && blue < 1)
+            {
+                return (red, green, blue);
+            }
+
             if (correctionFactor < 0)
             {
+                //make color darker, changer brightness
+                correctionFactor += 1;
                 red *= correctionFactor;
                 green *= correctionFactor;
                 blue *= correctionFactor;
