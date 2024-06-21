@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace StellaVisualizer.Server
 {
@@ -28,6 +29,13 @@ namespace StellaVisualizer.Server
             }
 
             viewmodel.IsPaused = !viewmodel.IsPaused;
+        }
+
+        private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ServerControlPanelViewModel viewmodel = DataContext as ServerControlPanelViewModel;
+            viewmodel.BpmViewModel.OnNextBeat();
+
         }
     }
 }

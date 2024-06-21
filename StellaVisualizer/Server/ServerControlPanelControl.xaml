@@ -38,14 +38,16 @@
                     Click="ButtonBase_OnClick"/>
         </DockPanel>
 
-        <Grid Grid.Row="3" MinHeight="50" MinWidth="50">
+        <Grid Grid.Row="3" MinHeight="50" MinWidth="50" 
+              Background="White"
+              MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
             <Border x:Name="BpmBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <UniformGrid HorizontalAlignment="Center" VerticalAlignment="Center"
                              Columns="2">
                     <TextBlock Text="bpm:"></TextBlock>
-                    <TextBlock Text="{Binding BpmViewModel.Bpm}"></TextBlock>
+                    <TextBlock Text="{Binding BpmViewModel.Bpm, StringFormat={}{0:F2}}"></TextBlock>
                     <TextBlock Text="interval:"></TextBlock>
-                    <TextBlock Text="{Binding BpmViewmodel.Interval}"></TextBlock>
+                    <TextBlock Text="{Binding BpmViewModel.Interval}"></TextBlock>
                 </UniformGrid>
             </Border>
         </Grid>

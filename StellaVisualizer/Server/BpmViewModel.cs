@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace StellaVisualizer.Server;
 
@@ -8,6 +11,7 @@ public class BpmViewModel : INotifyPropertyChanged
 {
     private double _bpm;
     private long _interval;
+    private readonly BpmRecorder _bpmRecorder;
     public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -33,17 +37,55 @@ public class BpmViewModel : INotifyPropertyChanged
         }
     }
 
+    public BpmViewModel()
+    {
+        _bpmRecorder = new BpmRecorder();
+        _bpmRecorder.PropertyChanged += BpmRecorderOnPropertyChanged;
+    }
+
+    private void BpmRecorderOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(BpmRecorder.Bpm):
+                Bpm = _bpmRecorder.Bpm;
+                break;
+            case nameof(BpmRecorder.Interval):
+                Interval = _bpmRecorder.Interval;
+                break;
+        }
+    }
+
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    public class ActionCommand : ICommand
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
+        private readonly Action _action;
+
+        public ActionCommand(Action action)
+        {
+            _action = action;
+        }
+
+        public void Execute(object parameter)
+        {
+            _action();
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public event EventHandler CanExecuteChanged;
+    }
+
+    public void OnNextBeat()
+    {
+        _bpmRecorder.OnNextBeat();
     }
 }

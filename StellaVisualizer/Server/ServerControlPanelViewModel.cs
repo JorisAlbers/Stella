@@ -27,6 +27,7 @@ namespace StellaVisualizer.Server
         public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<IAnimation> animations)
         {
             _stellaServer = stellaServer;
+            BpmViewModel = new BpmViewModel();
             Animations = animations;
             PropertyChanged += OnPropertyChanged;
         }
