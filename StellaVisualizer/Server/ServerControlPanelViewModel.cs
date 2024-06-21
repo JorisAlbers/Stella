@@ -15,13 +15,15 @@ namespace StellaVisualizer.Server
 
         public int MasterWaitMs { get; set; }
 
-        public float MasterRedCorrection { get; set; }
-        public float MasterGreenCorrection { get; set; }
-        public float MasterBlueCorrection { get; set; }
+        public float MasterRedCorrection { get; set; } = 1;
+        public float MasterGreenCorrection { get; set; } = 1;
+        public float MasterBlueCorrection { get; set; } = 1;
         public float MasterBrightnessCorrection { get; set; }
 
 
         public bool IsPaused { get; set; }
+        public BpmViewModel BpmViewModel { get; }
+
         public ServerControlPanelViewModel(StellaServerLib.StellaServer stellaServer, List<IAnimation> animations)
         {
             _stellaServer = stellaServer;

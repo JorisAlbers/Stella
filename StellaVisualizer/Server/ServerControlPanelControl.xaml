@@ -13,6 +13,7 @@
             <RowDefinition Height="4*"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ListView Grid.Row="0" ItemsSource="{Binding Animations}" SelectedItem="{Binding SelectedAnimation}">
             <ListView.ItemTemplate>
@@ -28,14 +29,27 @@
             <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterGreenCorrection}"/>
             <Slider Orientation="Vertical" Minimum="0" Maximum="1"  Value="{Binding MasterBlueCorrection}"/>
             <Slider Orientation="Vertical" Minimum="-100" Maximum="100"  Value="{Binding MasterBrightnessCorrection}"/>
-
         </UniformGrid>
+
 
         <DockPanel Grid.Row="2">
             <Button Content="Pause"
                     x:Name="PauseButton"
                     Click="ButtonBase_OnClick"/>
         </DockPanel>
+
+        <Grid Grid.Row="3" MinHeight="50" MinWidth="50">
+            <Border x:Name="BpmBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <UniformGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Columns="2">
+                    <TextBlock Text="bpm:"></TextBlock>
+                    <TextBlock Text="{Binding BpmViewModel.Bpm}"></TextBlock>
+                    <TextBlock Text="interval:"></TextBlock>
+                    <TextBlock Text="{Binding BpmViewmodel.Interval}"></TextBlock>
+                </UniformGrid>
+            </Border>
+        </Grid>
+
 
             
     </Grid>
