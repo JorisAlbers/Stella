@@ -1,0 +1,42 @@
+﻿!MappingSettings
+Mappings:
+# This mapping has 12 rows with 2 columns (led strips) each.
+# Client 1
+ - PiIndex: 0
+   Length:  240
+   StartIndexOnPi:  0
+ - PiIndex: 0
+   Length:  240
+   StartIndexOnPi:  240
+ - PiIndex: 0
+   Length:  240
+   StartIndexOnPi:  480
+ - PiIndex: 0
+   Length:  240
+   StartIndexOnPi:  720
+# Client 2
+ - PiIndex: 1
+   Length:  240
+   StartIndexOnPi:  0
+ - PiIndex: 1
+   Length:  240
+   StartIndexOnPi:  240
+ - PiIndex: 1
+   Length:  240
+   StartIndexOnPi:  480
+ - PiIndex: 1
+   Length:  240
+   StartIndexOnPi:  720
+# Client 3
+ - PiIndex: 2
+   Length:  240
+   StartIndexOnPi:  0
+ - PiIndex: 2
+   Length:  240
+   StartIndexOnPi:  240
+ - PiIndex: 2
+   Length:  240
+   StartIndexOnPi:  480
+ - PiIndex: 2
+   Length:  240
+   StartIndexOnPi:  720
