@@ -45,7 +45,7 @@
                     <TextBlock Text="bpm:"></TextBlock>
                     <TextBlock Text="{Binding BpmViewModel.Bpm}"></TextBlock>
                     <TextBlock Text="interval:"></TextBlock>
-                    <TextBlock Text="{Binding BpmViewmodel.Interval}"></TextBlock>
+                    <TextBlock Text="{Binding BpmViewModel.Interval}"></TextBlock>
                 </UniformGrid>
             </Border>
         </Grid>
