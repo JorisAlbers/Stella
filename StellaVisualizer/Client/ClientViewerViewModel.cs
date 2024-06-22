@@ -21,22 +21,22 @@ namespace StellaVisualizer.Client
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ClientViewerViewModel(int numberOfPixels, Orientation orientation)
+        public ClientViewerViewModel(int numberOfPixels, Orientation orientation, int columns, int rows)
         {
             NumberOfPixels = numberOfPixels;
             NumberOfPixelsPerRow = numberOfPixels / 2;
 
+            GridColumns = columns;
+            GridRows = rows;
+
+
             if (orientation == Orientation.Horizontal)
             {
-                GridColumns = 1;
-                GridRows = 2;
                 ChildGridColumns = 0;
                 ChildGridRows = 1;
             }
             else
             {
-                GridColumns = 2;
-                GridRows = 1;
                 ChildGridColumns = 1;
                 ChildGridRows = 0;
             }
