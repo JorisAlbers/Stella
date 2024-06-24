@@ -1,0 +1,7 @@
+﻿!Storyboard
+Name: White rain
+Animations:
+ - !FadingPulse
+   StretchToCanvas: true
+   Color: [255,255,255]
+   FadeSteps: 16
