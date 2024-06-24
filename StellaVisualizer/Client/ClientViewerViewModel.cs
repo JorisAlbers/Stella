@@ -10,36 +10,23 @@ namespace StellaVisualizer.Client
         public int NumberOfPixels { get; private set; }
         public int NumberOfPixelsPerRow { get; private set; }
 
-        public int GridColumns { get; set; }
-        public int GridRows { get; set; }
-
-        
-        public int ChildGridRows { get; set; }
-        public int ChildGridColumns { get; set; }
+        public int Columns { get; set; }
+        public int Rows { get; set; }
+        public Orientation Orientation { get; set; }
 
         public Action<Color[]> FrameReceived;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ClientViewerViewModel(int numberOfPixels, Orientation orientation)
+        public ClientViewerViewModel(int numberOfPixels, Orientation orientation, int pixelsPerColumn, int columns, int rows)
         {
             NumberOfPixels = numberOfPixels;
-            NumberOfPixelsPerRow = numberOfPixels / 2;
+            NumberOfPixelsPerRow = pixelsPerColumn * columns;
 
-            if (orientation == Orientation.Horizontal)
-            {
-                GridColumns = 1;
-                GridRows = 2;
-                ChildGridColumns = 0;
-                ChildGridRows = 1;
-            }
-            else
-            {
-                GridColumns = 2;
-                GridRows = 1;
-                ChildGridColumns = 1;
-                ChildGridRows = 0;
-            }
+            Columns = columns;
+            Rows = rows;
+
+            Orientation = orientation;
         }
 
         public void DrawFrame(Color[] frame)
