@@ -14,6 +14,9 @@ namespace StellaServerLib.Serialization.Animation
     {
         public int StartIndex { get; set; }
         public int StripLength { get; set; }
+        public int RowIndex { get; set; }
+        public bool StretchToCanvas { get; set; }
+
         public int RelativeStart { get; set; }
 
         [YamlMember(nameof(Pattern))]

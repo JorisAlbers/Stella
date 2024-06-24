@@ -105,18 +105,39 @@ namespace StellaServerLib.Serialization.Animation
         
         private static void ValidateAnimationSetting(IAnimationSettings animationSettings, int animationIndex, string typeName, ref List<string> errors)
         {
-            if (animationSettings.StripLength < 1)
-            {
-                errors.Add($"{typeName} at index {animationIndex}: StripLength must be > 0");
-            }
-            if (animationSettings.StartIndex < 0)
-            {
-                errors.Add($"{typeName} at index {animationIndex}: StartIndex must be >= 0");
-            }
             if (animationSettings.RelativeStart < 0)
             {
                 errors.Add($"{typeName} at index {animationIndex}: RelativeStart must be >= 0");
             }
+
+
+
+            if (animationSettings.StripLength == 0)
+            {
+                if (animationSettings.StretchToCanvas)
+                {
+                    return;
+                }
+
+                // when the strip length is not set, use the row index
+                if (animationSettings.RowIndex < 0)
+                {
+                    errors.Add($"{typeName} at index {animationIndex}: when the strip length is 0, the row index must must be > -1");
+                }
+            }
+            else
+            {
+                if (animationSettings.StripLength < 1)
+                {
+                    errors.Add($"{typeName} at index {animationIndex}: StripLength must be > 0");
+                }
+                if (animationSettings.StartIndex < 0)
+                {
+                    errors.Add($"{typeName} at index {animationIndex}: StartIndex must be >= 0");
+                }
+            }
+
+            
         }
 
         private static void ValidateMovingPattern(MovingPatternAnimationSettings animationSetting, int animationIndex, ref List<string> errors)

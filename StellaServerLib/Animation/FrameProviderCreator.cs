@@ -13,11 +13,21 @@ namespace StellaServerLib.Animation
     {
         private readonly BitmapRepository _bitmapRepository;
         private readonly int _millisecondsPerTimeUnit;
+        // number of rows in the matrix of led tubes
+        private readonly int _rows;
+        // number or led tubes in a row
+        private readonly int _columns;
+        // how many led lights are in a column
+        private readonly int _ledsPerColumn;
 
-        public FrameProviderCreator(BitmapRepository bitmapRepository, int millisecondsPerTimeUnit)
+
+        public FrameProviderCreator(BitmapRepository bitmapRepository, int millisecondsPerTimeUnit, int rows, int columns, int ledsPerColumn)
         {
             _bitmapRepository = bitmapRepository;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
+            _rows = rows;
+            _columns = columns;
+            _ledsPerColumn = ledsPerColumn;
         }
 
         public IFrameProvider Create(Storyboard storyboard, out StoryboardTransformationController transformationController)
@@ -47,7 +57,7 @@ namespace StellaServerLib.Animation
                 }
                 else
                 {
-                    drawers[i] = CreateDrawer(settings);
+                    drawers[i] = CreateDrawer(settings, _rows, _columns, _ledsPerColumn);
                 }
 
                 animationTransformationSettings[i] = new AnimationTransformationSettings(0, 0, new float[3]{1,1,1}, false);
@@ -58,33 +68,50 @@ namespace StellaServerLib.Animation
             return new FrameProvider(drawers, relativeTimeStamps, transformationController, _millisecondsPerTimeUnit);
         }
 
-        private IDrawer CreateDrawer(IAnimationSettings animationSetting)
+        private IDrawer CreateDrawer(IAnimationSettings animationSetting, int rows, int columns, int ledsPerColumn)
         {
+            int startIndex = animationSetting.StartIndex;
+            int length = animationSetting.StripLength;
+
+            if (animationSetting.StretchToCanvas)
+            {
+                startIndex = 0;
+                length = rows * columns * ledsPerColumn;
+            }
+            else if (animationSetting.RowIndex != -1)
+            {
+                startIndex = animationSetting.RowIndex * _columns * ledsPerColumn;
+                length = _columns * ledsPerColumn;
+                // TODO implement settings animations per column
+            }
+
             if (animationSetting is MovingPatternAnimationSettings movingPatternSetting)
             {
-                return new MovingPatternDrawer(movingPatternSetting.StartIndex, movingPatternSetting.StripLength, movingPatternSetting.Pattern);
+                return new MovingPatternDrawer(startIndex, length, movingPatternSetting.Pattern);
             }
             if (animationSetting is SlidingPatternAnimationSettings slidingPatternSetting)
             {
-                return new SlidingPatternDrawer(slidingPatternSetting.StartIndex, slidingPatternSetting.StripLength, slidingPatternSetting.Pattern);
+                return new SlidingPatternDrawer(startIndex, length, slidingPatternSetting.Pattern);
             }
             if (animationSetting is RepeatingPatternAnimationSettings repeatingPatternSetting)
             {
-                return new RepeatingPatternsDrawer(repeatingPatternSetting.StartIndex, repeatingPatternSetting.StripLength, repeatingPatternSetting.Patterns);
+                return new RepeatingPatternsDrawer(startIndex, length, repeatingPatternSetting.Patterns);
             }
             if (animationSetting is RandomFadeAnimationSettings randomFadeSetting)
             {
-                return new RandomFadeDrawer(randomFadeSetting.StartIndex, randomFadeSetting.StripLength, randomFadeSetting.Pattern, randomFadeSetting.FadeSteps);
+                return new RandomFadeDrawer(startIndex, length, randomFadeSetting.Pattern, randomFadeSetting.FadeSteps);
             }
             if (animationSetting is FadingPulseAnimationSettings fadingPulseSetting)
             {
-                return new FadingPulseDrawer(fadingPulseSetting.StartIndex, fadingPulseSetting.StripLength, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
+                return new FadingPulseDrawer(fadingPulseSetting.StartIndex, length, fadingPulseSetting.Color, fadingPulseSetting.FadeSteps);
             }
 
             if (animationSetting is BitmapAnimationSettings bitmapAnimationSettings)
             {
-                return new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName)));
-
+                return new BitmapDrawer(startIndex, length,
+                    bitmapAnimationSettings.Wraps,
+                    BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName)));
+            }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");
         }

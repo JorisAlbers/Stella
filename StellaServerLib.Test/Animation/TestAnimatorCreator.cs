@@ -12,7 +12,7 @@ namespace StellaServerLib.Test.Animation
         [Test]
         public void MasterTransformationSettingsIsPreserved()
         {
-            AnimatorCreator creator = new AnimatorCreator(new FrameProviderCreator(null,1), new int[] { 100 }, null);
+            AnimatorCreator creator = new AnimatorCreator(new FrameProviderCreator(null,1,1,1,120), new int[] { 100 }, null);
 
             MovingPatternAnimationSettings animationSettings = new MovingPatternAnimationSettings
             {
