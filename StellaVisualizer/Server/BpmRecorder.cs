@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace StellaVisualizer.Server;
 
