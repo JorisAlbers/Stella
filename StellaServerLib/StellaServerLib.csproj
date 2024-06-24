@@ -21,4 +21,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="StellaServerLib.Test" />
+  </ItemGroup>
+
+
 </Project>

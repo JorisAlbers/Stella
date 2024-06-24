@@ -7,7 +7,9 @@ using System.Linq;
 using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
+using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Serialization.Animation;
+using StellaServerLib.Serialization.Mapping;
 using StellaVisualizer.Model;
 using StellaVisualizer.Model.Server;
 
@@ -51,16 +53,21 @@ namespace StellaVisualizer.Server
                throw new ArgumentException("No storyboards found!");
             }
 
-            // Add animations on the images in the bitmap directory
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, _pixelsPerRow,3,2);
-            storyboards.AddRange(bitmapStoryboardCreator.Create());
-
-
+           
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
             _memoryNetworkController.SetServer(memoryServer);
-            _stellaServer = new StellaServer(viewmodel.ConfigurationFile, "192.168.1.110", 20055, 20060,20060, 1, 60, bitmapRepository, memoryServer);
-            _stellaServer.Start();
+            _stellaServer = new StellaServer("192.168.1.110", 20055, 20060,20060, 1, 60, bitmapRepository, memoryServer);
+
+            // Read mapping
+            MappingLoader mappingLoader = new MappingLoader();
+            using var reader = new StreamReader(viewmodel.ConfigurationFile);
+            var mapping = mappingLoader.Load(reader);
+            _stellaServer.Start(mapping);
+
+            // Add animations on the images in the bitmap directory
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, mapping.Rows,mapping.Columns, 120);
+            storyboards.AddRange(bitmapStoryboardCreator.Create());
 
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
             // Create play lists

@@ -52,7 +52,7 @@ namespace StellaServer
             BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
             BitmapThumbnailRepository thumbnailRepository = new BitmapThumbnailRepository(new FileSystem(), ThumbnailRepository, bitmapRepository);
             thumbnailRepository.Create();
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,  480, 3, 2); // TODO get these magic values from the config
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, args.Mapping.Rows, args.Mapping.Columns, 120);
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
             SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);

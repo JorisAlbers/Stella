@@ -7,6 +7,7 @@ using StellaServerAPI;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Network;
+using StellaServerLib.Serialization.Mapping;
 
 namespace StellaServerConsole
 {
@@ -97,7 +98,7 @@ namespace StellaServerConsole
             }
 
             // Add animations on the images in the bitmap directory
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(_bitmapRepository,480,3,2); // TODO get these magic variables from the mapping.
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(_bitmapRepository,6,3,120); // TODO get these magic variables from the mapping.
             storyboards.AddRange(bitmapStoryboardCreator.Create());
             
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
@@ -109,11 +110,16 @@ namespace StellaServerConsole
             string[] animationNames = animations.Select(x => x.Name).ToArray();
 
             // Start stellaServer
-            _stellaServer = new StellaServer(mappingFilePath, ip, port,udpPort,remoteUdpPort, millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
+            _stellaServer = new StellaServer(ip, port,udpPort,remoteUdpPort, millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
+
+            // Read mapping
+            MappingLoader mappingLoader = new MappingLoader();
+            using var reader = new StreamReader(mappingFilePath);
+            var mapping = mappingLoader.Load(reader);
 
             try
             {
-                _stellaServer.Start();
+                _stellaServer.Start(mapping);
             }
             catch (Exception e)
             {

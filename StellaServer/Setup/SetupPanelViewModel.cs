@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.Reactive;
 using ReactiveUI;
@@ -7,6 +8,7 @@ using ReactiveUI.Fody.Helpers;
 using StellaServer.Midi;
 using StellaServerLib;
 using StellaServerLib.Network;
+using StellaServerLib.Serialization.Mapping;
 
 namespace StellaServer.Setup
 {
@@ -69,8 +71,13 @@ namespace StellaServer.Setup
             {
                 BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
                 StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(MappingFilePath, ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
-                stellaServer.Start();
+                    new StellaServerLib.StellaServer(ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
+
+                // Read mapping
+                MappingLoader mappingLoader = new MappingLoader();
+                using var reader = new StreamReader(MappingFilePath);
+                var mapping = mappingLoader.Load(reader);
+                stellaServer.Start(mapping);
 
 
                 MidiInputManager midiInputManager = null;
@@ -92,7 +99,10 @@ namespace StellaServer.Setup
                     BitmapFolder = BitmapFolder,
                     StoryboardFolder = StoryboardFolder,
                     MaximumFrameRate = MaximumFrameRate,
-                }, stellaServer, midiInputManager));
+                }, 
+                    stellaServer,
+                    mapping,
+                    midiInputManager));
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
@@ -123,13 +133,16 @@ namespace StellaServer.Setup
     {
         public ServerSetupSettings Settings { get; }
         public StellaServerLib.StellaServer StellaServer { get; }
+        public MappingLoader.Mapping Mapping { get; }
         public MidiInputManager MidiInputManager { get; }
 
         public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer,
+            MappingLoader.Mapping mapping,
             MidiInputManager midiInputManager)
         {
             Settings = settings;
             StellaServer = stellaServer;
+            Mapping = mapping;
             MidiInputManager = midiInputManager;
         }
     }

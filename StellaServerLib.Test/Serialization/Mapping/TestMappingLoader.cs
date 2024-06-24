@@ -32,7 +32,7 @@ namespace StellaServerLib.Test.Serialization.Mapping
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            List<RegionMapping> mappings = loader.Load(mockStream);
+            List<RegionMapping> mappings = loader.LoadInternal(mockStream);
 
             Assert.AreEqual(1,mappings.Count);
             RegionMapping mapping = mappings[0];
@@ -71,7 +71,7 @@ namespace StellaServerLib.Test.Serialization.Mapping
 
             StreamReader mockStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(stringBuilder.ToString())));
 
-            List<RegionMapping> mappings = loader.Load(mockStream);
+            List<RegionMapping> mappings = loader.LoadInternal(mockStream);
             Assert.AreEqual(2, mappings.Count);
 
             // Mapping 1

@@ -9,14 +9,17 @@ namespace StellaServerLib.Serialization.Mapping
     /// <summary>
     /// Loads a list of piMappings from file
     /// </summary>
-    public class MappingLoader : ILoader<List<RegionMapping>>
+    public class MappingLoader : ILoader<MappingLoader.Mapping>
     {
-        public List<RegionMapping> Load(StreamReader streamReader)
+        public record Mapping(List<PiMaskItem> Mask, int[] StripLengthPerPi, int Rows, int Columns);
+
+
+        internal List<RegionMapping> LoadInternal(StreamReader reader)
         {
             var settings = new SerializerSettings();
             settings.RegisterAssembly(typeof(MappingSettings).Assembly);
             var serializer = new Serializer(settings);
-            MappingSettings mappingSettings = serializer.Deserialize<MappingSettings>(streamReader);
+            MappingSettings mappingSettings = serializer.Deserialize<MappingSettings>(reader);
 
             // Convert to list of PiMappings
             List<RegionMapping> mappings = new List<RegionMapping>();
@@ -24,8 +27,24 @@ namespace StellaServerLib.Serialization.Mapping
             {
                 mappings.Add(new RegionMapping(piMapping.PiIndex, piMapping.Length, piMapping.StartIndexOnPi, piMapping.InverseDirection));
             }
-
             return mappings;
+        }
+
+        public Mapping Load(StreamReader streamReader)
+        {
+            var mappings = LoadInternal(streamReader);
+
+            int rows = mappings.Count;
+            int _LEDS_PER_TUBE = 120;
+            int columns = mappings[0].Length / _LEDS_PER_TUBE;
+
+            // Convert them to a mask
+            PiMaskCalculator piMaskCalculator = new PiMaskCalculator(mappings);
+            var piMasks =  piMaskCalculator.Calculate(out int[] stripLengthPerPi);
+
+            return new Mapping(piMasks, stripLengthPerPi, rows, columns);
+
+
         }
     }
 }

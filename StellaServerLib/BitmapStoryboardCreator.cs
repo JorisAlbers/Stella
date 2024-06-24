@@ -13,22 +13,25 @@ namespace StellaServerLib
     public class BitmapStoryboardCreator
     {
         private readonly BitmapRepository _bitmapRepository;
-        private readonly int _rowSize;
-        private readonly int _numberOfPis;
-        private readonly int _rowsPerPi;
+        private readonly int _rows;
+        private readonly int _columns;
+        private readonly int _ledsPerColumn;
         private int _totalNumberOfPixels;
-        private int _animationsCount;
 
-
-        public BitmapStoryboardCreator(BitmapRepository bitmapRepository, int rowSize, int numberOfPis, int rowsPerPi)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rows">Line of led tubes</param>
+        /// <param name="columns">number of led tubes on a row (line)</param>
+        public BitmapStoryboardCreator(BitmapRepository bitmapRepository, int rows, int columns, int ledsPerColumn)
         {
             _bitmapRepository = bitmapRepository;
-            _rowSize = rowSize;
-            _numberOfPis = numberOfPis;
-            _rowsPerPi = rowsPerPi;
+            _rows = rows;
+            _columns = columns;
+            _ledsPerColumn = ledsPerColumn;
 
-            _totalNumberOfPixels = rowSize * rowsPerPi * numberOfPis;
-            _animationsCount = _numberOfPis * _rowsPerPi;
+            _totalNumberOfPixels = rows * columns * ledsPerColumn;
+            _rows = rows;
         }
 
         /// <summary>
@@ -86,7 +89,7 @@ namespace StellaServerLib
                     new BitmapAnimationSettings
                     {
                         ImageName = name,
-                        StripLength = _totalNumberOfPixels,
+                        StretchToCanvas = true,
                         Wraps = true
                     }
                 };
@@ -121,15 +124,14 @@ namespace StellaServerLib
 
         private IAnimationSettings[] StartAtTheSameTime(string name)
         {
-            IAnimationSettings[] settings  = new IAnimationSettings[_animationsCount]; 
+            IAnimationSettings[] settings  = new IAnimationSettings[_rows]; 
 
-            for (int i = 0; i < _animationsCount; i++)
+            for (int i = 0; i < _rows; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
                     ImageName = name,
-                    StartIndex = _rowSize * i,
-                    StripLength = _rowSize,
+                    RowIndex = i,
                     Wraps = true
                 };
             }
@@ -139,15 +141,14 @@ namespace StellaServerLib
 
         private IAnimationSettings[] StartAtTheSameTimeNoWrap(string name)
         {
-            IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
+            IAnimationSettings[] settings = new IAnimationSettings[_rows];
 
-            for (int i = 0; i < _animationsCount; i++)
+            for (int i = 0; i < _rows; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
                     ImageName = name,
-                    StartIndex = _rowSize * i,
-                    StripLength = _rowSize,
+                    RowIndex = i,
                 };
             }
 
@@ -156,17 +157,16 @@ namespace StellaServerLib
 
         private IAnimationSettings[] StartAsArrowHead(string name, int delay)
         {
-            IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
+            IAnimationSettings[] settings = new IAnimationSettings[_rows];
 
-            float midpoint = (_animationsCount -1) / 2f;
+            float midpoint = (_rows -1) / 2f;
 
-            for (int i = 0; i < _animationsCount; i++)
+            for (int i = 0; i < _rows; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
                     ImageName = name,
-                    StartIndex = _rowSize * i,
-                    StripLength = _rowSize,
+                    RowIndex = i,
                     RelativeStart = (int) (Math.Abs(midpoint - (i)) * delay)
                     
                 };
@@ -177,15 +177,14 @@ namespace StellaServerLib
 
         private IAnimationSettings[] StartAsDash(string imageName, int delay)
         {
-            IAnimationSettings[] settings = new IAnimationSettings[_animationsCount];
+            IAnimationSettings[] settings = new IAnimationSettings[_rows];
 
-            for (int i = 0; i < _animationsCount; i++)
+            for (int i = 0; i < _rows; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
                     ImageName = imageName,
-                    StartIndex = _rowSize * i,
-                    StripLength = _rowSize,
+                    RowIndex = i,
                     RelativeStart = i  * delay
                 };
             }

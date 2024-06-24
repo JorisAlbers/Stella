@@ -53,7 +53,9 @@ namespace StellaServerLib.Animation
                         bitmapToFramesDictionary[bitmapAnimationSettings.ImageName] =
                             BitmapDrawer.CreateFrames(_bitmapRepository.Load(bitmapAnimationSettings.ImageName));
                     }
-                    drawers[i] = new BitmapDrawer(bitmapAnimationSettings.StartIndex, bitmapAnimationSettings.StripLength, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
+                    // TODO merge function below with CreateDrawer method.
+                    GetPosition(bitmapAnimationSettings, out int startIndex, out int length);
+                    drawers[i] = new BitmapDrawer(startIndex, length, bitmapAnimationSettings.Wraps, bitmapToFramesDictionary[bitmapAnimationSettings.ImageName]);
                 }
                 else
                 {
@@ -70,20 +72,7 @@ namespace StellaServerLib.Animation
 
         private IDrawer CreateDrawer(IAnimationSettings animationSetting, int rows, int columns, int ledsPerColumn)
         {
-            int startIndex = animationSetting.StartIndex;
-            int length = animationSetting.StripLength;
-
-            if (animationSetting.StretchToCanvas)
-            {
-                startIndex = 0;
-                length = rows * columns * ledsPerColumn;
-            }
-            else if (animationSetting.RowIndex != -1)
-            {
-                startIndex = animationSetting.RowIndex * _columns * ledsPerColumn;
-                length = _columns * ledsPerColumn;
-                // TODO implement settings animations per column
-            }
+            GetPosition(animationSetting, out int startIndex, out int length);
 
             if (animationSetting is MovingPatternAnimationSettings movingPatternSetting)
             {
@@ -114,6 +103,24 @@ namespace StellaServerLib.Animation
             }
 
             throw new ArgumentException($"Failed to load drawer. Unknown drawer {animationSetting.GetType()}");
+        }
+
+        private void GetPosition(IAnimationSettings settings, out int startIndex, out int length)
+        {
+            startIndex = settings.StartIndex;
+            length = settings.StripLength;
+
+            if (settings.StretchToCanvas)
+            {
+                startIndex = 0;
+                length = _rows * _columns * _ledsPerColumn;
+            }
+            else if (settings.RowIndex != -1)
+            {
+                startIndex = settings.RowIndex * _columns * _ledsPerColumn;
+                length = _columns * _ledsPerColumn;
+                // TODO implement settings animations per column
+            }
         }
     }
 }

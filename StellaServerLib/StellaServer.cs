@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using StellaServerLib.Animation;
-using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Network;
 using StellaServerLib.Serialization.Mapping;
 
@@ -15,7 +14,6 @@ namespace StellaServerLib
     public class StellaServer : ReactiveObject, IDisposable
     {
         private const int _LEDS_PER_TUBE = 120;
-        private readonly string _mappingFilePath;
         private readonly string _ip;
         private readonly int _port;
         private readonly int _udpPort;
@@ -35,9 +33,8 @@ namespace StellaServerLib
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;
 
-        public StellaServer(string mappingFilePath, string ip, int port, int udpPort,int remoteUdpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
+        public StellaServer(string ip, int port, int udpPort,int remoteUdpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
         {
-            _mappingFilePath = mappingFilePath;
             _ip = ip;
             _port = port;
             _udpPort = udpPort;
@@ -48,12 +45,11 @@ namespace StellaServerLib
             _server = server;
         }
 
-        public void Start()
+        public void Start(MappingLoader.Mapping mapping)
         {
-            // Read mapping
-            List<PiMaskItem> mask = LoadMask(_mappingFilePath, out int[] stripLengthPerPi, out int rows, out int columns);
-            // Create animatorCreator
-            _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit, rows, columns, _LEDS_PER_TUBE), stripLengthPerPi, mask);
+             // Create animatorCreator
+             var (piMaskItems, stripLengthPerPi, rows, columns) = mapping;
+             _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit, rows, columns, _LEDS_PER_TUBE), stripLengthPerPi, piMaskItems);
 
             // Start Server
             _server = StartServer(_ip, _port, _udpPort, _remoteUdpPort,_server);
@@ -98,27 +94,6 @@ namespace StellaServerLib
             catch (Exception e)
             {
                 throw new Exception("Failed to create new animator.", e);
-            }
-        }
-
-        private List<PiMaskItem> LoadMask(string mappingFilePath, out int[] stripLengthPerPi, out int rows, out int columns)
-        {
-            try
-            {
-                // Read the piMappings from file
-                MappingLoader mappingLoader = new MappingLoader();
-                List<RegionMapping> piMappings = mappingLoader.Load(new StreamReader(mappingFilePath));
-
-                rows = piMappings.Count;
-                columns = piMappings[0].Length / _LEDS_PER_TUBE;
-
-                // Convert them to a mask
-                PiMaskCalculator piMaskCalculator = new PiMaskCalculator(piMappings);
-                return piMaskCalculator.Calculate(out stripLengthPerPi);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Failed to load mask.", e);
             }
         }
 
