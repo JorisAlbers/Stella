@@ -17,10 +17,7 @@ namespace StellaServerLib
 
         public BitmapRepository(IFileSystem fileSystem, string directoryPath)
         {
-            if (!fileSystem.Directory.Exists(directoryPath))
-            {
-                throw new ArgumentException($"The directory at {directoryPath} does not exist.");
-            }
+            Directory.CreateDirectory(directoryPath);
 
             _fileSystem = fileSystem;
             _directory = fileSystem.Directory.CreateDirectory(directoryPath);
@@ -41,10 +38,16 @@ namespace StellaServerLib
             string fullName = GetFullName(name);
             string path = Path.Combine(_directory.FullName, fullName);
 
-            if (File.Exists(path))
+            
+            var fileInfo = new FileInfo(path);
+            
+            if (fileInfo.Exists)
             {
                 throw new Exception($"There already is a bitmap present at path {fullName}");
             }
+            
+            fileInfo.Directory.Create();
+
 
             bitmap.Save(path, ImageFormat.Png);
         }
@@ -81,7 +84,7 @@ namespace StellaServerLib
             {
                 if (fileInfo.Extension == ".png")
                 {
-                    bitmapList.Add(fileInfo.FullName.Replace(_directory.FullName + "\\", "").Replace(".png",""));
+                    bitmapList.Add(fileInfo.FullName.Replace(_directory.FullName, "").Replace(".png",""));
                 }
             }
 

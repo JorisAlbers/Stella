@@ -59,7 +59,7 @@ namespace StellaServerLib.Animation
                 }
                 else
                 {
-                    drawers[i] = CreateDrawer(settings, _rows, _columns, _ledsPerColumn);
+                    drawers[i] = CreateDrawer(settings);
                 }
 
                 animationTransformationSettings[i] = new AnimationTransformationSettings(0, 0, new float[3]{1,1,1}, false);
@@ -70,7 +70,7 @@ namespace StellaServerLib.Animation
             return new FrameProvider(drawers, relativeTimeStamps, transformationController, _millisecondsPerTimeUnit);
         }
 
-        private IDrawer CreateDrawer(IAnimationSettings animationSetting, int rows, int columns, int ledsPerColumn)
+        private IDrawer CreateDrawer(IAnimationSettings animationSetting)
         {
             GetPosition(animationSetting, out int startIndex, out int length);
 

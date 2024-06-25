@@ -97,8 +97,18 @@ namespace StellaServerConsole
                 return;
             }
 
+            // Read mapping
+            MappingLoader mappingLoader = new MappingLoader();
+            using var reader = new StreamReader(mappingFilePath);
+            var mapping = mappingLoader.Load(reader);
+
             // Add animations on the images in the bitmap directory
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(_bitmapRepository,6,3,120); // TODO get these magic variables from the mapping.
+            string resizedRepositoryPath =
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Bitmaps",
+                    $"{mapping.Rows}x{mapping.Columns}");
+            BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
+
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(_bitmapRepository,resizedBitmapRepository,6,3,120); // TODO get these magic variables from the mapping.
             storyboards.AddRange(bitmapStoryboardCreator.Create());
             
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
@@ -112,10 +122,7 @@ namespace StellaServerConsole
             // Start stellaServer
             _stellaServer = new StellaServer(ip, port,udpPort,remoteUdpPort, millisecondsPerTimeUnit,maximumFrameRate, _bitmapRepository, new Server());
 
-            // Read mapping
-            MappingLoader mappingLoader = new MappingLoader();
-            using var reader = new StreamReader(mappingFilePath);
-            var mapping = mappingLoader.Load(reader);
+
 
             try
             {

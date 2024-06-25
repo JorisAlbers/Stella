@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.IO.Abstractions;
 using System.Text;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
@@ -13,6 +15,7 @@ namespace StellaServerLib
     public class BitmapStoryboardCreator
     {
         private readonly BitmapRepository _bitmapRepository;
+        private readonly BitmapRepository _resizedBitmapRepository;
         private readonly int _rows;
         private readonly int _columns;
         private readonly int _ledsPerColumn;
@@ -23,15 +26,17 @@ namespace StellaServerLib
         /// </summary>
         /// <param name="rows">Line of led tubes</param>
         /// <param name="columns">number of led tubes on a row (line)</param>
-        public BitmapStoryboardCreator(BitmapRepository bitmapRepository, int rows, int columns, int ledsPerColumn)
+        /// <param name="bitmapRepository">Repository that contain the original files</param>
+        /// <param name="bitmapRepository">Repository that contain the resized files. If a bitmap has not yet been resized, they will be created here.</param>
+        public BitmapStoryboardCreator(BitmapRepository bitmapRepository, BitmapRepository resizedBitmapRepository, int rows, int columns, int ledsPerColumn)
         {
             _bitmapRepository = bitmapRepository;
+            _resizedBitmapRepository = resizedBitmapRepository;
             _rows = rows;
             _columns = columns;
             _ledsPerColumn = ledsPerColumn;
 
             _totalNumberOfPixels = rows * columns * ledsPerColumn;
-            _rows = rows;
         }
 
         /// <summary>
@@ -42,12 +47,34 @@ namespace StellaServerLib
         {
             List<Storyboard> storyboards = new List<Storyboard>();
             // Iterate folders in directory
-            foreach (string bitmap in _bitmapRepository.ListAllBitmaps())
+            foreach (string name in _bitmapRepository.ListAllBitmaps())
             {
-                AddBitmapAnimation(storyboards, bitmap);
+                ResizeBitmap(name,_bitmapRepository, _resizedBitmapRepository);
+                AddBitmapAnimation(storyboards, name);
             }
 
             return storyboards;
+        }
+
+        private void ResizeBitmap(string name, BitmapRepository bitmapRepository, BitmapRepository resizedBitmapRepository)
+        {
+            if (resizedBitmapRepository.BitmapExists(name))
+            {
+                return;
+            }
+
+            Bitmap original = bitmapRepository.Load(name);
+            Bitmap resized;
+            if (name.Contains("\\F\\"))
+            {
+                resized = new Bitmap(original, new Size(_totalNumberOfPixels, original.Height));
+            }
+            else
+            {
+                resized = new Bitmap(original, new Size(_columns * _ledsPerColumn, original.Height));
+            }
+
+            resizedBitmapRepository.Save(resized, name);
         }
 
         public Storyboard Create(string name, string imageName, LayoutType layoutType, int delay)

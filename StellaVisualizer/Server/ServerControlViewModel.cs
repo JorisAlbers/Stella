@@ -66,7 +66,14 @@ namespace StellaVisualizer.Server
             _stellaServer.Start(mapping);
 
             // Add animations on the images in the bitmap directory
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, mapping.Rows,mapping.Columns, 120);
+
+            string resizedRepositoryPath =
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Bitmaps",
+                    $"{mapping.Rows}x{mapping.Columns}");
+            BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
+
+
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, resizedBitmapRepository, mapping.Rows,mapping.Columns, 120);
             storyboards.AddRange(bitmapStoryboardCreator.Create());
 
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
