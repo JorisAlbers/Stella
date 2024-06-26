@@ -12,6 +12,7 @@ using StellaServer.Animation.Details;
 using StellaServerLib;
 using StellaServerLib.Animation;
 using StellaServerLib.Serialization.Animation;
+using StellaServerLib.VideoMapping;
 
 namespace StellaServer.Animation
 {
@@ -32,7 +33,9 @@ namespace StellaServer.Animation
         public event EventHandler<SendToPadEventArgs> SendToPadRequested;
 
         public AnimationsPanelViewModel(StoryboardRepository storyboardRepository,
-            BitmapStoryboardCreator bitmapStoryboardCreator, BitmapRepository bitmapRepository)
+            BitmapStoryboardCreator bitmapStoryboardCreator, 
+            VideoMappingStoryBoardCreator videoMappingStoryBoardCreator, 
+            BitmapRepository bitmapRepository)
         {
             _storyboardRepository = storyboardRepository;
             _bitmapStoryboardCreator = bitmapStoryboardCreator;
@@ -42,6 +45,10 @@ namespace StellaServer.Animation
             List<Storyboard> storyboards = storyboardRepository.LoadStoryboards();
             // Load bitmap animations
             storyboards.AddRange(_bitmapStoryboardCreator.Create());
+
+            // Load video animations
+            storyboards.AddRange(videoMappingStoryBoardCreator.Create()); // TODO this operation can take quite long. make async.
+
             // Create play lists
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
             animations.Add(PlaylistCreator.Create("All combined", storyboards, 120));

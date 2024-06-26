@@ -16,6 +16,9 @@
         <TextBlock Text="Bitmap dir"/>
         <TextBox MaxLines="1" Text="{Binding BitmapDirectory, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
 
+        <TextBlock Text="Video dir"/>
+        <TextBox MaxLines="1" Text="{Binding VideoRepository, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+
         <TextBlock Text="Configuration file"/>
         <TextBox MaxLines="1" Text="{Binding ConfigurationFile, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
 

@@ -16,6 +16,7 @@ using StellaServer.Log;
 using StellaServer.Midi;
 using StellaServer.Setup;
 using StellaServerLib;
+using StellaServerLib.VideoMapping;
 
 namespace StellaServer
 {
@@ -53,9 +54,17 @@ namespace StellaServer
             thumbnailRepository.Create();
             
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(args.BitmapRepository, args.ResizedBitmapRepository, args.Mapping.Rows, args.Mapping.Columns, 120);
+
+            VideoMappingStoryBoardCreator videoMappingStoryBoardCreator = null;
+
+            if (!string.IsNullOrWhiteSpace(args.VideoRepository))
+            {
+                videoMappingStoryBoardCreator = new VideoMappingStoryBoardCreator(args.VideoRepository, args.ResizedBitmapRepository, args.Mapping.Rows, args.Mapping.Columns, 120);
+            }
+            
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
-            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator, args.ResizedBitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);
+            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator, videoMappingStoryBoardCreator, args.ResizedBitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

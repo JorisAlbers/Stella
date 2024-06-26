@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Abstractions;
+using OpenCvSharp;
 
 namespace StellaServerLib
 {
@@ -50,6 +51,24 @@ namespace StellaServerLib
 
 
             bitmap.Save(path, ImageFormat.Png);
+        }
+
+        public void Save(Mat bitmap, string name)
+        {
+            string fullName = GetFullName(name);
+            string path = Path.Combine(_directory.FullName, fullName);
+
+
+            var fileInfo = new FileInfo(path);
+
+            if (fileInfo.Exists)
+            {
+                throw new Exception($"There already is a bitmap present at path {fullName}");
+            }
+
+            fileInfo.Directory.Create();
+
+            Cv2.ImWrite(path, bitmap);
         }
 
         public Bitmap Load(string name)

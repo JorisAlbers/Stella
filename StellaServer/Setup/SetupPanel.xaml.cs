@@ -61,6 +61,11 @@ namespace StellaServer.Setup
                     .DisposeWith(disposableRegistration);
 
                 this.Bind(ViewModel,
+                        viewmodel => viewmodel.VideoFolder,
+                        view => view.VideoFolderTextBox.Text)
+                    .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
                         viewmodel => viewmodel.MaximumFrameRate,
                         view => view.MaximumFrameRateTextBox.Text)
                     .DisposeWith(disposableRegistration);

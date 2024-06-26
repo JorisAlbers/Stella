@@ -21,6 +21,7 @@ namespace StellaServer.Setup
         [Reactive] public string MappingFilePath { get; set; }
         [Reactive] public string BitmapFolder { get; set; }                                                                                                                        
         [Reactive] public string StoryboardFolder { get; set; }                                                                                                                        
+        [Reactive] public string VideoFolder { get; set; }                                                                                                                        
         [Reactive] public int MaximumFrameRate { get; set; }           
         [Reactive] public List<MidiWithIndex> MidiDevices { get; set; }
         [Reactive] public int SelectedMidiDevice { get; set; }
@@ -43,6 +44,7 @@ namespace StellaServer.Setup
                 BitmapFolder = settings.BitmapFolder;
                 StoryboardFolder = settings.StoryboardFolder;
                 MaximumFrameRate = settings.MaximumFrameRate;
+                VideoFolder = settings.VideoFolder;
             }
 
             var canStartServer = this.WhenAnyValue(
@@ -82,6 +84,11 @@ namespace StellaServer.Setup
                         $"{mapping.Columns}");
                 BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
 
+                if (!string.IsNullOrWhiteSpace(VideoFolder) && !Directory.Exists(VideoFolder))
+                {
+                    throw new Exception($"The video folder at {VideoFolder} does not exist!");
+                }
+
 
                 StellaServerLib.StellaServer stellaServer =
                     new StellaServerLib.StellaServer(ServerIp, ServerTcpPort, ServerUdpPort, RemoteUdpPort, 1, MaximumFrameRate, new Server());
@@ -97,7 +104,6 @@ namespace StellaServer.Setup
                     midiInputManager.Start(stellaServer);
                 }
                 
-
                 ServerCreated?.Invoke(this, new ServerCreatedEventArgs(new ServerSetupSettings()
                 {
                     ServerIp = ServerIp,
@@ -108,12 +114,14 @@ namespace StellaServer.Setup
                     BitmapFolder = BitmapFolder,
                     StoryboardFolder = StoryboardFolder,
                     MaximumFrameRate = MaximumFrameRate,
+                    VideoFolder = VideoFolder,
                 }, 
                     stellaServer,
                     mapping,
                     midiInputManager,
                     bitmapRepository,
-                    resizedBitmapRepository));
+                    resizedBitmapRepository,
+                    VideoFolder));
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
@@ -148,10 +156,11 @@ namespace StellaServer.Setup
         public MidiInputManager MidiInputManager { get; }
         public BitmapRepository BitmapRepository { get; set; }
         public BitmapRepository ResizedBitmapRepository { get; set; }
+        public string VideoRepository { get; set; }
 
         public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer,
             MappingLoader.Mapping mapping,
-            MidiInputManager midiInputManager, BitmapRepository bitmapRepository, BitmapRepository resizedBitmapRepository)
+            MidiInputManager midiInputManager, BitmapRepository bitmapRepository, BitmapRepository resizedBitmapRepository, string videoRepository)
         {
             Settings = settings;
             StellaServer = stellaServer;
@@ -159,6 +168,7 @@ namespace StellaServer.Setup
             MidiInputManager = midiInputManager;
             BitmapRepository = bitmapRepository;
             ResizedBitmapRepository = resizedBitmapRepository;
+            VideoRepository = videoRepository;
         }
     }
 }

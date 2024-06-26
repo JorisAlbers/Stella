@@ -12,6 +12,7 @@ namespace StellaVisualizer.Server
         public string StoryboardDirectory { get; set; }
         public string BitmapDirectory { get; set; }
         public string ConfigurationFile { get; set; }
+        public string VideoRepository { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -37,6 +38,9 @@ namespace StellaVisualizer.Server
                         case "ConfigurationFile":
                             ConfigurationFile = split[1];
                             break;
+                        case "VideoDirectory":
+                            VideoRepository = split[1];
+                            break;
                     }
                 }
             }
@@ -52,6 +56,7 @@ namespace StellaVisualizer.Server
             sb.AppendLine($"StoryboardDirectory;{StoryboardDirectory}");
             sb.AppendLine($"BitmapDirectory;{BitmapDirectory}");
             sb.AppendLine($"ConfigurationFile;{ConfigurationFile}");
+            sb.AppendLine($"VideoDirectory;{VideoRepository}");
             File.WriteAllText(CONFIG_FILE,sb.ToString());
 
             var eventHandler = ApplyRequested;

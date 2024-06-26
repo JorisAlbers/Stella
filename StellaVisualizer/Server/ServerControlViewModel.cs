@@ -10,6 +10,7 @@ using StellaServerLib.Animation;
 using StellaServerLib.Animation.Mapping;
 using StellaServerLib.Serialization.Animation;
 using StellaServerLib.Serialization.Mapping;
+using StellaServerLib.VideoMapping;
 using StellaVisualizer.Model;
 using StellaVisualizer.Model.Server;
 
@@ -75,6 +76,18 @@ namespace StellaVisualizer.Server
 
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, resizedBitmapRepository, mapping.Rows,mapping.Columns, 120);
             storyboards.AddRange(bitmapStoryboardCreator.Create());
+
+
+            // Video mapping
+            if (!string.IsNullOrWhiteSpace(viewmodel.VideoRepository))
+            {
+                VideoMappingStoryBoardCreator videoMappingStoryBoardCreator =
+                    new VideoMappingStoryBoardCreator(viewmodel.VideoRepository, resizedBitmapRepository, mapping.Rows, mapping.Columns,
+                        120);
+
+                storyboards.AddRange(videoMappingStoryBoardCreator.Create());
+            }
+           
 
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();
             // Create play lists

@@ -74,6 +74,14 @@
                 </ListViewItem>
                 <ListViewItem>
                     <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Video folder:"/>
+                        <TextBox x:Name="VideoFolderTextBox" 
+                                 Width="500"
+                                 Margin="10,0,0,0"/>
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem>
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Midi device:"/>
                         <ComboBox x:Name="MidiDevicesComboBox" 
                                  MinWidth="200"

@@ -14,6 +14,7 @@ using StellaServer.Status;
 using StellaServer.Transformations;
 using StellaServerLib;
 using StellaServerLib.Animation;
+using StellaServerLib.VideoMapping;
 
 namespace StellaServer
 {
@@ -32,11 +33,12 @@ namespace StellaServer
 
         public MainControlPanelViewModel(StellaServerLib.StellaServer stellaServer,
             StoryboardRepository storyboardRepository, BitmapStoryboardCreator bitmapStoryboardCreator,
+            VideoMappingStoryBoardCreator videoMappingStoryBoardCreator,
             BitmapRepository bitmapRepository, BitmapThumbnailRepository thumbnailRepository, LogViewModel logViewModel,
             MidiInputManager midiInputManager)
         {
             _stellaServer = stellaServer;
-            AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,bitmapRepository);
+            AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,videoMappingStoryBoardCreator,bitmapRepository);
             AnimationsPanelViewModel.StartAnimationRequested += StartAnimation;
             AnimationsPanelViewModel.SendToPadRequested += AnimationsPanelViewModel_OnSendToPadRequested;
 
