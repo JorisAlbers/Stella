@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29201.188
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaLib", "StellaLib\StellaLib.csproj", "{0A3463FD-CF48-4B70-BE83-6668D052B70F}"
 EndProject
@@ -29,11 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaVisualizer", "StellaV
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaClientLib", "StellaClientLib\StellaClientLib.csproj", "{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitmapScaler", "BitmapScaler\BitmapScaler.csproj", "{92C6FA91-E7E2-4049-9740-14172D3B65AF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StellaServer", "StellaServer\StellaServer.csproj", "{F65F5286-50FE-4384-A5FB-B27A62D8BB66}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoMapping", "VideoMapping\VideoMapping.csproj", "{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StellaClientCpp", "StellaClientCpp\StellaClientCpp.vcxproj", "{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}"
 EndProject
@@ -205,18 +201,6 @@ Global
 		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x64.Build.0 = Release|Any CPU
 		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x86.ActiveCfg = Release|Any CPU
 		{9270EC8B-BAC5-4098-9C21-DD1E8B45888E}.Release|x86.Build.0 = Release|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Debug|x64.Build.0 = Debug|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Debug|x86.Build.0 = Debug|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x64.ActiveCfg = Release|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x64.Build.0 = Release|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x86.ActiveCfg = Release|Any CPU
-		{92C6FA91-E7E2-4049-9740-14172D3B65AF}.Release|x86.Build.0 = Release|Any CPU
 		{F65F5286-50FE-4384-A5FB-B27A62D8BB66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F65F5286-50FE-4384-A5FB-B27A62D8BB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F65F5286-50FE-4384-A5FB-B27A62D8BB66}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -229,18 +213,6 @@ Global
 		{F65F5286-50FE-4384-A5FB-B27A62D8BB66}.Release|x64.Build.0 = Release|Any CPU
 		{F65F5286-50FE-4384-A5FB-B27A62D8BB66}.Release|x86.ActiveCfg = Release|Any CPU
 		{F65F5286-50FE-4384-A5FB-B27A62D8BB66}.Release|x86.Build.0 = Release|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Debug|x64.Build.0 = Debug|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Debug|x86.Build.0 = Debug|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x64.ActiveCfg = Release|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x64.Build.0 = Release|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x86.ActiveCfg = Release|Any CPU
-		{BC14DE02-701A-45B0-A0FD-8E1CFEB88117}.Release|x86.Build.0 = Release|Any CPU
 		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|x64.ActiveCfg = Debug|x64
 		{06E941DB-7B44-4608-A46F-5B8B8F64A9E1}.Debug|x64.Build.0 = Debug|x64
