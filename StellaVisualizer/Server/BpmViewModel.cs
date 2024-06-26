@@ -7,11 +7,14 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using StellaServerLib;
+using StellaServerLib.Animation.Transformation;
 
 namespace StellaVisualizer.Server;
 
 public class BpmViewModel : INotifyPropertyChanged
 {
+    private readonly StellaServer _stellaServer;
     private double _bpm;
     private long _interval;
     private BpmRecorder _bpmRecorder;
@@ -54,8 +57,9 @@ public class BpmViewModel : INotifyPropertyChanged
         }
     }
 
-    public BpmViewModel()
+    public BpmViewModel(StellaServer stellaServer)
     {
+        _stellaServer = stellaServer;
         _bpmRecorder = new BpmRecorder();
         _bpmRecorder.PropertyChanged += BpmRecorderOnPropertyChanged;
     }
@@ -89,7 +93,7 @@ public class BpmViewModel : INotifyPropertyChanged
     {
         long interval = _bpmRecorder.Interval;
         long nextAt = Environment.TickCount + interval; // TODO use previous measurements to more accurately set the beat.
-        _bpmAnimationTransformer = new BpmAnimationTransformer(_bpmRecorder.Interval, 50);
+        _bpmAnimationTransformer = new BpmAnimationTransformer(_bpmRecorder.Interval, 50, _stellaServer);
         _bpmAnimationTransformer.OnBeat += OnBeat;
         _bpmAnimationTransformer.Run(nextAt);
     }
