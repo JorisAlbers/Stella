@@ -30,7 +30,7 @@ namespace StellaServerLib
             string fullName = GetFullName(name);
             string path = Path.Combine(_directory.FullName, fullName);
 
-            return _fileSystem.File.Exists(GetFullName(path));
+            return _fileSystem.File.Exists(path);
         }
 
         public void Save(Bitmap bitmap, string name)
