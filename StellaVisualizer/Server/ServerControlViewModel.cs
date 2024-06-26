@@ -69,7 +69,7 @@ namespace StellaVisualizer.Server
 
             string resizedRepositoryPath =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Bitmaps",
-                    $"{mapping.Rows}x{mapping.Columns}");
+                    $"{mapping.Columns}");
             BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
 
 

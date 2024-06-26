@@ -55,7 +55,7 @@ namespace StellaServer
 
             string resizedRepositoryPath =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Bitmaps",
-                    $"{args.Mapping.Rows}x{args.Mapping.Columns}");
+                    $"{args.Mapping.Columns}");
             BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
 
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,resizedBitmapRepository, args.Mapping.Rows, args.Mapping.Columns, 120);
