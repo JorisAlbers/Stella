@@ -27,7 +27,7 @@ namespace StellaServerLib
         /// <param name="rows">Line of led tubes</param>
         /// <param name="columns">number of led tubes on a row (line)</param>
         /// <param name="bitmapRepository">Repository that contain the original files</param>
-        /// <param name="bitmapRepository">Repository that contain the resized files. If a bitmap has not yet been resized, they will be created here.</param>
+        /// <param name="resizedBitmapRepository">Repository that contain the resized files. If a bitmap has not yet been resized, they will be created here.</param>
         public BitmapStoryboardCreator(BitmapRepository bitmapRepository, BitmapRepository resizedBitmapRepository, int rows, int columns, int ledsPerColumn)
         {
             _bitmapRepository = bitmapRepository;
