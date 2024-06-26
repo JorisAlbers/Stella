@@ -115,7 +115,7 @@ namespace StellaServerLib.Animation
                 startIndex = 0;
                 length = _rows * _columns * _ledsPerColumn;
             }
-            else if (settings.RowIndex != -1)
+            else if (settings.StripLength == 0)
             {
                 startIndex = settings.RowIndex * _columns * _ledsPerColumn;
                 length = _columns * _ledsPerColumn;
