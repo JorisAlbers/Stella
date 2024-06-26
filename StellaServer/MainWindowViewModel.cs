@@ -48,20 +48,14 @@ namespace StellaServer
            // Save user settings as there might be new settings
             _userSettings.ServerSetup = args.Settings;
             SaveUserSettings(UserSettingsFilePath, _userSettings);
-
-            BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), _userSettings.ServerSetup.BitmapFolder);
-            BitmapThumbnailRepository thumbnailRepository = new BitmapThumbnailRepository(new FileSystem(), ThumbnailRepository, bitmapRepository);
+           
+            BitmapThumbnailRepository thumbnailRepository = new BitmapThumbnailRepository(new FileSystem(), ThumbnailRepository, args.BitmapRepository);
             thumbnailRepository.Create();
-
-            string resizedRepositoryPath =
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Bitmaps",
-                    $"{args.Mapping.Columns}");
-            BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
-
-            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository,resizedBitmapRepository, args.Mapping.Rows, args.Mapping.Columns, 120);
+            
+            BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(args.BitmapRepository, args.ResizedBitmapRepository, args.Mapping.Rows, args.Mapping.Columns, 120);
             StoryboardRepository storyboardRepository = new StoryboardRepository(_userSettings.ServerSetup.StoryboardFolder);
 
-            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator,bitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);
+            SelectedViewModel = new MainControlPanelViewModel(args.StellaServer,storyboardRepository,bitmapStoryboardCreator, args.ResizedBitmapRepository, thumbnailRepository, LogViewModel, args.MidiInputManager);
         }
 
         private UserSettings LoadUserSettings(string userSettingsFilePath)

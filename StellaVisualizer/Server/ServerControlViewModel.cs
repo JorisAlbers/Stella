@@ -57,13 +57,12 @@ namespace StellaVisualizer.Server
             // Start a new Server
             MemoryServer memoryServer = new MemoryServer();
             _memoryNetworkController.SetServer(memoryServer);
-            _stellaServer = new StellaServer("192.168.1.110", 20055, 20060,20060, 1, 60, bitmapRepository, memoryServer);
+            _stellaServer = new StellaServer("192.168.1.110", 20055, 20060,20060, 1, 60,  memoryServer);
 
             // Read mapping
             MappingLoader mappingLoader = new MappingLoader();
             using var reader = new StreamReader(viewmodel.ConfigurationFile);
             var mapping = mappingLoader.Load(reader);
-            _stellaServer.Start(mapping);
 
             // Add animations on the images in the bitmap directory
 
@@ -72,6 +71,7 @@ namespace StellaVisualizer.Server
                     $"{mapping.Columns}");
             BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
 
+            _stellaServer.Start(mapping, resizedBitmapRepository);
 
             BitmapStoryboardCreator bitmapStoryboardCreator = new BitmapStoryboardCreator(bitmapRepository, resizedBitmapRepository, mapping.Rows,mapping.Columns, 120);
             storyboards.AddRange(bitmapStoryboardCreator.Create());

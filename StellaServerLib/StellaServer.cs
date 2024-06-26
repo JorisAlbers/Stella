@@ -29,11 +29,10 @@ namespace StellaServerLib
         private readonly int _maximumFrameRate;
 
         [Reactive] public IAnimator Animator { get; private set; }
-        public BitmapRepository BitmapRepository { get; }
 
         public event EventHandler<ClientStatusChangedEventArgs> ClientStatusChanged;
 
-        public StellaServer(string ip, int port, int udpPort,int remoteUdpPort, int millisecondsPerTimeUnit,int maximumFrameRate, BitmapRepository bitmapRepository, IServer server)
+        public StellaServer(string ip, int port, int udpPort,int remoteUdpPort, int millisecondsPerTimeUnit,int maximumFrameRate, IServer server)
         {
             _ip = ip;
             _port = port;
@@ -41,15 +40,14 @@ namespace StellaServerLib
             _remoteUdpPort = remoteUdpPort;
             _millisecondsPerTimeUnit = millisecondsPerTimeUnit;
             _maximumFrameRate = maximumFrameRate;
-            BitmapRepository = bitmapRepository;
             _server = server;
         }
 
-        public void Start(MappingLoader.Mapping mapping)
+        public void Start(MappingLoader.Mapping mapping, BitmapRepository bitmapRepository)
         {
              // Create animatorCreator
              var (piMaskItems, stripLengthPerPi, rows, columns) = mapping;
-             _animatorCreator = new AnimatorCreator(new FrameProviderCreator(BitmapRepository, _millisecondsPerTimeUnit, rows, columns, _LEDS_PER_TUBE), stripLengthPerPi, piMaskItems);
+             _animatorCreator = new AnimatorCreator(new FrameProviderCreator(bitmapRepository, _millisecondsPerTimeUnit, rows, columns, _LEDS_PER_TUBE), stripLengthPerPi, piMaskItems);
 
             // Start Server
             _server = StartServer(_ip, _port, _udpPort, _remoteUdpPort,_server);

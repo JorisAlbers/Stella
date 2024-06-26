@@ -69,15 +69,24 @@ namespace StellaServer.Setup
 
             StartCommand = ReactiveCommand.Create(() =>
             {
-                BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(),BitmapFolder);
-                StellaServerLib.StellaServer stellaServer =
-                    new StellaServerLib.StellaServer(ServerIp, ServerTcpPort, ServerUdpPort,RemoteUdpPort, 1, MaximumFrameRate, bitmapRepository, new Server());
-
-                // Read mapping
+               // Read mapping
                 MappingLoader mappingLoader = new MappingLoader();
                 using var reader = new StreamReader(MappingFilePath);
                 var mapping = mappingLoader.Load(reader);
-                stellaServer.Start(mapping);
+
+
+                BitmapRepository bitmapRepository = new BitmapRepository(new FileSystem(), BitmapFolder);
+
+                string resizedRepositoryPath =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "StellaServer", "Bitmaps",
+                        $"{mapping.Columns}");
+                BitmapRepository resizedBitmapRepository = new BitmapRepository(new FileSystem(), resizedRepositoryPath);
+
+
+                StellaServerLib.StellaServer stellaServer =
+                    new StellaServerLib.StellaServer(ServerIp, ServerTcpPort, ServerUdpPort, RemoteUdpPort, 1, MaximumFrameRate, new Server());
+
+                stellaServer.Start(mapping, resizedBitmapRepository);
 
 
                 MidiInputManager midiInputManager = null;
@@ -102,7 +111,9 @@ namespace StellaServer.Setup
                 }, 
                     stellaServer,
                     mapping,
-                    midiInputManager));
+                    midiInputManager,
+                    bitmapRepository,
+                    resizedBitmapRepository));
             }, canStartServer);
 
             StartCommand.ThrownExceptions.Subscribe(error => Errors = GetAllErrorMessages(error));
@@ -135,15 +146,19 @@ namespace StellaServer.Setup
         public StellaServerLib.StellaServer StellaServer { get; }
         public MappingLoader.Mapping Mapping { get; }
         public MidiInputManager MidiInputManager { get; }
+        public BitmapRepository BitmapRepository { get; set; }
+        public BitmapRepository ResizedBitmapRepository { get; set; }
 
         public ServerCreatedEventArgs(ServerSetupSettings settings, StellaServerLib.StellaServer stellaServer,
             MappingLoader.Mapping mapping,
-            MidiInputManager midiInputManager)
+            MidiInputManager midiInputManager, BitmapRepository bitmapRepository, BitmapRepository resizedBitmapRepository)
         {
             Settings = settings;
             StellaServer = stellaServer;
             Mapping = mapping;
             MidiInputManager = midiInputManager;
+            BitmapRepository = bitmapRepository;
+            ResizedBitmapRepository = resizedBitmapRepository;
         }
     }
 }
