@@ -19,7 +19,17 @@
                 <TextBlock Text="Interval:"/>
                 <TextBlock x:Name="IntervalTextBlock"/>
             </TextBlock>
+
         </DockPanel>
+
+        <Rectangle x:Name="BeatIndicatorRectangle"
+                   Height="10"
+                   Width="10"
+                   Fill="Red"
+                   Visibility="Collapsed"
+                   DockPanel.Dock="Top">
+
+        </Rectangle>
 
         <DockPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="5">
             <Button x:Name="ResetButton" DockPanel.Dock="Bottom" Content="Reset" HorizontalAlignment="Center"/>

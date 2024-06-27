@@ -8,17 +8,17 @@ namespace StellaServerLib.Bpm;
 
 public class BpmRecorder : ReactiveObject
 {
-    private List<long> measurements = new List<long>(100);
     private List<long> intervals = new List<long>(100);
 
     [Reactive] public double Bpm { get; set; }
     [Reactive] public long Interval { get; set; }
-    
+    public List<long> Measurements { get; set; } = new List<long>(100);
+
 
     public void OnNextBeat(long clickedAt)
     {
         AddMeasurement(clickedAt);
-        if (measurements.Count > 1)
+        if (Measurements.Count > 1)
         {
             long averageInterval = GetAverageIntervalInMilliseconds();
             Interval = averageInterval;
@@ -28,16 +28,16 @@ public class BpmRecorder : ReactiveObject
 
     private void AddMeasurement(long clickedAt)
     {
-        if (measurements.Count < 1)
+        if (Measurements.Count < 1)
         {
-            measurements.Add(clickedAt);
+            Measurements.Add(clickedAt);
             return;
         }
 
-        long previousMeasurement = measurements.Last();
+        long previousMeasurement = Measurements.Last();
         long interval = clickedAt - previousMeasurement;
         intervals.Add(interval);
-        measurements.Add(clickedAt);
+        Measurements.Add(clickedAt);
     }
 
     private long GetAverageIntervalInMilliseconds()

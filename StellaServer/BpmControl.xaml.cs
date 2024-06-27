@@ -1,5 +1,7 @@
 using System;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Windows;
 using System.Windows.Input;
 using ReactiveUI;
 
@@ -27,17 +29,35 @@ namespace StellaServer
                 this.BindCommand(ViewModel,
                     vm => vm.Reset,
                     v => v.ResetButton).DisposeWith(d);
+
+                bool toggle = false;
+                this.WhenAnyObservable(x => x.ViewModel.NextBeatObservable)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe((x) =>
+                {
+                    if (toggle)
+                    {
+                        toggle = false;
+                        this.BeatIndicatorRectangle.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        toggle = true;
+                        this.BeatIndicatorRectangle.Visibility = Visibility.Collapsed;
+                    }
+                });
+
+                this.WhenAnyObservable(x => x.ViewModel.Reset).Subscribe(x =>
+                {
+                    this.BeatIndicatorRectangle.Visibility = Visibility.Collapsed;
+                });
+
             });
         }
 
         private void BpmControl_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.RegisterBeat.Execute().Subscribe().Dispose();
-        }
-
-        private int ViewModelToViewConverterFunc(double value)
-        {
-            return (int)value;
         }
     }
 }
