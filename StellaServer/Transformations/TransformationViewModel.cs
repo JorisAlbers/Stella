@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using StellaServer.Midi;
 using StellaServerLib.Animation;
 
 namespace StellaServer.Transformations
@@ -29,10 +30,10 @@ namespace StellaServer.Transformations
         /// TODO this one only adjust the master now, also add other animations
         /// </summary>
         /// <param name="stellaServer"></param>
-        public TransformationViewModel(StellaServerLib.StellaServer stellaServer, IAnimation clearAnimation)
+        public TransformationViewModel(StellaServerLib.StellaServer stellaServer, IAnimation clearAnimation, MidiInputManager midiInputManager)
         {
             _stellaServer = stellaServer;
-            BpmViewModel = new BpmViewModel(stellaServer);
+            BpmViewModel = new BpmViewModel(stellaServer, midiInputManager);
 
             this.WhenAnyValue(
                 x => x.RedCorrection,

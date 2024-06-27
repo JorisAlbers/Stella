@@ -21,6 +21,7 @@ namespace StellaServer
     public class MainControlPanelViewModel : ReactiveObject
     {
         private readonly StellaServerLib.StellaServer _stellaServer;
+        private readonly MidiInputManager _midiInputManager;
         [Reactive] public AnimationCreationViewModel AnimationCreationViewModel { get; set; }
         [Reactive] public AnimationsPanelViewModel AnimationsPanelViewModel { get; set; }
         [Reactive] public StatusViewModel StatusViewModel { get; set; }
@@ -38,6 +39,7 @@ namespace StellaServer
             MidiInputManager midiInputManager)
         {
             _stellaServer = stellaServer;
+            _midiInputManager = midiInputManager;
             AnimationsPanelViewModel = new AnimationsPanelViewModel(storyboardRepository,bitmapStoryboardCreator,videoMappingStoryBoardCreator,bitmapRepository);
             AnimationsPanelViewModel.StartAnimationRequested += StartAnimation;
             AnimationsPanelViewModel.SendToPadRequested += AnimationsPanelViewModel_OnSendToPadRequested;
@@ -108,7 +110,7 @@ namespace StellaServer
             StatusViewModel.AnimationStarted(e);
             if (TransformationViewModel == null)
             {
-                TransformationViewModel = new TransformationViewModel(_stellaServer, FindStopAnimation());
+                TransformationViewModel = new TransformationViewModel(_stellaServer, FindStopAnimation(), _midiInputManager);
                 TransformationViewModel.Stop.Subscribe(x =>
                 {
                     StartAnimation(null, FindStopAnimation());

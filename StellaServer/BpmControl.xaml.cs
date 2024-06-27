@@ -89,7 +89,7 @@ namespace StellaServer
 
         private void BpmControl_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.RegisterBeat.Execute().Subscribe().Dispose();
+            ViewModel.BeatRegisterViaView.Execute().Subscribe().Dispose();
         }
     }
 }

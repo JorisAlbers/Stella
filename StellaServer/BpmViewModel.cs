@@ -6,6 +6,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using ReactiveUI.Fody.Helpers;
+using StellaServer.Midi;
 using StellaServerLib.Bpm;
 
 namespace StellaServer
@@ -22,16 +23,19 @@ namespace StellaServer
 
         [Reactive] public BpmTransformationMode BpmTransformationMode { get; set; }
 
-        public ReactiveCommand<Unit,long> RegisterBeat { get; }
+        public ReactiveCommand<Unit,long> BeatRegisterViaView { get; }
         public ReactiveCommand<Unit,Unit> Reset { get; }
 
         [Reactive]
         public IObservable<Unit> NextBeatObservable { get; private set; }
     
         
-        public BpmViewModel(StellaServerLib.StellaServer stellaServer)
+        public BpmViewModel(StellaServerLib.StellaServer stellaServer, MidiInputManager midiInputManager)
         {
             _stellaServer = stellaServer;
+
+            var midiBeatRegisteredObservable = midiInputManager == null ? (Observable.Empty<long>()) : midiInputManager.RegisterBeat;
+        
             bpmRecorder = new BpmRecorder();
 
             this.WhenAnyValue(x => x.bpmRecorder.Bpm).Subscribe(x => Bpm = x);
@@ -39,8 +43,13 @@ namespace StellaServer
 
             Reset = ReactiveCommand.Create<Unit, Unit>((x) => x);
 
-            RegisterBeat = ReactiveCommand.Create<Unit, long>((_) => Environment.TickCount);
-            RegisterBeat.Subscribe(x =>
+            BeatRegisterViaView = ReactiveCommand.Create<Unit, long>((_) => Environment.TickCount);
+
+
+            var beatRegistered = BeatRegisterViaView.Merge(midiBeatRegisteredObservable);
+
+            // Act when either the view button or the midi controller button was pressed
+            beatRegistered.Subscribe(x =>
             {
                 bpmRecorder.OnNextBeat(x);
             });
@@ -49,7 +58,7 @@ namespace StellaServer
             float[] originalRgbCorrection = null;
 
             // TODO use average interval + 1 second as throttle time
-            RegisterBeat.Where(x=>bpmRecorder.Interval != 0).Throttle(TimeSpan.FromSeconds(1)).Subscribe(x =>
+            beatRegistered.Where(x=>bpmRecorder.Interval != 0).Throttle(TimeSpan.FromSeconds(1)).Subscribe(x =>
             {
                 var recorder = bpmRecorder;
                 if (recorder.Interval == 0)

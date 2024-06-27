@@ -22,6 +22,8 @@ namespace StellaServer.Midi
 
         public ReactiveCommand<Unit, Unit> Stop { get; } = ReactiveCommand.Create<Unit, Unit>((_) => Unit.Default);
 
+        public ReactiveCommand<Unit,long> RegisterBeat { get; } = ReactiveCommand.Create<Unit, long>((_) => Environment.TickCount);
+
 
         public MidiInputManager(int deviceIndex)
         {
@@ -156,6 +158,15 @@ namespace StellaServer.Midi
                     }
                 }
                     break;
+                case 60: // TODO set real number
+                {
+                    if (controlChangeEvent.ControllerValue == 127)
+                    {
+                        RegisterBeat.Execute().Subscribe().Dispose();
+                    }
+                }
+                    break;
+
             }
         }
 
