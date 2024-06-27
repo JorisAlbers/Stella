@@ -77,6 +77,11 @@ namespace StellaServer
             {
                 float ob = originalBrightnessCorrection;
                 float[] oRgb = originalRgbCorrection;
+
+                if (ob == float.MinValue || oRgb == null)
+                {
+                    return;
+                }
                 
                 if (toggle)
                 {
