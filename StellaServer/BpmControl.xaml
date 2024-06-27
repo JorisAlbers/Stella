@@ -3,39 +3,65 @@
                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                 xmlns:reactiveUi="http://reactiveui.net"
                                 xmlns:stellaServer="clr-namespace:StellaServer"
-                                Background="DarkSlateGray"
-                                BorderBrush="DarkGray"
-                                BorderThickness="1"
-                                MinWidth="100" MinHeight="100"
-                                MouseLeftButtonDown="BpmControl_OnMouseLeftButtonDown">
-            
-    <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="False">
-        <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="5">
-            <TextBlock DockPanel.Dock="Top">
-                <TextBlock Text="BPM:"/>
-                <TextBlock x:Name="BpmTextBlock"/>
-            </TextBlock>
-            <TextBlock DockPanel.Dock="Top">
-                <TextBlock Text="Interval:"/>
-                <TextBlock x:Name="IntervalTextBlock"/>
-            </TextBlock>
+                                >
 
-        </DockPanel>
 
-        <Rectangle x:Name="BeatIndicatorRectangle"
-                   Height="10"
-                   Width="10"
-                   Fill="Red"
-                   Visibility="Collapsed"
-                   DockPanel.Dock="Top">
+    <DockPanel>
+        <ItemsControl>
+            <ListViewItem>
+                <RadioButton x:Name="BrightnessModeRadioButton" GroupName="TransformationMode" Content="Brightness"/>
+            </ListViewItem>
+            <ListViewItem>
+                <RadioButton x:Name="RedModeRadioButton" GroupName="TransformationMode" Content="Red"/>
+            </ListViewItem>
+            <!--<ListViewItem>
+                <RadioButton x:Name="GreenModeRadioButton" GroupName="TransformationMode" Content="Green"/>
+            </ListViewItem>
+            <ListViewItem>
+                <RadioButton x:Name="BlueModeRadioButton" GroupName="TransformationMode" Content="Blue"/>
+            </ListViewItem>-->
+        </ItemsControl>
 
-        </Rectangle>
 
-        <DockPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="5">
-            <Button x:Name="ResetButton" DockPanel.Dock="Bottom" Content="Reset" HorizontalAlignment="Center"/>
-        </DockPanel>
+        <Border DockPanel.Dock="Right" 
+                Background="DarkSlateGray"
+                BorderBrush="DarkGray"
+                BorderThickness="1"
+                MinWidth="100" MinHeight="100"
+                MouseLeftButtonDown="BpmControl_OnMouseLeftButtonDown">
+            <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="False">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="5">
+                    <TextBlock DockPanel.Dock="Top">
+                        <TextBlock Text="BPM:"/>
+                        <TextBlock x:Name="BpmTextBlock"/>
+                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Top">
+                        <TextBlock Text="Interval:"/>
+                        <TextBlock x:Name="IntervalTextBlock"/>
+                    </TextBlock>
 
+                </DockPanel>
+
+                <Rectangle x:Name="BeatIndicatorRectangle"
+                           Height="10"
+                           Width="10"
+                           Fill="Red"
+                           Visibility="Collapsed"
+                           DockPanel.Dock="Top">
+
+                </Rectangle>
+
+                <DockPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="5">
+                    <Button x:Name="ResetButton" DockPanel.Dock="Bottom" Content="Reset" HorizontalAlignment="Center"/>
+                </DockPanel>
+
+            </DockPanel>
+        </Border>
     </DockPanel>
+
+
+  
+  
 
 
 

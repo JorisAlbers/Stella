@@ -52,6 +52,24 @@ namespace StellaServer
                     this.BeatIndicatorRectangle.Visibility = Visibility.Collapsed;
                 });
 
+
+                // selection mode
+                this.Bind(ViewModel,
+                    vm => vm.BpmTransformationMode,
+                    v => v.BrightnessModeRadioButton.IsChecked,
+                    mode => mode == BpmTransformationMode.Reduce_Brightness,
+                    isChecked => BpmTransformationMode.Reduce_Brightness
+                    );
+
+                this.Bind(ViewModel,
+                    vm => vm.BpmTransformationMode,
+                    v => v.RedModeRadioButton.IsChecked,
+                    mode => mode == BpmTransformationMode.Reduce_Red,
+                    isChecked => BpmTransformationMode.Reduce_Red
+                );
+
+
+
             });
         }
 

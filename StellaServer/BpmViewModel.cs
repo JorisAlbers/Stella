@@ -20,6 +20,8 @@ namespace StellaServer
         [Reactive] public double Bpm { get; set; }
         [Reactive] public long Interval { get; set; }
 
+        [Reactive] public BpmTransformationMode BpmTransformationMode { get; set; }
+
         public ReactiveCommand<Unit,long> RegisterBeat { get; }
         public ReactiveCommand<Unit,Unit> Reset { get; }
 
@@ -59,12 +61,93 @@ namespace StellaServer
             });
 
 
+            // The transformer
+            bool toggle = false;
+            this.WhenAnyObservable(x => x.NextBeatObservable).Subscribe(x =>
+            {
+                if (toggle)
+                {
+                    toggle = false;
+
+                    if (BpmTransformationMode == BpmTransformationMode.Reduce_Brightness)
+                    {
+                        _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(-0.8f);
+                        return;
+                    }
+
+                    var currentCorrection = _stellaServer.Animator.StoryboardTransformationController.Settings
+                        .MasterSettings.RgbFadeCorrection;
+
+                    switch (BpmTransformationMode)
+                    {
+                        case BpmTransformationMode.Reduce_Red:
+                            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
+                                new[] { 0, currentCorrection[1], currentCorrection[2] });
+                            break;
+                        case BpmTransformationMode.Reduce_Green:
+                            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
+                                new[] { currentCorrection[0], 0, currentCorrection[2] });
+                            break;
+                        case BpmTransformationMode.Reduce_Blue:
+                            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
+                                new[] { currentCorrection[0], currentCorrection[1], 0 });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+
+                }
+                else
+                {
+                    toggle = true;
+                    if (BpmTransformationMode == BpmTransformationMode.Reduce_Brightness)
+                    {
+                        _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(0);
+                        return;
+                    }
+
+                    var currentCorrection = _stellaServer.Animator.StoryboardTransformationController.Settings
+                        .MasterSettings.RgbFadeCorrection;
+
+                    switch (BpmTransformationMode)
+                    {
+                        case BpmTransformationMode.Reduce_Red:
+                            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
+                                new[] { 1, currentCorrection[1], currentCorrection[2] });
+                            break;
+                        case BpmTransformationMode.Reduce_Green:
+                            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
+                                new[] { currentCorrection[0], 1, currentCorrection[2] });
+                            break;
+                        case BpmTransformationMode.Reduce_Blue:
+                            _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
+                                new[] { currentCorrection[0], currentCorrection[1], 1 });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+
+                }
+            });
+
             Reset.Subscribe(x =>
             {
+                toggle = false;
                 bpmTimer?.Dispose();
                 bpmRecorder = new BpmRecorder();
             });
 
         }
+    }
+
+    public enum BpmTransformationMode
+    {
+        Reduce_Brightness,
+        Reduce_Red,
+        Reduce_Green,
+        Reduce_Blue,
+
     }
 }
