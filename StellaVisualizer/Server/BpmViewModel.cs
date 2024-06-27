@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using StellaServerLib;
 using StellaServerLib.Animation.Transformation;
+using StellaServerLib.Bpm;
 
 namespace StellaVisualizer.Server;
 
