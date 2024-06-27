@@ -23,6 +23,7 @@ namespace StellaServer.Transformations
         public ReactiveCommand<Unit,Unit> Stop { get; }
 
         [Reactive] public bool ShouldPause { get; set; }
+        public BpmViewModel BpmViewModel { get; set; }
 
         /// <summary>
         /// TODO this one only adjust the master now, also add other animations
@@ -31,6 +32,7 @@ namespace StellaServer.Transformations
         public TransformationViewModel(StellaServerLib.StellaServer stellaServer, IAnimation clearAnimation)
         {
             _stellaServer = stellaServer;
+            BpmViewModel = new BpmViewModel(stellaServer);
 
             this.WhenAnyValue(
                 x => x.RedCorrection,
