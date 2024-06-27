@@ -27,7 +27,8 @@ namespace StellaServerLib.Bpm
             _nextBeatAt = lastBeatAt + interval;
 
             // start in 500 ms
-            while (Environment.TickCount + 500 > _nextBeatAt)
+            long waitTime = interval + 500;
+            while (Environment.TickCount + waitTime > _nextBeatAt)
             {
                 _nextBeatAt += interval;
             }
