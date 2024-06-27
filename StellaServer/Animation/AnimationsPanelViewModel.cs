@@ -47,7 +47,10 @@ namespace StellaServer.Animation
             storyboards.AddRange(_bitmapStoryboardCreator.Create());
 
             // Load video animations
-            storyboards.AddRange(videoMappingStoryBoardCreator.Create()); // TODO this operation can take quite long. make async.
+            if (videoMappingStoryBoardCreator != null)
+            {
+                storyboards.AddRange(videoMappingStoryBoardCreator.Create()); // TODO this operation can take quite long. make async.
+            }
 
             // Create play lists
             List<IAnimation> animations = storyboards.Cast<IAnimation>().ToList();

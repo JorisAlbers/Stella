@@ -69,6 +69,11 @@ namespace StellaServer.Transformations
                     vm => vm.TimeUnitsPerFrame,
                     view => view.TimeUnitsPerFrameTextBlock.Text)
                     .DisposeWith(disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.BpmViewModel,
+                        view => view.TheBpmControl.ViewModel)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }

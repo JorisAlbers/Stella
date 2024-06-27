@@ -7,9 +7,13 @@
              xmlns:local="clr-namespace:StellaServer.Transformations"
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:stellaServer="clr-namespace:StellaServer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800">
     <DockPanel Margin="50,10" HorizontalAlignment="Center">
+
+        <stellaServer:BpmControl x:Name="TheBpmControl"
+                                 Margin="0,0,10,0"/>
 
         <ToggleButton x:Name="PauseButton">
             <materialDesign:PackIcon Kind="Pause" />
