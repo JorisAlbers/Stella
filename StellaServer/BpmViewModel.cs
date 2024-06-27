@@ -45,6 +45,9 @@ namespace StellaServer
                 bpmRecorder.OnNextBeat(x);
             });
 
+            float originalBrightnessCorrection = float.MinValue;
+            float[] originalRgbCorrection = null;
+
             // TODO use average interval + 1 second as throttle time
             RegisterBeat.Where(x=>bpmRecorder.Interval != 0).Throttle(TimeSpan.FromSeconds(1)).Subscribe(x =>
             {
@@ -54,17 +57,27 @@ namespace StellaServer
                     return;
                 }
 
+                originalBrightnessCorrection = _stellaServer.Animator.StoryboardTransformationController.Settings
+                    .MasterSettings.BrightnessCorrection;
+                originalRgbCorrection = _stellaServer.Animator.StoryboardTransformationController.Settings
+                    .MasterSettings.RgbFadeCorrection;
+
                 bpmTimer?.Dispose();
                 bpmTimer = new BpmTimer();
                 bpmTimer.Start(recorder.Interval, recorder.Measurements);
                 NextBeatObservable = bpmTimer.BeatObservable; // TODO switch when resetting
             });
 
+          
+
 
             // The transformer
             bool toggle = false;
             this.WhenAnyObservable(x => x.NextBeatObservable).Subscribe(x =>
             {
+                float ob = originalBrightnessCorrection;
+                float[] oRgb = originalRgbCorrection;
+                
                 if (toggle)
                 {
                     toggle = false;
@@ -103,7 +116,7 @@ namespace StellaServer
                     toggle = true;
                     if (BpmTransformationMode == BpmTransformationMode.Reduce_Brightness)
                     {
-                        _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(0);
+                        _stellaServer.Animator.StoryboardTransformationController.SetBrightnessCorrection(ob);
                         return;
                     }
 
@@ -114,15 +127,15 @@ namespace StellaServer
                     {
                         case BpmTransformationMode.Reduce_Red:
                             _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
-                                new[] { 1, currentCorrection[1], currentCorrection[2] });
+                                new[] { oRgb[0], currentCorrection[1], currentCorrection[2] });
                             break;
                         case BpmTransformationMode.Reduce_Green:
                             _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
-                                new[] { currentCorrection[0], 1, currentCorrection[2] });
+                                new[] { currentCorrection[0], oRgb[1], currentCorrection[2] });
                             break;
                         case BpmTransformationMode.Reduce_Blue:
                             _stellaServer.Animator.StoryboardTransformationController.SetRgbFadeCorrection(
-                                new[] { currentCorrection[0], currentCorrection[1], 1 });
+                                new[] { currentCorrection[0], currentCorrection[1], oRgb[2] });
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -134,6 +147,8 @@ namespace StellaServer
 
             Reset.Subscribe(x =>
             {
+                originalBrightnessCorrection = float.MinValue;
+                originalRgbCorrection = null;
                 toggle = false;
                 bpmTimer?.Dispose();
                 bpmRecorder = new BpmRecorder();
