@@ -87,7 +87,7 @@ public class BpmViewModel : INotifyPropertyChanged
     
     public void OnNextBeat()
     {
-        _bpmRecorder.OnNextBeat();
+        _bpmRecorder.OnNextBeat(Environment.TickCount);
     }
 
     public void Start()

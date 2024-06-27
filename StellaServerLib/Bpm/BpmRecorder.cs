@@ -15,9 +15,8 @@ public class BpmRecorder : ReactiveObject
     [Reactive] public long Interval { get; set; }
     
 
-    public void OnNextBeat()
+    public void OnNextBeat(long clickedAt)
     {
-        long clickedAt = Environment.TickCount;
         AddMeasurement(clickedAt);
         if (measurements.Count > 1)
         {
