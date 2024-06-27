@@ -38,7 +38,7 @@ namespace StellaServerLib.VideoMapping
             var storyBoards = new List<Storyboard>();
 
             FileInfo[] videos = new DirectoryInfo(_videoRepository).EnumerateFiles("*.mp4").ToArray();
-            foreach (FileInfo video in videos)
+            Parallel.ForEach(videos, ((video) =>
             {
                 string videoFileName = video.Name.Remove(video.Name.LastIndexOf('.'));
 
@@ -53,7 +53,7 @@ namespace StellaServerLib.VideoMapping
                 }
 
                 storyBoards.Add(storyboard);
-            }
+            }));
             return storyBoards;
         }
 
