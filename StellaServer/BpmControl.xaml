@@ -14,12 +14,12 @@
             <ListViewItem>
                 <RadioButton x:Name="RedModeRadioButton" GroupName="TransformationMode" Content="Red"/>
             </ListViewItem>
-            <!--<ListViewItem>
+            <ListViewItem>
                 <RadioButton x:Name="GreenModeRadioButton" GroupName="TransformationMode" Content="Green"/>
             </ListViewItem>
             <ListViewItem>
                 <RadioButton x:Name="BlueModeRadioButton" GroupName="TransformationMode" Content="Blue"/>
-            </ListViewItem>-->
+            </ListViewItem>
         </ItemsControl>
 
 

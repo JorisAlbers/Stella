@@ -68,6 +68,20 @@ namespace StellaServer
                     isChecked => BpmTransformationMode.Reduce_Red
                 );
 
+                this.Bind(ViewModel,
+                    vm => vm.BpmTransformationMode,
+                    v => v.GreenModeRadioButton.IsChecked,
+                    mode => mode == BpmTransformationMode.Reduce_Green,
+                    isChecked => BpmTransformationMode.Reduce_Green
+                );
+
+                this.Bind(ViewModel,
+                    vm => vm.BpmTransformationMode,
+                    v => v.BlueModeRadioButton.IsChecked,
+                    mode => mode == BpmTransformationMode.Reduce_Blue,
+                    isChecked => BpmTransformationMode.Reduce_Blue
+                );
+
 
 
             });
