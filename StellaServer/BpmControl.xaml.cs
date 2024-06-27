@@ -23,6 +23,10 @@ namespace StellaServer
                         vm => vm.Interval,
                         v => v.IntervalTextBlock.Text)
                     .DisposeWith(d);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.Reset,
+                    v => v.ResetButton).DisposeWith(d);
             });
         }
 

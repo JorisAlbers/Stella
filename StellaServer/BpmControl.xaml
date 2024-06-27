@@ -9,8 +9,8 @@
                                 MinWidth="100" MinHeight="100"
                                 MouseLeftButtonDown="BpmControl_OnMouseLeftButtonDown">
             
-    <DockPanel>
-        <DockPanel DockPanel.Dock="Left" LastChildFill="False" Margin="5">
+    <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="False">
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="5">
             <TextBlock DockPanel.Dock="Top">
                 <TextBlock Text="BPM:"/>
                 <TextBlock x:Name="BpmTextBlock"/>
@@ -20,6 +20,11 @@
                 <TextBlock x:Name="IntervalTextBlock"/>
             </TextBlock>
         </DockPanel>
+
+        <DockPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="5">
+            <Button x:Name="ResetButton" DockPanel.Dock="Bottom" Content="Reset" HorizontalAlignment="Center"/>
+        </DockPanel>
+
     </DockPanel>
 
 

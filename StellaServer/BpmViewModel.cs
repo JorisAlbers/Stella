@@ -12,45 +12,39 @@ namespace StellaServer
     public class BpmViewModel : ReactiveObject
     {
         private readonly StellaServerLib.StellaServer _stellaServer;
-        private double _bpm;
-        private long _interval;
-        private BpmRecorder _bpmRecorder;
-        private bool _animationToggle;
         private Subject<bool> _nextBeatSubject = new Subject<bool>();
-        
+
+        [Reactive] private BpmRecorder bpmRecorder { get; set; }
 
         [Reactive] public double Bpm { get; set; }
         [Reactive] public long Interval { get; set; }
 
         public ReactiveCommand<Unit,long> RegisterBeat { get; }
+        public ReactiveCommand<Unit,Unit> Reset { get; }
 
         public IObservable<bool> NextBeatObservable => _nextBeatSubject;
         
         public BpmViewModel(StellaServerLib.StellaServer stellaServer)
         {
             _stellaServer = stellaServer;
-            _bpmRecorder = new BpmRecorder();
-            _bpmRecorder.PropertyChanged += BpmRecorderOnPropertyChanged;
+            bpmRecorder = new BpmRecorder();
 
+            this.WhenAnyValue(x => x.bpmRecorder.Bpm).Subscribe(x => Bpm = x);
+            this.WhenAnyValue(x => x.bpmRecorder.Interval).Subscribe(x => Interval = x);
+
+            Reset = ReactiveCommand.Create<Unit, Unit>((x) => x);
 
             RegisterBeat = ReactiveCommand.Create<Unit, long>((_) => Environment.TickCount);
             RegisterBeat.Subscribe(x =>
             {
-                _bpmRecorder.OnNextBeat(x);
+                bpmRecorder.OnNextBeat(x);
             });
-        }
 
-        private void BpmRecorderOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
+            Reset.Subscribe(x =>
             {
-                case nameof(BpmRecorder.Bpm):
-                    Bpm = _bpmRecorder.Bpm;
-                    break;
-                case nameof(BpmRecorder.Interval):
-                    Interval = _bpmRecorder.Interval;
-                    break;
-            }
+                bpmRecorder = new BpmRecorder();
+            });
+
         }
     }
 }
