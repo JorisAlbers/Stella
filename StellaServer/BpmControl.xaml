@@ -3,4 +3,20 @@
                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                 xmlns:reactiveUi="http://reactiveui.net"
                                 xmlns:stellaServer="clr-namespace:StellaServer">
+            
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Left" LastChildFill="False">
+            <TextBlock DockPanel.Dock="Top">
+                <TextBlock Text="BPM:"/>
+                <TextBlock x:Name="BpmTextBlock"/>
+            </TextBlock>
+            <TextBlock DockPanel.Dock="Top">
+                <TextBlock Text="BPM:"/>
+                <TextBlock x:Name="IntervalTextBlock"/>
+            </TextBlock>
+        </DockPanel>
+    </DockPanel>
+
+
+
 </reactiveUi:ReactiveUserControl>
