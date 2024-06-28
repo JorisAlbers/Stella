@@ -224,6 +224,23 @@ namespace StellaServerLib
 
             return settings;
         }
+
+        public static BitmapAnimationSettings[] ConvertToStartLayout(BitmapAnimationSettings[] animationSettings,
+            LayoutType type)
+        {
+            switch (type)
+            {
+                case LayoutType.Unknown:
+                case LayoutType.Straight:
+                    return StartAtTheSameTime(animationSettings);
+                case LayoutType.ArrowHead:
+                    return StartAsArrowHead(animationSettings,500);
+                case LayoutType.Dash:
+                    return StartAsDash(animationSettings, 500);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
     }
 
     public enum LayoutType

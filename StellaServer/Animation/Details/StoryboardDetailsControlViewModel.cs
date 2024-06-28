@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Windows.Input;
 using ReactiveUI;
 using StellaServer.Animation.Settings;
 using StellaServerLib;
@@ -19,6 +21,15 @@ namespace StellaServer.Animation.Details
 
         public string Name { get; set; }
 
+        public bool UserCanSetStartTimes { get; }
+
+        public ReactiveCommand<Unit, LayoutType> StartAtTheSameTime { get;  } = ReactiveCommand.Create<Unit, LayoutType>((_) => LayoutType.Straight);
+        public ReactiveCommand<Unit, LayoutType> StartAsForwardSlash { get; } = ReactiveCommand.Create<Unit, LayoutType>((_) => LayoutType.Dash);
+        public ReactiveCommand<Unit, LayoutType> StartAsArrowHead { get; } = ReactiveCommand.Create<Unit, LayoutType>((_) => LayoutType.ArrowHead);
+
+        public IObservable<LayoutType> StartAnimation { get; }
+
+
         public List<AnimationSettingViewModel> AnimationSettings { get; set; }
         public ReactiveCommand<Unit, Unit> Back { get; set; } = ReactiveCommand.Create(() => { });
 
@@ -26,6 +37,8 @@ namespace StellaServer.Animation.Details
         {
             _storyboard = storyboard;
             _bitmapRepository = bitmapRepository;
+            StartAnimation = Observable.Merge(StartAsArrowHead, StartAsForwardSlash, StartAtTheSameTime);
+            UserCanSetStartTimes = storyboard.StartTimeCanBeAdjusted;
             Name = storyboard.Name;
             AnimationSettings = new List<AnimationSettingViewModel>();
             foreach (IAnimationSettings animationSetting in storyboard.AnimationSettings)

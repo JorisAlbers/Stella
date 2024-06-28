@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Reactive.Linq;
 using DynamicData;
@@ -14,6 +15,7 @@ using StellaServer.Status;
 using StellaServer.Transformations;
 using StellaServerLib;
 using StellaServerLib.Animation;
+using StellaServerLib.Serialization.Animation;
 using StellaServerLib.VideoMapping;
 
 namespace StellaServer
@@ -57,6 +59,31 @@ namespace StellaServer
                         {
                             var viewmodel = new StoryboardDetailsControlViewModel(storyboard, bitmapRepository);
                             viewmodel.Back.Subscribe(next => { SelectedViewModel = NavigationViewModel; });
+                            viewmodel.StartAnimation.Subscribe(layout =>
+                            {
+                                BitmapAnimationSettings[] bitmapAnimationSettings = storyboard.AnimationSettings
+                                    .OfType<BitmapAnimationSettings>().ToArray();
+
+                                if (bitmapAnimationSettings.Length != storyboard.AnimationSettings.Length)
+                                {
+                                    return;
+                                }
+
+
+
+                                var settings = BitmapStoryboardCreator.ConvertToStartLayout(bitmapAnimationSettings, layout);
+                                Storyboard convertedStoryboard = new Storyboard()
+                                {
+                                    Name = storyboard.Name + " " + layout.ToString(),
+                                    AnimationSettings = settings
+                                };
+
+                                StatusViewModel.AnimationStarted(convertedStoryboard);
+                                stellaServer.StartAnimation(convertedStoryboard);
+
+                            });
+
+
                             SelectedViewModel = viewmodel;
                             return;
                         }

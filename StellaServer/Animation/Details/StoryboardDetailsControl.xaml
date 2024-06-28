@@ -22,10 +22,39 @@
                 <TextBlock x:Name="NameTextBlock" 
                            DockPanel.Dock="Top" FontSize="20"/>
             </DockPanel>
-            <DockPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom"
+                        HorizontalAlignment="Center"
+                        x:Name="ShapeButtonsStackPanel">
+                <Border Background="SlateGray"
+                        BorderBrush="White"
+                        BorderThickness="1">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="Start according to shape"></TextBlock>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="||" x:Name="StartAtTheSameTimeButton"
+                                    Margin="5"/>
+                            <Button Content="/" x:Name="StartAsForwardSlashButton"
+                                    Margin="5"/>
+                            <Button Content="\/" x:Name="StartAsArrowHeadButton"
+                                    Margin="5"/>
+                        </StackPanel>
+                      
+                    </StackPanel>
+
+                </Border>
+
+               
+            </StackPanel>
+
+            <DockPanel DockPanel.Dock="Top">
                 <ListView x:Name="AnimationSettingsListView"
                           DockPanel.Dock="Bottom" />
             </DockPanel>
+
+            
+
         </DockPanel>
        
     </materialDesign:Card>

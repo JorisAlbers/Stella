@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ReactiveUI;
+using StellaServerLib;
 
 namespace StellaServer.Animation.Details
 {
@@ -37,9 +39,32 @@ namespace StellaServer.Animation.Details
                         view => view.AnimationSettingsListView.ItemsSource)
                     .DisposeWith(disposableRegistration);
 
+                this.OneWayBind(ViewModel,
+                        viewmodel => viewmodel.UserCanSetStartTimes,
+                        view => view.ShapeButtonsStackPanel.Visibility,
+                        (b)=> b ? Visibility.Visible : Visibility.Collapsed)
+                    .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.StartAtTheSameTime,
+                    v => v.StartAtTheSameTimeButton)
+                    .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.StartAsArrowHead,
+                    v => v.StartAsArrowHeadButton)
+                    .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.StartAsForwardSlash,
+                    v => v.StartAsForwardSlashButton)
+                    .DisposeWith(disposableRegistration);
+
+
                 this.BindCommand(ViewModel,
                     vm => vm.Back,
-                    view => view.BackButton);
+                    view => view.BackButton)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }
