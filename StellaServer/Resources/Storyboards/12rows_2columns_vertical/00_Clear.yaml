@@ -1,0 +1,6 @@
+﻿!Storyboard
+Name: Clear
+Animations:
+ - !RepeatingPattern
+   StretchToCanvas: true
+   Patterns: [[[0,0,0]]]
