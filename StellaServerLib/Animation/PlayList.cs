@@ -10,6 +10,7 @@ namespace StellaServerLib.Animation
     public class PlayList : IAnimation
     {
         public string Name { get; }
+        public bool StartTimeCanBeAdjusted => false;
 
         public PlayListItem[] Items { get; }
         

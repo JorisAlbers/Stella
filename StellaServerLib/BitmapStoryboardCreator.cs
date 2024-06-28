@@ -80,17 +80,26 @@ namespace StellaServerLib
         public Storyboard Create(string name, string imageName, LayoutType layoutType, int delay)
         {
             // Start at the same time
-            IAnimationSettings[] settings = null;
+            BitmapAnimationSettings[] settings = new BitmapAnimationSettings[_rows];
+            for (int i = 0; i < _rows; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    ImageName = imageName,
+                    RowIndex = i,
+                };
+            }
+
             switch (layoutType)
             {
                 case LayoutType.Straight:
-                    settings = StartAtTheSameTime(imageName);
+                    settings = StartAtTheSameTime(settings);
                     break;
                 case LayoutType.ArrowHead:
-                    settings = StartAsArrowHead(imageName, delay);
+                    settings = StartAsArrowHead(settings, delay);
                     break;
                 case LayoutType.Dash:
-                    settings = StartAsDash(imageName, delay);
+                    settings = StartAsDash(settings, delay);
                     break;
                 default:
                     throw new ArgumentException(nameof(layoutType));
@@ -120,97 +129,94 @@ namespace StellaServerLib
                         Wraps = true
                     }
                 };
+                sb.StartTimeCanBeAdjusted = false;
 
                 storyboards.Add(sb);
                 return;
 
             }
-
+            
+            
             // Start at the same time
+            BitmapAnimationSettings[] settings = new BitmapAnimationSettings[_rows];
+
+            for (int i = 0; i < _rows; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    ImageName = name,
+                    RowIndex = i,
+                    Wraps = true,
+                };
+            }
+
             storyboards.Add(new Storyboard
             {
                 Name = name,
-                AnimationSettings = StartAtTheSameTime(name)
+                AnimationSettings = StartAtTheSameTime(settings),
+                StartTimeCanBeAdjusted = true,
             });
-
-            // Start at the same time no wrap
-            storyboards.Add(new Storyboard
-            {
-                Name = $"{name}_noWrap",
-                AnimationSettings = StartAtTheSameTimeNoWrap(name)
-            });
-
-            // Arrow head
-            storyboards.Add(new Storyboard
-            {
-                Name = $"{name}_arrowHead",
-                AnimationSettings = StartAsArrowHead(name, 500)
-            });
-
         }
 
-        private IAnimationSettings[] StartAtTheSameTime(string name)
+        public static BitmapAnimationSettings[] StartAtTheSameTime(BitmapAnimationSettings[] animationSettings)
         {
-            IAnimationSettings[] settings  = new IAnimationSettings[_rows]; 
+            BitmapAnimationSettings[] settings = new BitmapAnimationSettings[animationSettings.Length];
 
-            for (int i = 0; i < _rows; i++)
+            for (int i = 0; i < animationSettings.Length; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    ImageName = name,
-                    RowIndex = i,
-                    Wraps = true
+                    ImageName = animationSettings[i].ImageName,
+                    RowIndex = animationSettings[i].RowIndex,
+                    Wraps = true,
+                };
+            }
+            return animationSettings;
+        }
+
+        public static BitmapAnimationSettings[] StartAtTheSameTimeNoWrap(BitmapAnimationSettings[] animationSettings)
+        {
+            BitmapAnimationSettings[] settings = new BitmapAnimationSettings[animationSettings.Length];
+
+            for (int i = 0; i < animationSettings.Length; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    ImageName = animationSettings[i].ImageName,
+                    RowIndex = animationSettings[i].RowIndex,
+                    Wraps = false,
+                };
+            }
+            return animationSettings;
+        }
+
+        public static BitmapAnimationSettings[] StartAsArrowHead(BitmapAnimationSettings[] animationSettings, int delay)
+        {
+            BitmapAnimationSettings[] settings = new BitmapAnimationSettings[animationSettings.Length];
+            float midpoint = (animationSettings.Length - 1) / 2f;
+
+            for (int i = 0; i < animationSettings.Length; i++)
+            {
+                settings[i] = new BitmapAnimationSettings
+                {
+                    ImageName = animationSettings[i].ImageName,
+                    RowIndex = animationSettings[i].RowIndex,
+                    RelativeStart = (int)(Math.Abs(midpoint - (i)) * delay)
                 };
             }
 
             return settings;
         }
 
-        private IAnimationSettings[] StartAtTheSameTimeNoWrap(string name)
+        public static BitmapAnimationSettings[] StartAsDash(BitmapAnimationSettings[] animationSettings, int delay)
         {
-            IAnimationSettings[] settings = new IAnimationSettings[_rows];
-
-            for (int i = 0; i < _rows; i++)
+            BitmapAnimationSettings[] settings = new BitmapAnimationSettings[animationSettings.Length];
+            
+            for (int i = 0; i < animationSettings.Length; i++)
             {
                 settings[i] = new BitmapAnimationSettings
                 {
-                    ImageName = name,
-                    RowIndex = i,
-                };
-            }
-
-            return settings;
-        }
-
-        private IAnimationSettings[] StartAsArrowHead(string name, int delay)
-        {
-            IAnimationSettings[] settings = new IAnimationSettings[_rows];
-
-            float midpoint = (_rows -1) / 2f;
-
-            for (int i = 0; i < _rows; i++)
-            {
-                settings[i] = new BitmapAnimationSettings
-                {
-                    ImageName = name,
-                    RowIndex = i,
-                    RelativeStart = (int) (Math.Abs(midpoint - (i)) * delay)
-                    
-                };
-            }
-
-            return settings;
-        }
-
-        private IAnimationSettings[] StartAsDash(string imageName, int delay)
-        {
-            IAnimationSettings[] settings = new IAnimationSettings[_rows];
-
-            for (int i = 0; i < _rows; i++)
-            {
-                settings[i] = new BitmapAnimationSettings
-                {
-                    ImageName = imageName,
+                    ImageName = animationSettings[i].ImageName,
                     RowIndex = i,
                     RelativeStart = i  * delay
                 };

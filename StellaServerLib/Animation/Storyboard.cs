@@ -11,6 +11,8 @@ namespace StellaServerLib.Animation
     {
         public string Name { get; set; }
 
+        public bool StartTimeCanBeAdjusted   { get; set; }
+
         /// <summary> The different animations in this storyboard. </summary>
         [YamlMember("Animations")]
         public IAnimationSettings[] AnimationSettings { get; set; }
