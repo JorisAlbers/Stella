@@ -245,11 +245,4 @@ namespace StellaServerLib.Animation
             _cancellationTokenSource?.Cancel();
         }
     }
-
-    public class FrameMetadata
-    {
-        public int FrameIndex;
-        public long TimeStampRelative;
-        public FrameWithoutDelta[] Frames;
-    }
 }
